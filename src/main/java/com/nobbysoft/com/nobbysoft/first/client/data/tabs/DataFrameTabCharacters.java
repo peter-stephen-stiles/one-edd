@@ -41,6 +41,7 @@ import com.nobbysoft.com.nobbysoft.first.client.components.PTableCellRenderer;
 import com.nobbysoft.com.nobbysoft.first.client.data.MaintenanceDialog;
 import com.nobbysoft.com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.CharacterRoller;
+import com.nobbysoft.com.nobbysoft.first.client.data.panels.CharacterSheet;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.PlayerCharacterPanel;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
@@ -105,11 +106,13 @@ public class DataFrameTabCharacters extends PPanel {
 		JButton btnCopy = new JButton("Copy");
 		JButton btnEdit = new JButton("Edit");
 		JButton btnDelete = new JButton("Delete");
+		JButton btnSheet = new JButton("Character sheet");
 
 		pnlTopButtons.add(btnAdd);
 		pnlTopButtons.add(btnCopy);
 		pnlTopButtons.add(btnEdit);
 		pnlTopButtons.add(btnDelete);
+		pnlTopButtons.add(btnSheet);
 		GridBagLayout layTop = new GridBagLayout();
 
 		btnRefresh.addActionListener(ae -> refresh());
@@ -117,6 +120,7 @@ public class DataFrameTabCharacters extends PPanel {
 		btnCopy.addActionListener(ae -> copy());
 		btnEdit.addActionListener(ae -> edit());
 		btnDelete.addActionListener(ae -> delete());	
+		btnSheet.addActionListener(ae ->sheet());
 		
 		JPanel pnlTop = new JPanel(layTop); 
 		pnlTop.add(pnlTopButtons, GBU.label(1, 0));
@@ -366,6 +370,21 @@ public class DataFrameTabCharacters extends PPanel {
 		}
 	}
 
+	private void sheet() {
+		int r = tblData.getSelectedRow();
+		if (r >= 0 && r < tblData.getRowCount()) {
+			//
+			PlayerCharacter dto = (PlayerCharacter) tmData.getValueAt(r, 0);
+			if (dto != null) {
+				// now to make character sheet up
+				CharacterSheet sheet = new CharacterSheet(GuiUtils.getParent(this));
+				sheet.setPlayerCharacter(dto);
+				sheet.pack();
+				sheet.setLocationRelativeTo(null);
+				sheet.setVisible(true);
+			}
+		}
+	}
 	private void delete() {
 		int r = tblData.getSelectedRow();
 		if (r >= 0 && r < tblData.getRowCount()) {

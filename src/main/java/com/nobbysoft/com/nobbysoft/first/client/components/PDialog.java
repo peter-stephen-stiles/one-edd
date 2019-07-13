@@ -39,24 +39,20 @@ public class PDialog extends JDialog {
 
 	public PDialog(Window owner, ModalityType modalityType) {
 		super(owner, modalityType);
-		// TODO Auto-generated constructor stub
 	}
 
 	public PDialog(Window owner, String title) {
 		super(owner, title);
-		// TODO Auto-generated constructor stub
 	}
  
 
 	public PDialog(Window owner, String title, ModalityType modalityType) {
 		super(owner, title, modalityType);
-		// TODO Auto-generated constructor stub
 	}
  
 
 	public PDialog(Window owner, String title, ModalityType modalityType, GraphicsConfiguration gc) {
 		super(owner, title, modalityType, gc);
-		// TODO Auto-generated constructor stub
 	}
 
 }

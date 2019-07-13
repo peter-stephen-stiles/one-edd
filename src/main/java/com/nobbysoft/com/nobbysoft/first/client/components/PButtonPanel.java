@@ -1,5 +1,6 @@
 package com.nobbysoft.com.nobbysoft.first.client.components;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 
@@ -24,6 +25,12 @@ public class PButtonPanel extends JPanel {
 		setLayout(layThis);
 	}
 
+	public void add(Component... components ) {
+		for(Component c:components) {
+			add(c);
+		}
+	}
+	
 	public PButtonPanel(int alignment) {
 		super();
 		
