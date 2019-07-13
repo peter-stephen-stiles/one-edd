@@ -490,6 +490,9 @@ public class DataFrameTabData extends PPanel{
 	}
 
 	private void copy() {
+		if(tblData.getRowCount()==0) {
+			return;
+		}
 		int r = tblData.getSelectedRow();
 		if (r < 0 && tblData.getRowCount() > 0) {
 			r = 0;

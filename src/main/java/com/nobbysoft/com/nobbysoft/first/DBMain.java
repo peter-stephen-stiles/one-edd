@@ -73,7 +73,8 @@ public class DBMain {
 
 		try { 
 			try (Connection conn = cm.getConnection();) {
-				//runAction(conn,"drop table PLayer_character");
+				//runAction(conn,"drop table player_character");
+				//runAction(conn,"DROP SEQUENCE  player_character_seq RESTRICT ");
 				
 				//runAction(conn,"alter table Character_Class add column max_hd_level INTEGER");
 				//runAction(conn,"alter table Character_Class add column master_spell_class BOOLEAN");

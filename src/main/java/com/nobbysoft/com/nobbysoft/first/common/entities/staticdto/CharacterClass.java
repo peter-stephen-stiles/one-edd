@@ -23,6 +23,100 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 	private int minCon;
 	private int minChr;
 	private int proficienciesAtFirstLevel;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((classId == null) ? 0 : classId.hashCode());
+		result = prime * result + hitDice;
+		result = prime * result + hitDiceAtFirstLevel;
+		result = prime * result + hpAfterNameLevel;
+		result = prime * result + (masterSpellClass ? 1231 : 1237);
+		result = prime * result + maxHdLevel;
+		result = prime * result + minChr;
+		result = prime * result + minCon;
+		result = prime * result + minDex;
+		result = prime * result + minInt;
+		result = prime * result + minStr;
+		result = prime * result + minWis;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + newProficiencyEveryXLevels;
+		result = prime * result + nonProficiencyPenalty;
+		result = prime * result + ((parentClassId == null) ? 0 : parentClassId.hashCode());
+		result = prime * result + prValueForXpBonus;
+		result = prime * result + primeRequisite1;
+		result = prime * result + primeRequisite2;
+		result = prime * result + primeRequisite3;
+		result = prime * result + proficienciesAtFirstLevel;
+		result = prime * result + xpBonusPercent;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CharacterClass other = (CharacterClass) obj;
+		if (classId == null) {
+			if (other.classId != null)
+				return false;
+		} else if (!classId.equals(other.classId))
+			return false;
+		if (hitDice != other.hitDice)
+			return false;
+		if (hitDiceAtFirstLevel != other.hitDiceAtFirstLevel)
+			return false;
+		if (hpAfterNameLevel != other.hpAfterNameLevel)
+			return false;
+		if (masterSpellClass != other.masterSpellClass)
+			return false;
+		if (maxHdLevel != other.maxHdLevel)
+			return false;
+		if (minChr != other.minChr)
+			return false;
+		if (minCon != other.minCon)
+			return false;
+		if (minDex != other.minDex)
+			return false;
+		if (minInt != other.minInt)
+			return false;
+		if (minStr != other.minStr)
+			return false;
+		if (minWis != other.minWis)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (newProficiencyEveryXLevels != other.newProficiencyEveryXLevels)
+			return false;
+		if (nonProficiencyPenalty != other.nonProficiencyPenalty)
+			return false;
+		if (parentClassId == null) {
+			if (other.parentClassId != null)
+				return false;
+		} else if (!parentClassId.equals(other.parentClassId))
+			return false;
+		if (prValueForXpBonus != other.prValueForXpBonus)
+			return false;
+		if (primeRequisite1 != other.primeRequisite1)
+			return false;
+		if (primeRequisite2 != other.primeRequisite2)
+			return false;
+		if (primeRequisite3 != other.primeRequisite3)
+			return false;
+		if (proficienciesAtFirstLevel != other.proficienciesAtFirstLevel)
+			return false;
+		if (xpBonusPercent != other.xpBonusPercent)
+			return false;
+		return true;
+	}
+
 	private int newProficiencyEveryXLevels;
 	private int nonProficiencyPenalty;
 	
@@ -249,5 +343,9 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 	public void setPrimeRequisite3(int primeRequisite3) {
 		this.primeRequisite3 = primeRequisite3;
 	}
- 
+	
+     @Override
+     public String toString() {
+    	 return name;
+     }
 }

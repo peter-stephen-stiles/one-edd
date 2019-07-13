@@ -28,6 +28,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -217,6 +218,8 @@ public class CharacterRoller extends PDialog {
 
 	private void jbInit() {
 
+		txtClasses.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 		Container thisPanel = getContentPane();
 		thisPanel.setLayout(new BorderLayout());
 		PButtonPanel pnlBottomButtons = new PButtonPanel();
@@ -485,6 +488,14 @@ public class CharacterRoller extends PDialog {
 				lim.setText("" + mins[i] + "-" + maxs[i]);
 
 			}
+			
+			
+			if(r.isMultiClassable()) {
+				txtClasses.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			} else {
+				txtClasses.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			}
+			
 		}
 
 	}
@@ -547,8 +558,10 @@ public class CharacterRoller extends PDialog {
 		//
 		String text = "";
 		try {
-			CharacterClass cclass = txtClasses.getSelectedValue();
-			if (cclass != null) {
+			boolean allGood=true;
+			boolean anySelected=false;
+			for(CharacterClass cclass:txtClasses.getSelectedValuesList()){ 
+				anySelected=true;
 				int pr1 = cclass.getPrimeRequisite1() - 1;
 				int pr2 = cclass.getPrimeRequisite2() - 1;
 				int pr3 = cclass.getPrimeRequisite3() - 1;
@@ -574,10 +587,15 @@ public class CharacterRoller extends PDialog {
 					} else {
 						bonus = false;
 					}
-					if (bonus) {
-						text = "has 10% xp bonus";
+					if(!bonus) {
+						allGood=false;
 					}
+						
+
 				}
+			}
+			if (anySelected && allGood) {
+				text = "10% xp bonus";
 			}
 
 		} finally {
@@ -787,8 +805,8 @@ public class CharacterRoller extends PDialog {
 			return Gender.FEMALE;
 		}
 	}
-	public CharacterClass getCharacterClass() {
-		return txtClasses.getSelectedValue();
+	public List<CharacterClass> getCharacterClasses() {
+		return txtClasses.getSelectedValuesList();
 	}
 
 	public boolean isCancelled() {

@@ -5,6 +5,8 @@ import java.awt.Window;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +25,9 @@ import com.nobbysoft.com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
+import com.nobbysoft.com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.RaceService;
@@ -44,10 +49,26 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private final PIntegerField txtPcId = new PIntegerField(true);  
 	private final PTextField txtCharacterName = new PTextField(128);
 	private final PTextField txtPlayerName = new PTextField(128);
-	private final PComboGender txtGender = new PComboGender();
 	private final PComboAlignment txtAlignment = new PComboAlignment();
+
 	
-	private final PComboBox<CodedListItem<String>> txtRace = new PComboBox<>();
+	private final CharacterClass noClass = new CharacterClass();
+
+	private final PComboBox<CharacterClass> txtClass1 = new PComboBox<>();
+	private final PComboBox<CharacterClass> txtClass2 = new PComboBox<>();
+	private final PComboBox<CharacterClass> txtClass3 = new PComboBox<>();
+ 
+	private final PComboBox[] classCombos = new PComboBox[]{txtClass1,txtClass2,txtClass3};
+	
+ 
+	private final PComboGender txtGender = new PComboGender();
+
+	private final PLabel lblClass1 = new PLabel();
+	private final PLabel lblClass2 = new PLabel();
+	private final PLabel lblClass3 = new PLabel();
+
+	private final PLabel[] classLabels = new PLabel[]{lblClass1,lblClass2,lblClass3};
+	private final PComboBox<Race> txtRace = new PComboBox<>();
   
 	private final PIntegerCombo txtAttrStr = new PIntegerCombo();
 	private final PIntegerCombo txtAttrInt = new PIntegerCombo();
@@ -78,11 +99,18 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 
 	public void jbInit() {
 
+		noClass.setClassId("");
+		noClass.setName("");
+		
 		txtPcId.setName("Id");  
 		txtCharacterName.setName("Character name"); 
 		txtPlayerName.setName("Player name");
 		txtGender.setName("Gender");
+		txtRace.setName("Race");
 		txtAlignment.setName("Alignment");
+		txtClass1.setName("Class (1)");
+		txtClass2.setName("Class (2)");
+		txtClass3.setName("Class (3)");
 		
 		txtAttrStr.setName("Str");
 		txtAttrInt.setName("Int");
@@ -95,8 +123,15 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		PLabel lblPlayerCharacterName = new PLabel(txtCharacterName.getName()); 
 		PLabel lblPlayerName = new PLabel(txtPlayerName.getName()); 
 		PLabel lblGender = new PLabel(txtGender.getName());
+		PLabel lblRace = new PLabel(txtRace.getName());
 		PLabel lblAlignment = new PLabel(txtAlignment.getName());
- 
+		
+
+
+		lblClass1.setText(txtClass1.getName());
+		lblClass2.setText(txtClass2.getName());
+		lblClass3.setText(txtClass3.getName());
+		
 		PLabel lblMinStr = new PLabel(txtAttrStr.getName());
 		PLabel lblMinInt = new PLabel(txtAttrInt.getName());
 		PLabel lblMinWis = new PLabel(txtAttrWis.getName());
@@ -137,15 +172,33 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		pnlLeft.add(lblPlayerName, GBU.label(0, 3));
 		pnlLeft.add(txtPlayerName, GBU.text(1, 3));
 
-		pnlLeft.add(lblGender, GBU.label(0,4));
-		pnlLeft.add(txtGender, GBU.text(1, 4));
 
 		pnlLeft.add(lblAlignment, GBU.label(0,5));
 		pnlLeft.add(txtAlignment, GBU.text(1, 5));
 		
-		pnlLeft.add(btnRoll, GBU.button(1, 6));
+		pnlLeft.add(btnRoll, GBU.button(1, 4));
+
+		pnlLeft.add(lblGender, GBU.label(0,6));
+		pnlLeft.add(txtGender, GBU.text(1, 6));
+		
+		pnlLeft.add(lblRace, GBU.label(0,7));
+		pnlLeft.add(txtRace, GBU.text(1, 7));
+
+
+		pnlLeft.add(lblClass1, GBU.label(0,8));
+		pnlLeft.add(lblClass2, GBU.label(0,9));
+		pnlLeft.add(lblClass3, GBU.label(0,10));
+		
+		pnlLeft.add(txtClass1, GBU.text(1, 8));
+		pnlLeft.add(txtClass2, GBU.text(1, 9));
+		pnlLeft.add(txtClass3, GBU.text(1, 10));
+		
 		
 		txtPcId.setEditable(false);
+		txtClass1.setReadOnly(true);
+		txtClass2.setReadOnly(true);
+		txtClass3.setReadOnly(true);
+
 		
 		btnRoll.addActionListener(ae ->roll());
 
@@ -157,6 +210,10 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 
 	  ReturnValue<?> validateScreen() {
  
+		  if(!txtClass1.isVisible()) {
+			  new ReturnValue<Object>(true,"You must roll and select a character class!");
+		  }
+		  
 		return new ReturnValue<Object>("");
 	}
 
@@ -167,7 +224,24 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		value.setCharacterName(txtCharacterName.getText()); 
 		value.setPlayerName(txtPlayerName.getText());
 		value.setGender(txtGender.getGender());
-		value.setRaceId((String)txtRace.getSelectedCode());
+		value.setRaceId(((Race)txtRace.getSelectedItem()).getRaceId());
+		CharacterClass c1 = ((CharacterClass)txtClass1.getSelectedItem());
+		CharacterClass c2 = ((CharacterClass)txtClass2.getSelectedItem());
+		CharacterClass c3 = ((CharacterClass)txtClass3.getSelectedItem());
+		
+		value.setFirstClass(c1.getClassId()); 
+		LOGGER.info("first class "+value.getFirstClass() + " c1:"+c1.getClassId());
+		if(!c2.equals(noClass)) {
+			value.setSecondClass(c2.getClassId());
+		} else {
+			value.setSecondClass(null);
+		}
+
+		if(!c3.equals(noClass)) {
+			value.setThirdClass(c3.getClassId());
+		} else {
+			value.setThirdClass(null);
+		}
 		value.setAlignment(txtAlignment.getAlignment());
 
 		value.setAttrStr((Integer)txtAttrStr.getIntegerValue());
@@ -180,6 +254,32 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
  
 	}
 
+
+	  private void selectRace(PComboBox<Race> combo, String raceId) {
+		  combo.setSelectedIndex(0);
+		  if(raceId!=null) {
+			  for(int i=0,n=combo.getItemCount();i<n;i++) {
+				  Race c = combo.getItemAt(i);
+				  if(c.getRaceId().contentEquals(raceId)) {
+					  combo.setSelectedIndex(i);
+					  break;
+				  }
+			  }
+		  }
+	  }
+	  private void selectClass(PComboBox<CharacterClass> combo, String classId) {
+		  combo.setSelectedIndex(0);
+		  if(classId!=null) {
+			  for(int i=0,n=combo.getItemCount();i<n;i++) {
+				  CharacterClass c = combo.getItemAt(i);
+				  if(c.getClassId().contentEquals(classId)) {
+					  combo.setSelectedIndex(i);
+					  break;
+				  }
+			  }
+		  }
+	  }
+	  
 	  void populateScreen(PlayerCharacter value){
 		  int cid = value.getPcId();
 		  if(cid<=0) {
@@ -195,8 +295,12 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		txtCharacterName.setText(value.getCharacterName());  
 		txtPlayerName.setText(value.getPlayerName());
 		txtGender.setGender(value.getGender());
-		txtRace.setSelectedCode(value.getRaceId());
+		selectRace(txtRace,value.getRaceId());
 		txtAlignment.setAlignment(value.getAlignment());
+
+		selectClass(txtClass1,value.getFirstClass());
+		selectClass(txtClass2,value.getSecondClass());
+		selectClass(txtClass3,value.getThirdClass());
 		
 		txtAttrStr.setIntegerValue(value.getAttrStr());
 		txtAttrInt.setIntegerValue(value.getAttrInt());
@@ -248,12 +352,32 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	@Override
 	void populateCombos() { 
 
-		//CodedListService cliDao = (CodedListService)DataMapper.INSTANCE.getNonDataService(CodedListService.class);
+		//CodedListService cliDao = (CodedListService)DataMapper.INSTANCE.getDataService(CodedListService.class);
  
 		RaceService raceService = (RaceService)DataMapper.INSTANCE.getNonDataService(RaceService.class);
-		 
+ 
 		try {
-			txtRace.setList(raceService.getAsCodedList());
+			txtRace.setList(raceService.getList());
+		} catch (SQLException e) {
+			LOGGER.error("Err getting races",e);
+		}
+		
+		CharacterClassService characterClassService = (CharacterClassService)DataMapper.INSTANCE.getNonDataService(CharacterClassService.class);
+		
+		try {
+			
+			List<CharacterClass> classes = characterClassService.getList();
+			
+	 
+			
+			for(int i=0,n=3;i<n;i++){
+				List<CharacterClass> useMe = new ArrayList<>();
+				useMe.add(noClass);
+				useMe.addAll(classes);
+				classCombos[i].setList(useMe);
+				classCombos[i].setSelectedItem(noClass);
+			}
+			
 		} catch (SQLException e) {
 			LOGGER.error("Err getting races",e);
 		}
@@ -266,11 +390,23 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		return new PlayerCharacter();
 	}
 	
- 
-	public ReturnValue<?> initAdd(String instructions){
- 
+	 
+	public ReturnValue<?> initCopy(PlayerCharacter pc,String instructions){ 
+			ReturnValue<?> rv= super.initCopy(pc,instructions);
+			return addOrCopy(rv);
+	}
+	public ReturnValue<?> initAdd(String instructions){ 
 		ReturnValue<?> rv= super.initAdd(instructions);
+		return addOrCopy(rv);
+	}
+
+
+	private ReturnValue<?> addOrCopy(ReturnValue<?> rv) {
 		if(!rv.isError()) {
+			
+			for(int i=0,n=3;i<n;i++){
+				classCombos[i].setVisible(false); 
+			}
 			
 			  {
 					 PlayerCharacterService ccs= (PlayerCharacterService) getDataService();
@@ -302,7 +438,16 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			for(int i=0,n=attCombos.length;i<n;i++) {
 				attCombos[i].setIntegerValue(atts[i]);
 			}
-			cr.getClass();
+			List<CharacterClass> classes = cr.getCharacterClasses();
+			for(int i=0,n=3;i<n;i++){
+				classCombos[i].setVisible(false); 
+				classCombos[i].setSelectedItem(noClass);
+			}
+			for(int i=0,n=classes.size();i<n;i++){
+				classCombos[i].setVisible(true); 
+				classCombos[i].setSelectedItem(classes.get(i)); 
+			}
+			
 		}
 	}
 	

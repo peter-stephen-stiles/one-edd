@@ -60,7 +60,7 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 				ps.execute();
 			}
 			// sequence
-			String s = "CREATE SEQUENCE "+sequenceName;
+			String s = "CREATE SEQUENCE "+sequenceName + " start with 1";
 			try (PreparedStatement ps = con.prepareStatement(s);) {
 				ps.execute();
 			}
@@ -72,9 +72,12 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 					"player_name",
 					"alignment",
 					"race_id",
-					"gender"
+					"gender",
+					"first_class",
+					"second_class",
+					"third_class"
 					};
-			int[] stringLengths = new int[] {255,60,20,20};
+			int[] stringLengths = new int[] {255,60,20,20,20,20,20};
 			DAOUtils.createStrings(con, tableName, newStrings, stringLengths);
 
 		String[] newInts = new String[] { 
@@ -142,6 +145,9 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 		} else {
 			dto.setGender(null);
 		}
+		dto.setFirstClass(rs.getString(col++));
+		dto.setSecondClass(rs.getString(col++));
+		dto.setThirdClass(rs.getString(col++));
 
 		return dto;
 	}
@@ -152,7 +158,7 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 		sql = addKeyFields(sql);
 		sql = addDataFields(sql);
 		sql = sql + ") values ( ";
-		sql = sql + "?,?,?, ?,?,?, ?,?,?, ?,?,? ";
+		sql = sql + "?,?,?, ?,?,?, ?,?,?, ?,?,? ,?,?,?";
 		sql = sql + ")";
 		LOGGER.info("sql is:"+sql);
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -175,7 +181,11 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 					"attr_chr,"+
 					"alignment,"+
 					"race_Id,"+
-					"gender";
+					"gender,"+
+					"first_class,"+
+					"second_class,"+
+					"third_class"
+					;
 		return sql;
 	}
 
@@ -200,7 +210,10 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 		ps.setString(col++, value.getAlignment().name());
 		ps.setString(col++, value.getRaceId());
 		ps.setString(col++, value.getGender().name());
-		
+
+		ps.setString(col++, value.getFirstClass());
+		ps.setString(col++, value.getSecondClass());
+		ps.setString(col++, value.getThirdClass());
 
 		return col;
 	}
@@ -321,7 +334,10 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 				"attr_chr       =?,"+
 				"alignment      =?,"+
 				"race_id        =?,"+
-				"gender         =?"
+				"gender         =?,"+
+				"first_class    =?,"+
+				"second_class   =?,"+
+				"third_class    =?"
 				;
 		return sql;
 	}
