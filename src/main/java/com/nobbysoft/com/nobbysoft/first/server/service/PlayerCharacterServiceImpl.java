@@ -7,6 +7,7 @@ import java.util.List;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.server.dao.PlayerCharacterDAO;
 import com.nobbysoft.com.nobbysoft.first.server.utils.ConnectionManager;
 
@@ -57,6 +58,15 @@ public class PlayerCharacterServiceImpl implements PlayerCharacterService {
 			}
 	}
 
+	
+	@Override
+
+	public List<ViewPlayerCharacter> getViewList(String filter) throws SQLException{
+		try(Connection con = cm.getConnection()){
+			return dao.getViewList(con,filter);
+			}
+	}
+	
 	@Override
 	public void delete(PlayerCharacter value) throws SQLException {
 		try(Connection con = cm.getConnection()){

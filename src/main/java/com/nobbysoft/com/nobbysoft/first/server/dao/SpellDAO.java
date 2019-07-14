@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nobbysoft.com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
@@ -79,6 +80,11 @@ public class SpellDAO implements DAOI<Spell, String> {
 
 	@Override
 	public List<Spell> getList(Connection con) throws SQLException {
+		return getList(con,null);
+	}
+	
+	@Override
+	public List<Spell> getList(Connection con,DTORowListener<Spell> listener) throws SQLException {
 		String sql = "SELECT " +
 				" spell_id,spell_class , level , name , "+
 				" verbal , somatic , material ,"+
@@ -87,6 +93,7 @@ public class SpellDAO implements DAOI<Spell, String> {
 		List<Spell> data = new ArrayList<>();
 		try(PreparedStatement ps = con.prepareStatement(sql)){
 			try(ResultSet rs = ps.executeQuery()){
+				boolean first=true;
 				while(rs.next()){
 					Spell spell = new Spell();
 					int col=1;
@@ -99,8 +106,12 @@ public class SpellDAO implements DAOI<Spell, String> {
 					spell.setMaterial(rs.getBoolean(col++)); 
 					spell.setMaterialComponents(rs.getString(col++));
 					spell.setDescription(rs.getString(col++));
+					if(listener!=null) {
+						listener.hereHaveADTO(spell, first);
+					} else {
 					data.add(spell);
-					
+					}
+					first=false;
 				}
 				
 			}
@@ -109,8 +120,15 @@ public class SpellDAO implements DAOI<Spell, String> {
 		return data;
 	}
 
+
 	@Override
 	public List<Spell> getFilteredList(Connection con, String filter) throws SQLException {
+		return getFilteredList(con,filter,null);
+	}
+	
+	@Override
+	public List<Spell> getFilteredList(Connection con, String filter,
+			DTORowListener<Spell> listener) throws SQLException {
 		if(filter==null||filter.isEmpty()){
 			return getList(con);
 		}
@@ -130,6 +148,7 @@ public class SpellDAO implements DAOI<Spell, String> {
 				ps.setString(2, f); 
 				ps.setString(3, f); 
 			try(ResultSet rs = ps.executeQuery()){
+				boolean first=true;
 				while(rs.next()){
 					Spell spell = new Spell();
 					int col=1;
@@ -142,8 +161,12 @@ public class SpellDAO implements DAOI<Spell, String> {
 					spell.setMaterial(rs.getBoolean(col++)); 
 					spell.setMaterialComponents(rs.getString(col++));
 					spell.setDescription(rs.getString(col++));
-					data.add(spell);
-					
+					if(listener!=null) {
+						listener.hereHaveADTO(spell, first);
+					} else {
+						data.add(spell);
+					}
+					first=false;
 				}
 				
 			}

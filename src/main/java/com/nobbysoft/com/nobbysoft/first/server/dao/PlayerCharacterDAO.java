@@ -7,15 +7,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nobbysoft.com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Alignment;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Gender;
 import com.nobbysoft.com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.server.utils.DbUtils;
 
 public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
@@ -219,31 +223,82 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 	}
 
 	@Override
-	public List<PlayerCharacter> getList(Connection con) throws SQLException {
+	public List<PlayerCharacter> getList(Connection con,
+			DTORowListener<PlayerCharacter> listener) throws SQLException {
+		
 		String sql = "SELECT ";
 		sql = addKeyFields(sql);
 		sql = addDataFields(sql);
 		sql = sql + " FROM Player_Character  ";
 		sql = addOrderByClause(sql);
 		List<PlayerCharacter> data = new ArrayList<>();
+		boolean first=true;
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					PlayerCharacter dto = dtoFromRS(rs);
+					if(listener!=null) {
+						listener.hereHaveADTO(dto, first);
+					} else {
 					data.add(dto);
-
+					}
+					first=false;
 				}
 
 			}
 		}
 
 		return data;
+		
+	}
+	
+	@Override
+	public List<PlayerCharacter> getList(Connection con) throws SQLException {
+		return getList(con,null); 
+	}
+
+	
+	public List<ViewPlayerCharacter> getViewList(Connection con,String filter)throws SQLException{
+
+		CharacterClassDAO ccdao = new CharacterClassDAO();
+		
+		Map<String,CharacterClass> classMap = ccdao.getMap(con);
+		
+		List<ViewPlayerCharacter> data = new ArrayList<>();
+		getFilteredList(con,filter,new DTORowListener<PlayerCharacter> () {
+
+			@Override
+			public void hereHaveADTO(PlayerCharacter dto, boolean first) {
+				ViewPlayerCharacter view = new ViewPlayerCharacter();
+				view.setPlayerCharacter(dto);
+				StringBuilder sb = new StringBuilder();
+				String cn1=classMap.get(dto.getFirstClass()).getDescription();
+				CharacterClass c2=classMap.get(dto.getSecondClass());
+				CharacterClass c3=classMap.get(dto.getThirdClass());
+				sb.append(cn1);
+				if(c2!=null) {
+					sb.append("/").append(c2.getDescription());
+					
+				}
+				if(c3!=null) {
+					sb.append("/").append(c3.getDescription());
+					
+				}
+				view.setClassNames(sb.toString());
+				data.add(view);
+			}
+			
+		});
+		
+		return data;
 	}
 
 	@Override
-	public List<PlayerCharacter> getFilteredList(Connection con, String filter) throws SQLException {
+	public List<PlayerCharacter> getFilteredList(Connection con, String filter,
+			DTORowListener<PlayerCharacter> listener) throws SQLException {
+		
 		if (filter == null || filter.isEmpty()) {
-			return getList(con);
+			return getList(con,listener);
 		}
 		String sql = "SELECT ";
 		sql = addKeyFields(sql);
@@ -256,17 +311,28 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 			String f = "%" + filter + "%";
 			ps.setString(1, f); 
 			ps.setString(2, f); 
+			boolean first=true;
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					PlayerCharacter dto = dtoFromRS(rs);
-					data.add(dto);
-
+					if(listener!=null) {
+						listener.hereHaveADTO(dto, first);
+					} else {
+						data.add(dto);
+					}
+					first = false;
 				}
 
 			}
 		}
 
 		return data;
+	}
+	
+	
+	@Override
+	public List<PlayerCharacter> getFilteredList(Connection con, String filter) throws SQLException {
+		return getFilteredList(con,filter,null);
 	}
 
 	private String addOrderByClause(String sql) {

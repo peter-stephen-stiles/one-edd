@@ -48,6 +48,8 @@ import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
+import com.nobbysoft.com.nobbysoft.first.common.servicei.PlayerCharacterService;
+import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.utils.DataMapper;
 
 public class DataFrameTabCharacters extends PPanel {
@@ -228,14 +230,14 @@ public class DataFrameTabCharacters extends PPanel {
 				if (d != null) {
 					Constructor<DataServiceI> cc = d.getConstructor();
 
-					DataServiceI dao = (DataServiceI) cc.newInstance();
+					PlayerCharacterService service = (PlayerCharacterService) cc.newInstance();
 					clearTable(needNewStructure);
 
 					try {
 
-						List<PlayerCharacter > data = dao.getFilteredList(txtFilter.getText().trim());
+						List<ViewPlayerCharacter > data = service.getViewList(txtFilter.getText().trim());
 						boolean first = true;
-						for (PlayerCharacter  dd : data) {
+						for (ViewPlayerCharacter  dd : data) {
 							if (first) {
 								if (needNewStructure) {
 									columns(dd);
@@ -265,7 +267,7 @@ public class DataFrameTabCharacters extends PPanel {
 	private TableCellRenderer defaultTcr = new PTableCellRenderer();
 	private Map<String, TableCellRenderer> renderers = new HashMap<>(); 
 
-	private void columns(PlayerCharacter  d) {
+	private void columns(ViewPlayerCharacter  d) {
 
 		LOGGER.info("setting columns");
 		tmData.addColumn("");
@@ -345,7 +347,7 @@ public class DataFrameTabCharacters extends PPanel {
 		}
 		if (r >= 0 && r < tblData.getRowCount()) {
 			//
-			PlayerCharacter dto = (PlayerCharacter) tmData.getValueAt(r, 0);
+			PlayerCharacter dto = ((ViewPlayerCharacter) tmData.getValueAt(r, 0)).getPlayerCharacter();
 			if (dto != null) {
 				// get panel for current class and instantiate one
 				Class<?> mpc = PlayerCharacterPanel.class;
@@ -374,7 +376,8 @@ public class DataFrameTabCharacters extends PPanel {
 		int r = tblData.getSelectedRow();
 		if (r >= 0 && r < tblData.getRowCount()) {
 			//
-			PlayerCharacter dto = (PlayerCharacter) tmData.getValueAt(r, 0);
+			PlayerCharacter dto = ((ViewPlayerCharacter) tmData.getValueAt(r, 0)).getPlayerCharacter();
+			
 			if (dto != null) {
 				// now to make character sheet up
 				CharacterSheet sheet = new CharacterSheet(GuiUtils.getParent(this));
@@ -389,7 +392,8 @@ public class DataFrameTabCharacters extends PPanel {
 		int r = tblData.getSelectedRow();
 		if (r >= 0 && r < tblData.getRowCount()) {
 			//
-			PlayerCharacter dto = (PlayerCharacter) tmData.getValueAt(r, 0);
+			PlayerCharacter dto = ((ViewPlayerCharacter) tmData.getValueAt(r, 0)).getPlayerCharacter();
+			
 			if (dto != null) {
 				// get panel for current class and instantiate one
 				Class<?> mpc = PlayerCharacterPanel.class;
@@ -425,7 +429,8 @@ public class DataFrameTabCharacters extends PPanel {
 		}
 		if (r >= 0 && r < tblData.getRowCount()) {
 			//
-			PlayerCharacter dto = (PlayerCharacter) tmData.getValueAt(r, 0);
+			PlayerCharacter dto = ((ViewPlayerCharacter) tmData.getValueAt(r, 0)).getPlayerCharacter();
+			
 			if (dto != null) {
 				// get panel for current class and instantiate one
 				Class<?> mpc = PlayerCharacterPanel.class;

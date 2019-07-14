@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nobbysoft.com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.RaceClassLimitKey;
 import com.nobbysoft.com.nobbysoft.first.common.exceptions.RecordNotFoundException;
@@ -135,8 +136,15 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 		}
 	}
 
+
+
 	@Override
 	public List<RaceClassLimit> getList(Connection con) throws SQLException {
+		return getList(con,null);
+	}
+	
+	@Override
+	public List<RaceClassLimit> getList(Connection con,DTORowListener<RaceClassLimit> listener) throws SQLException {
 		String sql = "SELECT t0.race_id, t0.class_id ,t0.max_level , t0.limiting_factors,t0.npc_class_only "+
 	",t0.max_level_pr_eq_17, t0.max_level_pr_lt_17"+
 	            " FROM Race_Class_Limit t0 "+
@@ -147,6 +155,7 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 		 List<RaceClassLimit> list = new ArrayList<>();
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			try(ResultSet rs = ps.executeQuery()){
+				boolean first=true;
 				while(rs.next()) {
 					RaceClassLimit dto = new RaceClassLimit();
 					int col=1;
@@ -157,7 +166,12 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 					dto.setNpcClassOnly(rs.getBoolean(col++));
 					dto.setMaxLevelPrEq17(rs.getInt(col++));
 					dto.setMaxLevelPrLt17(rs.getInt(col++));
-					list.add(dto);
+					if(listener!=null) {
+						listener.hereHaveADTO(dto, first);
+					} else {
+						list.add(dto);
+					}
+					first=false;
 				}
 			}
 		}
@@ -166,6 +180,12 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 
 	@Override
 	public List<RaceClassLimit> getFilteredList(Connection con, String filter) throws SQLException {
+		return getFilteredList(con,filter,null);
+	}
+	
+	@Override
+	public List<RaceClassLimit> getFilteredList(Connection con, String filter,
+			DTORowListener listener) throws SQLException {
 		if (filter == null || filter.isEmpty()) {
 			return getList(con);
 		}
@@ -185,6 +205,7 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 			ps.setString(2, f);
 			
 			try(ResultSet rs = ps.executeQuery()){
+				boolean first=true;
 				while(rs.next()) {
 					RaceClassLimit dto = new RaceClassLimit();
 					int col=1;
@@ -195,7 +216,12 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 					dto.setNpcClassOnly(rs.getBoolean(col++));
 					dto.setMaxLevelPrEq17(rs.getInt(col++));
 					dto.setMaxLevelPrLt17(rs.getInt(col++));
-					list.add(dto);
+					if(listener!=null) {
+						listener.hereHaveADTO(dto, first);
+					} else {
+						list.add(dto);
+					}
+					first=false;
 				}
 			}
 		}

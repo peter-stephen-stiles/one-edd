@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nobbysoft.com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.com.nobbysoft.first.common.exceptions.RecordNotFoundException;
@@ -195,8 +196,14 @@ public class RaceDAO implements DAOI<Race, String> {
 
 	}
 
+
 	@Override
 	public List<Race> getList(Connection con) throws SQLException {
+		return getList(con,null);
+	}
+	
+	@Override
+	public List<Race> getList(Connection con,DTORowListener<Race> listener) throws SQLException {
 		String sql = "SELECT " + " race_id, name ," + " has_magic_defence_bonus, multi_classable," +
 				"min_male_str, max_male_str, min_female_str, max_female_str, min_male_int, max_male_int," +
 				"min_female_int, max_female_int, min_male_wis, max_male_wis, min_female_wis, max_female_wis," + 
@@ -207,6 +214,7 @@ public class RaceDAO implements DAOI<Race, String> {
 		List<Race> data = new ArrayList<>();
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			try (ResultSet rs = ps.executeQuery()) {
+				boolean first = true;
 				while (rs.next()) {
 					Race dto = new Race();
 					int col = 1;
@@ -247,7 +255,12 @@ public class RaceDAO implements DAOI<Race, String> {
 					dto.setBonusCon(rs.getInt(col++));
 					dto.setBonusChr(rs.getInt(col++));
 					
+					if(listener!=null) {
+						listener.hereHaveADTO(dto, first);
+					} else {
 					data.add(dto);
+					}
+					first=false;
 
 				}
 
@@ -259,6 +272,12 @@ public class RaceDAO implements DAOI<Race, String> {
 
 	@Override
 	public List<Race> getFilteredList(Connection con, String filter) throws SQLException {
+		return getFilteredList(con,filter,null);
+	}
+	
+	@Override
+	public List<Race> getFilteredList(Connection con, String filter,
+			DTORowListener<Race> listener) throws SQLException {
 		if (filter == null || filter.isEmpty()) {
 			return getList(con);
 		}
@@ -276,6 +295,7 @@ public class RaceDAO implements DAOI<Race, String> {
 			ps.setString(1, f.toUpperCase());
 			ps.setString(2, f);
 			try (ResultSet rs = ps.executeQuery()) {
+				boolean first=true;
 				while (rs.next()) {
 					Race dto = new Race();
 					int col = 1;
@@ -315,8 +335,12 @@ public class RaceDAO implements DAOI<Race, String> {
 					dto.setBonusDex(rs.getInt(col++));
 					dto.setBonusCon(rs.getInt(col++));
 					dto.setBonusChr(rs.getInt(col++));
+					if(listener!=null) {
+						listener.hereHaveADTO(dto, first);
+					} else {
 					data.add(dto);
-
+					}
+					first=false;
 				}
 
 			}

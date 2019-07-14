@@ -6,11 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nobbysoft.com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
@@ -197,19 +200,43 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		return col;
 	}
 
+ 
+	public Map<String,CharacterClass> getMap(Connection con) throws SQLException {
+		 Map<String,CharacterClass> map = new HashMap<>();
+		 getList(con,new DTORowListener<CharacterClass>() {
+			@Override
+			public void hereHaveADTO(CharacterClass dto, boolean first) {
+				map.put(dto.getClassId(), dto);
+			} 
+		 });
+		 return map;
+	}
+	
+
 	@Override
 	public List<CharacterClass> getList(Connection con) throws SQLException {
+	return getList(con,null);
+	}
+	
+	@Override
+	public List<CharacterClass> getList(Connection con,DTORowListener<CharacterClass> listener) throws SQLException {
 		String sql = "SELECT ";
 		sql = addKeyFields(sql);
 		sql = addDataFIelds(sql);
 		sql = sql + " FROM Character_Class  ";
 		sql = addOrderByClause(sql);
 		List<CharacterClass> data = new ArrayList<>();
+		boolean first = true;
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					CharacterClass dto = dtoFromRS(rs);
-					data.add(dto);
+					if(listener!=null) {
+						listener.hereHaveADTO(dto,first);
+					} else {
+						data.add(dto);
+					}
+					first = false;
 
 				}
 
@@ -218,9 +245,17 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 
 		return data;
 	}
-
+//,DTORowListener<CharacterClass> listener
 	@Override
 	public List<CharacterClass> getFilteredList(Connection con, String filter) throws SQLException {
+		
+		return getFilteredList(con,filter,null);
+	}
+	
+	
+	@Override
+	public List<CharacterClass> getFilteredList(Connection con, String filter
+			,DTORowListener<CharacterClass> listener) throws SQLException {
 		if (filter == null || filter.isEmpty()) {
 			return getList(con);
 		}
@@ -236,10 +271,15 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 			ps.setString(1, f.toUpperCase());
 			ps.setString(2, f);
 			try (ResultSet rs = ps.executeQuery()) {
+				boolean first=true;
 				while (rs.next()) {
 					CharacterClass dto = dtoFromRS(rs);
-					data.add(dto);
-
+					if(listener!=null) {
+					listener.hereHaveADTO(dto,first);
+					} else {
+						data.add(dto);
+					}
+						first=false;
 				}
 
 			}
