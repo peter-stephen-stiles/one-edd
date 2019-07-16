@@ -57,6 +57,9 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 	private final PIntegerCombo txtHpAfterNameLevel = new PIntegerCombo(0,5);
 	private final PCheckBox cbxMasterSpellClass = new PCheckBox("Is a master spell class?");
 
+
+	private final PCheckBox cbxHighConBonus = new PCheckBox("Has high con bonus?");
+	
 	private final PComboBox<CodedListItem<String>> txtParentClass = new PComboBox<>();
 	
 	private final PComboBox<CodedListItem<Integer>> txtMinStr = new PComboBox<>();
@@ -94,7 +97,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 	private PDataComponent[] dataComponents = new PDataComponent[] {  txtName,txtHitDice, txtHitDiceAtFirstLevel,txtMaxHdLevel,txtHpAfterNameLevel,cbxMasterSpellClass,txtParentClass,
 			txtMinStr,txtMinInt,txtMinWis,txtMinDex,txtMinCon,txtMinChr,txtPrimeRequisite1,
 			txtPrimeRequisite2,txtPrimeRequisite3,
-			txtXpBonusPercent, txtProficienciesAtFirstLevel, txtNonProficiencyPenalty, txtNewProficiencyEveryXLevels
+			txtXpBonusPercent, txtProficienciesAtFirstLevel, txtNonProficiencyPenalty, txtNewProficiencyEveryXLevels,cbxHighConBonus
 			 };
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtCharacterClassId };
 	private PDataComponent[] buttonComponents = new PDataComponent[] {  };
@@ -127,6 +130,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		 txtProficienciesAtFirstLevel.setName("Initial number of weapons"); 
 		 txtNonProficiencyPenalty.setName("Non-proficiency penalty");
 		 txtNewProficiencyEveryXLevels.setName("Added prof/level");
+		 cbxHighConBonus.setName("Has high con bonus");
 		 
 		PLabel lblCharacterClassId = new PLabel(txtCharacterClassId.getName()); 
 		PLabel lblCharacterClassName = new PLabel(txtName.getName()); 
@@ -182,42 +186,51 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		
 		
 
-		add(getLblInstructions(), GBU.text(0, 0, 2));
-		add(pnlLeft,GBU.panel(0, 1));
-		add(pnlRight,GBU.panel(1, 1));
 		
-		pnlLeft.add(lblCharacterClassId, GBU.label(0, 1));
-		pnlLeft.add(txtCharacterClassId, GBU.text(1, 1)); 
-
-		pnlLeft.add(lblCharacterClassName, GBU.label(0, 2));
-		pnlLeft.add(txtName, GBU.text(1, 2));
-
-		pnlLeft.add(lblHitDice, GBU.label(0, 3));
-		pnlLeft.add(txtHitDice, GBU.text(1, 3));
-		pnlLeft.add(lblHitDiceAtFirstLevel, GBU.label(0, 4));
-		pnlLeft.add(txtHitDiceAtFirstLevel, GBU.text(1, 4));
-
-		pnlLeft.add(lblMaxHdLevel, GBU.label(0,5));
-		pnlLeft.add(txtMaxHdLevel, GBU.text(1, 5));
-
-		pnlLeft.add(lblHpAfterNameLevel, GBU.label(0,6));
-		pnlLeft.add(txtHpAfterNameLevel, GBU.text(1, 6));
+		int row=0;
 		
+		add(getLblInstructions(), GBU.text(0, row, 2));
 		
-		pnlLeft.add(cbxMasterSpellClass, GBU.text(1, 7));
+		row++;
+		add(pnlLeft,GBU.panel(0, row));
+		add(pnlRight,GBU.panel(1, row));
 		
-
-		pnlLeft.add(lblParentClass, GBU.label(0,8));
-		pnlLeft.add(txtParentClass, GBU.text(1,8));
-
-		pnlLeft.add(lblProficienciesAtFirstLevel, GBU.label(0,9));
-		pnlLeft.add(txtProficienciesAtFirstLevel, GBU.text(1,9));
-
-		pnlLeft.add(lblNonProficiencyPenalty, GBU.label(0,10));
-		pnlLeft.add(txtNonProficiencyPenalty, GBU.text(1,10));
-
-		pnlLeft.add(lblNewProficiencyEveryXLevels, GBU.label(0,11));
-		pnlLeft.add(txtNewProficiencyEveryXLevels, GBU.text(1,11));
+		row++;
+		pnlLeft.add(lblCharacterClassId, GBU.label(0, row));
+		pnlLeft.add(txtCharacterClassId, GBU.text(1, row)); 
+		row++;
+		pnlLeft.add(lblCharacterClassName, GBU.label(0, row));
+		pnlLeft.add(txtName, GBU.text(1, row));
+		row++;
+		pnlLeft.add(lblHitDice, GBU.label(0, row));
+		pnlLeft.add(txtHitDice, GBU.text(1, row));
+		row++;
+		pnlLeft.add(lblHitDiceAtFirstLevel, GBU.label(0, row));
+		pnlLeft.add(txtHitDiceAtFirstLevel, GBU.text(1, row));
+		row++;
+		pnlLeft.add(lblMaxHdLevel, GBU.label(0,row));
+		pnlLeft.add(txtMaxHdLevel, GBU.text(1, row));
+		row++;
+		pnlLeft.add(lblHpAfterNameLevel, GBU.label(0,row));
+		pnlLeft.add(txtHpAfterNameLevel, GBU.text(1, row));
+		
+		row++;
+		pnlLeft.add(cbxMasterSpellClass, GBU.text(1, row));
+		row++;
+		pnlLeft.add(cbxHighConBonus, GBU.text(1, row));
+		
+		row++;
+		pnlLeft.add(lblParentClass, GBU.label(0,row));
+		pnlLeft.add(txtParentClass, GBU.text(1,row));
+		row++;
+		pnlLeft.add(lblProficienciesAtFirstLevel, GBU.label(0,row));
+		pnlLeft.add(txtProficienciesAtFirstLevel, GBU.text(1,row));
+		row++;
+		pnlLeft.add(lblNonProficiencyPenalty, GBU.label(0,row));
+		pnlLeft.add(txtNonProficiencyPenalty, GBU.text(1,row));
+		row++;
+		pnlLeft.add(lblNewProficiencyEveryXLevels, GBU.label(0,row));
+		pnlLeft.add(txtNewProficiencyEveryXLevels, GBU.text(1,row));
 
 		
 
@@ -317,6 +330,8 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		value.setNonProficiencyPenalty(txtNonProficiencyPenalty.getIntegerValue());
 		value.setNewProficiencyEveryXLevels(txtNewProficiencyEveryXLevels.getIntegerValue());
 		
+		value.setHighConBonus(cbxHighConBonus.isSelected());
+		
 	}
 
 	  void populateScreen(CharacterClass value){
@@ -339,16 +354,12 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		txtPrimeRequisite3.setSelectedCode(value.getPrimeRequisite3());
 //
 		txtXpBonusPercent.setIntegerValue(value.getXpBonusPercent());
-		/*
-
-		int inw =	txtProficienciesAtFirstLevel.getIntegerValue();
-		int npp=	txtNonProficiencyPenalty.getIntegerValue();
-		int npexl=	txtNewProficiencyEveryXLevels.getIntegerValue();
-		 */
 
 		txtProficienciesAtFirstLevel.setIntegerValue(value.getProficienciesAtFirstLevel());
 		txtNonProficiencyPenalty.setIntegerValue(value.getNonProficiencyPenalty());
 		txtNewProficiencyEveryXLevels.setIntegerValue(value.getNewProficiencyEveryXLevels());
+		
+		cbxHighConBonus.setSelected(value.isHighConBonus());
 	}
 
 

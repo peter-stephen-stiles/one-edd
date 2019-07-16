@@ -3,35 +3,36 @@ package com.nobbysoft.com.nobbysoft.first.utils;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.CharacterClassButtons;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.CharacterClassPanel;
+import com.nobbysoft.com.nobbysoft.first.client.data.panels.ConstitutionPanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.PlayerCharacterPanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.RaceClassLimitPanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.RacePanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.SpellPanel;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Constitution;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.CodedListService;
+import com.nobbysoft.com.nobbysoft.first.common.servicei.ConstitutionService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.RaceClassLimitService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.RaceService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.SpellService;
 import com.nobbysoft.com.nobbysoft.first.server.dao.CharacterClassDAO;
+import com.nobbysoft.com.nobbysoft.first.server.dao.ConstitutionDAO;
 import com.nobbysoft.com.nobbysoft.first.server.dao.DAOI;
 import com.nobbysoft.com.nobbysoft.first.server.dao.PlayerCharacterDAO;
 import com.nobbysoft.com.nobbysoft.first.server.dao.RaceClassLimitDAO;
@@ -39,6 +40,7 @@ import com.nobbysoft.com.nobbysoft.first.server.dao.RaceDAO;
 import com.nobbysoft.com.nobbysoft.first.server.dao.SpellDAO;
 import com.nobbysoft.com.nobbysoft.first.server.service.CharacterClassServiceImpl;
 import com.nobbysoft.com.nobbysoft.first.server.service.CodedListServiceImpl;
+import com.nobbysoft.com.nobbysoft.first.server.service.ConstitutionServiceImpl;
 import com.nobbysoft.com.nobbysoft.first.server.service.PlayerCharacterServiceImpl;
 import com.nobbysoft.com.nobbysoft.first.server.service.RaceClassLimitServiceImpl;
 import com.nobbysoft.com.nobbysoft.first.server.service.RaceServiceImpl;
@@ -94,18 +96,24 @@ public enum DataMapper {
 		daoimap.put(Race.class, RaceDAO.class);
 		daoimap.put(CharacterClass.class, CharacterClassDAO.class);
 		daoimap.put(RaceClassLimit.class, RaceClassLimitDAO.class);
+		daoimap.put(Constitution.class,ConstitutionDAO.class);
 
+		
+		
 		panels.put(PlayerCharacter.class,PlayerCharacterPanel.class);
 		panels.put(Spell.class,SpellPanel.class);
 		panels.put(Race.class,RacePanel.class);
 		panels.put(CharacterClass.class,CharacterClassPanel.class);
 		panels.put(RaceClassLimit.class, RaceClassLimitPanel.class);
+		panels.put(Constitution.class, ConstitutionPanel.class);
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
 		entityservicemap.put(CharacterClass.class, CharacterClassService.class);
 		entityservicemap.put(Spell.class, SpellService.class);
 		entityservicemap.put(Race.class, RaceService.class);
-		entityservicemap.put(RaceClassLimit.class, RaceClassLimitService.class); 
+		entityservicemap.put(RaceClassLimit.class, RaceClassLimitService.class);
+		entityservicemap.put(Constitution.class, ConstitutionService.class);
+		
 		
 
 		servicemap.put(PlayerCharacterService.class, PlayerCharacterServiceImpl.class);
@@ -113,8 +121,13 @@ public enum DataMapper {
 		servicemap.put(SpellService.class, SpellServiceImpl.class);
 		servicemap.put(RaceService.class, RaceServiceImpl.class);
 		servicemap.put(RaceClassLimitService.class, RaceClassLimitServiceImpl.class);
-		servicemap.put(CodedListService.class, CodedListServiceImpl.class); 
+		servicemap.put(CodedListService.class, CodedListServiceImpl.class);
+
+		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);
+		
+		
 	}
+	
 	
 	public Class<?> getServiceForInterface(Class<?> clazz){
 		return servicemap.get(clazz);
@@ -153,6 +166,7 @@ public enum DataMapper {
 			RaceDAO.class,
 			CharacterClassDAO.class,
 			RaceClassLimitDAO.class,
+			ConstitutionDAO.class,
 		};
 	}
 

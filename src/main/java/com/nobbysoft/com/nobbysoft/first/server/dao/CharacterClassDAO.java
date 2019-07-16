@@ -87,6 +87,12 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 				}
 			}
 		}
+		
+		
+		{
+			String[] newBoos = new String[] {"high_con_bonus"};
+			DAOUtils.createBooleans(con, tableName, newBoos);
+		}
 
 	}
 
@@ -97,7 +103,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		sql = sql
 				+ "name ,hit_dice, hit_dice_at_first_level,max_hd_level, master_spell_class, parent_class_id,hp_after_name_level, "
 				+ "min_str,min_int,min_wis,min_dex,min_con,min_chr, prime_requisite_1,prime_requisite_2,prime_requisite_3,xp_bonus_percent,"+
-				"pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, new_proficiency_every_x_levels";
+				"pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, new_proficiency_every_x_levels,high_con_bonus";
 		sql = sql + " FROM Character_Class  WHERE ";
 		sql = addKeyColumnsForUpdate(sql);
 		//sql = sql + " class_id = ? ";
@@ -142,6 +148,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		dto.setProficienciesAtFirstLevel(rs.getInt(col++));
 		dto.setNonProficiencyPenalty(rs.getInt(col++));
 		dto.setNewProficiencyEveryXLevels(rs.getInt(col++));
+		dto.setHighConBonus(rs.getBoolean(col++));
 		return dto;
 	}
 
@@ -151,7 +158,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		sql = addKeyFields(sql);
 		sql = addDataFIelds(sql);
 		sql = sql + ") values ( ";
-		sql = sql + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ";
+		sql = sql + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ";
 		sql = sql + ")";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			int col = 1;
@@ -166,7 +173,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		sql = sql
 				+ "name ,hit_dice, hit_dice_at_first_level,max_hd_level, master_spell_class,parent_class_id,hp_after_name_level , "
 				+ "min_str,min_int,min_wis,min_dex,min_con,min_chr, prime_requisite_1,prime_requisite_2,prime_requisite_3,"
-				+ "xp_bonus_percent,pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, new_proficiency_every_x_levels";
+				+ "xp_bonus_percent,pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, new_proficiency_every_x_levels,high_con_bonus";
 		return sql;
 	}
 
@@ -197,6 +204,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		ps.setInt(col++, value.getProficienciesAtFirstLevel());
 		ps.setInt(col++, value.getNonProficiencyPenalty());
 		ps.setInt(col++, value.getNewProficiencyEveryXLevels());
+		ps.setBoolean(col++, value.isHighConBonus());
 		return col;
 	}
 
@@ -344,7 +352,8 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 				+ " min_int = ?," + " min_wis = ?," + " min_dex = ?," + " min_con = ?," + " min_chr = ?,"
 				+ " prime_requisite_1 = ?," + " prime_requisite_2 = ?," + " prime_requisite_3 = ?,"
 				+ " xp_bonus_percent = ?," + " pr_value_for_xp_bonus = ?,"+
-				"proficiencies_at_first_level = ?," + "non_proficiency_penalty = ?,"+ "new_proficiency_every_x_levels = ?";
+				"proficiencies_at_first_level = ?," + "non_proficiency_penalty = ?,"+ "new_proficiency_every_x_levels = ?,"
+				+"high_con_bonus = ?";
 		return sql;
 	}
 

@@ -67,10 +67,7 @@ public class CharacterRoller extends PDialog {
 	
 	
 	private Preferences  prefs =Utils.getPrefs(CharacterRoller.class);
-	/*
-	 * 			String gender = (String) cbxGender.getSelectedCode();
-			if (Gender.MALE.name().equalsIgnoreCase(gender)) {
-	 */
+ 
 	private void savePrefs() {
 		prefs.put("method", ((METHOD)cbxMethod.getSelectedItem()).name());
 		prefs.put("gender", (String) cbxGender.getSelectedCode());
@@ -807,6 +804,12 @@ public class CharacterRoller extends PDialog {
 	}
 	public List<CharacterClass> getCharacterClasses() {
 		return txtClasses.getSelectedValuesList();
+	}
+	public List<Integer> getHitPoints(){
+		List<Integer> hps = new ArrayList<Integer>();
+		
+		
+		return hps;
 	}
 
 	public boolean isCancelled() {

@@ -23,11 +23,16 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 	private int minCon;
 	private int minChr;
 	private int proficienciesAtFirstLevel;
+	
+
+	private boolean highConBonus;
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((classId == null) ? 0 : classId.hashCode());
+		result = prime * result + (highConBonus ? 1231 : 1237);
 		result = prime * result + hitDice;
 		result = prime * result + hitDiceAtFirstLevel;
 		result = prime * result + hpAfterNameLevel;
@@ -65,6 +70,8 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 			if (other.classId != null)
 				return false;
 		} else if (!classId.equals(other.classId))
+			return false;
+		if (highConBonus != other.highConBonus)
 			return false;
 		if (hitDice != other.hitDice)
 			return false;
@@ -348,4 +355,12 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
      public String toString() {
     	 return name;
      }
+
+	public boolean isHighConBonus() {
+		return highConBonus;
+	}
+
+	public void setHighConBonus(boolean highConBonus) {
+		this.highConBonus = highConBonus;
+	}
 }
