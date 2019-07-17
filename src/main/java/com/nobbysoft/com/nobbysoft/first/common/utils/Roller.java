@@ -3,7 +3,7 @@ package com.nobbysoft.com.nobbysoft.first.common.utils;
 import java.util.Random;
 
 public class Roller {
-
+ 
 	public enum DICE{
 		D3(3,"d3"),
 		D4(4,"d4"),

@@ -14,6 +14,10 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,11 +54,14 @@ import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.com.nobbysoft.first.client.utils.Utils;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Attribute;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Constitution;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Gender;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.RaceClassLimitKey;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.CharacterClassService;
+import com.nobbysoft.com.nobbysoft.first.common.servicei.ConstitutionService;
+import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.RaceClassLimitService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.RaceService;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
@@ -212,7 +219,26 @@ public class CharacterRoller extends PDialog {
 	private PButton btnAccept;
 	
 	private List<PButton> upsAndDowns = new ArrayList<>();
+	
+	private PLabel lblHp1 = new PLabel("Hp for");
+	private PLabel lblHp2 = new PLabel("Hp for");
+	private PLabel lblHp3 = new PLabel("Hp for");
+	private PLabel lblClass1 = new PLabel("");
+	private PLabel lblClass2 = new PLabel("");
+	private PLabel lblClass3 = new PLabel("");
 
+	private PIntegerField txtHp1 = new PIntegerField();
+	private PIntegerField txtHp2 = new PIntegerField();
+	private PIntegerField txtHp3 = new PIntegerField();
+
+	private PLabel[] lblClasses = new PLabel[] {
+			lblClass1,lblClass2,lblClass3
+	};
+	
+	private PIntegerField[] txtHps = new PIntegerField[] {
+			txtHp1,txtHp2,txtHp3
+	};
+	
 	private void jbInit() {
 
 		txtClasses.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -405,6 +431,20 @@ public class CharacterRoller extends PDialog {
 
 		});
 
+		txtHp1.setReadOnly(true);
+		txtHp2.setReadOnly(true);
+		txtHp3.setReadOnly(true);
+		
+		pnlMiddle.add(lblHp1,GBU.label(0,20));
+		pnlMiddle.add(lblClass1,GBU.label(1,20));
+		pnlMiddle.add(txtHp1,GBU.text(2,20));
+		pnlMiddle.add(lblHp2,GBU.label(0,21));
+		pnlMiddle.add(lblClass2,GBU.label(1,21));
+		pnlMiddle.add(txtHp2,GBU.text(2,21));
+		pnlMiddle.add(lblHp3,GBU.label(0,22));
+		pnlMiddle.add(lblClass3,GBU.label(1,22));
+		pnlMiddle.add(txtHp3,GBU.text(2,22));
+		
 		pnlMiddle.add(new PLabel(""), GBU.label(99, 99));
 
 	}
@@ -497,6 +537,34 @@ public class CharacterRoller extends PDialog {
 
 	}
 
+	
+	DataServiceI<?, ?> getDataService() {
+		DataServiceI dao;
+		try {
+		Class d = DataMapper.INSTANCE.getServiceForEntity(Constitution.class); 
+			Constructor<DataServiceI> cc = d.getConstructor();
+				dao = (DataServiceI) cc.newInstance();
+			} catch (Exception e) {
+				throw new IllegalStateException("Can't get Service for "+Constitution.class);
+			}
+		return dao;
+	}
+	
+	private Map<Integer,Constitution> conMap = new HashMap<>();
+	{
+		ConstitutionService cs = (ConstitutionService) getDataService();
+		List<Constitution> l;
+		try {
+			l = cs.getList();
+			for(Constitution c:l) {
+				conMap.put(c.getKey(), c);
+			}
+		} catch (SQLException e) {
+			LOGGER.error("error getting cons",e);
+		}
+
+	}
+	
 	private void populateCombos() {
 
 		cbxGender.addItem("Male");
@@ -553,11 +621,22 @@ public class CharacterRoller extends PDialog {
 
 	private void determineXpBonus() {
 		//
+		
+		lblClass1.setText("");
+		lblClass2.setText("");
+		lblClass3.setText("");
+		txtHp1.setText("");
+		txtHp2.setText("");
+		txtHp3.setText("");
+		
 		String text = "";
 		try {
 			boolean allGood=true;
 			boolean anySelected=false;
-			for(CharacterClass cclass:txtClasses.getSelectedValuesList()){ 
+			int classIndex = 0;
+			List<CharacterClass> classes =txtClasses.getSelectedValuesList();
+			double countClasses = classes.size();
+			for(CharacterClass cclass:classes){ 
 				anySelected=true;
 				int pr1 = cclass.getPrimeRequisite1() - 1;
 				int pr2 = cclass.getPrimeRequisite2() - 1;
@@ -590,6 +669,30 @@ public class CharacterRoller extends PDialog {
 						
 
 				}
+				if(classIndex<3) {
+					lblClasses[classIndex].setText(cclass.getName());
+					Constitution con = conMap.get(txtTotalCon.getIntegerValue());
+					int cbonus = 0;
+					if(cclass.isHighConBonus()) {
+						cbonus=con.getHitPointAdjustmentHigh();
+					} else {
+						cbonus=con.getHitPointAdjustment();
+					}
+					DICE d = Roller.getDICE( cclass.getHitDice());
+					int roll = Roller.roll(d, cclass.getHitDiceAtFirstLevel(), cbonus, 0);
+					// divide by by number of classes
+					if(countClasses>1) {
+						BigDecimal rollBD = new BigDecimal(""+roll);
+						BigDecimal countBD = new BigDecimal(""+countClasses);
+						LOGGER.info("roll "+rollBD+ " count:"+countBD);
+						BigDecimal res = rollBD.divide(countBD,new MathContext(5,RoundingMode.CEILING));
+						LOGGER.info("roll "+rollBD+ " count:"+countBD+" res:"+res);
+						roll = res.setScale(0, RoundingMode.HALF_UP).intValue();
+						
+					}
+					txtHps[classIndex].setIntegerValue(roll);
+				}
+				classIndex++;
 			}
 			if (anySelected && allGood) {
 				text = "10% xp bonus";
@@ -806,8 +909,16 @@ public class CharacterRoller extends PDialog {
 		return txtClasses.getSelectedValuesList();
 	}
 	public List<Integer> getHitPoints(){
+		int count= txtClasses.getSelectedValuesList().size();
 		List<Integer> hps = new ArrayList<Integer>();
-		
+		hps.add(txtHp1.getIntegerValue());
+		if(count>1) {
+			hps.add(txtHp2.getIntegerValue());
+			if(count>2) {
+				hps.add(txtHp3.getIntegerValue());
+			}
+
+		}
 		
 		return hps;
 	}

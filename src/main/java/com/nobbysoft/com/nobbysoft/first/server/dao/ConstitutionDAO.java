@@ -17,8 +17,7 @@ public class ConstitutionDAO extends AbstractDAO<Constitution, Integer> implemen
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-	private String tableName = "Constitution";
-	private String sequenceName = tableName + "_seq";
+	private String tableName = "Constitution"; 
 
 	public ConstitutionDAO() {
 
