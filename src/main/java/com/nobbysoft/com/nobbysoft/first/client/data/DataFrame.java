@@ -71,7 +71,7 @@ public class DataFrame extends JFrame {
 
 	public Dimension getPreferredSize() {
 		return ps;
-	}
+	} 
 
 
 
@@ -88,9 +88,9 @@ public class DataFrame extends JFrame {
 		pnlTabs.setFont(GuiUtils.getHeaderFont());
 		
 		DataFrameTabData pnlStaticData = new DataFrameTabData();
-		DataFrameTabCharacters pnlCharacters = new DataFrameTabCharacters();
-		pnlTabs.addTab("Static data", pnlStaticData);
+		DataFrameTabCharacters pnlCharacters = new DataFrameTabCharacters();		
 		pnlTabs.addTab("Characters", pnlCharacters);
+		pnlTabs.addTab("Static data", pnlStaticData);
 
 		add(pnlTabs,BorderLayout.CENTER);
 		add(pnlBottomButtons, BorderLayout.SOUTH);

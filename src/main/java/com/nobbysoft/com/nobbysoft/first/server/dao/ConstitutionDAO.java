@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Constitution;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.com.nobbysoft.first.server.utils.DbUtils;
 

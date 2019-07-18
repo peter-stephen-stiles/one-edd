@@ -1,8 +1,9 @@
-package com.nobbysoft.com.nobbysoft.first.common.entities.staticdto;
+package com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.attributes;
 
 import java.io.Serializable;
 
 import com.nobbysoft.com.nobbysoft.first.common.entities.DataDTOInterface;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.AbilityScoreI;
 
 public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Serializable, DataDTOInterface<Integer>{
 

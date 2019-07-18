@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Constitution;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.ConstitutionService;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.com.nobbysoft.first.server.dao.ConstitutionDAO;

@@ -13,7 +13,7 @@ import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
-import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Constitution;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.com.nobbysoft.first.utils.DataMapper;
