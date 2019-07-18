@@ -22,6 +22,7 @@ import com.nobbysoft.com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboAlignment;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboGender;
+import com.nobbysoft.com.nobbysoft.first.client.components.special.PExceptionalStrength;
 import com.nobbysoft.com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
@@ -84,12 +85,18 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private final PIntegerField[] hpValuesLabels = new PIntegerField[]{txtClassHp1,txtClassHp2,txtClassHp3};
 	private final PComboBox<Race> txtRace = new PComboBox<>();
   
+	private final PExceptionalStrength txtExceptionalStrength = new PExceptionalStrength() ;
+	
 	private final PIntegerCombo txtAttrStr = new PIntegerCombo();
 	private final PIntegerCombo txtAttrInt = new PIntegerCombo();
 	private final PIntegerCombo txtAttrWis = new PIntegerCombo();
 	private final PIntegerCombo txtAttrDex = new PIntegerCombo();
 	private final PIntegerCombo txtAttrCon = new PIntegerCombo();
 	private final PIntegerCombo txtAttrChr = new PIntegerCombo(); 
+	
+	
+	
+	
 	
 	private PButton btnRoll = new PButton("Roll") {
 		public Dimension getPreferredSize() {
@@ -109,16 +116,27 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		txtAttrStr,txtAttrInt,txtAttrWis,txtAttrDex,txtAttrCon,txtAttrChr
 	};
 	 	
-	private PDataComponent[] dataComponents = new PDataComponent[] {  txtCharacterName,txtPlayerName,
-			txtAttrStr,txtAttrInt,txtAttrWis,txtAttrDex,txtAttrCon,txtAttrChr,txtAlignment
+	private PDataComponent[] dataComponents = new PDataComponent[] {  txtCharacterName,
+			txtPlayerName,
+			txtAlignment
 			 };
-	private PDataComponent[] keyComponents = new PDataComponent[] { btnRoll};//txtPcId };
+	private PDataComponent[] keyComponents = new PDataComponent[] { btnRoll,txtGender,txtRace};//txtPcId };
 	private PDataComponent[] buttonComponents = new PDataComponent[] {  };
 
 	private PDataComponent[] mandatoryComponents = new PDataComponent[] { 
 			txtPcId,  
 			txtCharacterName };
 
+	
+	
+	
+	private PDataComponent[] disableThese = new PDataComponent[] {
+		txtAttrStr,txtAttrInt,txtAttrWis,txtAttrDex,txtAttrCon,txtAttrChr,
+		txtExceptionalStrength,
+		txtClass1,		txtClass2,		txtClass3,
+		txtClassLevel1,txtClassLevel2,txtClassLevel3,
+		txtClassHp1,txtClassHp2,txtClassHp3,txtClassHpTotal
+		};
   
 
 	public void jbInit() {
@@ -172,6 +190,9 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 		pnlRight.add(lblMinStr, GBU.label(0, 1));
 		pnlRight.add(txtAttrStr, GBU.text(1, 1)); 
+		pnlRight.add(new PLabel("/"), GBU.label(2, 1));
+		pnlRight.add(txtExceptionalStrength, GBU.text(3, 1));
+		
 		pnlRight.add(lblMinInt, GBU.label(0, 2));
 		pnlRight.add(txtAttrInt, GBU.text(1, 2)); 
 		pnlRight.add(lblMinWis, GBU.label(0, 3));
@@ -244,20 +265,19 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 		
 		
-		txtPcId.setEditable(false);
-		txtClass1.setReadOnly(true);
-		txtClass2.setReadOnly(true);
-		txtClass3.setReadOnly(true);
+
 
 		
 		btnRoll.addActionListener(ae ->roll());
 
-		for(PDataComponent c:levels) {
+		
+
+		txtPcId.setEditable(false);
+		
+		for(PDataComponent c:disableThese) {
 			c.setReadOnly(true);
 		}
-		for(PDataComponent c:hpValuesLabels) {
-			c.setReadOnly(true);
-		}
+ 
 		
 		
 		add(new PLabel(""), GBU.label(99, 99));
@@ -315,6 +335,8 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		value.setFirstClassLevel(txtClassLevel1.getIntegerValue());
 		value.setSecondClassLevel(txtClassLevel2.getIntegerValue());
 		value.setThirdClassLevel(txtClassLevel3.getIntegerValue());
+		
+		value.setExceptionalStrength(txtExceptionalStrength.getExceptionalStrength());
 
  
 	}
@@ -383,6 +405,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		txtClassLevel3.setIntegerValue(value.getThirdClassLevel());
 		
 		txtClassHpTotal.setIntegerValue(value.getHp());
+		txtExceptionalStrength.setExceptionalStrength(value.getExceptionalStrength());
  }
 
 
@@ -530,6 +553,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 				totalhp+=hps.get(i);
 				levels[i].setIntegerValue(1);
 			}
+			txtExceptionalStrength.setExceptionalStrength(cr.getExceptionalStrength());
 			txtClassHpTotal.setIntegerValue(totalhp);
 			
 		}

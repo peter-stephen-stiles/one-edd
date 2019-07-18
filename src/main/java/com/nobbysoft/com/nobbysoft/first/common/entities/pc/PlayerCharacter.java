@@ -23,6 +23,20 @@ public class PlayerCharacter implements Serializable,DataDTOInterface<Integer> {
 	private String raceId;
 	private ClassType classType; 
 	
+	private int exceptionalStrength=0;
+	
+	public int getExceptionalStrength() {
+		return exceptionalStrength;
+	}
+
+	public void setExceptionalStrength(int exceptionalStrength) {
+		this.exceptionalStrength = exceptionalStrength;
+	}
+
+
+
+
+
 	private int attrStr;
 	private int attrInt;
 	private int attrWis;

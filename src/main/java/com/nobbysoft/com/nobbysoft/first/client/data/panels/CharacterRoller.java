@@ -48,6 +48,7 @@ import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.com.nobbysoft.first.client.components.PList;
 import com.nobbysoft.com.nobbysoft.first.client.components.PPanel;
+import com.nobbysoft.com.nobbysoft.first.client.components.special.PExceptionalStrength;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
@@ -75,6 +76,8 @@ public class CharacterRoller extends PDialog {
 	
 	private Preferences  prefs =Utils.getPrefs(CharacterRoller.class);
  
+ 
+	
 	private void savePrefs() {
 		prefs.put("method", ((METHOD)cbxMethod.getSelectedItem()).name());
 		prefs.put("gender", (String) cbxGender.getSelectedCode());
@@ -141,7 +144,7 @@ public class CharacterRoller extends PDialog {
 	private Map<RaceClassLimitKey, RaceClassLimit> raceLimits = new HashMap<>();
 
 	public Dimension getPreferredSize() {
-		Dimension d = new Dimension();
+		Dimension d = super.getPreferredSize();
 		if (d.getHeight() < 400) {
 			d.height = 400;
 		}
@@ -193,6 +196,8 @@ public class CharacterRoller extends PDialog {
 
 	private PLabel lblFourChars = new PLabel("WWWW");
 
+	private PExceptionalStrength txtExceptionalStr = new PExceptionalStrength();
+	
 	private PIntegerField txtStr = new PIntegerField();
 	private PIntegerField txtInt = new PIntegerField();
 	private PIntegerField txtWis = new PIntegerField();
@@ -214,7 +219,18 @@ public class CharacterRoller extends PDialog {
 
 	private PLabel lblInvalid = new PLabel("");
 	private PLabel lblTotalValue = new PLabel("");
-	private PList<CharacterClass> txtClasses = new PList<>();
+	private PList<CharacterClass> txtClasses = new PList<CharacterClass>() {
+		public Dimension getPreferredSize() {
+			Dimension d = super.getPreferredSize();
+			if(d.width>100) {
+				d.width=100;
+			}
+			return d;
+		}
+		public Dimension getMaximumSize() {
+			return getPreferredSize();
+		}
+	};
 	private PLabel lblXPBonus = new PLabel("");
 	private PButton btnAccept;
 	
@@ -291,10 +307,21 @@ public class CharacterRoller extends PDialog {
 
 		pnlMiddle.add(btnRoll, GBU.button(5, 1));
 
-		PLabel lblAtt = new PLabel("Attribute");
+		PLabel lblAtt = new PLabel("Attribute") {
+			public Dimension getPreferredSize() {
+				Dimension d = super.getPreferredSize();
+				if(d.height<22) {
+					d.height=22;
+				}
+				if(d.width<40) {
+					d.width=40;
+				}
+				return d;
+			}
+		};
 		PLabel lblBonus = new PLabel("Racial bonus");
 		PLabel lblLimits = new PLabel("Limits");
-		PLabel lblRoll = new PLabel("Roll");
+		PLabel lblRoll = new PLabel(" Roll ");
 		PLabel lblTotal = new PLabel("Total");
 		PLabel lblClasses = new PLabel("Available classes");
 
@@ -328,9 +355,8 @@ public class CharacterRoller extends PDialog {
 		Font lf = heads[0].getFont();
 		Font bold = lf.deriveFont(Font.BOLD);
 		for (int i = 0, n = heads.length; i < n; i++) {
-			pnlRolling.add(heads[i], GBU.labelC(i, 0));
-
 			heads[i].setFont(bold);
+			pnlRolling.add(heads[i], GBU.labelC(i, 0));
 		}
 
 		for (int i = 0, n = bonuses.length; i < n; i++) {
@@ -398,6 +424,11 @@ public class CharacterRoller extends PDialog {
 			pnlRolling.add(attValues[i], GBU.text(col++, row));
 			pnlRolling.add(new PLabel("="), GBU.labelC(col++, row));
 			pnlRolling.add(attTotals[i], GBU.text(col++, row));
+			if(i==0) {
+				pnlRolling.add(new PLabel("/"), GBU.label(col++, row));
+				pnlRolling.add(txtExceptionalStr, GBU.text(col++, row));
+				
+			}
 
 		}
 
@@ -598,6 +629,13 @@ public class CharacterRoller extends PDialog {
 			PIntegerField txtTotal = attTotals[attIndex];
 			int value = calculateTotal(attIndex);
 			txtTotal.setIntegerValue(value);
+			if(attIndex==0) {
+				if(value==18) {
+					txtExceptionalStr.setExceptionalStrength(Roller.roll(DICE.D100, 1, 0, 0));
+				} else {
+					txtExceptionalStr.setExceptionalStrength(0);
+				}
+			}
 			checkLimits();
 		});
 
@@ -921,6 +959,10 @@ public class CharacterRoller extends PDialog {
 		}
 		
 		return hps;
+	}
+	
+	public int getExceptionalStrength() {
+		return txtExceptionalStr.getExceptionalStrength();
 	}
 
 	public boolean isCancelled() {
