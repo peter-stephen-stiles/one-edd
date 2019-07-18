@@ -22,7 +22,7 @@ import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.server.utils.DbUtils;
 
-public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
+public class PlayerCharacterDAO extends AbstractDAO<PlayerCharacter,Integer> implements DAOI<PlayerCharacter, Integer>{
 
 	public PlayerCharacterDAO() { 
 	}
@@ -90,38 +90,18 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 				"attr_wis",
 				"attr_dex",
 				"attr_con",
-				"attr_chr" };
+				"attr_chr",
+				"first_class_hp",
+				"second_class_hp",
+				"third_class_hp",
+				"first_class_level",
+				"second_class_level",
+				"third_class_level"};
 		DAOUtils.createInts(con, tableName, newInts);
 
 	}
 
-
-
-	@Override
-	public PlayerCharacter get(Connection con, Integer key) throws SQLException {
-		String sql = "SELECT ";
-		sql = addKeyFields(sql);
-		sql = addDataFields(sql);
-		sql = sql + " FROM Player_Character  WHERE ";
-		sql = addKeyColumnsForUpdate(sql);
-		//sql = sql + " pc_id = ? ";
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setInt(1, key);
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
-					PlayerCharacter dto = dtoFromRS(rs);
-					return (dto);
-
-				} else {
-					throw new RecordNotFoundException("Cannot find player " + key);
-				}
-
-			}
-		}
-
-	}
-
-	private PlayerCharacter dtoFromRS(ResultSet rs) throws SQLException {
+	PlayerCharacter dtoFromRS(ResultSet rs) throws SQLException {
 		PlayerCharacter dto = new PlayerCharacter();
 		int col = 1;
 		dto.setPcId(rs.getInt(col++));
@@ -153,52 +133,30 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 		dto.setSecondClass(rs.getString(col++));
 		dto.setThirdClass(rs.getString(col++));
 
+
+		dto.setFirstClassHp(rs.getInt(col++));
+		dto.setSecondClassHp(rs.getInt(col++));
+		dto.setThirdClassHp(rs.getInt(col++));
+		dto.setFirstClassLevel(rs.getInt(col++));
+		dto.setSecondClassLevel(rs.getInt(col++));
+		dto.setThirdClassLevel(rs.getInt(col++));
+				
+		
+		
+
+		
 		return dto;
 	}
 
-	@Override
-	public void insert(Connection con, PlayerCharacter value) throws SQLException {
-		String sql = "INSERT INTO Player_Character ( ";
-		sql = addKeyFields(sql);
-		sql = addDataFields(sql);
-		sql = sql + ") values ( ";
-		sql = sql + "?,?,?, ?,?,?, ?,?,?, ?,?,? ,?,?,?";
-		sql = sql + ")";
-		LOGGER.info("sql is:"+sql);
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			int col = 1;
-			col = setPSFromKeys(value, ps, col);
-			col = setPSFromData(value, ps, col);
-			ps.executeUpdate();
-		}
+ 
 
-	}
 
-	private String addDataFields(String sql) {
-		sql = sql +"character_name ,"+
-					"player_name,"+
-					"attr_str,"+
-					"attr_int,"+
-					"attr_wis,"+
-					"attr_dex,"+
-					"attr_con,"+
-					"attr_chr,"+
-					"alignment,"+
-					"race_Id,"+
-					"gender,"+
-					"first_class,"+
-					"second_class,"+
-					"third_class"
-					;
-		return sql;
-	}
-
-	private int setPSFromKeys(PlayerCharacter value, PreparedStatement ps, int col) throws SQLException {
+	 int setPSFromKeys(PlayerCharacter value, PreparedStatement ps, int col) throws SQLException {
 		ps.setInt(col++, value.getPcId());
 		return col;
 	}
 
-	private int setPSFromData(PlayerCharacter value, PreparedStatement ps, int col) throws SQLException {
+	 int setPSFromData(PlayerCharacter value, PreparedStatement ps, int col) throws SQLException {
  
 		ps.setString(col++, value.getCharacterName());
 		ps.setString(col++, value.getPlayerName());
@@ -219,45 +177,20 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 		ps.setString(col++, value.getSecondClass());
 		ps.setString(col++, value.getThirdClass());
 
+		ps.setInt(col++, value.getFirstClassHp());
+		ps.setInt(col++, value.getSecondClassHp());
+		ps.setInt(col++, value.getThirdClassHp()); 
+
+		ps.setInt(col++, value.getFirstClassLevel());
+		ps.setInt(col++, value.getSecondClassLevel());
+		ps.setInt(col++, value.getThirdClassLevel());
+		
+		
+		
 		return col;
 	}
 
-	@Override
-	public List<PlayerCharacter> getList(Connection con,
-			DTORowListener<PlayerCharacter> listener) throws SQLException {
-		
-		String sql = "SELECT ";
-		sql = addKeyFields(sql);
-		sql = addDataFields(sql);
-		sql = sql + " FROM Player_Character  ";
-		sql = addOrderByClause(sql);
-		List<PlayerCharacter> data = new ArrayList<>();
-		boolean first=true;
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			try (ResultSet rs = ps.executeQuery()) {
-				while (rs.next()) {
-					PlayerCharacter dto = dtoFromRS(rs);
-					if(listener!=null) {
-						listener.hereHaveADTO(dto, first);
-					} else {
-					data.add(dto);
-					}
-					first=false;
-				}
-
-			}
-		}
-
-		return data;
-		
-	}
-	
-	@Override
-	public List<PlayerCharacter> getList(Connection con) throws SQLException {
-		return getList(con,null); 
-	}
-
-	
+ 
 	public List<ViewPlayerCharacter> getViewList(Connection con,String filter)throws SQLException{
 
 		CharacterClassDAO ccdao = new CharacterClassDAO();
@@ -275,13 +208,15 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 				String cn1=classMap.get(dto.getFirstClass()).getDescription();
 				CharacterClass c2=classMap.get(dto.getSecondClass());
 				CharacterClass c3=classMap.get(dto.getThirdClass());
-				sb.append(cn1);
+				
+				sb.append(cn1).append("(").append(dto.getFirstClassLevel()).append(")");
 				if(c2!=null) {
 					sb.append("/").append(c2.getDescription());
-					
+					sb.append("(").append(dto.getSecondClassLevel()).append(")");
 				}
 				if(c3!=null) {
 					sb.append("/").append(c3.getDescription());
+					sb.append("(").append(dto.getThirdClassLevel()).append(")");
 					
 				}
 				view.setClassNames(sb.toString());
@@ -294,138 +229,72 @@ public class PlayerCharacterDAO implements DAOI<PlayerCharacter, Integer>{
 	}
 
 	@Override
-	public List<PlayerCharacter> getFilteredList(Connection con, String filter,
-			DTORowListener<PlayerCharacter> listener) throws SQLException {
-		
-		if (filter == null || filter.isEmpty()) {
-			return getList(con,listener);
-		}
-		String sql = "SELECT ";
-		sql = addKeyFields(sql);
-		sql = addDataFields(sql);
-		sql = sql + " FROM Player_Character  WHERE ";
-		sql = sql + "  character_name like ? or player_name like ?";
-		sql = addOrderByClause(sql);
-		List<PlayerCharacter> data = new ArrayList<>();
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			String f = "%" + filter + "%";
-			ps.setString(1, f); 
-			ps.setString(2, f); 
-			boolean first=true;
-			try (ResultSet rs = ps.executeQuery()) {
-				while (rs.next()) {
-					PlayerCharacter dto = dtoFromRS(rs);
-					if(listener!=null) {
-						listener.hereHaveADTO(dto, first);
-					} else {
-						data.add(dto);
-					}
-					first = false;
-				}
-
-			}
-		}
-
-		return data;
-	}
-	
-	
-	@Override
-	public List<PlayerCharacter> getFilteredList(Connection con, String filter) throws SQLException {
-		return getFilteredList(con,filter,null);
-	}
-
-	private String addOrderByClause(String sql) {
-		sql = sql + "ORDER BY character_name ";
-		return sql;
-	}
-
-	private String addKeyFields(String sql) {
-		sql = sql + " pc_id, ";
-		return sql;
+	void setPSFromKey(PreparedStatement ps, Integer key) throws SQLException {		 
+		ps.setInt(1, key);						
 	}
 
 	@Override
-	public void delete(Connection con, PlayerCharacter value) throws SQLException {
-		String sql = "DELETE FROM Player_Character WHERE pc_id =?";
-
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			int col = 1;
-			col = setPSFromKeys(value, ps, col);
-			int rows = ps.executeUpdate();
-			if (rows == 0) {
-				throw new RecordNotFoundException("Can't find player to delete it id=" + 
-						value.getPcId() + " "+value.getCharacterName());
-			}
-		}
-
+	String[] getKeys() { 
+		return new String[] {"pc_id"};
 	}
 
 	@Override
-	public void update(Connection con, PlayerCharacter value) throws SQLException {
-		String sql = " UPDATE Player_Character  SET ";
-		sql = addDataColumnsForUpdate(sql);
-		sql = sql + " WHERE ";
-		sql = addKeyColumnsForUpdate(sql);
-
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			int col = 1;
-			col = setPSFromData(value, ps, col);
-
-			col = setPSFromKeys(value, ps, col);
-
-			int rows = ps.executeUpdate();
-			if (rows == 0) {
-				throw new RecordNotFoundException("Can't find character to update it id=" + 
-			value.getPcId() + " "+value.getCharacterName());
-			}
-		}
-	}
-
-	private String addKeyColumnsForUpdate(String sql) {
-		sql = sql + "pc_id = ?";
-		return sql;
-	}
-
-	private String addDataColumnsForUpdate(String sql) {
-		
-		sql = sql +
-				"character_name =?,"+
-				"player_name    =?,"+
-				"attr_str       =?,"+
-				"attr_int       =?,"+
-				"attr_wis       =?,"+
-				"attr_dex       =?,"+
-				"attr_con       =?,"+
-				"attr_chr       =?,"+
-				"alignment      =?,"+
-				"race_id        =?,"+
-				"gender         =?,"+
-				"first_class    =?,"+
-				"second_class   =?,"+
-				"third_class    =?"
-				;
-		return sql;
+	String[] getData() { 
+		return new String[] {"character_name ",
+				"player_name    ",
+				"attr_str       ",
+				"attr_int       ",
+				"attr_wis       ",
+				"attr_dex       ",
+				"attr_con       ",
+				"attr_chr       ",
+				"alignment      ",
+				"race_id        ",
+				"gender         ",
+				"first_class    ",
+				"second_class   ",
+				"third_class    ",
+				"first_class_hp",
+				"second_class_hp",
+				"third_class_hp",
+				"first_class_level",
+				"second_class_level",
+				"third_class_level"
+};
 	}
 
 	@Override
-	public List<CodedListItem<Integer>> getAsCodedList(Connection con) throws SQLException {
-		String sql = "SELECT   pc_id, character_name   FROM Player_Character ORDER BY character_name ";
-		List<CodedListItem<Integer>> data = new ArrayList<>();
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			try (ResultSet rs = ps.executeQuery()) {
-				while (rs.next()) {
-					CodedListItem<Integer> dto = new CodedListItem<>();
-					int col = 1;
-					dto.setItem(rs.getInt(col++));
-					dto.setDescription(rs.getString(col++));
-					data.add(dto);
-				}
+	String getTableName() {
+		return "player_character";
+	}
 
-			}
-		}
+	@Override
+	String addOrderByClause(String sql) { 
+		return sql +" ORDER BY  character_name";
+	}
 
-		return data;
+	@Override
+	String getFilterWhere() { 
+		return " character_name like ? or player_name like ?";
+	}
+
+	@Override
+	void setFilterParameters(PreparedStatement ps, String filter) throws SQLException {
+		String f = "%" + filter.trim() + "%";
+		ps.setString(1, f); 
+		ps.setString(2, f); 
+	}
+
+	@Override
+	String getSELECTForCodedList() { 
+		return  "SELECT   pc_id, character_name   FROM Player_Character ORDER BY character_name ";
+	}
+
+	@Override
+	void setCodedListItemFromRS(CodedListItem<Integer> dto, ResultSet rs) throws SQLException {
+		int col = 1;
+		dto.setItem(rs.getInt(col++));
+		dto.setDescription(rs.getString(col++));
 	}
 
  

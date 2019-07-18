@@ -44,6 +44,56 @@ public class PlayerCharacter implements Serializable,DataDTOInterface<Integer> {
 	private int secondClassExperience=0;
 	private int thirdClassExperience=0;
 	
+
+	private int firstClassHp=0;
+	private int secondClassHp=0;
+	private int thirdClassHp=0;
+	
+	
+	public int getFirstClassHp() {
+		return firstClassHp;
+	}
+
+	public void setFirstClassHp(int firstClassHp) {
+		this.firstClassHp = firstClassHp;
+	}
+
+	public int getSecondClassHp() {
+		return secondClassHp;
+	}
+
+	public void setSecondClassHp(int secondClassHp) {
+		this.secondClassHp = secondClassHp;
+	}
+
+	public int getThirdClassHp() {
+		return thirdClassHp;
+	}
+
+	public void setThirdClassHp(int thirdClassHp) {
+		this.thirdClassHp = thirdClassHp;
+	}
+
+	public List<Integer> getHpList(){
+		List<Integer> cp = new ArrayList<>();
+		cp.add(firstClassHp);
+		if(secondClassHp>0) {
+			cp.add(secondClassHp);
+			if(thirdClassHp>0) {
+				cp.add(thirdClassHp);
+			}
+		}		
+		return cp;
+	}
+
+
+
+	
+	public int getHp() {
+		return firstClassHp+
+				secondClassHp+
+				thirdClassHp;
+	}
 	
 	public int getExperience() {
 		return firstClassExperience

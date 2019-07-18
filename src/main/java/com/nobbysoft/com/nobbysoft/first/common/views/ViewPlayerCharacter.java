@@ -61,7 +61,7 @@ public class ViewPlayerCharacter implements Serializable,DataDTOInterface<Intege
 
 	@Override
 	public Integer[] getColumnWidths() { 
-		return new Integer[] {120,300,150,200,100,150};
+		return new Integer[] {120,200,100,250,100,150};
 	}
 
 	@Override

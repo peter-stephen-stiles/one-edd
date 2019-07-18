@@ -1,5 +1,6 @@
 package com.nobbysoft.com.nobbysoft.first.client.data.panels;
 
+import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.lang.invoke.MethodHandles;
@@ -45,7 +46,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		setLayout(new GridBagLayout());
 		jbInit();
 	}
-
+ 
 	private final PIntegerField txtPcId = new PIntegerField(true);  
 	private final PTextField txtCharacterName = new PTextField(128);
 	private final PTextField txtPlayerName = new PTextField(128);
@@ -67,7 +68,20 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private final PLabel lblClass2 = new PLabel();
 	private final PLabel lblClass3 = new PLabel();
 
+	private final PIntegerField txtClassHp1 = new PIntegerField();
+	private final PIntegerField txtClassHp2 = new PIntegerField();
+	private final PIntegerField txtClassHp3 = new PIntegerField();
+	private final PIntegerField txtClassHpTotal = new PIntegerField();
+	
+
+	private final PIntegerField txtClassLevel1 = new PIntegerField();
+	private final PIntegerField txtClassLevel2 = new PIntegerField();
+	private final PIntegerField txtClassLevel3 = new PIntegerField();
+	
+	private final PIntegerField[] levels = new PIntegerField[]{txtClassLevel1,txtClassLevel2,txtClassLevel3};
+	
 	private final PLabel[] classLabels = new PLabel[]{lblClass1,lblClass2,lblClass3};
+	private final PIntegerField[] hpValuesLabels = new PIntegerField[]{txtClassHp1,txtClassHp2,txtClassHp3};
 	private final PComboBox<Race> txtRace = new PComboBox<>();
   
 	private final PIntegerCombo txtAttrStr = new PIntegerCombo();
@@ -77,14 +91,24 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private final PIntegerCombo txtAttrCon = new PIntegerCombo();
 	private final PIntegerCombo txtAttrChr = new PIntegerCombo(); 
 	
-	private PButton btnRoll = new PButton("Roll");
+	private PButton btnRoll = new PButton("Roll") {
+		public Dimension getPreferredSize() {
+			Dimension d = super.getPreferredSize();
+			if(d.height<22) {
+				d.height=22;
+			}
+			if(d.width<50) {
+				d.width=50;
+			}
+			return d;
+		}
+	};
  
 	
 	private final PIntegerCombo[] attCombos = new PIntegerCombo[] {
 		txtAttrStr,txtAttrInt,txtAttrWis,txtAttrDex,txtAttrCon,txtAttrChr
 	};
-	 
-	
+	 	
 	private PDataComponent[] dataComponents = new PDataComponent[] {  txtCharacterName,txtPlayerName,
 			txtAttrStr,txtAttrInt,txtAttrWis,txtAttrDex,txtAttrCon,txtAttrChr,txtAlignment
 			 };
@@ -144,6 +168,8 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		PPanel pnlLeft = new PPanel(new GridBagLayout());
 		PPanel pnlRight = new PPanel(new GridBagLayout());
 		
+		PPanel pnlBelow = new PPanel(new GridBagLayout());
+		
 		pnlRight.add(lblMinStr, GBU.label(0, 1));
 		pnlRight.add(txtAttrStr, GBU.text(1, 1)); 
 		pnlRight.add(lblMinInt, GBU.label(0, 2));
@@ -160,8 +186,10 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
  
 
 		add(getLblInstructions(), GBU.text(0, 0, 2));
+		
 		add(pnlLeft,GBU.panel(0, 1));
 		add(pnlRight,GBU.panel(1, 1));
+		add(pnlBelow,GBU.panel(0, 2,2,1));
 		
 		pnlLeft.add(lblPcId, GBU.label(0, 1));
 		pnlLeft.add(txtPcId, GBU.text(1, 1)); 
@@ -185,13 +213,35 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		pnlLeft.add(txtRace, GBU.text(1, 7));
 
 
-		pnlLeft.add(lblClass1, GBU.label(0,8));
-		pnlLeft.add(lblClass2, GBU.label(0,9));
-		pnlLeft.add(lblClass3, GBU.label(0,10));
+		pnlBelow.add(lblClass1, GBU.label(0,8));
+		pnlBelow.add(lblClass2, GBU.label(0,9));
+		pnlBelow.add(lblClass3, GBU.label(0,10));
 		
-		pnlLeft.add(txtClass1, GBU.text(1, 8));
-		pnlLeft.add(txtClass2, GBU.text(1, 9));
-		pnlLeft.add(txtClass3, GBU.text(1, 10));
+		pnlBelow.add(txtClass1, GBU.text(1, 8));
+		pnlBelow.add(txtClass2, GBU.text(1, 9));
+		pnlBelow.add(txtClass3, GBU.text(1, 10));
+		//
+
+		pnlBelow.add(txtClassLevel1,GBU.text(2, 8));
+		pnlBelow.add(txtClassLevel2,GBU.text(2, 9));
+		pnlBelow.add(txtClassLevel3,GBU.text(2, 10));
+
+		pnlBelow.add(new PLabel("Level"),GBU.label(3, 8));
+		pnlBelow.add(new PLabel("Level"),GBU.label(3, 9));
+		pnlBelow.add(new PLabel("Level"),GBU.label(3, 10));
+		
+		pnlBelow.add(txtClassHp1,GBU.text(4, 8));
+		pnlBelow.add(txtClassHp2,GBU.text(4, 9));
+		pnlBelow.add(txtClassHp3,GBU.text(4, 10));
+		
+		pnlBelow.add(new PLabel("HP"),GBU.button(5, 8));
+		pnlBelow.add(new PLabel("HP"),GBU.button(5, 9));
+		pnlBelow.add(new PLabel("HP"),GBU.button(5, 10));
+		
+		
+		pnlBelow.add(txtClassHpTotal,GBU.text(4, 11));
+		pnlBelow.add(new PLabel("total"),GBU.button(5, 11));
+		
 		
 		
 		txtPcId.setEditable(false);
@@ -202,6 +252,13 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 		btnRoll.addActionListener(ae ->roll());
 
+		for(PDataComponent c:levels) {
+			c.setReadOnly(true);
+		}
+		for(PDataComponent c:hpValuesLabels) {
+			c.setReadOnly(true);
+		}
+		
 		
 		add(new PLabel(""), GBU.label(99, 99));
 
@@ -250,6 +307,14 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		value.setAttrDex((Integer)txtAttrDex.getIntegerValue());
 		value.setAttrCon((Integer)txtAttrCon.getIntegerValue());
 		value.setAttrChr((Integer)txtAttrChr.getIntegerValue());
+
+		value.setFirstClassHp(txtClassHp1.getIntegerValue());
+		value.setSecondClassHp(txtClassHp2.getIntegerValue());
+		value.setThirdClassHp(txtClassHp3.getIntegerValue());
+		
+		value.setFirstClassLevel(txtClassLevel1.getIntegerValue());
+		value.setSecondClassLevel(txtClassLevel2.getIntegerValue());
+		value.setThirdClassLevel(txtClassLevel3.getIntegerValue());
 
  
 	}
@@ -308,6 +373,16 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		txtAttrDex.setIntegerValue(value.getAttrDex());
 		txtAttrCon.setIntegerValue(value.getAttrCon());
 		txtAttrChr.setIntegerValue(value.getAttrChr()); 
+
+		txtClassHp1.setIntegerValue(value.getFirstClassHp());
+		txtClassHp2.setIntegerValue(value.getSecondClassHp());
+		txtClassHp3.setIntegerValue(value.getThirdClassHp());
+		
+		txtClassLevel1.setIntegerValue(value.getFirstClassLevel());
+		txtClassLevel2.setIntegerValue(value.getSecondClassLevel());
+		txtClassLevel3.setIntegerValue(value.getThirdClassLevel());
+		
+		txtClassHpTotal.setIntegerValue(value.getHp());
  }
 
 
@@ -439,14 +514,23 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 				attCombos[i].setIntegerValue(atts[i]);
 			}
 			List<CharacterClass> classes = cr.getCharacterClasses();
+			List<Integer> hps= cr.getHitPoints();
+			txtClassHpTotal.setIntegerValue(0);
+			int totalhp=0;
 			for(int i=0,n=3;i<n;i++){
 				classCombos[i].setVisible(false); 
 				classCombos[i].setSelectedItem(noClass);
+				hpValuesLabels[i].setText("");
+				levels[i].setIntegerValue(0);
 			}
 			for(int i=0,n=classes.size();i<n;i++){
 				classCombos[i].setVisible(true); 
-				classCombos[i].setSelectedItem(classes.get(i)); 
+				classCombos[i].setSelectedItem(classes.get(i));
+				hpValuesLabels[i].setIntegerValue(hps.get(i));
+				totalhp+=hps.get(i);
+				levels[i].setIntegerValue(1);
 			}
+			txtClassHpTotal.setIntegerValue(totalhp);
 			
 		}
 	}
