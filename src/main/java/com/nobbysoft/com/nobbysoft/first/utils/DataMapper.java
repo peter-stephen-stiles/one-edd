@@ -10,7 +10,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.com.nobbysoft.first.client.data.panels.CharacterClassButtons;
+import com.nobbysoft.com.nobbysoft.first.client.data.panels.*;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.CharacterClassPanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.ConstitutionPanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.PlayerCharacterPanel;
@@ -22,17 +22,17 @@ import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClas
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Spell;
-import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.attributes.*;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.CodedListService;
-import com.nobbysoft.com.nobbysoft.first.common.servicei.ConstitutionService;
+import com.nobbysoft.com.nobbysoft.first.common.servicei.*;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.RaceClassLimitService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.RaceService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.SpellService;
 import com.nobbysoft.com.nobbysoft.first.server.dao.CharacterClassDAO;
-import com.nobbysoft.com.nobbysoft.first.server.dao.ConstitutionDAO;
+import com.nobbysoft.com.nobbysoft.first.server.dao.*;
 import com.nobbysoft.com.nobbysoft.first.server.dao.DAOI;
 import com.nobbysoft.com.nobbysoft.first.server.dao.PlayerCharacterDAO;
 import com.nobbysoft.com.nobbysoft.first.server.dao.RaceClassLimitDAO;
@@ -40,7 +40,7 @@ import com.nobbysoft.com.nobbysoft.first.server.dao.RaceDAO;
 import com.nobbysoft.com.nobbysoft.first.server.dao.SpellDAO;
 import com.nobbysoft.com.nobbysoft.first.server.service.CharacterClassServiceImpl;
 import com.nobbysoft.com.nobbysoft.first.server.service.CodedListServiceImpl;
-import com.nobbysoft.com.nobbysoft.first.server.service.ConstitutionServiceImpl;
+import com.nobbysoft.com.nobbysoft.first.server.service.*;
 import com.nobbysoft.com.nobbysoft.first.server.service.PlayerCharacterServiceImpl;
 import com.nobbysoft.com.nobbysoft.first.server.service.RaceClassLimitServiceImpl;
 import com.nobbysoft.com.nobbysoft.first.server.service.RaceServiceImpl;
@@ -97,6 +97,7 @@ public enum DataMapper {
 		daoimap.put(CharacterClass.class, CharacterClassDAO.class);
 		daoimap.put(RaceClassLimit.class, RaceClassLimitDAO.class);
 		daoimap.put(Constitution.class,ConstitutionDAO.class);
+		daoimap.put(Strength.class,StrengthDAO.class);
 
 		
 		
@@ -106,6 +107,7 @@ public enum DataMapper {
 		panels.put(CharacterClass.class,CharacterClassPanel.class);
 		panels.put(RaceClassLimit.class, RaceClassLimitPanel.class);
 		panels.put(Constitution.class, ConstitutionPanel.class);
+		panels.put(Strength.class, StrengthPanel.class);
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
 		entityservicemap.put(CharacterClass.class, CharacterClassService.class);
@@ -113,6 +115,7 @@ public enum DataMapper {
 		entityservicemap.put(Race.class, RaceService.class);
 		entityservicemap.put(RaceClassLimit.class, RaceClassLimitService.class);
 		entityservicemap.put(Constitution.class, ConstitutionService.class);
+		entityservicemap.put(Strength.class, StrengthService.class);
 		
 		
 
@@ -124,6 +127,7 @@ public enum DataMapper {
 		servicemap.put(CodedListService.class, CodedListServiceImpl.class);
 
 		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);
+		servicemap.put(StrengthService.class, StrengthServiceImpl.class);
 		
 		
 	}
@@ -167,6 +171,7 @@ public enum DataMapper {
 			CharacterClassDAO.class,
 			RaceClassLimitDAO.class,
 			ConstitutionDAO.class,
+			StrengthDAO.class,
 		};
 	}
 

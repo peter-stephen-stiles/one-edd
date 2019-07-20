@@ -76,7 +76,7 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 		boolean first=true;
 		for(String key:getKeys()) {
 			if(!first) {
-				sql=sql+", ";
+				sql=sql+" AND ";
 			}
 			sql = sql + " "+key+" = ?";
 			first = false;

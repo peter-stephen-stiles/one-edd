@@ -6,6 +6,10 @@ public class StrengthKey implements Comparable<StrengthKey> {
 	private int exceptionalStrength;
 	
 	
+	public void setAbilityScore(int abilityScore) {
+		this.abilityScore = abilityScore;
+	}
+
 	public StrengthKey(int abilityScore,int exceptionalStrength) {
 		this.abilityScore=abilityScore;
 		this.exceptionalStrength=exceptionalStrength;
@@ -71,6 +75,10 @@ public class StrengthKey implements Comparable<StrengthKey> {
 
 	public void setExceptionalStrength(int exceptionalStrength) {
 		this.exceptionalStrength = exceptionalStrength;
+	}
+
+	public int getAbilityScore() {
+		return abilityScore;
 	}
 
 }

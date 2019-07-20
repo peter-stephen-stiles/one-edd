@@ -10,15 +10,18 @@ public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializab
 
 	public Strength() {		
 	}
-	private int abilityScore;
 	@Override
 	public String toString() {
 		return "Strength [abilityScore=" + abilityScore + ", exceptionalStrength=" + exceptionalStrength
-				+ ", hitProbability=" + hitProbability + ", damageAdjustment=" + damageAdjustment + ", weightAllowance="
-				+ weightAllowance + ", openDoors=" + openDoors + ", openMagicalDoors=" + openMagicalDoors
-				+ ", bendBarsLiftGates=" + bendBarsLiftGates + "]";
+				+ ", exceptionalStrengthTo=" + exceptionalStrengthTo + ", hitProbability=" + hitProbability
+				+ ", damageAdjustment=" + damageAdjustment + ", weightAllowance=" + weightAllowance + ", openDoors="
+				+ openDoors + ", openMagicalDoors=" + openMagicalDoors + ", bendBarsLiftGates=" + bendBarsLiftGates
+				+ "]";
 	}
+
+	private int abilityScore;
 	private int exceptionalStrength;
+	private int exceptionalStrengthTo;
 	private int hitProbability;
 	private int damageAdjustment;
 	private int weightAllowance;
@@ -88,22 +91,22 @@ public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializab
 	@Override
 	public Object[] getAsRow() {
 		// TODO Auto-generated method stub
-		return null;
+		return new Object[] {this,abilityScore,exceptionalStrength,exceptionalStrengthTo,hitProbability,damageAdjustment,weightAllowance,openDoors,openMagicalDoors,bendBarsLiftGates};
 	}
 	@Override
 	public String[] getRowHeadings() {
 		// TODO Auto-generated method stub
-		return null;
+		return new String[] {"Ability","%","-%","To hit","Dam","Weight","Open","Op Mag","BB/LG"};
 	}
 	@Override
 	public Integer[] getColumnWidths() {
 		// TODO Auto-generated method stub
-		return null;
+		return new  Integer[] {80,50,50,50,50,50,50,50,50};
 	}
 	@Override
 	public String[] getColumnCodedListTypes() {
 		// TODO Auto-generated method stub
-		return null;
+		return new String[] {};
 	}
  
 	@Override
@@ -114,6 +117,7 @@ public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializab
 		result = prime * result + bendBarsLiftGates;
 		result = prime * result + damageAdjustment;
 		result = prime * result + exceptionalStrength;
+		result = prime * result + exceptionalStrengthTo;
 		result = prime * result + hitProbability;
 		result = prime * result + openDoors;
 		result = prime * result + openMagicalDoors;
@@ -136,6 +140,8 @@ public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializab
 		if (damageAdjustment != other.damageAdjustment)
 			return false;
 		if (exceptionalStrength != other.exceptionalStrength)
+			return false;
+		if (exceptionalStrengthTo != other.exceptionalStrengthTo)
 			return false;
 		if (hitProbability != other.hitProbability)
 			return false;
@@ -166,6 +172,12 @@ public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializab
 		ret = toString().compareTo(o.toString());
 		}
 		return ret;
+	}
+	public int getExceptionalStrengthTo() {
+		return exceptionalStrengthTo;
+	}
+	public void setExceptionalStrengthTo(int exceptionalStrengthTo) {
+		this.exceptionalStrengthTo = exceptionalStrengthTo;
 	}
 
 }
