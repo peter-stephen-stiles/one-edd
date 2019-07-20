@@ -66,8 +66,8 @@ import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.RaceClassLimitService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.RaceService;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.com.nobbysoft.first.common.utils.DICE;
 import com.nobbysoft.com.nobbysoft.first.common.utils.Roller;
-import com.nobbysoft.com.nobbysoft.first.common.utils.Roller.DICE;
 import com.nobbysoft.com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")

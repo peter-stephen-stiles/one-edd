@@ -18,8 +18,8 @@ import com.nobbysoft.com.nobbysoft.first.client.components.PTextArea;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.com.nobbysoft.first.common.utils.DICE;
 import com.nobbysoft.com.nobbysoft.first.common.utils.Roller;
-import com.nobbysoft.com.nobbysoft.first.common.utils.Roller.DICE;
 
 public class RollHPDialog extends JDialog {
 

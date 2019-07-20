@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.*;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.CharacterClassPanel;
-import com.nobbysoft.com.nobbysoft.first.client.data.panels.ConstitutionPanel;
+import com.nobbysoft.com.nobbysoft.first.client.data.panels.*;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.PlayerCharacterPanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.RaceClassLimitPanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.RacePanel;
@@ -98,6 +98,7 @@ public enum DataMapper {
 		daoimap.put(RaceClassLimit.class, RaceClassLimitDAO.class);
 		daoimap.put(Constitution.class,ConstitutionDAO.class);
 		daoimap.put(Strength.class,StrengthDAO.class);
+		daoimap.put(Dexterity.class,DexterityDAO.class);
 
 		
 		
@@ -108,6 +109,7 @@ public enum DataMapper {
 		panels.put(RaceClassLimit.class, RaceClassLimitPanel.class);
 		panels.put(Constitution.class, ConstitutionPanel.class);
 		panels.put(Strength.class, StrengthPanel.class);
+		panels.put(Dexterity.class, DexterityPanel.class);
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
 		entityservicemap.put(CharacterClass.class, CharacterClassService.class);
@@ -116,6 +118,7 @@ public enum DataMapper {
 		entityservicemap.put(RaceClassLimit.class, RaceClassLimitService.class);
 		entityservicemap.put(Constitution.class, ConstitutionService.class);
 		entityservicemap.put(Strength.class, StrengthService.class);
+		entityservicemap.put(Dexterity.class,DexterityService.class);
 		
 		
 
@@ -128,6 +131,7 @@ public enum DataMapper {
 
 		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);
 		servicemap.put(StrengthService.class, StrengthServiceImpl.class);
+		servicemap.put(DexterityService.class, DexterityServiceImpl.class);
 		
 		
 	}
@@ -172,6 +176,7 @@ public enum DataMapper {
 			RaceClassLimitDAO.class,
 			ConstitutionDAO.class,
 			StrengthDAO.class,
+			DexterityDAO.class
 		};
 	}
 

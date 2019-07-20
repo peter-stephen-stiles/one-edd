@@ -12,7 +12,7 @@ import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Alignment;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Attribute;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Gender;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
-import com.nobbysoft.com.nobbysoft.first.common.utils.Roller;
+import com.nobbysoft.com.nobbysoft.first.common.utils.DICE;
 
 public class CodedListDAO {
 
@@ -212,7 +212,7 @@ public class CodedListDAO {
 	public List<CodedListItem<?>> getDice(){
 		
 		List<CodedListItem<?>> list = new ArrayList<>();
-		for(Roller.DICE dice:Roller.DICE.values()) {
+		for(DICE dice:DICE.values()) {
 			list.add(new CodedListItem(dice.getSides(),dice.getDesc()));
 		}
 		return list;
