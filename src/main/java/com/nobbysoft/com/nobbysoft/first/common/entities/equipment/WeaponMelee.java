@@ -12,14 +12,15 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 	public WeaponMelee() { 
 	}
 
+	private String code;
 	private String name;
 	private EquipmentHands requiresHands;
 	private int capacityGP;
 	private int encumberanceGP;
 
-	private int damageSMDice;
+	private int damageSMDiceCount;
 	private DICE damageSMDICE;
-	private int damageLDice;
+	private int damageLDiceCount;
 	private DICE damageLDICE;
 	private String notes;
 	
@@ -44,6 +45,10 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 	private int ACAdjustment08;
 	private int ACAdjustment09;
 	private int ACAdjustment10;
+	
+	private int magicBonus;
+	private int extraMagicBonus;
+	private String extraMagicCondition;
 	
 	
 	@Override
@@ -182,13 +187,13 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 	}
 
 
-	public int getDamageSMDice() {
-		return damageSMDice;
+	public int getDamageSMDiceCount() {
+		return damageSMDiceCount;
 	}
 
 
-	public void setDamageSMDice(int damageSMDice) {
-		this.damageSMDice = damageSMDice;
+	public void setDamageSMDiceCount(int damageSMDiceCount) {
+		this.damageSMDiceCount = damageSMDiceCount;
 	}
 
 
@@ -202,13 +207,13 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 	}
 
 
-	public int getDamageLDice() {
-		return damageLDice;
+	public int getDamageLDiceCount() {
+		return damageLDiceCount;
 	}
 
 
-	public void setDamageLDice(int damageLDice) {
-		this.damageLDice = damageLDice;
+	public void setDamageLDiceCount(int damageLDiceCount) {
+		this.damageLDiceCount = damageLDiceCount;
 	}
 
 
@@ -294,7 +299,7 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 
 	@Override
 	public String getKey() { 
-		return name;
+		return code;
 	}
 
 
@@ -306,33 +311,36 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 
 	@Override
 	public Object[] getAsRow() { 
-		return new Object[] {this,name,notes};
+		return new Object[] {this,code,name,requiresHands,notes};
 	}
 
 
 	@Override
 	public String[] getRowHeadings() { 
-		return new String[] {"Name","Notes"};
+		return new String[] {"Code","Name","Hands","Notes"};
 	}
 
 
 	@Override
 	public Integer[] getColumnWidths() { 
-		return new Integer[] {150,300};
+		return new Integer[] {150,200,150,300};
 	}
 
 
 	@Override
 	public String[] getColumnCodedListTypes() {
-		return new String[] {null,null};
+		return new String[] {null,null,null,null};
 	}
 
 
 	@Override
 	public int compareTo(WeaponMelee o) {
-		int ret= name.compareTo(o.name);
+		int ret= code.compareTo(o.code);
 		if(ret==0) {
-			ret =toString().compareTo(o.toString());
+			ret= name.compareTo(o.name);
+			if(ret==0) {
+				ret =toString().compareTo(o.toString());
+			}
 		}
 		return ret;
 	}
@@ -354,12 +362,16 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 		result = prime * result + (capableOfDisarmingAgainstAC8 ? 1231 : 1237);
 		result = prime * result + (capableOfDismountingRider ? 1231 : 1237);
 		result = prime * result + capacityGP;
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		result = prime * result + ((damageLDICE == null) ? 0 : damageLDICE.hashCode());
-		result = prime * result + damageLDice;
+		result = prime * result + damageLDiceCount;
 		result = prime * result + ((damageSMDICE == null) ? 0 : damageSMDICE.hashCode());
-		result = prime * result + damageSMDice;
+		result = prime * result + damageSMDiceCount;
 		result = prime * result + encumberanceGP;
+		result = prime * result + extraMagicBonus;
+		result = prime * result + ((extraMagicCondition == null) ? 0 : extraMagicCondition.hashCode());
 		result = prime * result + ((length == null) ? 0 : length.hashCode());
+		result = prime * result + magicBonus;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((notes == null) ? 0 : notes.hashCode());
 		result = prime * result + ((requiresHands == null) ? 0 : requiresHands.hashCode());
@@ -405,20 +417,34 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 			return false;
 		if (capacityGP != other.capacityGP)
 			return false;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
 		if (damageLDICE != other.damageLDICE)
 			return false;
-		if (damageLDice != other.damageLDice)
+		if (damageLDiceCount != other.damageLDiceCount)
 			return false;
 		if (damageSMDICE != other.damageSMDICE)
 			return false;
-		if (damageSMDice != other.damageSMDice)
+		if (damageSMDiceCount != other.damageSMDiceCount)
 			return false;
 		if (encumberanceGP != other.encumberanceGP)
+			return false;
+		if (extraMagicBonus != other.extraMagicBonus)
+			return false;
+		if (extraMagicCondition == null) {
+			if (other.extraMagicCondition != null)
+				return false;
+		} else if (!extraMagicCondition.equals(other.extraMagicCondition))
 			return false;
 		if (length == null) {
 			if (other.length != null)
 				return false;
 		} else if (!length.equals(other.length))
+			return false;
+		if (magicBonus != other.magicBonus)
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -451,18 +477,80 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 
 	@Override
 	public String toString() {
-		return "WeaponMelee [name=" + name + ", requiresHands=" + requiresHands + ", capacityGP=" + capacityGP
-				+ ", encumberanceGP=" + encumberanceGP + ", damageSMDice=" + damageSMDice + ", damageSMDICE="
-				+ damageSMDICE + ", damageLDice=" + damageLDice + ", damageLDICE=" + damageLDICE + ", notes=" + notes
-				+ ", length=" + length + ", spaceRequired=" + spaceRequired + ", speedFactor=" + speedFactor
-				+ ", twiceDamageToLargeWhenGroundedAgainstCharge=" + twiceDamageToLargeWhenGroundedAgainstCharge
-				+ ", twiceDamageWhenChargingOnMount=" + twiceDamageWhenChargingOnMount
-				+ ", twiceDamageWhenGroundedAgainstCharge=" + twiceDamageWhenGroundedAgainstCharge
-				+ ", capableOfDismountingRider=" + capableOfDismountingRider + ", capableOfDisarmingAgainstAC8="
-				+ capableOfDisarmingAgainstAC8 + ", ACAdjustment02=" + ACAdjustment02 + ", ACAdjustment03="
-				+ ACAdjustment03 + ", ACAdjustment04=" + ACAdjustment04 + ", ACAdjustment05=" + ACAdjustment05
-				+ ", ACAdjustment06=" + ACAdjustment06 + ", ACAdjustment07=" + ACAdjustment07 + ", ACAdjustment08="
-				+ ACAdjustment08 + ", ACAdjustment09=" + ACAdjustment09 + ", ACAdjustment10=" + ACAdjustment10 + "]";
+		return "WeaponMelee [code=" + code + ", name=" + name + ", requiresHands=" + requiresHands + ", capacityGP="
+				+ capacityGP + ", encumberanceGP=" + encumberanceGP + ", damageSMDice=" + damageSMDiceCount
+				+ ", damageSMDICE=" + damageSMDICE + ", damageLDice=" + damageLDiceCount + ", damageLDICE=" + damageLDICE
+				+ ", notes=" + notes + ", length=" + length + ", spaceRequired=" + spaceRequired + ", speedFactor="
+				+ speedFactor + ", twiceDamageToLargeWhenGroundedAgainstCharge="
+				+ twiceDamageToLargeWhenGroundedAgainstCharge + ", twiceDamageWhenChargingOnMount="
+				+ twiceDamageWhenChargingOnMount + ", twiceDamageWhenGroundedAgainstCharge="
+				+ twiceDamageWhenGroundedAgainstCharge + ", capableOfDismountingRider=" + capableOfDismountingRider
+				+ ", capableOfDisarmingAgainstAC8=" + capableOfDisarmingAgainstAC8 + ", ACAdjustment02="
+				+ ACAdjustment02 + ", ACAdjustment03=" + ACAdjustment03 + ", ACAdjustment04=" + ACAdjustment04
+				+ ", ACAdjustment05=" + ACAdjustment05 + ", ACAdjustment06=" + ACAdjustment06 + ", ACAdjustment07="
+				+ ACAdjustment07 + ", ACAdjustment08=" + ACAdjustment08 + ", ACAdjustment09=" + ACAdjustment09
+				+ ", ACAdjustment10=" + ACAdjustment10 + ", magicBonus=" + magicBonus + ", extraMagicBonus="
+				+ extraMagicBonus + ", extraMagicCondition=" + extraMagicCondition + "]";
+	}
+
+
+	public String getCode() {
+		return code;
+	}
+
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+
+	public boolean isCapableOfDismountingRider() {
+		return capableOfDismountingRider;
+	}
+
+
+	public void setCapableOfDismountingRider(boolean capableOfDismountingRider) {
+		this.capableOfDismountingRider = capableOfDismountingRider;
+	}
+
+
+	public boolean isCapableOfDisarmingAgainstAC8() {
+		return capableOfDisarmingAgainstAC8;
+	}
+
+
+	public void setCapableOfDisarmingAgainstAC8(boolean capableOfDisarmingAgainstAC8) {
+		this.capableOfDisarmingAgainstAC8 = capableOfDisarmingAgainstAC8;
+	}
+
+
+	public int getMagicBonus() {
+		return magicBonus;
+	}
+
+
+	public void setMagicBonus(int magicBonus) {
+		this.magicBonus = magicBonus;
+	}
+
+
+	public int getExtraMagicBonus() {
+		return extraMagicBonus;
+	}
+
+
+	public void setExtraMagicBonus(int extraMagicBonus) {
+		this.extraMagicBonus = extraMagicBonus;
+	}
+
+
+	public String getExtraMagicCondition() {
+		return extraMagicCondition;
+	}
+
+
+	public void setExtraMagicCondition(String extraMagicCondition) {
+		this.extraMagicCondition = extraMagicCondition;
 	}
 
 

@@ -66,4 +66,16 @@ public class GBU {
 				fiveByFive, 0, 0);
 	}
 
+	public static final GridBagConstraints hPanel(int x, int y, int width, int height) {
+		return new GridBagConstraints(x, y, width, height, 1.0, 0.0, 
+				GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+				fiveByFive, 0, 0);
+	}
+	
+	public static final GridBagConstraints vPanel(int x, int y, int width, int height) {
+		return new GridBagConstraints(x, y, width, height, 0.0, 1.0, 
+				GridBagConstraints.WEST, GridBagConstraints.VERTICAL,
+				fiveByFive, 0, 0);
+	}
+
 }

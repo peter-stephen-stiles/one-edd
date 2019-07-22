@@ -3,6 +3,7 @@ package com.nobbysoft.com.nobbysoft.first.common.utils;
 import java.util.Random;
 
 public enum DICE{
+	D2(2,"d2"),
 	D3(3,"d3"),
 	D4(4,"d4"),
 	D6(6,"d6"),

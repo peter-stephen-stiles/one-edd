@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import javax.swing.ComboBoxModel;
@@ -11,8 +14,12 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
@@ -20,6 +27,9 @@ import com.nobbysoft.com.nobbysoft.first.utils.DataMapper;
 
 public class PComboBox<E> extends JComboBox<E> implements PDataComponent {
 
+	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass()); 
+
+	
 	private JComponent linkedComponent=null;
 	
 	public void linkSizeTo(JComponent c) {
@@ -49,31 +59,8 @@ public class PComboBox<E> extends JComboBox<E> implements PDataComponent {
 	}
 	
 	public PComboBox(){
-		super();
-		
-		 
-		setRenderer(new ListCellRenderer<E>() {
-			private PLabel label = new PLabel();
-			private Color dftBackground = label.getBackground();
-			private Font dftFont = label.getFont();
-			private Font boldFont = dftFont.deriveFont(Font.BOLD);
-
-			@Override
-			public Component getListCellRendererComponent(JList<? extends E> list, E value, int index,
-					boolean isSelected, boolean cellHasFocus) {
-				if(value!=null) {
-					if(value instanceof Class) {
-						label.setText(DataMapper.INSTANCE.getName((Class)value));
-					} else {
-						label.setText(value.toString());
-					}
-				}
-				label.setBackground(isSelected ? Color.GRAY : dftBackground);
-				label.setFont(cellHasFocus ? boldFont : dftFont);
-				return label;
-			}
-
-		});
+		super(); 
+		//setRenderer(new PComboRenderer<E>());
 	}
 	
 	@Override
