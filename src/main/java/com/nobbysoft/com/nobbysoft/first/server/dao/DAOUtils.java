@@ -37,7 +37,36 @@ public class DAOUtils {
 			}
 		}
 	}
+
+	public static final void createStrings(Connection con, String tableName, VC[] newStrings)
+			throws SQLException {
+		String sql;
+		{
+		String dataType = "VARCHAR";
+		for (int i=0,n=newStrings.length;i<n;i++) {
+			VC vc = newStrings[i];
+			String column = vc.getName();
+			int len = vc.getLength();
+			boolean nullable = vc.isNullable();
+			if (!DbUtils.doesTableColumnExist(con, tableName, column)) {
+				sql = "ALTER TABLE " + tableName +  " add column " + column + " " + dataType+"("+len+")";
+				if(!nullable) {
+					sql  = sql + " NOT NULL DEFAULT 'unknown'";
+				}
+				try (PreparedStatement ps = con.prepareStatement(sql);) {
+					ps.execute();
+				}
+
+			}
+		}
+		
+}
+	}
 	
+	/**
+	 * "use one that take VC[] instead"
+	 */
+	@Deprecated  
 	public static final void createStrings(Connection con, String tableName, String[] newStrings, int[] stringLengths)
 			throws SQLException {
 		String sql;

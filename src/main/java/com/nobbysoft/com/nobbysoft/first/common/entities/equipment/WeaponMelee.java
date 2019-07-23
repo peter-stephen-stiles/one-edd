@@ -6,7 +6,7 @@ import com.nobbysoft.com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.com.nobbysoft.first.common.utils.DICE;
 
 @SuppressWarnings("serial")
-public class WeaponMelee implements EquipmentI ,WeaponI,
+public class WeaponMelee implements EquipmentI ,WeaponI,WeaponMagicI,
 Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 
 	public WeaponMelee() { 
@@ -309,21 +309,30 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 	}
 
 
+	public String getLDamage() {
+		return ""+damageLDiceCount+""+damageLDICE.getDesc();
+	}
+	
+	
+	public String getSMDamage() {
+		return ""+damageSMDiceCount+""+damageSMDICE.getDesc();
+	}
+	
 	@Override
 	public Object[] getAsRow() { 
-		return new Object[] {this,code,name,requiresHands,notes};
+		return new Object[] {this,code,name,requiresHands,getSMDamage() ,getLDamage(),notes};
 	}
 
 
 	@Override
 	public String[] getRowHeadings() { 
-		return new String[] {"Code","Name","Hands","Notes"};
+		return new String[] {"Code","Name","Hands","Dmg (S/M)","Dmg (L)","Notes"};
 	}
 
 
 	@Override
 	public Integer[] getColumnWidths() { 
-		return new Integer[] {150,200,150,300};
+		return new Integer[] {150,200,150,80,80,300};
 	}
 
 

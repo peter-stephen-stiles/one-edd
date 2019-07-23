@@ -17,6 +17,8 @@ import com.nobbysoft.com.nobbysoft.first.client.data.panels.PlayerCharacterPanel
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.RaceClassLimitPanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.RacePanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.SpellPanel;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponAmmunition;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponMelee;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
@@ -99,6 +101,8 @@ public enum DataMapper {
 		daoimap.put(Constitution.class,ConstitutionDAO.class);
 		daoimap.put(Strength.class,StrengthDAO.class);
 		daoimap.put(Dexterity.class,DexterityDAO.class);
+		daoimap.put(WeaponMelee.class,WeaponMeleeDAO.class);
+		daoimap.put(WeaponAmmunition.class,WeaponAmmunitionDAO.class);
 
 		
 		
@@ -110,6 +114,8 @@ public enum DataMapper {
 		panels.put(Constitution.class, ConstitutionPanel.class);
 		panels.put(Strength.class, StrengthPanel.class);
 		panels.put(Dexterity.class, DexterityPanel.class);
+		panels.put(WeaponMelee.class, WeaponMeleePanel.class);
+		panels.put(WeaponAmmunition.class, WeaponAmmunitionPanel.class);
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
 		entityservicemap.put(CharacterClass.class, CharacterClassService.class);
@@ -119,6 +125,8 @@ public enum DataMapper {
 		entityservicemap.put(Constitution.class, ConstitutionService.class);
 		entityservicemap.put(Strength.class, StrengthService.class);
 		entityservicemap.put(Dexterity.class,DexterityService.class);
+		entityservicemap.put(WeaponMelee.class,WeaponMeleeService.class);
+		entityservicemap.put(WeaponAmmunition.class,WeaponAmmunitionService.class);
 		
 		
 
@@ -132,6 +140,8 @@ public enum DataMapper {
 		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);
 		servicemap.put(StrengthService.class, StrengthServiceImpl.class);
 		servicemap.put(DexterityService.class, DexterityServiceImpl.class);
+		servicemap.put(WeaponMeleeService.class, WeaponMeleeServiceImpl.class);
+		servicemap.put(WeaponAmmunitionService.class, WeaponAmmunitionServiceImpl.class);
 		
 		
 	}
@@ -176,7 +186,9 @@ public enum DataMapper {
 			RaceClassLimitDAO.class,
 			ConstitutionDAO.class,
 			StrengthDAO.class,
-			DexterityDAO.class
+			DexterityDAO.class,
+			WeaponMeleeDAO.class,
+			WeaponAmmunitionDAO.class,
 		};
 	}
 

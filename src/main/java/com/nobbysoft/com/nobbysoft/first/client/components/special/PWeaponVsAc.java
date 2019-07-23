@@ -1,6 +1,7 @@
 package com.nobbysoft.com.nobbysoft.first.client.components.special;
 
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.LayoutManager;
 
 import javax.swing.BorderFactory;
@@ -40,10 +41,11 @@ public class PWeaponVsAc extends PPanel implements PDataComponent  {
 	};
 	
 	 private void jbInit() {
-		 setLayout(new GridLayout(2,1));// rows, cols
+		 setLayout(new GridLayout(2,1));// rows, cols		 
 		 setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		 PPanel pnlData = new PPanel(new GridLayout(2,9));
 		 PLabel lblTitle = new PLabel("Bonus to hit against AC");
+		 lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		 add(lblTitle);
 		 add(pnlData);
 		 PLabel lblVsAc02 = new PLabel("2");

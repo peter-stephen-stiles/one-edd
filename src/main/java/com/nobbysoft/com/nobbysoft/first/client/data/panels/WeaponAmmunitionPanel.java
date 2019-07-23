@@ -4,46 +4,41 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.lang.invoke.MethodHandles;
 
-import javax.swing.BorderFactory;
-import javax.swing.border.EtchedBorder;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.com.nobbysoft.first.client.components.PCheckBox;
 import com.nobbysoft.com.nobbysoft.first.client.components.PCodeField;
 import com.nobbysoft.com.nobbysoft.first.client.components.PDataComponent;
 import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.com.nobbysoft.first.client.components.PLabel;
-import com.nobbysoft.com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboDICE;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboEquipmentHands;
-import com.nobbysoft.com.nobbysoft.first.client.components.special.PWeaponMagic;
-import com.nobbysoft.com.nobbysoft.first.client.components.special.PWeaponVsAc;
+import com.nobbysoft.com.nobbysoft.first.client.components.special.PWeaponMagic; 
 import com.nobbysoft.com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
-import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponMelee;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentHands;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponAmmunition;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
-public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> implements MaintenancePanelInterface<WeaponMelee> {
+public class WeaponAmmunitionPanel extends AbstractDataPanel<WeaponAmmunition, String> implements MaintenancePanelInterface<WeaponAmmunition> {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-	public WeaponMeleePanel() {
+	public WeaponAmmunitionPanel() {
 		setLayout(new GridBagLayout());
 		jbInit();
 	}
 
 	@Override
 	DataServiceI<?, ?> getDataService() {   
-		DataServiceI dao  = DataMapper.INSTANCE.getDataService(WeaponMelee.class);
+		DataServiceI dao  = DataMapper.INSTANCE.getDataService(WeaponAmmunition.class);
 		return dao;
 		
 	}
@@ -66,40 +61,16 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 	private final PComboDICE txtLDice = new PComboDICE();
 	private final PIntegerCombo txtLDiceCount = new PIntegerCombo(1,4);
 	private final PTextField txtNotes = new PTextField(255);
-	
-	private final PCheckBox txtTwiceDamageCharged = new PCheckBox("Does twice damage to charging opponents when grounded");
-	private final PCheckBox txtTwiceDamageCharging = new PCheckBox("Does twice damage when charging");
-	private final PCheckBox txtTwiceDamageGrounded = new PCheckBox("Does twice damage when grounded");
+	 
 	
 	private final PWeaponMagic txtWeaponMagic = new PWeaponMagic();
-
-	private final PTextField txtLength = new PTextField(20);
-	private final PTextField txtSpaceRequired = new PTextField(20);
-	private final PIntegerCombo txtSpeedFactor = new PIntegerCombo(1,10);
-	
-	private final PComboEquipmentHands txtComboEquipmentHands = new PComboEquipmentHands();
-	
-	private final PCheckBox txtCapableOfDismountingRider = new PCheckBox("Capable of dismounting target rider");
-	private final PCheckBox txtCapableOfDisarmingAgainstAC8 = new PCheckBox("Capable of disarming on AC8 hit");
- 
-
- 
-	private PWeaponVsAc weaponVsAc = new PWeaponVsAc();
+  
+  
 
 	private PDataComponent[] dataComponents = new PDataComponent[] { 
 			txtName, 
-			weaponVsAc ,
 			txtWeightGP,
 			txtNotes,
-			 txtTwiceDamageCharged  ,
-			 txtTwiceDamageCharging ,
-			 txtTwiceDamageGrounded ,
-			 txtLength ,
-			 txtSpaceRequired,
-			 txtSpeedFactor,
-			 txtComboEquipmentHands,
-			 txtCapableOfDismountingRider,
-			 txtCapableOfDisarmingAgainstAC8,
 			 txtWeaponMagic,
 			 };
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtCode };
@@ -118,10 +89,6 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		txtSMDice.setName("Damage (S/M)");
 		txtLDice.setName("Damage (L)");
 		txtNotes.setName("Notes");
-		txtLength.setName("Length");
-		txtSpaceRequired.setName("Space required (feet)");
-		txtSpeedFactor.setName("Speed factor");
-		txtComboEquipmentHands.setName("Requires hands");
 
 
 		PLabel lblCode = new PLabel(txtCode.getName() );
@@ -130,11 +97,7 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		PLabel lblWeightGP = new PLabel(txtWeightGP.getName() );
 		PLabel lblDamageSM = new PLabel(txtSMDice.getName() );
 		PLabel lblDamageL = new PLabel(txtLDice.getName() );
-		PLabel lblNotes = new PLabel(txtNotes.getName());
-		PLabel lblLength = new PLabel(txtLength.getName());
-		PLabel lblSpaceRequired = new PLabel(txtSpaceRequired.getName());
-		PLabel lblSpeedFactor = new PLabel(txtSpeedFactor.getName());
-		PLabel lblComboEquipmentHands = new PLabel(txtComboEquipmentHands.getName());
+		PLabel lblNotes = new PLabel(txtNotes.getName()); 
 		
 
 		
@@ -146,11 +109,9 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		add(lblName, GBU.label(2, row));
 		add(txtName, GBU.text(3, row,2));
 		row++;
-		
-		add(lblComboEquipmentHands, GBU.label(0, row));
-		add(txtComboEquipmentHands, GBU.text(1, row)); 		
-		add(lblWeightGP, GBU.label(2, row));
-		add(txtWeightGP, GBU.text(3, row));
+	
+		add(lblWeightGP, GBU.label(0, row));
+		add(txtWeightGP, GBU.text(1, row));
 		row++;
 		
 
@@ -164,42 +125,12 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		add(txtLDice, GBU.text(2, row));
 		row++;
 		
-	 
-		
-
 		add(txtWeaponMagic,GBU.hPanel(0,row,4,1));
 		row++;
 		
 		add(lblNotes, GBU.label(0, row));
 		add(txtNotes, GBU.text(1, row,3));
 		row++;
-
-		add(txtTwiceDamageCharged, GBU.text(1, row,3));row++;
-		add(txtTwiceDamageCharging, GBU.text(1, row,3));row++;
-		add(txtTwiceDamageGrounded, GBU.text(1, row,3));row++;
-		 
-
-		add(lblLength, GBU.label(0, row));
-		add(txtLength, GBU.text(1, row));
-		row++;
-
-		add(lblSpaceRequired, GBU.label(0, row));
-		add(txtSpaceRequired, GBU.text(1, row));
-		row++;
-
-		add(lblSpeedFactor , GBU.label(0, row));
-		add(txtSpeedFactor, GBU.text(1, row));
-		row++;
-		
-
-		add(txtCapableOfDismountingRider, GBU.text(1, row,3));row++;
-		add(txtCapableOfDisarmingAgainstAC8, GBU.text(1, row,3));row++;
-		
-		
-		
-		
-		add(weaponVsAc,GBU.hPanel(0,row,4,1));
-  
 
 		add(new PLabel(""), GBU.label(99, 99));
 
@@ -213,17 +144,15 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		return new ReturnValue("");
 	}
 
-	WeaponMelee newT() {
-		return new WeaponMelee();
+	WeaponAmmunition newT() {
+		return new WeaponAmmunition();
 	}
 
-	void populateFromScreen(WeaponMelee value, boolean includingKeys) {
+	void populateFromScreen(WeaponAmmunition value, boolean includingKeys) {
 		if (includingKeys) {
 			value.setCode(txtCode.getText());
 		}
-  
-		value.setCapableOfDisarmingAgainstAC8(txtCapableOfDisarmingAgainstAC8.isSelected());
-		value.setCapableOfDismountingRider(txtCapableOfDismountingRider.isSelected());
+   
 		value.setCapacityGP(0);// not for weapons 
 		value.setDamageLDICE(txtLDice.getDICE());
 		value.setDamageLDiceCount(txtLDiceCount.getIntegerValue());
@@ -233,29 +162,17 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		
 		
 		txtWeaponMagic.populateFromScreen(value); 
-		
-		value.setLength(txtLength.getText());
+		 
 		
 		value.setName(txtName.getText());
-		value.setNotes(txtNotes.getText());
-		value.setRequiresHands(txtComboEquipmentHands.getEquipmentHands());
-		value.setSpaceRequired(txtSpaceRequired.getText());
-		value.setSpeedFactor(txtSpeedFactor.getIntegerValue());
-		value.setTwiceDamageToLargeWhenGroundedAgainstCharge(txtTwiceDamageCharged.isSelected());
-		value.setTwiceDamageWhenChargingOnMount(txtTwiceDamageCharging.isSelected());
-		value.setTwiceDamageWhenGroundedAgainstCharge(txtTwiceDamageGrounded.isSelected());
-		
-		 
-		weaponVsAc.setFromScreen(value);
- 
+		value.setNotes(txtNotes.getText()); 
+		value.setRequiresHands(EquipmentHands.NONE);// no hands for ammo
 	}
 
-	void populateScreen(WeaponMelee value) {
+	void populateScreen(WeaponAmmunition value) {
 		txtCode.setText(value.getCode());
  
-		
-		txtCapableOfDisarmingAgainstAC8	.setSelected(	value.isCapableOfDisarmingAgainstAC8());
-		txtCapableOfDismountingRider	.setSelected(	value.isCapableOfDismountingRider());
+		 
 		
 		txtLDice	.setDICE(	value.getDamageLDICE());
 		txtLDiceCount	.setIntegerValue(	value.getDamageLDiceCount());
@@ -264,19 +181,10 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		txtWeightGP	.setIntegerValue(	value.getEncumberanceGP());
 		
 		txtWeaponMagic.populateScreen(value);
-		
-		txtLength	.setText(	value.getLength());
-		txtName	.setText(	value.getName());
-		txtNotes	.setText(	value.getNotes());
-		txtComboEquipmentHands	.setEquipmentHands(	value.getRequiresHands());
-		txtSpaceRequired	.setText(	value.getSpaceRequired());
-		txtSpeedFactor	.setIntegerValue(	value.getSpeedFactor());
-		txtTwiceDamageCharged	.setSelected(	value.isTwiceDamageToLargeWhenGroundedAgainstCharge());
-		txtTwiceDamageCharging	.setSelected(	value.isTwiceDamageWhenChargingOnMount());
-		txtTwiceDamageGrounded	.setSelected(	value.isTwiceDamageWhenGroundedAgainstCharge());
-
 		 
-		weaponVsAc.setScreen(value);
+		txtName	.setText(	value.getName());
+		txtNotes	.setText(	value.getNotes()); 
+ 
 
 	}
 
