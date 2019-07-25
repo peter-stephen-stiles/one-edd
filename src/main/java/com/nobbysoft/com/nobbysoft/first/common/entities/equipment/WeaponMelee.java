@@ -49,7 +49,12 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 	private int magicBonus;
 	private int extraMagicBonus;
 	private String extraMagicCondition;
-	
+	/*
+	 * 				"damage_L_mod",
+				"damage_SM_mod"
+	 */
+	private int damageLMod;
+	private int damageSMMod;
 	
 	@Override
 	public EquipmentType getType() { 
@@ -308,14 +313,27 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 		return name;
 	}
 
+	
+	private String damage(int mult,DICE dice, int mod) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(mult);
+		sb.append(dice.getDesc());
+		if (mod>0) {
+			sb.append("+");
+		}
+		if(mod!=0) {
+			sb.append(mod);
+		}
+		return sb.toString();
+	}
 
 	public String getLDamage() {
-		return ""+damageLDiceCount+""+damageLDICE.getDesc();
+		return damage(damageLDiceCount,damageLDICE,damageLMod);
 	}
 	
 	
 	public String getSMDamage() {
-		return ""+damageSMDiceCount+""+damageSMDICE.getDesc();
+		return damage(damageSMDiceCount,damageSMDICE,damageSMMod);
 	}
 	
 	@Override
@@ -374,8 +392,10 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		result = prime * result + ((damageLDICE == null) ? 0 : damageLDICE.hashCode());
 		result = prime * result + damageLDiceCount;
+		result = prime * result + damageLMod;
 		result = prime * result + ((damageSMDICE == null) ? 0 : damageSMDICE.hashCode());
 		result = prime * result + damageSMDiceCount;
+		result = prime * result + damageSMMod;
 		result = prime * result + encumberanceGP;
 		result = prime * result + extraMagicBonus;
 		result = prime * result + ((extraMagicCondition == null) ? 0 : extraMagicCondition.hashCode());
@@ -435,9 +455,13 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 			return false;
 		if (damageLDiceCount != other.damageLDiceCount)
 			return false;
+		if (damageLMod != other.damageLMod)
+			return false;
 		if (damageSMDICE != other.damageSMDICE)
 			return false;
 		if (damageSMDiceCount != other.damageSMDiceCount)
+			return false;
+		if (damageSMMod != other.damageSMMod)
 			return false;
 		if (encumberanceGP != other.encumberanceGP)
 			return false;
@@ -487,10 +511,10 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 	@Override
 	public String toString() {
 		return "WeaponMelee [code=" + code + ", name=" + name + ", requiresHands=" + requiresHands + ", capacityGP="
-				+ capacityGP + ", encumberanceGP=" + encumberanceGP + ", damageSMDice=" + damageSMDiceCount
-				+ ", damageSMDICE=" + damageSMDICE + ", damageLDice=" + damageLDiceCount + ", damageLDICE=" + damageLDICE
-				+ ", notes=" + notes + ", length=" + length + ", spaceRequired=" + spaceRequired + ", speedFactor="
-				+ speedFactor + ", twiceDamageToLargeWhenGroundedAgainstCharge="
+				+ capacityGP + ", encumberanceGP=" + encumberanceGP + ", damageSMDiceCount=" + damageSMDiceCount
+				+ ", damageSMDICE=" + damageSMDICE + ", damageLDiceCount=" + damageLDiceCount + ", damageLDICE="
+				+ damageLDICE + ", notes=" + notes + ", length=" + length + ", spaceRequired=" + spaceRequired
+				+ ", speedFactor=" + speedFactor + ", twiceDamageToLargeWhenGroundedAgainstCharge="
 				+ twiceDamageToLargeWhenGroundedAgainstCharge + ", twiceDamageWhenChargingOnMount="
 				+ twiceDamageWhenChargingOnMount + ", twiceDamageWhenGroundedAgainstCharge="
 				+ twiceDamageWhenGroundedAgainstCharge + ", capableOfDismountingRider=" + capableOfDismountingRider
@@ -499,7 +523,8 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 				+ ", ACAdjustment05=" + ACAdjustment05 + ", ACAdjustment06=" + ACAdjustment06 + ", ACAdjustment07="
 				+ ACAdjustment07 + ", ACAdjustment08=" + ACAdjustment08 + ", ACAdjustment09=" + ACAdjustment09
 				+ ", ACAdjustment10=" + ACAdjustment10 + ", magicBonus=" + magicBonus + ", extraMagicBonus="
-				+ extraMagicBonus + ", extraMagicCondition=" + extraMagicCondition + "]";
+				+ extraMagicBonus + ", extraMagicCondition=" + extraMagicCondition + ", damageLMod=" + damageLMod
+				+ ", damageSMMod=" + damageSMMod + "]";
 	}
 
 
@@ -560,6 +585,26 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 
 	public void setExtraMagicCondition(String extraMagicCondition) {
 		this.extraMagicCondition = extraMagicCondition;
+	}
+
+
+	public int getDamageLMod() {
+		return damageLMod;
+	}
+
+
+	public void setDamageLMod(int damageLMod) {
+		this.damageLMod = damageLMod;
+	}
+
+
+	public int getDamageSMMod() {
+		return damageSMMod;
+	}
+
+
+	public void setDamageSMMod(int damageSMMod) {
+		this.damageSMMod = damageSMMod;
 	}
 
 

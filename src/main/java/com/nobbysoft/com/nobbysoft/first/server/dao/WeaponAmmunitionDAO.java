@@ -38,7 +38,9 @@ implements DAOI<WeaponAmmunition, String> {
 				"damage_SM_Dice_Count",
 				"encumberance_GP",
 				"magic_bonus",
-				"extra_magic_bonus"
+				"extra_magic_bonus",
+				"damage_L_mod",
+				"damage_SM_mod"
 				};
 		DAOUtils.createInts(con, tableName, newInts);
 		}
@@ -79,6 +81,8 @@ implements DAOI<WeaponAmmunition, String> {
 			"requires_Hands",
 			"notes",
 			"extra_magic_condition",
+			"damage_L_mod",
+			"damage_SM_mod"
 			};
 	
 	
@@ -99,6 +103,8 @@ implements DAOI<WeaponAmmunition, String> {
 		dto.setRequiresHands(EquipmentHands.valueOf(rs.getString(col++)));
 		dto.setNotes(rs.getString(col++));
 		dto.setExtraMagicCondition(rs.getString(col++));
+		dto.setDamageLMod(rs.getInt(col++));
+		dto.setDamageSMMod(rs.getInt(col++));
 		return dto;
 	}
 
@@ -160,6 +166,8 @@ implements DAOI<WeaponAmmunition, String> {
 		ps.setString(col++, value.getRequiresHands().name()); 
 		ps.setString(col++, value.getNotes()); 
 		ps.setString(col++, value.getExtraMagicCondition()); 
+		ps.setInt(col++, value.getDamageLMod());
+		ps.setInt(col++, value.getDamageSMMod());
 		return col;
 	}
 

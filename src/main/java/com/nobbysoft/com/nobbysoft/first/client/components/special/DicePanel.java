@@ -41,7 +41,7 @@ private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup()
 			return d;
 		}
 	};
-	private PIntegerCombo cmbModifier = new PIntegerCombo(-11,+11) {
+	private PIntegerCombo cmbModifier = new PIntegerCombo(-11,+11,true,false) {
 		public Dimension getPreferredSize() {			
 			Dimension d = super.getPreferredSize();
 			if(d.getWidth()< 40) {
@@ -157,7 +157,7 @@ private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup()
 		private int multiplier;
 		private DICE dice;
 		private int modifier;
-		DicePanelData (int multiplier,DICE dice, int modifier){
+		public DicePanelData (int multiplier,DICE dice, int modifier){
 			this.multiplier=multiplier;
 			this.dice =dice;
 			this.modifier = modifier;

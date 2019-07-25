@@ -48,7 +48,9 @@ implements DAOI<WeaponMelee, String> {
 				"encumberance_GP",
 				"speed_Factor",
 				"magic_bonus",
-				"extra_magic_bonus"
+				"extra_magic_bonus",
+				"damage_L_mod",
+				"damage_SM_mod"
 				};
 		DAOUtils.createInts(con, tableName, newInts);
 		}
@@ -109,6 +111,8 @@ implements DAOI<WeaponMelee, String> {
 			"twice_Damage_To_Large_When_Grounded_Against_Charge",
 			"twice_Damage_When_Charging_On_Mount",
 			"twice_Damage_When_Grounded_Against_Charge",
+			"damage_L_mod",
+			"damage_SM_mod"
 			};
 	
 	
@@ -146,6 +150,8 @@ implements DAOI<WeaponMelee, String> {
 		dto.setTwiceDamageToLargeWhenGroundedAgainstCharge(rs.getBoolean(col++));
 		dto.setTwiceDamageWhenChargingOnMount(rs.getBoolean(col++));
 		dto.setTwiceDamageWhenGroundedAgainstCharge(rs.getBoolean(col++));
+		dto.setDamageLMod(rs.getInt(col++));
+		dto.setDamageSMMod(rs.getInt(col++));
 		return dto;
 	}
 
@@ -223,6 +229,8 @@ implements DAOI<WeaponMelee, String> {
 		ps.setBoolean(col++, value.isTwiceDamageToLargeWhenGroundedAgainstCharge());
 		ps.setBoolean(col++, value.isTwiceDamageWhenChargingOnMount());
 		ps.setBoolean(col++, value.isTwiceDamageWhenGroundedAgainstCharge()); 
+		ps.setInt(col++, value.getDamageLMod());
+		ps.setInt(col++, value.getDamageSMMod());
 		return col;
 	}
 

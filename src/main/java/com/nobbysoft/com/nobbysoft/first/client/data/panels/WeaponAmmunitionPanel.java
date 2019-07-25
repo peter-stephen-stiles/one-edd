@@ -13,9 +13,11 @@ import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.com.nobbysoft.first.client.components.PTextField;
+import com.nobbysoft.com.nobbysoft.first.client.components.special.DicePanel;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboDICE;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboEquipmentHands;
-import com.nobbysoft.com.nobbysoft.first.client.components.special.PWeaponMagic; 
+import com.nobbysoft.com.nobbysoft.first.client.components.special.PWeaponMagic;
+import com.nobbysoft.com.nobbysoft.first.client.components.special.DicePanel.DicePanelData;
 import com.nobbysoft.com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
@@ -56,10 +58,12 @@ public class WeaponAmmunitionPanel extends AbstractDataPanel<WeaponAmmunition, S
 		}
 	};
 	private final PIntegerField txtWeightGP = new PIntegerField();
-	private final PComboDICE txtSMDice = new PComboDICE();
-	private final PIntegerCombo txtSMDiceCount = new PIntegerCombo(1,4);
-	private final PComboDICE txtLDice = new PComboDICE();
-	private final PIntegerCombo txtLDiceCount = new PIntegerCombo(1,4);
+	 
+	private final DicePanel txtSMDamage = new DicePanel();
+	private final DicePanel txtLDamage = new DicePanel();
+	
+	
+	
 	private final PTextField txtNotes = new PTextField(255);
 	 
 	
@@ -72,6 +76,8 @@ public class WeaponAmmunitionPanel extends AbstractDataPanel<WeaponAmmunition, S
 			txtWeightGP,
 			txtNotes,
 			 txtWeaponMagic,
+			 txtSMDamage,
+			 txtLDamage
 			 };
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtCode };
 
@@ -86,8 +92,8 @@ public class WeaponAmmunitionPanel extends AbstractDataPanel<WeaponAmmunition, S
  
 		txtName.setName("Name");
 		txtWeightGP.setName("Weight (gp)");
-		txtSMDice.setName("Damage (S/M)");
-		txtLDice.setName("Damage (L)");
+		txtSMDamage.setName("Damage (S/M)");
+		txtLDamage.setName("Damage (L)");
 		txtNotes.setName("Notes");
 
 
@@ -95,8 +101,8 @@ public class WeaponAmmunitionPanel extends AbstractDataPanel<WeaponAmmunition, S
 
 		PLabel lblName = new PLabel(txtName.getName() );
 		PLabel lblWeightGP = new PLabel(txtWeightGP.getName() );
-		PLabel lblDamageSM = new PLabel(txtSMDice.getName() );
-		PLabel lblDamageL = new PLabel(txtLDice.getName() );
+		PLabel lblDamageSM = new PLabel(txtSMDamage.getName() );
+		PLabel lblDamageL = new PLabel(txtLDamage.getName() );
 		PLabel lblNotes = new PLabel(txtNotes.getName()); 
 		
 
@@ -116,13 +122,11 @@ public class WeaponAmmunitionPanel extends AbstractDataPanel<WeaponAmmunition, S
 		
 
 		add(lblDamageSM, GBU.label(0, row));
-		add(txtSMDiceCount, GBU.text(1, row));
-		add(txtSMDice, GBU.text(2, row));
+		add(txtSMDamage, GBU.text(1, row)); 
 		row++;
 		
 		add(lblDamageL, GBU.label(0, row));
-		add(txtLDiceCount, GBU.text(1, row));
-		add(txtLDice, GBU.text(2, row));
+		add(txtLDamage, GBU.text(1, row)); 
 		row++;
 		
 		add(txtWeaponMagic,GBU.hPanel(0,row,4,1));
@@ -154,10 +158,26 @@ public class WeaponAmmunitionPanel extends AbstractDataPanel<WeaponAmmunition, S
 		}
    
 		value.setCapacityGP(0);// not for weapons 
-		value.setDamageLDICE(txtLDice.getDICE());
-		value.setDamageLDiceCount(txtLDiceCount.getIntegerValue());
-		value.setDamageSMDICE(txtSMDice.getDICE());
-		value.setDamageSMDiceCount(txtSMDiceCount.getIntegerValue());
+	
+		{
+		DicePanelData dpd = txtLDamage.getDicePanelData();
+		
+		value.setDamageLDICE(dpd.getDice());
+		value.setDamageLDiceCount(dpd.getMultiplier());
+		value.setDamageLMod(dpd.getModifier());
+		
+		}
+		
+		{
+			DicePanelData dpd = txtSMDamage.getDicePanelData();
+			
+			value.setDamageSMDICE(dpd.getDice());
+			value.setDamageSMDiceCount(dpd.getMultiplier());
+			value.setDamageSMMod(dpd.getModifier());
+			
+			} 
+		
+		
 		value.setEncumberanceGP(txtWeightGP.getIntegerValue());
 		
 		
@@ -172,12 +192,23 @@ public class WeaponAmmunitionPanel extends AbstractDataPanel<WeaponAmmunition, S
 	void populateScreen(WeaponAmmunition value) {
 		txtCode.setText(value.getCode());
  
-		 
+		{
+		DicePanelData dpd = new DicePanelData (value.getDamageLDiceCount(),
+				value.getDamageLDICE(),
+				value.getDamageLMod());
 		
-		txtLDice	.setDICE(	value.getDamageLDICE());
-		txtLDiceCount	.setIntegerValue(	value.getDamageLDiceCount());
-		txtSMDice	.setDICE(	value.getDamageSMDICE());
-		txtSMDiceCount	.setIntegerValue(	value.getDamageSMDiceCount());
+		txtLDamage.setDicePanelData(dpd);
+		
+	}
+		{
+		DicePanelData dpd = new DicePanelData (value.getDamageSMDiceCount(),
+				value.getDamageSMDICE(),
+				value.getDamageSMMod());
+		
+		txtSMDamage.setDicePanelData(dpd);
+		
+	}
+		 
 		txtWeightGP	.setIntegerValue(	value.getEncumberanceGP());
 		
 		txtWeaponMagic.populateScreen(value);

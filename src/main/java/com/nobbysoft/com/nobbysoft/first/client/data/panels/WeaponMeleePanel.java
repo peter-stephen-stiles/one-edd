@@ -18,6 +18,8 @@ import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.com.nobbysoft.first.client.components.PTextField;
+import com.nobbysoft.com.nobbysoft.first.client.components.special.DicePanel;
+import com.nobbysoft.com.nobbysoft.first.client.components.special.DicePanel.DicePanelData;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboDICE;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboEquipmentHands;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PWeaponMagic;
@@ -60,11 +62,11 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 			return d;
 		}
 	};
-	private final PIntegerField txtWeightGP = new PIntegerField();
-	private final PComboDICE txtSMDice = new PComboDICE();
-	private final PIntegerCombo txtSMDiceCount = new PIntegerCombo(1,4);
-	private final PComboDICE txtLDice = new PComboDICE();
-	private final PIntegerCombo txtLDiceCount = new PIntegerCombo(1,4);
+	private final PIntegerField txtWeightGP = new PIntegerField(); 
+	
+	private final DicePanel txtSMDamage = new DicePanel();
+	private final DicePanel txtLDamage = new DicePanel();
+	
 	private final PTextField txtNotes = new PTextField(255);
 	
 	private final PCheckBox txtTwiceDamageCharged = new PCheckBox("Does twice damage to charging opponents when grounded");
@@ -101,6 +103,8 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 			 txtCapableOfDismountingRider,
 			 txtCapableOfDisarmingAgainstAC8,
 			 txtWeaponMagic,
+			 txtSMDamage,
+			 txtLDamage			 
 			 };
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtCode };
 
@@ -115,8 +119,8 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
  
 		txtName.setName("Name");
 		txtWeightGP.setName("Weight (gp)");
-		txtSMDice.setName("Damage (S/M)");
-		txtLDice.setName("Damage (L)");
+		txtSMDamage.setName("Damage (S/M)");
+		txtLDamage.setName("Damage (L)");
 		txtNotes.setName("Notes");
 		txtLength.setName("Length");
 		txtSpaceRequired.setName("Space required (feet)");
@@ -128,8 +132,8 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 
 		PLabel lblName = new PLabel(txtName.getName() );
 		PLabel lblWeightGP = new PLabel(txtWeightGP.getName() );
-		PLabel lblDamageSM = new PLabel(txtSMDice.getName() );
-		PLabel lblDamageL = new PLabel(txtLDice.getName() );
+		PLabel lblDamageSM = new PLabel(txtSMDamage.getName() );
+		PLabel lblDamageL = new PLabel(txtLDamage.getName() );
 		PLabel lblNotes = new PLabel(txtNotes.getName());
 		PLabel lblLength = new PLabel(txtLength.getName());
 		PLabel lblSpaceRequired = new PLabel(txtSpaceRequired.getName());
@@ -155,13 +159,12 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		
 
 		add(lblDamageSM, GBU.label(0, row));
-		add(txtSMDiceCount, GBU.text(1, row));
-		add(txtSMDice, GBU.text(2, row));
+		add(txtSMDamage, GBU.text(1, row));
+		
 		row++;
 		
 		add(lblDamageL, GBU.label(0, row));
-		add(txtLDiceCount, GBU.text(1, row));
-		add(txtLDice, GBU.text(2, row));
+		add(txtLDamage, GBU.text(1, row));		
 		row++;
 		
 	 
@@ -224,11 +227,17 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
   
 		value.setCapableOfDisarmingAgainstAC8(txtCapableOfDisarmingAgainstAC8.isSelected());
 		value.setCapableOfDismountingRider(txtCapableOfDismountingRider.isSelected());
-		value.setCapacityGP(0);// not for weapons 
-		value.setDamageLDICE(txtLDice.getDICE());
-		value.setDamageLDiceCount(txtLDiceCount.getIntegerValue());
-		value.setDamageSMDICE(txtSMDice.getDICE());
-		value.setDamageSMDiceCount(txtSMDiceCount.getIntegerValue());
+		value.setCapacityGP(0);// not for weapons
+		DicePanelData dpdL = txtLDamage.getDicePanelData();
+		value.setDamageLDICE(dpdL.getDice());
+		value.setDamageLDiceCount(dpdL.getMultiplier());
+		value.setDamageLMod(dpdL.getModifier());
+		
+		DicePanelData dpdSM = txtSMDamage.getDicePanelData();
+		value.setDamageSMDICE(dpdSM.getDice());
+		value.setDamageSMDiceCount(dpdSM.getMultiplier());
+		value.setDamageSMMod(dpdSM.getModifier());
+		
 		value.setEncumberanceGP(txtWeightGP.getIntegerValue());
 		
 		
@@ -257,10 +266,15 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		txtCapableOfDisarmingAgainstAC8	.setSelected(	value.isCapableOfDisarmingAgainstAC8());
 		txtCapableOfDismountingRider	.setSelected(	value.isCapableOfDismountingRider());
 		
-		txtLDice	.setDICE(	value.getDamageLDICE());
-		txtLDiceCount	.setIntegerValue(	value.getDamageLDiceCount());
-		txtSMDice	.setDICE(	value.getDamageSMDICE());
-		txtSMDiceCount	.setIntegerValue(	value.getDamageSMDiceCount());
+		{
+		DicePanelData dpd = new DicePanelData(value.getDamageLDiceCount(),value.getDamageLDICE(),value.getDamageLMod());		 
+		txtLDamage.setDicePanelData(dpd);
+		}
+		{
+		DicePanelData dpd = new DicePanelData(value.getDamageSMDiceCount(),value.getDamageSMDICE(),value.getDamageSMMod());		 
+		txtSMDamage.setDicePanelData(dpd);
+		}
+		 
 		txtWeightGP	.setIntegerValue(	value.getEncumberanceGP());
 		
 		txtWeaponMagic.populateScreen(value);

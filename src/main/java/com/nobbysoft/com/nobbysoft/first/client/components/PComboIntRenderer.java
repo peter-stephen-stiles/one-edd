@@ -25,10 +25,15 @@ public class PComboIntRenderer extends DefaultListCellRenderer  {
 	private Font boldFont = dftFont.deriveFont(Font.BOLD);
 	private boolean opaque = labelT.isOpaque();
 	private boolean showPlus=false; 
+	private boolean showZero = true;
 	 
-	
+
 	public PComboIntRenderer(boolean showPlus) {
 		this.showPlus=showPlus;
+	}
+	public PComboIntRenderer(boolean showPlus,boolean showZero) {
+		this.showPlus=showPlus;
+		this.showZero=showZero;
 	}
  
 	
@@ -45,8 +50,8 @@ public class PComboIntRenderer extends DefaultListCellRenderer  {
 		String tv="";
 		if(value!=null) {
 			if(value instanceof Number) {
-				if(showPlus) {
-					Number n =(Number)value;
+				Number n =(Number)value;
+				if(showPlus) {					
 					if(n.doubleValue()>0) {
 						tv= ("+"+value.toString());
 					} else {
@@ -54,6 +59,15 @@ public class PComboIntRenderer extends DefaultListCellRenderer  {
 					}
 				} else {
 					tv=(value.toString());
+				}
+				if(!showZero) {
+					if( n.intValue()==0) {
+						// nearly zero, 						
+						double d=Math.abs(n.doubleValue());
+						if(d < 0.00001) {
+							tv="  ";// near enough for me!
+						}
+					}
 				}
 			} else {
 				tv=(value.toString());				
