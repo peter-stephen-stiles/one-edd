@@ -1,11 +1,19 @@
 package com.nobbysoft.com.nobbysoft.first.client.components;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @SuppressWarnings("serial")
 public class PIntegerCombo extends PComboBox<Integer> {
 
+
+	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+
+	
 	private int min=0;
 	private int max=100;
 	private boolean showPlus = false;
@@ -42,19 +50,19 @@ public class PIntegerCombo extends PComboBox<Integer> {
 		this.max=max;
 		List<Integer> vals = new ArrayList<>();
 		for(int i=min;i<max+1;i++) {
-			vals.add(i);
+			vals.add(new Integer(i));
 		}
 		setList(vals);
 		setIntegerValue(cv);
 	}
-	public void setIntegerValue(int val) {
-		setSelectedCode(new Integer(val));
+	public void setIntegerValue(int val) {		
+		setSelectedItem(new Integer(val));
 	}
 	public int getIntegerValue() {
 		Object gv = getSelectedItem();
 		if(gv!=null && gv instanceof Integer) {
-		int v = (Integer)getSelectedItem();
-		return v;
+			int v = (Integer)getSelectedItem();
+			return v;
 		}
 		return 0;
 	}

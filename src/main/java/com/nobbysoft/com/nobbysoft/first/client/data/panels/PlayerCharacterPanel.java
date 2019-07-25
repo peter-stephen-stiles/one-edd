@@ -531,20 +531,20 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		cr.setVisible(true);
 		if(!cr.isCancelled()) {
 			txtGender.setGender(cr.getGender());
-			txtRace.setSelectedItem(cr.getRace());
+			selectRace(txtRace,cr.getRace().getRaceId());
 			int[] atts = cr.getAtts();
 			for(int i=0,n=attCombos.length;i<n;i++) {
 				attCombos[i].setIntegerValue(atts[i]);
 			}
 			List<CharacterClass> classes = cr.getCharacterClasses();
 			List<Integer> hps= cr.getHitPoints();
-			txtClassHpTotal.setIntegerValue(0);
+			txtClassHpTotal.setIntegerValue(0); 
 			int totalhp=0;
 			for(int i=0,n=3;i<n;i++){
 				classCombos[i].setVisible(false); 
 				classCombos[i].setSelectedItem(noClass);
 				hpValuesLabels[i].setText("");
-				levels[i].setIntegerValue(0);
+				levels[i].setIntegerValue(0);				
 			}
 			for(int i=0,n=classes.size();i<n;i++){
 				classCombos[i].setVisible(true); 

@@ -933,6 +933,7 @@ public class CharacterRoller extends PDialog {
 		CodedListItem<Race> cli = (CodedListItem<Race>) cbxRace.getSelectedItem();
 
 		Race r = cli.getItem();
+		LOGGER.info("race:"+r);
 		return r;
 	}
 	public Gender getGender() {
