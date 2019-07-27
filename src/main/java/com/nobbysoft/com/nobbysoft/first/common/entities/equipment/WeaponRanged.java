@@ -263,7 +263,7 @@ Comparable<WeaponRanged>, Serializable, DataDTOInterface<String>{
 
 	@Override
 	public EquipmentType getType() {
-		return EquipmentType.RANGED_THROWN;
+		return EquipmentType.WEAPON_RANGED;
 	}
 	@Override
 	public String toString() {
