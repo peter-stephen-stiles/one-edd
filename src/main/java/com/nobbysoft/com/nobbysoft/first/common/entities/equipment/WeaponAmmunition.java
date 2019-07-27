@@ -4,9 +4,10 @@ import java.io.Serializable;
 
 import com.nobbysoft.com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.com.nobbysoft.first.common.utils.DICE;
+import com.nobbysoft.com.nobbysoft.first.common.views.DicePanelData;
 
 @SuppressWarnings("serial")
-public class WeaponAmmunition implements EquipmentI ,WeaponMagicI,
+public class WeaponAmmunition implements EquipmentI ,WeaponMagicI,WeaponDamageI,
 Comparable<WeaponAmmunition>, Serializable, DataDTOInterface<String>{
 
 	public WeaponAmmunition() { 
@@ -362,7 +363,35 @@ Comparable<WeaponAmmunition>, Serializable, DataDTOInterface<String>{
 				+ ", damageLMod=" + damageLMod + ", damageSMMod=" + damageSMMod + "]";
 	}
 
+	@Override
+	public DicePanelData getDamageL() {
+		return new DicePanelData(damageLDiceCount,damageLDICE,damageLMod);
+	}
 
+
+	@Override
+	public void setDamageL(DicePanelData data) {
+		setDamageLDiceCount(data.getMultiplier());
+		setDamageLDICE(data.getDice());
+		setDamageLMod(data.getModifier());
+		
+	}
+
+
+	@Override
+	public DicePanelData getDamageSM() {
+		return new DicePanelData(damageSMDiceCount,damageSMDICE,damageSMMod);
+	}
+
+
+	@Override
+	public void setDamageSM(DicePanelData data) {
+		setDamageSMDiceCount(data.getMultiplier());
+		setDamageSMDICE(data.getDice());
+		setDamageSMMod(data.getModifier());
+		
+		
+	}
  
  
 

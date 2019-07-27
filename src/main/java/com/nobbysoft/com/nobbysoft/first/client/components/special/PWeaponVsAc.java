@@ -10,7 +10,7 @@ import javax.swing.border.EtchedBorder;
 
 import com.nobbysoft.com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.com.nobbysoft.first.client.components.*;
-import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponI;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponACAdjustmentsI;
 
 public class PWeaponVsAc extends PPanel implements PDataComponent  {
 
@@ -88,7 +88,7 @@ public class PWeaponVsAc extends PPanel implements PDataComponent  {
 		 pnlData.add(txtVsAc10);  
 	 }
 
-	 public void setScreen(WeaponI weapon) {
+	 public void populateScreen(WeaponACAdjustmentsI weapon) {
 		 txtVsAc02.setIntegerValue(weapon.getACAdjustment02());
 		 txtVsAc03.setIntegerValue(weapon.getACAdjustment03());
 		 txtVsAc04.setIntegerValue(weapon.getACAdjustment04());
@@ -100,7 +100,7 @@ public class PWeaponVsAc extends PPanel implements PDataComponent  {
 		 txtVsAc10.setIntegerValue(weapon.getACAdjustment10()); 
 	 }
 	 
-	 public void setFromScreen(WeaponI weapon) {
+	 public void populateFromScreen(WeaponACAdjustmentsI weapon) {
 		 weapon.setACAdjustment02(txtVsAc02.getIntegerValue());
 		 weapon.setACAdjustment03(txtVsAc03.getIntegerValue());
 		 weapon.setACAdjustment04(txtVsAc04.getIntegerValue());

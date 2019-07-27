@@ -17,7 +17,6 @@ import com.nobbysoft.com.nobbysoft.first.client.components.special.DicePanel;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboDICE;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboEquipmentHands;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PWeaponMagic;
-import com.nobbysoft.com.nobbysoft.first.client.components.special.DicePanel.DicePanelData;
 import com.nobbysoft.com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
@@ -26,6 +25,7 @@ import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentHand
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponAmmunition;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.utils.ReturnValue;
+import com.nobbysoft.com.nobbysoft.first.common.views.DicePanelData;
 import com.nobbysoft.com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
@@ -159,24 +159,9 @@ public class WeaponAmmunitionPanel extends AbstractDataPanel<WeaponAmmunition, S
    
 		value.setCapacityGP(0);// not for weapons 
 	
-		{
-		DicePanelData dpd = txtLDamage.getDicePanelData();
-		
-		value.setDamageLDICE(dpd.getDice());
-		value.setDamageLDiceCount(dpd.getMultiplier());
-		value.setDamageLMod(dpd.getModifier());
-		
-		}
-		
-		{
-			DicePanelData dpd = txtSMDamage.getDicePanelData();
+		value.setDamageL(txtLDamage.getDicePanelData());
 			
-			value.setDamageSMDICE(dpd.getDice());
-			value.setDamageSMDiceCount(dpd.getMultiplier());
-			value.setDamageSMMod(dpd.getModifier());
-			
-			} 
-		
+		value.setDamageSM(txtSMDamage.getDicePanelData());
 		
 		value.setEncumberanceGP(txtWeightGP.getIntegerValue());
 		
@@ -192,22 +177,9 @@ public class WeaponAmmunitionPanel extends AbstractDataPanel<WeaponAmmunition, S
 	void populateScreen(WeaponAmmunition value) {
 		txtCode.setText(value.getCode());
  
-		{
-		DicePanelData dpd = new DicePanelData (value.getDamageLDiceCount(),
-				value.getDamageLDICE(),
-				value.getDamageLMod());
+		txtLDamage.setDicePanelData(value.getDamageL());
 		
-		txtLDamage.setDicePanelData(dpd);
-		
-	}
-		{
-		DicePanelData dpd = new DicePanelData (value.getDamageSMDiceCount(),
-				value.getDamageSMDICE(),
-				value.getDamageSMMod());
-		
-		txtSMDamage.setDicePanelData(dpd);
-		
-	}
+		txtSMDamage.setDicePanelData(value.getDamageSM());
 		 
 		txtWeightGP	.setIntegerValue(	value.getEncumberanceGP());
 		

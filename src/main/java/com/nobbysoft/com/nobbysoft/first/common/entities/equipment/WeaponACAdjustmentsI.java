@@ -1,6 +1,6 @@
 package com.nobbysoft.com.nobbysoft.first.common.entities.equipment;
 
-public interface WeaponI {
+public interface WeaponACAdjustmentsI {
 	public int getACAdjustment02();
 	public int getACAdjustment03();
 	public int getACAdjustment04();

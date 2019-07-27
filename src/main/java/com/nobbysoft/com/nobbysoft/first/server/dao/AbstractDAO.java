@@ -36,14 +36,8 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 	abstract String addOrderByClause(String sql) ;
 	abstract String getFilterWhere();
 
-	//sql = sql + "  character_name like ? or player_name like ?";
+
 	abstract void setFilterParameters(PreparedStatement ps ,String filter) throws SQLException ;
-	/*
-	 * 					String f = "%" + filter + "%";
-			ps.setString(1, f); 
-			ps.setString(2, f); 
-	 */
-	
 	
 	 String questionsForInsert() {
 		String s = "";

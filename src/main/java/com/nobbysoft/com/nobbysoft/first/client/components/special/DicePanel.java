@@ -12,6 +12,7 @@ import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.common.utils.DICE;
+import com.nobbysoft.com.nobbysoft.first.common.views.DicePanelData;
 
 public class DicePanel extends PPanel implements PDataComponent {
 
@@ -150,41 +151,6 @@ private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup()
 	@Override
 	public boolean isReadOnly() {
 		return items[0].isReadOnly();
-	}
-
-	
-	public static final class DicePanelData {
-		private int multiplier;
-		private DICE dice;
-		private int modifier;
-		public DicePanelData (int multiplier,DICE dice, int modifier){
-			this.multiplier=multiplier;
-			this.dice =dice;
-			this.modifier = modifier;
-		}
-		public int getMultiplier() {
-			return multiplier;
-		}
-		public DICE getDice() {
-			return dice;
-		}
-		public int getModifier() {
-			return modifier;
-		}
-		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			if(multiplier>1) {
-				sb.append(multiplier);
-			}
-			sb.append(dice.getDesc());
-			if(modifier<0) {
-				sb.append(modifier);
-			} else if(modifier>0) {
-				sb.append("+");
-				sb.append(modifier);
-			}
-			return sb.toString();
-		}
 	}
  
 
