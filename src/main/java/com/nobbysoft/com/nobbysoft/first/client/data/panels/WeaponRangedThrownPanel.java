@@ -180,7 +180,7 @@ private PWeaponRanged txtWeaponRanged = new PWeaponRanged ();
 		add(txtCapableOfDisarmingAgainstAC8, GBU.text(1, row,3));row++;
 		
 		
-		add(txtWeaponRanged, GBU.hPanel(0, row,2,1));
+		add(txtWeaponRanged, GBU.hPanel(0, row,4,1));
 		row++;
 
 		

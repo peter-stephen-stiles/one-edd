@@ -6,6 +6,9 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.border.EtchedBorder;
+
 import com.nobbysoft.com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.com.nobbysoft.first.client.components.PDataComponent;
 import com.nobbysoft.com.nobbysoft.first.client.components.PLabel;
@@ -26,16 +29,19 @@ public class PWeaponRanged extends PPanel implements PDataComponent  {
 	
 	private void jbInit() {
 		setLayout(new GridBagLayout());
-		add(new PLabel("Fire rate"),GBU.labelC(0, 0));
-		add(txtFireRate,GBU.text(0, 1));
-		add(new PLabel("|"),GBU.labelC(1, 0));
-		add(new PLabel("|"),GBU.labelC(1, 1));
-		add(new PLabel("Range S"),GBU.labelC(2, 0));
-		add(txtRangeS,GBU.text(2, 1));
-		add(new PLabel("Range M"),GBU.labelC(3, 0));
-		add(txtRangeM,GBU.text(3, 1));
-		add(new PLabel("Range L"),GBU.labelC(4, 0));
-		add(txtRangeL,GBU.text(4, 1));
+		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		add(new PLabel(" "),GBU.text(1, 0));
+		add(new PLabel("Fire rate"),GBU.labelC(2, 0));
+		add(txtFireRate,GBU.text(2, 1));
+		add(new PLabel("|"),GBU.labelC(3, 0));
+		add(new PLabel("|"),GBU.labelC(3, 1));
+		add(new PLabel("Range S"),GBU.labelC(4, 0));
+		add(txtRangeS,GBU.text(4, 1));
+		add(new PLabel("Range M"),GBU.labelC(5, 0));
+		add(txtRangeM,GBU.text(5, 1));
+		add(new PLabel("Range L"),GBU.labelC(6, 0));
+		add(txtRangeL,GBU.text(6, 1));
+		add(new PLabel(" "),GBU.text(7, 0));
 		populateCombos();
 	}
 	
