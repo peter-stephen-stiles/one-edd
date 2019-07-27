@@ -3,6 +3,8 @@ package com.nobbysoft.com.nobbysoft.first.utils;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,6 +166,19 @@ public enum DataMapper {
 		List<Class>  d =new ArrayList<>();
 		d.addAll(entityservicemap.keySet());
 		d.remove(PlayerCharacter.class);
+		Collections.sort(d,new Comparator<Class>() {
+
+			@Override
+			public int compare(Class o1, Class o2) {
+				int ret=0;
+				ret = o1.getSimpleName().compareTo(o2.getSimpleName());
+				if(ret==0) {
+					ret = o1.getName().compareTo(o2.getName());
+				}
+				return ret;
+			}
+			
+		});
 		return d;
 	}
 	

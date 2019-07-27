@@ -37,6 +37,7 @@ import com.nobbysoft.com.nobbysoft.first.client.components.PButtonPanel;
 import com.nobbysoft.com.nobbysoft.first.client.components.PCodedListCellRenderer;
 import com.nobbysoft.com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.com.nobbysoft.first.client.components.PLabel;
+import com.nobbysoft.com.nobbysoft.first.client.components.PListCellRenderer;
 import com.nobbysoft.com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.com.nobbysoft.first.client.components.PTable;
 import com.nobbysoft.com.nobbysoft.first.client.components.PTableCellRenderer;
@@ -143,22 +144,7 @@ public class DataFrameTabData extends PPanel{
 		});
 		
 
-		cbxData.setRenderer(new ListCellRenderer<Class<?>>() {
-			private PLabel label = new PLabel();
-			private Color dftBackground = label.getBackground();
-			private Font dftFont = label.getFont();
-			private Font boldFont = dftFont.deriveFont(Font.BOLD);
-
-			@Override
-			public Component getListCellRendererComponent(JList<? extends Class<?>> list, Class<?> value, int index,
-					boolean isSelected, boolean cellHasFocus) {
-				label.setText(DataMapper.INSTANCE.getName(value));
-				label.setBackground(isSelected ? Color.GRAY : dftBackground);
-				label.setFont(cellHasFocus ? boldFont : dftFont);
-				return label;
-			}
-
-		});
+		cbxData.setMaximumRowCount(20);
 		
 	}
 
@@ -169,10 +155,6 @@ public class DataFrameTabData extends PPanel{
 		cbxData.addItem(clazz);
 	}
 		
-//		cbxData.addItem(Spell.class);
-//		cbxData.addItem(CharacterClass.class);
-//		cbxData.addItem(Race.class);
-//		cbxData.addItem(RaceClassLimit.class);
 
 		populateTable();
 	}

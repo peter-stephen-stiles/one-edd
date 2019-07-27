@@ -60,7 +60,7 @@ public class PComboBox<E> extends JComboBox<E> implements PDataComponent {
 	
 	public PComboBox(){
 		super(); 
-		//setRenderer(new PComboRenderer<E>());
+		setRenderer(new PListCellRenderer<E>());
 	}
 	
 	@Override
