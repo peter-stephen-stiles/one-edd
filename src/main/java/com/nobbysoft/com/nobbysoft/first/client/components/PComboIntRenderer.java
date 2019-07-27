@@ -81,6 +81,10 @@ public class PComboIntRenderer  extends PListCellRenderer   {
 		
 		if(c instanceof JTextComponent) {
 			((JTextComponent)c).setText(getString(value));
+		} else if(c instanceof JLabel) {
+			((JLabel)c).setText(getString(value));
+		} else {
+			LOGGER.info("component is a naughty component !"+c.getClass().getSimpleName());
 		}
 		
 		return c;
