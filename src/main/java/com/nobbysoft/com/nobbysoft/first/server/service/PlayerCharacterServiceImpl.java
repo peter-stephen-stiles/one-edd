@@ -9,16 +9,19 @@ import com.nobbysoft.com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.server.dao.PlayerCharacterDAO;
+import com.nobbysoft.com.nobbysoft.first.server.dao.PlayerCharacterSpellDAO;
 import com.nobbysoft.com.nobbysoft.first.server.utils.ConnectionManager;
 
 public class PlayerCharacterServiceImpl implements PlayerCharacterService {
 
 	private final ConnectionManager cm;
 	private final PlayerCharacterDAO dao;
+	private final PlayerCharacterSpellDAO spellDao;
 	
 	public PlayerCharacterServiceImpl() {
 		cm = new ConnectionManager();
 		dao = new PlayerCharacterDAO();
+		spellDao = new PlayerCharacterSpellDAO();
 	}
 
 	@Override
@@ -72,6 +75,9 @@ public class PlayerCharacterServiceImpl implements PlayerCharacterService {
 		try(Connection con = cm.getConnection()){
 			con.setAutoCommit(false);
 			 dao.delete(con,value);
+			 //
+			 spellDao.deleteForPC(con, value.getPcId());
+			 //
 			 con.commit();
 			}
 	}

@@ -47,7 +47,7 @@ public class PlayerCharacterSpell implements Serializable,DataDTOInterface<Playe
 	@Override
 	public String[] getColumnCodedListTypes() {
 		// TODO Auto-generated method stub
-		return new String[] {Constants.CLI_PLAYER_CHARACTER,Constants.CLI_CLASS,null};
+		return new String[] {Constants.CLI_PLAYER_CHARACTER,Constants.CLI_SPELL,null};
 	}
 
 	public int getInMemory() {
@@ -56,6 +56,22 @@ public class PlayerCharacterSpell implements Serializable,DataDTOInterface<Playe
 
 	public void setInMemory(int inMemory) {
 		this.inMemory = inMemory;
+	}
+
+	public int getPcId() {
+		return pcId;
+	}
+
+	public void setPcId(int pcId) {
+		this.pcId = pcId;
+	}
+
+	public String getSpellId() {
+		return spellId;
+	}
+
+	public void setSpellId(String spellId) {
+		this.spellId = spellId;
 	}
 
 }

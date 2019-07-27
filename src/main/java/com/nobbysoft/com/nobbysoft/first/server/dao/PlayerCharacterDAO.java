@@ -54,7 +54,7 @@ public class PlayerCharacterDAO extends AbstractDAO<PlayerCharacter,Integer> imp
 		 * hasMagicDefenceBonus;
 		 */
 		String sql = "CREATE TABLE " + tableName
-				+ "(pc_id varchar(20), character_name varchar(256), "
+				+ "(pc_id integer, character_name varchar(256), "
 				+ "PRIMARY KEY (pc_id) ," + " UNIQUE  (character_name) )";
 
 		if (DbUtils.doesTableExist(con, tableName)) {

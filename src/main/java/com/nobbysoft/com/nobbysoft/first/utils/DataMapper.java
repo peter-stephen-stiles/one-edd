@@ -19,10 +19,11 @@ import com.nobbysoft.com.nobbysoft.first.client.data.panels.PlayerCharacterPanel
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.RaceClassLimitPanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.RacePanel;
 import com.nobbysoft.com.nobbysoft.first.client.data.panels.SpellPanel;
-import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponAmmunition;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.*;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponMelee;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponRanged;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
@@ -97,6 +98,9 @@ public enum DataMapper {
 		
 
 		daoimap.put(PlayerCharacter.class, PlayerCharacterDAO.class);
+		daoimap.put(PlayerCharacterSpell.class, PlayerCharacterSpellDAO.class);
+		
+		
 		daoimap.put(Spell.class, SpellDAO.class);
 		daoimap.put(Race.class, RaceDAO.class);
 		daoimap.put(CharacterClass.class, CharacterClassDAO.class);
@@ -107,6 +111,7 @@ public enum DataMapper {
 		daoimap.put(WeaponMelee.class,WeaponMeleeDAO.class);
 		daoimap.put(WeaponRanged.class,WeaponRangedDAO.class);
 		daoimap.put(WeaponAmmunition.class,WeaponAmmunitionDAO.class);
+		daoimap.put(Armour.class,ArmourDAO.class);
 
 		
 		
@@ -121,6 +126,8 @@ public enum DataMapper {
 		panels.put(WeaponMelee.class, WeaponMeleePanel.class);
 		panels.put(WeaponRanged.class, WeaponRangedPanel.class);
 		panels.put(WeaponAmmunition.class, WeaponAmmunitionPanel.class);
+		panels.put(Armour.class, ArmourPanel.class);
+		
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
 		entityservicemap.put(CharacterClass.class, CharacterClassService.class);
@@ -133,6 +140,7 @@ public enum DataMapper {
 		entityservicemap.put(WeaponMelee.class,WeaponMeleeService.class);
 		entityservicemap.put(WeaponRanged.class,WeaponRangedService.class);
 		entityservicemap.put(WeaponAmmunition.class,WeaponAmmunitionService.class);
+		entityservicemap.put(Armour.class,ArmourService.class);
 		
 		
 
@@ -142,13 +150,14 @@ public enum DataMapper {
 		servicemap.put(RaceService.class, RaceServiceImpl.class);
 		servicemap.put(RaceClassLimitService.class, RaceClassLimitServiceImpl.class);
 		servicemap.put(CodedListService.class, CodedListServiceImpl.class);
-
 		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);
 		servicemap.put(StrengthService.class, StrengthServiceImpl.class);
 		servicemap.put(DexterityService.class, DexterityServiceImpl.class);
 		servicemap.put(WeaponMeleeService.class, WeaponMeleeServiceImpl.class);
 		servicemap.put(WeaponRangedService.class, WeaponRangedThrownImpl.class);
 		servicemap.put(WeaponAmmunitionService.class, WeaponAmmunitionServiceImpl.class);
+		servicemap.put(ArmourService.class, ArmourServiceImpl.class);
+		
 		
 		
 	}
@@ -198,19 +207,23 @@ public enum DataMapper {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Class<DAOI>[] getDaos(){
-		return new Class[]{
-			PlayerCharacterDAO.class,
-			SpellDAO.class,
-			RaceDAO.class,
-			CharacterClassDAO.class,
-			RaceClassLimitDAO.class,
-			ConstitutionDAO.class,
-			StrengthDAO.class,
-			DexterityDAO.class,
-			WeaponMeleeDAO.class,
-			WeaponAmmunitionDAO.class,
-			WeaponRangedDAO.class,
-		};
+		
+		return daoimap.values().toArray(new Class[daoimap.size()]);
+		
+//		return new Class[]{
+//			PlayerCharacterDAO.class,
+//			SpellDAO.class,
+//			RaceDAO.class,
+//			CharacterClassDAO.class,
+//			RaceClassLimitDAO.class,
+//			ConstitutionDAO.class,
+//			StrengthDAO.class,
+//			DexterityDAO.class,
+//			WeaponMeleeDAO.class,
+//			WeaponAmmunitionDAO.class,
+//			WeaponRangedDAO.class,
+//			ArmourDAO.class,
+//		};
 	}
 
  

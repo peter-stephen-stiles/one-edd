@@ -187,6 +187,8 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 
 				return data;
 			}			
+
+			
 			
 			public void delete(Connection con, T value) throws SQLException {
 				String sql = "DELETE FROM "+getTableName()+" WHERE";
@@ -204,6 +206,25 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 
 			}
 
+			public void insertList(Connection con, List<T> values) throws SQLException {
+				for(T value:values) {
+					insert(con,value);
+				}
+			}
+			
+
+			public void deleteList(Connection con, List<T> values) throws SQLException {
+				for(T value:values) {
+					delete(con,value);
+				}
+			}
+			
+			public void updateList(Connection con, List<T> values) throws SQLException {
+				for(T value:values) {
+					update(con,value);
+				}
+			}
+			
 			public void update(Connection con, T value) throws SQLException {
 				String sql = " UPDATE " +getTableName()+ "  SET ";
 				sql = addDataColumnsForUpdate(sql,false);
