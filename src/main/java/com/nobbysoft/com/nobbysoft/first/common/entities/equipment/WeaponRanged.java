@@ -8,10 +8,10 @@ import com.nobbysoft.com.nobbysoft.first.common.utils.DICE;
 import com.nobbysoft.com.nobbysoft.first.common.views.DicePanelData;
 
 @SuppressWarnings("serial")
-public class WeaponRangedThrown  implements EquipmentI ,WeaponACAdjustmentsI,WeaponMagicI,WeaponDamageI,WeaponRangedI,
-Comparable<WeaponRangedThrown>, Serializable, DataDTOInterface<String>{
+public class WeaponRanged  implements EquipmentI ,WeaponACAdjustmentsI,WeaponMagicI,WeaponDamageI,WeaponRangedI,
+Comparable<WeaponRanged>, Serializable, DataDTOInterface<String>{
 
-	public WeaponRangedThrown() { 
+	public WeaponRanged() { 
 	}
 
 	
@@ -250,7 +250,7 @@ Comparable<WeaponRangedThrown>, Serializable, DataDTOInterface<String>{
 	}
 	
 	@Override
-	public int compareTo(WeaponRangedThrown o) {
+	public int compareTo(WeaponRanged o) {
 		int ret= code.compareTo(o.code);
 		if(ret==0) {
 			ret= name.compareTo(o.name);

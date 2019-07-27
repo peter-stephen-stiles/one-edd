@@ -6,15 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentHands;
-import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponRangedThrown;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponRanged;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.com.nobbysoft.first.common.utils.DICE;
 import com.nobbysoft.com.nobbysoft.first.server.utils.DbUtils; 
 
-public class WeaponRangedThrownDAO extends AbstractDAO<WeaponRangedThrown,String>
-implements DAOI<WeaponRangedThrown, String> {
+public class WeaponRangedDAO extends AbstractDAO<WeaponRanged,String>
+implements DAOI<WeaponRanged, String> {
 
-	public WeaponRangedThrownDAO() { 
+	public WeaponRangedDAO() { 
 	}
 
 	private String tableName = "weapon_ranged_thrown";
@@ -121,8 +121,8 @@ implements DAOI<WeaponRangedThrown, String> {
 	
 	
 	@Override
-	WeaponRangedThrown dtoFromRS(ResultSet rs) throws SQLException {
-		WeaponRangedThrown dto = new WeaponRangedThrown();
+	WeaponRanged dtoFromRS(ResultSet rs) throws SQLException {
+		WeaponRanged dto = new WeaponRanged();
 		int col=1;
 		dto.setCode(rs.getString(col++));
 		dto.setName(rs.getString(col++));
@@ -196,13 +196,13 @@ implements DAOI<WeaponRangedThrown, String> {
 	}
 
 	@Override
-	int setPSFromKeys(WeaponRangedThrown value, PreparedStatement ps, int col) throws SQLException {
+	int setPSFromKeys(WeaponRanged value, PreparedStatement ps, int col) throws SQLException {
 		ps.setString(col++, value.getCode());
 		return col;
 	}
 
 	@Override
-	int setPSFromData(WeaponRangedThrown value, PreparedStatement ps, int col) throws SQLException {
+	int setPSFromData(WeaponRanged value, PreparedStatement ps, int col) throws SQLException {
 		ps.setString(col++, value.getName()); 
 		ps.setInt(col++, value.getACAdjustment02());
 		ps.setInt(col++, value.getACAdjustment03());

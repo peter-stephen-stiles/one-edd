@@ -28,25 +28,25 @@ import com.nobbysoft.com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
-import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponRangedThrown;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponRanged;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.com.nobbysoft.first.common.views.DicePanelData;
 import com.nobbysoft.com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
-public class WeaponRangedThrownPanel extends AbstractDataPanel<WeaponRangedThrown, String> implements MaintenancePanelInterface<WeaponRangedThrown> {
+public class WeaponRangedPanel extends AbstractDataPanel<WeaponRanged, String> implements MaintenancePanelInterface<WeaponRanged> {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-	public WeaponRangedThrownPanel() {
+	public WeaponRangedPanel() {
 		setLayout(new GridBagLayout());
 		jbInit();
 	}
 
 	@Override
 	DataServiceI<?, ?> getDataService() {   
-		DataServiceI dao  = DataMapper.INSTANCE.getDataService(WeaponRangedThrown.class);
+		DataServiceI dao  = DataMapper.INSTANCE.getDataService(WeaponRanged.class);
 		return dao;
 		
 	}
@@ -200,11 +200,11 @@ private PWeaponRanged txtWeaponRanged = new PWeaponRanged ();
 		return new ReturnValue("");
 	}
 
-	WeaponRangedThrown newT() {
-		return new WeaponRangedThrown();
+	WeaponRanged newT() {
+		return new WeaponRanged();
 	}
 
-	void populateFromScreen(WeaponRangedThrown value, boolean includingKeys) {
+	void populateFromScreen(WeaponRanged value, boolean includingKeys) {
 		if (includingKeys) {
 			value.setCode(txtCode.getText());
 		}
@@ -232,7 +232,7 @@ private PWeaponRanged txtWeaponRanged = new PWeaponRanged ();
  
 	}
 
-	void populateScreen(WeaponRangedThrown value) {
+	void populateScreen(WeaponRanged value) {
 		txtCode.setText(value.getCode());
  
  		 

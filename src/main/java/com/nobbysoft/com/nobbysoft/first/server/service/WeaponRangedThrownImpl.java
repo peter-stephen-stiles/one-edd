@@ -4,20 +4,20 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponRangedThrown;
-import com.nobbysoft.com.nobbysoft.first.common.servicei.WeaponRangedThrownService;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponRanged;
+import com.nobbysoft.com.nobbysoft.first.common.servicei.WeaponRangedService;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
-import com.nobbysoft.com.nobbysoft.first.server.dao.WeaponRangedThrownDAO;
+import com.nobbysoft.com.nobbysoft.first.server.dao.WeaponRangedDAO;
 import com.nobbysoft.com.nobbysoft.first.server.utils.ConnectionManager;
 
-public class WeaponRangedThrownServiceImpl implements WeaponRangedThrownService {
+public class WeaponRangedThrownImpl implements WeaponRangedService {
 
 	private final ConnectionManager cm;
-	private final WeaponRangedThrownDAO dao;
+	private final WeaponRangedDAO dao;
 	
-	public WeaponRangedThrownServiceImpl() {
+	public WeaponRangedThrownImpl() {
 		cm = new ConnectionManager();
-		dao = new WeaponRangedThrownDAO();
+		dao = new WeaponRangedDAO();
 	}
 
 	@Override
@@ -28,14 +28,14 @@ public class WeaponRangedThrownServiceImpl implements WeaponRangedThrownService 
 	}
 
 	@Override
-	public WeaponRangedThrown get(String key) throws SQLException {
+	public WeaponRanged get(String key) throws SQLException {
 		try(Connection con = cm.getConnection()){
 			return dao.get(con,key);
 			}
 	}
 
 	@Override
-	public void insert(WeaponRangedThrown value) throws SQLException {
+	public void insert(WeaponRanged value) throws SQLException {
 		try(Connection con = cm.getConnection()){
 			con.setAutoCommit(false);
 			 dao.insert(con,value);
@@ -44,21 +44,21 @@ public class WeaponRangedThrownServiceImpl implements WeaponRangedThrownService 
 	}
 
 	@Override
-	public List<WeaponRangedThrown> getList() throws SQLException {
+	public List<WeaponRanged> getList() throws SQLException {
 		try(Connection con = cm.getConnection()){
 			return dao.getList(con);
 			}
 	}
 
 	@Override
-	public List<WeaponRangedThrown> getFilteredList(String filter) throws SQLException {
+	public List<WeaponRanged> getFilteredList(String filter) throws SQLException {
 		try(Connection con = cm.getConnection()){
 			return dao.getFilteredList(con,filter);
 			}
 	}
 
 	@Override
-	public void delete(WeaponRangedThrown value) throws SQLException {
+	public void delete(WeaponRanged value) throws SQLException {
 		try(Connection con = cm.getConnection()){
 			con.setAutoCommit(false);
 			 dao.delete(con,value);
@@ -67,7 +67,7 @@ public class WeaponRangedThrownServiceImpl implements WeaponRangedThrownService 
 	}
 
 	@Override
-	public void update(WeaponRangedThrown value) throws SQLException {
+	public void update(WeaponRanged value) throws SQLException {
 		try(Connection con = cm.getConnection()){
 			con.setAutoCommit(false);
 			 dao.update(con,value);
