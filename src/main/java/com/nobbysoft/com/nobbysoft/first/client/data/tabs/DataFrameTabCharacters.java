@@ -349,6 +349,7 @@ public class DataFrameTabCharacters extends PPanel {
 			//
 			PlayerCharacter dto = ((ViewPlayerCharacter) tmData.getValueAt(r, 0)).getPlayerCharacter();
 			if (dto != null) {
+				
 				// get panel for current class and instantiate one
 				Class<?> mpc = PlayerCharacterPanel.class;
 				if (mpc != null) {
@@ -357,6 +358,7 @@ public class DataFrameTabCharacters extends PPanel {
 						Constructor cn = mpc.getConstructor();
 						mpi = (MaintenancePanelInterface<PlayerCharacter>) cn.newInstance();
 					} catch (Exception e) {
+						LOGGER.error("Error :(",e);
 						Popper.popError(this, e);
 						return;
 					} 

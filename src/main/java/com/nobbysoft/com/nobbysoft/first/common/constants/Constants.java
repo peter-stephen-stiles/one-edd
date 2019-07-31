@@ -20,6 +20,9 @@ public class Constants {
 	public static final String CLI_PLAYER_CHARACTER = "player-character";
 
 	public static final String CLI_ALIGNMENT = "alignments";
+	
+	public static final String CLI_EQUIPMENT_WHERE = "equipment-where";
+	public static final String CLI_EQUIPMENT_TYPE = "equipment-type";
 	public static final String CLI_GENDER = "genders";
 	
 	

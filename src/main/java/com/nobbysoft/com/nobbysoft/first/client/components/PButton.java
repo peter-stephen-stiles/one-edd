@@ -48,7 +48,7 @@ public class PButton extends JButton implements PDataComponent {
 	}
 	
 	public PButton() {
-		super();
+		super(" ");
 		
 	}
 

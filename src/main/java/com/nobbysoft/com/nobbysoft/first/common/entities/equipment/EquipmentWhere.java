@@ -13,5 +13,9 @@ public enum EquipmentWhere{
 	FOOT_R,
 	FOOT_L,
 	PACK,
-	OTHER_OR_NOT
+	OTHER_OR_NOT;
+	
+	public String getDesc() {
+		return name();
+	}
 	}

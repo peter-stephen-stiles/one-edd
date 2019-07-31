@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.List;
 
 import com.nobbysoft.com.nobbysoft.first.common.constants.Constants;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentType;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentWhere;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Alignment;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Attribute;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Gender;
@@ -42,6 +44,19 @@ public class CodedListDAO {
 				map.put(cli.getItem(), cli.getDescription());
 			}
 			return map;
+		} else if (Constants.CLI_EQUIPMENT_TYPE.equals(type)) {
+			Map<Comparable,String> map = new HashMap<>();
+			for(CodedListItem cli:getEquipmentType()) {
+				map.put(cli.getItem(), cli.getDescription());
+			}
+			return map;
+		} else if (Constants.CLI_EQUIPMENT_WHERE.equals(type)) {
+			Map<Comparable,String> map = new HashMap<>();
+			for(CodedListItem cli:getEquipmentWhere()) {
+				map.put(cli.getItem(), cli.getDescription());
+			}
+			return map;			
+					
 		} else if (Constants.CLI_DICE.equals(type)) {
 			Map<Comparable,String> map = new HashMap<>();
 			for(CodedListItem cli:getDice()) {
@@ -108,6 +123,10 @@ public class CodedListDAO {
 			return getRaceClassLimitMaxLevelList();
 		} else if (Constants.CLI_DICE.equals(type)) {
 			return getDice();
+		} else if (Constants.CLI_EQUIPMENT_WHERE.equals(type)) {
+			return getEquipmentWhere();
+		} else if (Constants.CLI_EQUIPMENT_TYPE.equals(type)) {
+			return getEquipmentWhere();
 		} else if(Constants.CLI_ATT_ROLLS.equals(type)) {
 			return getAttRolls();
 		}else if(Constants.CLI_ATT_BONUS.equals(type)) {
@@ -205,6 +224,24 @@ public class CodedListDAO {
 		List<CodedListItem<?>> list = new ArrayList<>();
 		for(int i=0,n=22;i<n;i++) {
 			list.add(new CodedListItem(i,""+i));
+		}
+		return list;
+	}
+
+	public List<CodedListItem<?>> getEquipmentType(){
+		
+		List<CodedListItem<?>> list = new ArrayList<>();
+		for(EquipmentType value:EquipmentType.values()) {
+			list.add(new CodedListItem(value.name(),value.getDesc()));
+		}
+		return list;
+	}
+	
+	public List<CodedListItem<?>> getEquipmentWhere(){
+		
+		List<CodedListItem<?>> list = new ArrayList<>();
+		for(EquipmentWhere value:EquipmentWhere.values()) {
+			list.add(new CodedListItem(value.name(),value.getDesc()));
 		}
 		return list;
 	}

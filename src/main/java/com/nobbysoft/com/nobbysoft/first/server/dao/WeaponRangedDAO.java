@@ -17,7 +17,7 @@ implements DAOI<WeaponRanged, String> {
 	public WeaponRangedDAO() { 
 	}
 
-	private String tableName = "weapon_ranged_thrown";
+	private String tableName = "weapon_ranged";
 	
 	@Override
 	public void createTable(Connection con) throws SQLException {

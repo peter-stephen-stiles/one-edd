@@ -1,10 +1,12 @@
 package com.nobbysoft.com.nobbysoft.first.server.dao;
 
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +67,8 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 		}
 		return sql;
 	}
+	 
+ 
 	
 	 String addKeyColumnsForUpdate(String sql) {
 		boolean first=true;
@@ -158,6 +162,88 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 				return getList(con,null);
 			}			
 		 
+			
+			private int addObjectsToPS(PreparedStatement ps, int col,Object[] fieldValues) throws SQLException{
+				for(Object o:fieldValues) {
+					if(o==null){
+						ps.setNull(col++,Types.VARCHAR); // your milage may vary :O
+					} else if(o instanceof BigDecimal) {
+						ps.setBigDecimal(col++,(BigDecimal)o);
+					} else if(o instanceof Integer) {
+						ps.setInt(col++,(Integer)o);
+					} else if(o instanceof Long) {
+						ps.setLong(col++,(Long)o);
+					} else if(o instanceof Double) {
+						ps.setDouble(col++,(Double)o);
+					} else if(o instanceof Float) {
+						ps.setFloat(col++,(Float)o);
+					} else if(o instanceof Boolean) {
+						ps.setBoolean(col++,(Boolean)o);
+					} else if(o instanceof Long) {
+						ps.setLong(col++,(Long)o);
+					} else if(o instanceof java.util.Date) {
+						ps.setDate(col++,new java.sql.Date(((java.util.Date)o).getTime()));
+					} else if(o instanceof java.sql.Date) {
+						ps.setDate(col++, (java.sql.Date)o);
+					} else if(o instanceof java.sql.Timestamp) {
+						ps.setTimestamp(col++, (java.sql.Timestamp)o);
+					} else {
+						ps.setString(col++, o.toString());
+					}
+				}
+				return col;
+			}
+		
+			public List<T> getListFromPartialKey(Connection con, String[] queryFields,Object[] fieldValues) throws SQLException {
+				DTORowListener<T> listener = null;
+				return getListFromPartialKey(con, queryFields,fieldValues, listener);
+			}
+			
+			public List<T> getListFromPartialKey(Connection con, String[] queryFields,Object[] fieldValues, DTORowListener<T> listener) throws SQLException {
+				if(queryFields==null||queryFields.length==0) {
+					// skip this 
+					return getList(con);
+				}
+				
+				String sql = "SELECT ";
+				sql = addKeyFields(sql);
+				sql = addDataFields(sql);
+				sql = sql + " FROM "+getTableName()+"  ";
+				for(int i=0,n=queryFields.length;i<n;i++) {
+					if(i==0) {
+						sql = sql + " WHERE ";
+					} else {
+						sql = sql + " AND ";
+					}
+					sql = sql + queryFields[i]+ " = ? ";
+				}
+				sql = addOrderByClause(sql);
+				List<T> data = new ArrayList<>();
+				boolean first=true;
+				
+				LOGGER.info("SQL:"+sql);
+				
+				try (PreparedStatement ps = con.prepareStatement(sql)) {
+					addObjectsToPS(ps,1,fieldValues);
+					try (ResultSet rs = ps.executeQuery()) {
+						while (rs.next()) {
+							T dto = dtoFromRS(rs);
+							if(listener!=null) {
+								listener.hereHaveADTO(dto, first);
+							} else {
+							data.add(dto);
+							}
+							first=false;
+						}
+
+					}
+				}
+
+				return data;
+				
+			}
+			
+			
 			public List<T> getList(Connection con, DTORowListener<T> listener) throws SQLException {
 				
 				String sql = "SELECT ";

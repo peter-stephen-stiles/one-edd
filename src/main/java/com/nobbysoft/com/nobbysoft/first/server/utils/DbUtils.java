@@ -30,6 +30,19 @@ INSTANCE;
 		return false;
 	}
 
+	public static final boolean doesViewExist(Connection con, String tableName) throws SQLException {
+		DatabaseMetaData dbmd = con.getMetaData();
+		try (ResultSet rs = dbmd.getTables( null, null, tableName.toUpperCase(),
+				new String[]{"VIEW"});) {
+			if(rs.next()){
+				LOGGER.info("view "+tableName+" already exists; good.");
+				return true;
+			}
+
+		}
+		return false;
+	}
+	
 	public static final boolean doesTableColumnExist(Connection con, String tableName, String columnName) throws SQLException {
 		DatabaseMetaData dbmd = con.getMetaData();
 		try (ResultSet rs = dbmd.getTables( null, null, tableName.toUpperCase(),

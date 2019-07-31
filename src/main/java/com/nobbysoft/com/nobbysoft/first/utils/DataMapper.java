@@ -23,11 +23,12 @@ import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.*;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponMelee;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponRanged;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.com.nobbysoft.first.common.entities.pc.*;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
-import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Spell;
+import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.*;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.attributes.*;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.CodedListService;
@@ -99,6 +100,7 @@ public enum DataMapper {
 
 		daoimap.put(PlayerCharacter.class, PlayerCharacterDAO.class);
 		daoimap.put(PlayerCharacterSpell.class, PlayerCharacterSpellDAO.class);
+		daoimap.put(PlayerCharacterEquipment.class, PlayerCharacterEquipmentDAO.class);
 		
 		
 		daoimap.put(Spell.class, SpellDAO.class);
@@ -130,6 +132,8 @@ public enum DataMapper {
 		
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
+		//entityservicemap.put(PlayerCharacterSpellclass, PlayerCharacterSpellService.class);
+		entityservicemap.put(PlayerCharacterEquipment.class, PlayerCharacterEquipmentService.class);
 		entityservicemap.put(CharacterClass.class, CharacterClassService.class);
 		entityservicemap.put(Spell.class, SpellService.class);
 		entityservicemap.put(Race.class, RaceService.class);
@@ -145,6 +149,7 @@ public enum DataMapper {
 		
 
 		servicemap.put(PlayerCharacterService.class, PlayerCharacterServiceImpl.class);
+		servicemap.put(PlayerCharacterEquipmentService.class, PlayerCharacterEquipmentServiceImpl.class);
 		servicemap.put(CharacterClassService.class, CharacterClassServiceImpl.class);
 		servicemap.put(SpellService.class, SpellServiceImpl.class);
 		servicemap.put(RaceService.class, RaceServiceImpl.class);
@@ -209,21 +214,7 @@ public enum DataMapper {
 	public Class<DAOI>[] getDaos(){
 		
 		return daoimap.values().toArray(new Class[daoimap.size()]);
-		
-//		return new Class[]{
-//			PlayerCharacterDAO.class,
-//			SpellDAO.class,
-//			RaceDAO.class,
-//			CharacterClassDAO.class,
-//			RaceClassLimitDAO.class,
-//			ConstitutionDAO.class,
-//			StrengthDAO.class,
-//			DexterityDAO.class,
-//			WeaponMeleeDAO.class,
-//			WeaponAmmunitionDAO.class,
-//			WeaponRangedDAO.class,
-//			ArmourDAO.class,
-//		};
+ 
 	}
 
  

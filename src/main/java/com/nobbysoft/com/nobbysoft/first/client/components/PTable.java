@@ -18,11 +18,12 @@ import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
 public class PTable extends JTable {
 
 	public PTable() {
-		
+		setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 	}
 
 	public PTable(TableModel dm) {
 		super(dm);
+		setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
 	}
 

@@ -6,5 +6,9 @@ public enum EquipmentType {
 	WEAPON_RANGED, 
 	ARMOUR,
 	ARMOUR_BONUS_GIVING,
-	OTHER
+	OTHER;
+	
+	public String getDesc() {
+		return name();
+	}
 }

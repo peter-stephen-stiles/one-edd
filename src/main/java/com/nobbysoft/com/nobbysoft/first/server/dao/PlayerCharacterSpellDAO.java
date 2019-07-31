@@ -21,7 +21,9 @@ import com.nobbysoft.com.nobbysoft.first.common.exceptions.RecordNotFoundExcepti
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem; 
 import com.nobbysoft.com.nobbysoft.first.server.utils.DbUtils;
 
-public class PlayerCharacterSpellDAO extends AbstractDAO<PlayerCharacterSpell,PlayerCharacterSpellKey> implements DAOI<PlayerCharacterSpell, PlayerCharacterSpellKey>{
+public class PlayerCharacterSpellDAO 
+	extends AbstractDAO<PlayerCharacterSpell,PlayerCharacterSpellKey> 
+	implements DAOI<PlayerCharacterSpell, PlayerCharacterSpellKey>,PlayerCharacterDetailI<PlayerCharacterSpell>{
 
 	public PlayerCharacterSpellDAO() { 
 	}
@@ -159,12 +161,13 @@ public class PlayerCharacterSpellDAO extends AbstractDAO<PlayerCharacterSpell,Pl
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setInt(1, pcId);
 			int rows = ps.executeUpdate();
-			if (rows == 0) {
-				throw new RecordNotFoundException("Can't find " +getTableName()+ 
-						" to delete it pc_id=" +pcId);
-			}
 		}
 
+	}
+
+	@Override
+	public List<PlayerCharacterSpell> getForPC(Connection con, int pcId) throws SQLException {
+		return getListFromPartialKey( con, new String[] {"pc_id"},new Object[] {pcId}) ;
 	}
 	
 }

@@ -202,8 +202,8 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		
 		
 		add(weaponVsAc,GBU.hPanel(0,row,4,1));
-  
-
+		
+		
 		add(new PLabel(""), GBU.label(99, 99));
 
 	}

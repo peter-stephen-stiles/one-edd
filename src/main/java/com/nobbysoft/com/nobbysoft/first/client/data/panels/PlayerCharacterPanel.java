@@ -1,20 +1,33 @@
 package com.nobbysoft.com.nobbysoft.first.client.data.panels;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.Window;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nobbysoft.com.nobbysoft.first.client.components.PBasicTableWithModel;
+import com.nobbysoft.com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
 import com.nobbysoft.com.nobbysoft.first.client.components.PButton;
 import com.nobbysoft.com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.com.nobbysoft.first.client.components.PLabel;
@@ -26,6 +39,7 @@ import com.nobbysoft.com.nobbysoft.first.client.components.special.PExceptionalS
 import com.nobbysoft.com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
+import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
@@ -44,7 +58,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 	
 	public PlayerCharacterPanel() {
-		setLayout(new GridBagLayout());
+		setLayout(new BorderLayout());
 		jbInit();
 	}
  
@@ -94,8 +108,11 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private final PIntegerCombo txtAttrCon = new PIntegerCombo();
 	private final PIntegerCombo txtAttrChr = new PIntegerCombo(); 
 	
-	
-	
+	// equipment
+	private final PButton btnEquipmentAdd = new PButton("Add");
+	private final PButton btnEquipmentRemove = new PButton("Remove");
+	private final PButton btnEquipmentEquip = new PButton("Equip");
+	private final PButton btnEquipmentUnEquip = new PButton("Unequip");
 	
 	
 	private PButton btnRoll = new PButton("Roll") {
@@ -120,8 +137,11 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			txtPlayerName,
 			txtAlignment
 			 };
-	private PDataComponent[] keyComponents = new PDataComponent[] { btnRoll,txtGender,txtRace};//txtPcId };
-	private PDataComponent[] buttonComponents = new PDataComponent[] {  };
+	private PDataComponent[] keyComponents = new PDataComponent[] { btnRoll};//txtPcId };
+	private PDataComponent[] buttonComponents = new PDataComponent[] {btnEquipmentAdd ,
+		    btnEquipmentRemove ,
+		    btnEquipmentEquip ,
+			btnEquipmentUnEquip  };
 
 	private PDataComponent[] mandatoryComponents = new PDataComponent[] { 
 			txtPcId,  
@@ -131,16 +151,84 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	
 	
 	private PDataComponent[] disableThese = new PDataComponent[] {
-		txtAttrStr,txtAttrInt,txtAttrWis,txtAttrDex,txtAttrCon,txtAttrChr,
+		txtAttrStr,txtAttrInt,txtAttrWis,txtAttrDex,txtAttrCon,txtAttrChr,txtGender,txtRace,
 		txtExceptionalStrength,
 		txtClass1,		txtClass2,		txtClass3,
 		txtClassLevel1,txtClassLevel2,txtClassLevel3,
 		txtClassHp1,txtClassHp2,txtClassHp3,txtClassHpTotal
 		};
   
+		// equipment
+		// 
+			
+	private final ColumnConfig[] equipmentConfigs = new ColumnConfig[] {
+			new ColumnConfig("",0,0,0),
+			new ColumnConfig("Name",20,200,5000),
+			new ColumnConfig("Type",20,150,5000),
+			new ColumnConfig("Equipped",20,60,5000),
+			new ColumnConfig("Where",20,100,5000),
+	};
+	
+	private final PBasicTableWithModel tblEquipment = new PBasicTableWithModel(equipmentConfigs);
+
+	private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>();
+	{
+		equipmentMenu.put("Arms - Melee", AddEquipmentMelee.class);
+		equipmentMenu.put("Arms - Ranged/Thrown", AddEquipmentMelee.class);
+		equipmentMenu.put("Armour", AddEquipmentMelee.class); 
+		equipmentMenu.put("Ammunition", AddEquipmentMelee.class); 
+	}
+	
 
 	public void jbInit() {
 
+		final JTabbedPane pnlTabs = new JTabbedPane();
+		
+		final PPanel pnlCharacterDetails = new PPanel(new GridBagLayout());
+		final PPanel pnlEquipmentDetails = new PPanel(new BorderLayout());
+		
+		///
+		/// Equipment details
+
+		final PPanel pnlEquipmentButtons = new PPanel(new FlowLayout(FlowLayout.RIGHT));
+		
+		pnlEquipmentButtons.add(btnEquipmentAdd);
+		pnlEquipmentButtons.add(btnEquipmentRemove);
+		pnlEquipmentButtons.add(new PLabel("  "));
+		pnlEquipmentButtons.add(btnEquipmentEquip);
+		pnlEquipmentButtons.add(btnEquipmentUnEquip);
+		
+		pnlEquipmentDetails.add(pnlEquipmentButtons,BorderLayout.NORTH);
+		JScrollPane sclEquipment = new JScrollPane(tblEquipment);
+		pnlEquipmentDetails.add(sclEquipment,BorderLayout.CENTER);
+
+		btnEquipmentAdd.addActionListener(ae ->{
+			LOGGER.info("pop up now!");
+			JPopupMenu menu = new JPopupMenu("Add");
+			for(String m:equipmentMenu.keySet() ){
+				JMenuItem mi = new JMenuItem(m);
+				menu.add(mi);
+				mi.addActionListener(a2e ->{
+					addEquipment(m,equipmentMenu.get(m));
+				});
+			}
+			//Point lox =btnEquipmentAdd.getLocationOnScreen();
+			
+			menu.show(btnEquipmentAdd,5,5);
+			
+		});
+		
+		
+		/// main screen
+		
+		
+		pnlTabs.addTab("Character", pnlCharacterDetails);
+		pnlTabs.addTab("Equipment", pnlEquipmentDetails);
+		
+		add(pnlTabs,BorderLayout.CENTER);
+		
+		// character details
+		
 		noClass.setClassId("");
 		noClass.setName("");
 		
@@ -206,11 +294,11 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
  
 
-		add(getLblInstructions(), GBU.text(0, 0, 2));
+		pnlCharacterDetails.add(getLblInstructions(), GBU.text(0, 0, 2));
 		
-		add(pnlLeft,GBU.panel(0, 1));
-		add(pnlRight,GBU.panel(1, 1));
-		add(pnlBelow,GBU.panel(0, 2,2,1));
+		pnlCharacterDetails.add(pnlLeft,GBU.panel(0, 1));
+		pnlCharacterDetails.add(pnlRight,GBU.panel(1, 1));
+		pnlCharacterDetails.add(pnlBelow,GBU.panel(0, 2,2,1));
 		
 		pnlLeft.add(lblPcId, GBU.label(0, 1));
 		pnlLeft.add(txtPcId, GBU.text(1, 1)); 
@@ -262,10 +350,6 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 		pnlBelow.add(txtClassHpTotal,GBU.text(4, 11));
 		pnlBelow.add(new PLabel("total"),GBU.button(5, 11));
-		
-		
-		
-
 
 		
 		btnRoll.addActionListener(ae ->roll());
@@ -278,9 +362,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			c.setReadOnly(true);
 		}
  
-		
-		
-		add(new PLabel(""), GBU.label(99, 99));
+		pnlCharacterDetails.add(new PLabel(""), GBU.label(99, 99));
 
 	}
  
@@ -557,6 +639,34 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			txtClassHpTotal.setIntegerValue(totalhp);
 			
 		}
+	}
+
+	private void addEquipment(String title,Class<? extends AddEquipmentI> clazz) {
+		
+		Class[] pt = new Class[] {Window.class};
+		
+		Constructor<? extends AddEquipmentI> c;
+		try {
+			c = clazz.getConstructor(pt);
+
+			AddEquipmentI aei = c.newInstance(GuiUtils.getParent(this));
+			
+			aei.setTitleAndCharacterName(title, txtPcId.getIntegerValue(), txtCharacterName.getText());
+			PDialog dialog =(PDialog)aei;
+			
+			
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);
+			dialog.setVisible(true);
+			if(!aei.isCancelled()) {
+				// refresh the list!
+			}
+		
+		
+		} catch (Exception e) {
+			Popper.popError(this, e);
+		}
+		
 	}
 	
 }
