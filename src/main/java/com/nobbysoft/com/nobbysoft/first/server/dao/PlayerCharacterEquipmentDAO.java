@@ -5,23 +5,28 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nobbysoft.com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentType;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentWhere;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipmentKey;
 import com.nobbysoft.com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacterEquipment;
 import com.nobbysoft.com.nobbysoft.first.server.utils.DbUtils;
 
 public class PlayerCharacterEquipmentDAO 
  	extends AbstractDAO<PlayerCharacterEquipment,PlayerCharacterEquipmentKey> 
 	implements DAOI<PlayerCharacterEquipment, PlayerCharacterEquipmentKey>,
-	PlayerCharacterDetailI<PlayerCharacterEquipment>{
+	PlayerCharacterDetailI<ViewPlayerCharacterEquipment>{
 
 	public PlayerCharacterEquipmentDAO() { 
 	}
@@ -171,7 +176,7 @@ public class PlayerCharacterEquipmentDAO
 
 	@Override
 	String addOrderByClause(String sql) { 
-		return sql +" ORDER BY  pc_id, where, equipment_type, equipment_id";
+		return sql +" ORDER BY  pc_id, equipped_where, equipment_type, equipment_id";
 	}
 
 	@Override
@@ -222,9 +227,55 @@ public class PlayerCharacterEquipmentDAO
 		}
 	}
 
+	private Map<String,String> descCache = new HashMap<>();
+	private String getEquipmentDescription(Connection con,String type,String code) throws SQLException  {
+		String key = type+":"+code;
+		if(descCache.containsKey(key)) {
+			return descCache.get(key);
+		}
+		String desc=null;
+		String sql = "SELECT name FROM view_equipment WHERE type = ? and code = ?";
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setString(1, type);
+			ps.setString(2, code);
+			try(ResultSet rs= ps.executeQuery()){
+				if(rs.next()) {
+					desc = rs.getString(1);					
+				}
+				
+			}
+			
+		}
+		if(desc==null) {
+			desc="UNKNOWN:"+key;
+		}
+		descCache.put(key,desc);
+		return desc;
+	}
+	
 	@Override
-	public List<PlayerCharacterEquipment> getForPC(Connection con, int pcId) throws SQLException {
-		return getListFromPartialKey( con, new String[] {"pc_id"},new Object[] {pcId}) ;
+	public List<ViewPlayerCharacterEquipment> getForPC(Connection con, int pcId) throws SQLException {
+		
+		List<ViewPlayerCharacterEquipment> views = new ArrayList<>();
+		
+		getListFromPartialKey( con, new String[] {"pc_id"},new Object[] {pcId}, new DTORowListener<PlayerCharacterEquipment>() {
+
+			@Override
+			public void hereHaveADTO(PlayerCharacterEquipment dto, boolean first)   {
+				String d;
+				try {
+					d = getEquipmentDescription(con,dto.getEquipmentType().name(),dto.getCode());
+				ViewPlayerCharacterEquipment v = new ViewPlayerCharacterEquipment(dto,d);
+				views.add(v);
+				} catch (SQLException e) {
+					LOGGER.error("ist all gone wrong for "+dto.getKey(),e);
+				}
+				
+			}
+			
+		}) ;
+		
+		return views;
 	}
 	
 	

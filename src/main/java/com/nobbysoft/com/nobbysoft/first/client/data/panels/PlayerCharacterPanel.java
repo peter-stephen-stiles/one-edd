@@ -18,6 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,14 +42,17 @@ import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
+import com.nobbysoft.com.nobbysoft.first.common.servicei.PlayerCharacterEquipmentService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.RaceService;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.com.nobbysoft.first.common.utils.ReturnValue;
+import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacterEquipment;
 import com.nobbysoft.com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
@@ -186,6 +190,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 		final PPanel pnlCharacterDetails = new PPanel(new GridBagLayout());
 		final PPanel pnlEquipmentDetails = new PPanel(new BorderLayout());
+		final PPanel pnlSpellDetails = new PPanel(new BorderLayout());
 		
 		///
 		/// Equipment details
@@ -224,6 +229,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 		pnlTabs.addTab("Character", pnlCharacterDetails);
 		pnlTabs.addTab("Equipment", pnlEquipmentDetails);
+		pnlTabs.addTab("Spells", pnlSpellDetails);
 		
 		add(pnlTabs,BorderLayout.CENTER);
 		
@@ -449,7 +455,11 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		  }
 	  }
 	  
+	  
+	  private PlayerCharacter pc;
+	  
 	  void populateScreen(PlayerCharacter value){
+		  this.pc = value;
 		  int cid = value.getPcId();
 		  if(cid<=0) {
 			 PlayerCharacterService ccs= (PlayerCharacterService) getDataService();
@@ -488,6 +498,9 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 		txtClassHpTotal.setIntegerValue(value.getHp());
 		txtExceptionalStrength.setExceptionalStrength(value.getExceptionalStrength());
+		
+		
+		SwingUtilities.invokeLater(()->populateEquipmentTable());
  }
 
 
@@ -511,6 +524,11 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	}
 
 
+	DataServiceI getDataService(Class clazz) {
+		DataServiceI dao = DataMapper.INSTANCE.getDataService(clazz);
+		return dao;
+	}
+	
 	@Override
 	PDataComponent[] getDataComponents() { 
 		return dataComponents;
@@ -660,6 +678,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			dialog.setVisible(true);
 			if(!aei.isCancelled()) {
 				// refresh the list!
+				populateEquipmentTable();
 			}
 		
 		
@@ -667,6 +686,31 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			Popper.popError(this, e);
 		}
 		
+	}
+
+	private void populateEquipmentTable() {
+		tblEquipment.clearTable();
+		if (pc!=null) {
+			try {
+			PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
+			List<ViewPlayerCharacterEquipment> list = pces.getForPC(pc.getPcId());
+			
+			
+			for(ViewPlayerCharacterEquipment vpce: list) {
+				PlayerCharacterEquipment pce = vpce.getPlayerCharacterEquipment();
+				String desc = vpce.getDescription();
+				tblEquipment.addRow(new Object[] {
+						pce,	
+						desc,
+						pce.getEquipmentType().getDesc(),
+						pce.isEquipped(),
+						pce.getEquippedWhere()
+				});
+			}
+			} catch (Exception ex) {
+				Popper.popError(this, ex);
+			}
+		}
 	}
 	
 }

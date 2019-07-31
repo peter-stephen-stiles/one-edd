@@ -11,6 +11,7 @@ import com.nobbysoft.com.nobbysoft.first.common.servicei.PlayerCharacterEquipmen
 import com.nobbysoft.com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacter;
+import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacterEquipment;
 import com.nobbysoft.com.nobbysoft.first.server.dao.PlayerCharacterDAO;
 import com.nobbysoft.com.nobbysoft.first.server.dao.PlayerCharacterEquipmentDAO;
 import com.nobbysoft.com.nobbysoft.first.server.dao.PlayerCharacterSpellDAO;
@@ -101,7 +102,7 @@ public class PlayerCharacterEquipmentServiceImpl implements PlayerCharacterEquip
  
 
 	@Override
-	public List<PlayerCharacterEquipment> getForPC(int pcId) throws SQLException {
+	public List<ViewPlayerCharacterEquipment> getForPC(int pcId) throws SQLException {
 		try(Connection con = cm.getConnection()){
 			return dao.getForPC(con,pcId);
 			}
