@@ -173,7 +173,7 @@ public class AddEquipmentMelee extends PDialog implements AddEquipmentI {
 			}
 			int rowIndex = tblEquipment.convertRowIndexToModel(rownumber);
 			WeaponMelee wm = (WeaponMelee) tblEquipment.getModel().getValueAt(rowIndex, 0);
-			Popper.popInfo(this, "Selected " + wm, "You selected " + wm.getName());
+			//Popper.popInfo(this, "Selected " + wm, "You selected " + wm.getName());
 			/// now then
 
 			PlayerCharacterEquipmentService wms = (PlayerCharacterEquipmentService) getDataService(

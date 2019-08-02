@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.nobbysoft.com.nobbysoft.first.common.utils.ReturnValue;
  
 
 public class Popper {
@@ -16,14 +18,20 @@ public class Popper {
 	private Popper() { 
 	}
 
+	public static final void popError(Component component,String title,ReturnValue error){
+		JOptionPane.showMessageDialog(GuiUtils.getParent(component),
+			    error.getErrorMessage(),
+			    title,
+			    JOptionPane.ERROR_MESSAGE);
+	}
+	
 	public static final void popError(Component component,String title,String error){
 		JOptionPane.showMessageDialog(GuiUtils.getParent(component),
 			    error,
 			    title,
 			    JOptionPane.ERROR_MESSAGE);
 	}
-	
-	
+ 
  
 	
 	public static final void popError(Component component,Throwable t){
@@ -39,4 +47,23 @@ public class Popper {
 			    title,
 			    JOptionPane.PLAIN_MESSAGE);
 	}
+	
+	
+	public static final boolean popYesNoQuestion(Component component,String title,String question){
+		boolean yes=false;
+		int n = JOptionPane.showConfirmDialog(
+				GuiUtils.getParent(component),			    
+			    question,
+			    title,
+			    JOptionPane.YES_NO_OPTION);
+		
+		yes = (n==JOptionPane.YES_OPTION);
+		return yes;
+		
+	}
+	
+	
+	
+	
+	
 }

@@ -207,6 +207,11 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		JScrollPane sclEquipment = new JScrollPane(tblEquipment);
 		pnlEquipmentDetails.add(sclEquipment,BorderLayout.CENTER);
 
+		btnEquipmentRemove.addActionListener(ae ->{
+			removeEquipment();
+		});
+		
+		
 		btnEquipmentAdd.addActionListener(ae ->{
 			LOGGER.info("pop up now!");
 			JPopupMenu menu = new JPopupMenu("Add");
@@ -688,6 +693,82 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 	}
 
+
+	private void equipEquipment() {
+		PlayerCharacterEquipment pce=null;
+		String name="";
+		int rowNum=tblEquipment.getSelectedRow();
+		if(rowNum>=0) {
+			int modelRow =tblEquipment.convertRowIndexToModel(rowNum);
+			Object o0=tblEquipment.getValueAt(modelRow, 0);
+			Object o1=tblEquipment.getValueAt(modelRow, 1);
+			//Object o2=tblEquipment.getValueAt(modelRow, 2);
+			//Object o3=tblEquipment.getValueAt(modelRow, 3);
+			//LOGGER.info(" o0:"+o0+"o1:"+o1+" o2:"+o2+" o3:"+o3);
+			pce = (PlayerCharacterEquipment)o0;
+			name = (String)o1;
+		}
+		if(pce!=null) {
+			if(pce.isEquipped()) {
+				Popper.popError(this, "Already equipped!", "That's already equipped");
+			} else {
+				
+			}
+			
+//			String desc = pce.getDescription();
+//			boolean ok=Popper.popYesNoQuestion(this,"Remove equipment","Confirm that you want to equip "+name+"?");
+//			if(ok) {
+//				PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
+//				try {
+//					pces.delete(pce);
+//					populateEquipmentTable();
+//				} catch (SQLException e) {
+//					Popper.popError(this, e);
+//				}				
+//			}
+		}
+	}
+	
+	private void removeEquipment() {
+		PlayerCharacterEquipment pce=null;
+		String name="";
+		int rowNum=tblEquipment.getSelectedRow();
+		if(rowNum>=0) {
+			int modelRow =tblEquipment.convertRowIndexToModel(rowNum);
+			Object o0=tblEquipment.getValueAt(modelRow, 0);
+			Object o1=tblEquipment.getValueAt(modelRow, 1);
+			//Object o2=tblEquipment.getValueAt(modelRow, 2);
+			//Object o3=tblEquipment.getValueAt(modelRow, 3);
+			//LOGGER.info(" o0:"+o0+"o1:"+o1+" o2:"+o2+" o3:"+o3);
+			pce = (PlayerCharacterEquipment)o0;
+			name = (String)o1;
+		}
+		if(pce!=null) {
+			String desc = pce.getDescription();
+			boolean ok=Popper.popYesNoQuestion(this,"Remove equipment","Confirm that you want to remove "+name+"?");
+			if(ok) {
+				PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
+				try {
+					pces.delete(pce);
+					populateEquipmentTable();
+				} catch (SQLException e) {
+					Popper.popError(this, e);
+				}				
+			}
+		}
+	}
+
+
+	private PlayerCharacterEquipment getSelectedEquipment() {
+		PlayerCharacterEquipment pce=null;
+		int rowNum=tblEquipment.getSelectedRow();
+		if(rowNum>=0) {
+			int modelRow =tblEquipment.convertRowIndexToModel(rowNum);
+			pce = (PlayerCharacterEquipment)tblEquipment.getValueAt(modelRow, 0);
+		}
+		return pce;
+	}
+	
 	private void populateEquipmentTable() {
 		tblEquipment.clearTable();
 		if (pc!=null) {
