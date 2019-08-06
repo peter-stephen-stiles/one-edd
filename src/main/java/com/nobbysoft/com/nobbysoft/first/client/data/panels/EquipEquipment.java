@@ -20,11 +20,13 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.com.nobbysoft.first.client.components.*;
 import com.nobbysoft.com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
 import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboEquipmentHands;
+import com.nobbysoft.com.nobbysoft.first.client.components.special.PComboEquipmentWhere;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentHands;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentI;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentType;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentWhere;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.WeaponMelee;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
@@ -60,15 +62,17 @@ public class EquipEquipment extends PDialog   {
 		this.pce = pce;  
 		this.equipment = equipment;
 		//
+		
+		txtEquipmentName.setText(equipment.getName());
 		txtCharacterName.setText(characterName);
 		txtEquipmentType.setText(pce.getEquipmentType().getDesc());
 		EquipmentHands eh=equipment.getRequiresHands();
-		txtEquipmentHands.setEquipmentHands(eh);
-		if(eh==null||eh==EquipmentHands.NONE) {
-			txtEquipmentWhere.setReadOnly(true);
-		} else {
-			txtEquipmentWhere.setReadOnly(false);
-		}	
+		txtEquipmentHands.setEquipmentHands(eh);	
+//		if(eh==null||eh==EquipmentHands.NONE) {
+//			txtEquipmentWhere.setReadOnly(true);
+//		} else {
+//			txtEquipmentWhere.setReadOnly(false);
+//		}	
 	 	//
 	}
 
@@ -76,7 +80,7 @@ public class EquipEquipment extends PDialog   {
 	private PTextField txtEquipmentType = new PTextField();
 	private PTextField txtEquipmentName = new PTextField();
 	private PComboEquipmentHands txtEquipmentHands = new PComboEquipmentHands();
-	private PComboEquipmentHands txtEquipmentWhere = new PComboEquipmentHands();
+	private PComboEquipmentWhere txtEquipmentWhere = new PComboEquipmentWhere();
 	
 	
 	private PDataComponent[] disableMe = new PDataComponent[] {
@@ -101,8 +105,9 @@ public class EquipEquipment extends PDialog   {
 		});
 		btnEquip.addActionListener(ae -> {
 			//
-			ReturnValue<?> ok =validateData(); 
+			ReturnValue<?> ok =validateAndProcessData(); 
 			if(!ok.isError()) {
+
 				cancelled=false;
 				dispose();
 			} else {
@@ -116,6 +121,25 @@ public class EquipEquipment extends PDialog   {
 		pnlData.add(new PLabel("Character Name"),GBU.label(0, row));
 		pnlData.add(txtCharacterName,GBU.text(1, row));
 		row++;
+
+		pnlData.add(new PLabel("Equipment Type"),GBU.label(0, row));
+		pnlData.add(txtEquipmentType,GBU.text(1, row));
+		row++;
+
+		pnlData.add(new PLabel("Equipment Name"),GBU.label(0, row));
+		pnlData.add(txtEquipmentName,GBU.text(1, row));
+		row++;
+
+		pnlData.add(new PLabel("Hands?"),GBU.label(0, row));
+		pnlData.add(txtEquipmentHands,GBU.text(1, row));
+		row++;
+
+		pnlData.add(new PLabel("Where to equip?"),GBU.label(0, row));
+		pnlData.add(txtEquipmentWhere,GBU.text(1, row));
+		row++;
+
+
+		pnlData.add(new PLabel(""),GBU.label(99, 99));
 		
 		
 		add(pnlData, BorderLayout.CENTER);
@@ -137,9 +161,31 @@ public class EquipEquipment extends PDialog   {
 	}
 
  
-	private  ReturnValue<?> validateData() {
+	private  ReturnValue<?> validateAndProcessData() {
 		ReturnValue<?> ret = new ReturnValue<>("");
 		
+		boolean selectedHands =txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.HAND_L)
+				|| txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.HAND_R); 
+		if(equipment.getRequiresHands().equals(EquipmentHands.NONE)) {
+			if(selectedHands){
+				return new ReturnValue(true,"Must not select a hand unless you have to..");
+			}
+		} else {
+			if(!selectedHands){
+				return new ReturnValue(true,"Must select a hand. (If double handed- just pick one)");
+			}
+		}
+		
+		// all gone well, let's equip!
+		
+		PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
+		try {
+			
+			pces.equip(pce, txtEquipmentWhere.getEquipmentWhere());
+		} catch (SQLException e) {
+			Popper.popError(this, e);
+		}		
+		// 
 		
 		
 		return ret;

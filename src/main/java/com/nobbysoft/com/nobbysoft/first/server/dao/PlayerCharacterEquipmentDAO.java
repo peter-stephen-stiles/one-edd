@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.com.nobbysoft.first.common.entities.DTORowListener;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentI;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentType;
 import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentWhere;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
@@ -278,5 +279,29 @@ public class PlayerCharacterEquipmentDAO
 		return views;
 	}
 	
+
+	public void equip(Connection con,PlayerCharacterEquipment pce,EquipmentI equipment,EquipmentWhere where) throws SQLException {
+		
+		{
+			String sql0 = "UPDATE "+tableName+" SET equipped_where = null, equipped = false"+
+			" WHERE pc_id = ? and equipped_where =?";
+			
+			try(PreparedStatement ps =con.prepareStatement(sql0)){
+				ps.setInt(1,pce.getPcId());
+				ps.setString(2,where.getDesc());
+				ps.execute();			
+			}
+		}
+		//
+		
+		if the weapon is double-handed, hard-coded remove L HAND and R HAND
+		
+		
+		//		
+		pce.setEquipped(true);
+		pce.setEquippedWhere(where);
+		update(con, pce);
+		
+	}
 	
 }

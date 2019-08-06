@@ -70,7 +70,6 @@ public class DAOUtils {
 }
 	}
 	
-
 	public static final void createDecimals(Connection con, String tableName, DECIMAL[] newDecimals)
 			throws SQLException {
 		String sql;

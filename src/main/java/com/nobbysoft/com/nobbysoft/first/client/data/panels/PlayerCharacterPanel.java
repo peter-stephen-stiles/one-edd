@@ -41,6 +41,7 @@ import com.nobbysoft.com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
+import com.nobbysoft.com.nobbysoft.first.common.entities.equipment.EquipmentI;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
@@ -210,6 +211,15 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		btnEquipmentRemove.addActionListener(ae ->{
 			removeEquipment();
 		});
+		
+		btnEquipmentEquip.addActionListener(ae ->{
+			equipEquipment();
+		});
+
+		btnEquipmentUnEquip.addActionListener(ae ->{
+			unEquipEquipment();
+		});
+		
 		
 		
 		btnEquipmentAdd.addActionListener(ae ->{
@@ -694,6 +704,49 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	}
 
 
+	private void unEquipEquipment() {
+		PlayerCharacterEquipment pce=null;
+		String name="";
+		int rowNum=tblEquipment.getSelectedRow();
+		if(rowNum>=0) {
+			int modelRow =tblEquipment.convertRowIndexToModel(rowNum);
+			Object o0=tblEquipment.getValueAt(modelRow, 0);
+			Object o1=tblEquipment.getValueAt(modelRow, 1);
+			//Object o2=tblEquipment.getValueAt(modelRow, 2);
+			//Object o3=tblEquipment.getValueAt(modelRow, 3);
+			//LOGGER.info(" o0:"+o0+"o1:"+o1+" o2:"+o2+" o3:"+o3);
+			pce = (PlayerCharacterEquipment)o0;
+			name = (String)o1;
+		}
+		if(pce!=null) {
+			if(!pce.isEquipped()) {
+				Popper.popError(this, "Not equipped!", "That's not equipped.");
+				return;
+			} else {
+				
+				String desc = pce.getDescription();
+				boolean ok=Popper.popYesNoQuestion(this,"Remove equipment","Confirm that you want to remove "+name+"?");
+				if(ok) {
+					PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
+					try {
+						pce.setEquipped(false);
+						pce.setEquippedWhere(null);
+						pces.update(pce);
+						populateEquipmentTable();
+					} catch (SQLException e) {
+						Popper.popError(this, e);
+					}				
+				}
+				
+				
+				
+			}
+			
+		}
+		
+	}
+	
+
 	private void equipEquipment() {
 		PlayerCharacterEquipment pce=null;
 		String name="";
@@ -711,21 +764,33 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		if(pce!=null) {
 			if(pce.isEquipped()) {
 				Popper.popError(this, "Already equipped!", "That's already equipped");
+				return;
 			} else {
 				
 			}
 			
-//			String desc = pce.getDescription();
-//			boolean ok=Popper.popYesNoQuestion(this,"Remove equipment","Confirm that you want to equip "+name+"?");
-//			if(ok) {
-//				PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
-//				try {
-//					pces.delete(pce);
-//					populateEquipmentTable();
-//				} catch (SQLException e) {
-//					Popper.popError(this, e);
-//				}				
-//			}
+			EquipEquipment aei = new EquipEquipment(GuiUtils.getParent(this));
+			
+			EquipmentI equipment=null;
+			try {
+			PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
+				equipment=pces.getUnderlyingEquipment(pce.getCode(), pce.getEquipmentType());
+			} catch (SQLException e) {
+			Popper.popError(this, e);
+		}	
+			aei.setTitleAndCharacterName("Equip "+name, txtPcId.getIntegerValue(), txtCharacterName.getText(),
+					pce,equipment);
+			PDialog dialog =(PDialog)aei;
+			
+			
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);
+			dialog.setVisible(true);
+			if(!aei.isCancelled()) {
+				// refresh the list!
+				populateEquipmentTable();
+			}
+			
 		}
 	}
 	

@@ -94,6 +94,12 @@ public enum DataMapper {
 	private Map<Class<?>, String> names = new HashMap<>();
 	private Map<Class<?>, Class<?>> panels = new HashMap<>();
 	
+	private Map<EquipmentType,Class<?>> equipmentDAO = new HashMap<>();
+	
+	public Class getEquipmentDao(EquipmentType type){
+		return equipmentDAO.get(type);
+	}
+	
 	{
 		buttonmap.put(CharacterClass.class, CharacterClassButtons.class);
 		
@@ -115,6 +121,12 @@ public enum DataMapper {
 		daoimap.put(WeaponAmmunition.class,WeaponAmmunitionDAO.class);
 		daoimap.put(Armour.class,ArmourDAO.class);
 
+		
+		equipmentDAO.put(EquipmentType.MELEE_WEAPON,WeaponMeleeDAO.class);
+		equipmentDAO.put(EquipmentType.WEAPON_RANGED,WeaponRangedDAO.class);
+		equipmentDAO.put(EquipmentType.AMMUNITION,WeaponAmmunitionDAO.class);
+		equipmentDAO.put(EquipmentType.ARMOUR,ArmourDAO.class);
+		 
 		
 		
 		panels.put(PlayerCharacter.class,PlayerCharacterPanel.class);
