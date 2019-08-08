@@ -164,18 +164,22 @@ public class EquipEquipment extends PDialog   {
 	private  ReturnValue<?> validateAndProcessData() {
 		ReturnValue<?> ret = new ReturnValue<>("");
 		
-		boolean selectedHands =txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.HAND_L)
-				|| txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.HAND_R); 
-		if(equipment.getRequiresHands().equals(EquipmentHands.NONE)) {
-			if(selectedHands){
-				return new ReturnValue(true,"Must not select a hand unless you have to..");
-			}
-		} else {
-			if(!selectedHands){
-				return new ReturnValue(true,"Must select a hand. (If double handed- just pick one)");
+		boolean anyGood = txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.PACK)
+				|| txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.OTHER_OR_NOT); 
+		
+		if(!anyGood) {
+			boolean selectedHands =txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.HAND_L)
+					|| txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.HAND_R); 
+			if(equipment.getRequiresHands().equals(EquipmentHands.NONE)) {
+				if(selectedHands){
+					return new ReturnValue(true,"Must not select a hand unless you have to..");
+				}
+			} else {
+				if(!selectedHands){
+					return new ReturnValue(true,"Must select a hand. (If double handed- just pick one)");
+				}
 			}
 		}
-		
 		// all gone well, let's equip!
 		
 		PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);

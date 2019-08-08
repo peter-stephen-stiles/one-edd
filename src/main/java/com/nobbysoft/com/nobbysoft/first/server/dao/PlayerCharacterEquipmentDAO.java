@@ -283,62 +283,66 @@ public class PlayerCharacterEquipmentDAO
 
 	public void equip(Connection con,PlayerCharacterEquipment pce,EquipmentI equipment,EquipmentWhere where) throws SQLException {
 		
-		{
-			String sqlUE = "UPDATE "+tableName+" SET equipped_where = null, equipped = false"+
-			" WHERE pc_id = ? and equipped_where =?";
-			
-			try(PreparedStatement ps =con.prepareStatement(sqlUE)){
-				ps.setInt(1,pce.getPcId());
-				ps.setString(2,where.getDesc());
-				ps.execute();			
-			}
-		}
-		//
-		//if the weapon is double-handed, hard-coded remove L HAND and R HAND
-				
-		EquipmentHands hands=	equipment.getRequiresHands();
-		if (hands!=null) {
-			if(hands.equals(EquipmentHands.DOUBLE_HANDED)) {
-				if(EquipmentWhere.HAND_L.equals(where) ||EquipmentWhere.HAND_R.equals(where) ) {
-					String sql0 = "UPDATE "+tableName+" SET equipped_where = null, equipped = false"+
-							" WHERE pc_id = ? and ( equipped_where =? OR equipped_where =? )";							
-							try(PreparedStatement ps =con.prepareStatement(sql0)){
-								ps.setInt(1,pce.getPcId());
-								ps.setString(2,EquipmentWhere.HAND_L.getDesc());
-								ps.setString(3,EquipmentWhere.HAND_R.getDesc());
-								ps.execute();			
-							}
+		// when we equip  to PACK or OTHER we don't need to unequip other things
+		
+		boolean unequipOthers= !((EquipmentWhere.OTHER_OR_NOT.equals(where) ||EquipmentWhere.PACK.equals(where) ));
+		
+		if (unequipOthers) {
+
+			{
+				String sqlUE = "UPDATE " + tableName + " SET equipped_where = null, equipped = false"
+						+ " WHERE pc_id = ? and equipped_where =?";
+
+				try (PreparedStatement ps = con.prepareStatement(sqlUE)) {
+					ps.setInt(1, pce.getPcId());
+					ps.setString(2, where.getDesc());
+					ps.execute();
 				}
-			} else if(hands.equals(EquipmentHands.SINGLE_HANDED)) {
-				/// do we have any double-handed weapons installed?
-				String sql = "SELECT t0.pc_id , t0.equipment_id, w0.code,w1.code FROM Player_Character_equipment t0 "+
-							"  LEFT OUTER JOIN weapon_melee w0 ON w0.code = t0.code AND t0.equipment_type ='MELEE_WEAPON' AND w0.requires_hands = 'DOUBLE_HANDED' "+
-							"  LEFT OUTER JOIN weapon_ranged w1 ON w1.code = t0.code AND t0.equipment_type ='RANGED_WEAPON' AND w1.requires_hands = 'DOUBLE_HANDED' "+
-							" WHERE   (w0.code IS NOT NULL OR w1.code IS NOT NULL )"+
-							"  AND t0.pc_id = ? ";
-				try(PreparedStatement ps =con.prepareStatement(sql)){
-					ps.setInt(1,pce.getPcId());
-					try(ResultSet rs = ps.executeQuery()){
-						while(rs.next()) {
-							int pcId = rs.getInt(1);
-							int equipmentId = rs.getInt(2);
-							
-							String sqlUE = "UPDATE "+tableName+" SET equipped_where = null, equipped = false"+
-									" WHERE pc_id = ? and equipment_id =?";
-									
-									try(PreparedStatement ps2 =con.prepareStatement(sqlUE)){
-										ps2.setInt(1,pcId);
-										ps2.setInt(2,equipmentId);
-										ps2.execute();			
-									}
-							
-							
+			}
+
+			// if the weapon is double-handed, hard-coded remove L HAND and R HAND
+			EquipmentHands hands = equipment.getRequiresHands();
+			if (hands != null) {
+				if (hands.equals(EquipmentHands.DOUBLE_HANDED)) {
+					if (EquipmentWhere.HAND_L.equals(where) || EquipmentWhere.HAND_R.equals(where)) {
+						String sql0 = "UPDATE " + tableName + " SET equipped_where = null, equipped = false"
+								+ " WHERE pc_id = ? and ( equipped_where =? OR equipped_where =? )";
+						try (PreparedStatement ps = con.prepareStatement(sql0)) {
+							ps.setInt(1, pce.getPcId());
+							ps.setString(2, EquipmentWhere.HAND_L.getDesc());
+							ps.setString(3, EquipmentWhere.HAND_R.getDesc());
+							ps.execute();
 						}
 					}
+				} else if (hands.equals(EquipmentHands.SINGLE_HANDED)) {
+					/// do we have any double-handed weapons installed?
+					String sql = "SELECT t0.pc_id , t0.equipment_id, w0.code,w1.code FROM Player_Character_equipment t0 "
+							+ "  LEFT OUTER JOIN weapon_melee w0 ON w0.code = t0.code AND t0.equipment_type ='MELEE_WEAPON' AND w0.requires_hands = 'DOUBLE_HANDED' "
+							+ "  LEFT OUTER JOIN weapon_ranged w1 ON w1.code = t0.code AND t0.equipment_type ='RANGED_WEAPON' AND w1.requires_hands = 'DOUBLE_HANDED' "
+							+ " WHERE   (w0.code IS NOT NULL OR w1.code IS NOT NULL )" + "  AND t0.pc_id = ? ";
+					try (PreparedStatement ps = con.prepareStatement(sql)) {
+						ps.setInt(1, pce.getPcId());
+						try (ResultSet rs = ps.executeQuery()) {
+							while (rs.next()) {
+								int pcId = rs.getInt(1);
+								int equipmentId = rs.getInt(2);
+
+								String sqlUE = "UPDATE " + tableName + " SET equipped_where = null, equipped = false"
+										+ " WHERE pc_id = ? and equipment_id =?";
+
+								try (PreparedStatement ps2 = con.prepareStatement(sqlUE)) {
+									ps2.setInt(1, pcId);
+									ps2.setInt(2, equipmentId);
+									ps2.execute();
+								}
+
+							}
+						}
+					}
+
 				}
-				
+
 			}
-			
 		}
 		//		
 		pce.setEquipped(true);
