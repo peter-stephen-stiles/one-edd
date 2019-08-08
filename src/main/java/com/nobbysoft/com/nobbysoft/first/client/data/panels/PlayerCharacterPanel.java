@@ -179,9 +179,9 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>();
 	{
 		equipmentMenu.put("Arms - Melee", AddEquipmentMelee.class);
-		equipmentMenu.put("Arms - Ranged/Thrown", AddEquipmentMelee.class);
-		equipmentMenu.put("Armour", AddEquipmentMelee.class); 
-		equipmentMenu.put("Ammunition", AddEquipmentMelee.class); 
+		equipmentMenu.put("Arms - Ranged/Thrown", AddEquipmentRanged.class);
+		equipmentMenu.put("Armour", AddEquipmentArmour.class); 
+		equipmentMenu.put("Ammunition", AddEquipmentAmmunition.class); 
 	}
 	
 
@@ -835,8 +835,17 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	}
 	
 	private void populateEquipmentTable() {
+
+		int sr = tblEquipment.getSelectedRow();
+		Object selectedObject = null;
+		if(sr>=0 &&sr<tblEquipment.getRowCount()) {
+			int modelRow =tblEquipment.convertRowIndexToModel(sr);
+			selectedObject = (PlayerCharacterEquipment)tblEquipment.getValueAt(modelRow, 0);
+		}
+		
 		tblEquipment.clearTable();
 		if (pc!=null) {
+			
 			try {
 			PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
 			List<ViewPlayerCharacterEquipment> list = pces.getForPC(pc.getPcId());
@@ -855,6 +864,19 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			}
 			} catch (Exception ex) {
 				Popper.popError(this, ex);
+			}
+			if(selectedObject!=null) {
+				//LOGGER.info("selected object "+selectedObject);
+				for(int i=0,n=tblEquipment.getRowCount();i<n;i++) {
+					int modelRow =tblEquipment.convertRowIndexToModel(i);
+					Object value = tblEquipment.getValueAt(modelRow, 0);
+					//LOGGER.info("value "+value);
+					if(value.equals(selectedObject)) {
+						//LOGGER.info("selected "+i + " model row:"+modelRow);
+						tblEquipment.getSelectionModel().setSelectionInterval(i,i);
+						break;
+					}
+				}
 			}
 		}
 	}
