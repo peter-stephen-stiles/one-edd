@@ -29,4 +29,13 @@ public class PComboEquipmentWhere extends PComboBox<EquipmentWhere> {
 		return (EquipmentWhere)getSelectedItem();
 	}
 	
+	public void setSubsetOfWheres(EquipmentWhere... wheres) {
+		DefaultComboBoxModel model = (DefaultComboBoxModel)this.getModel();
+		model.removeAllElements();
+		
+		for(EquipmentWhere gender:wheres) {
+			model.addElement(gender);	
+		}
+	}
+	
 }

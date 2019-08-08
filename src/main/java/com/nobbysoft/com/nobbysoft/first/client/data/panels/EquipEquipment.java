@@ -63,16 +63,14 @@ public class EquipEquipment extends PDialog   {
 		this.equipment = equipment;
 		//
 		
+		txtEquipmentWhere.setSubsetOfWheres(pce.getEquipmentType().getValidWheres());
+		
 		txtEquipmentName.setText(equipment.getName());
 		txtCharacterName.setText(characterName);
 		txtEquipmentType.setText(pce.getEquipmentType().getDesc());
 		EquipmentHands eh=equipment.getRequiresHands();
 		txtEquipmentHands.setEquipmentHands(eh);	
-//		if(eh==null||eh==EquipmentHands.NONE) {
-//			txtEquipmentWhere.setReadOnly(true);
-//		} else {
-//			txtEquipmentWhere.setReadOnly(false);
-//		}	
+		
 	 	//
 	}
 
