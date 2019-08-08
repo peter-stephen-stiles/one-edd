@@ -69,7 +69,11 @@ public class EquipEquipment extends PDialog   {
 		txtCharacterName.setText(characterName);
 		txtEquipmentType.setText(pce.getEquipmentType().getDesc());
 		EquipmentHands eh=equipment.getRequiresHands();
-		txtEquipmentHands.setEquipmentHands(eh);	
+		txtEquipmentHands.setEquipmentHands(eh);
+		
+		if(pce.isEquipped()) {
+			txtEquipmentWhere.setEquipmentWhere(pce.getEquippedWhere());
+		}
 		
 	 	//
 	}

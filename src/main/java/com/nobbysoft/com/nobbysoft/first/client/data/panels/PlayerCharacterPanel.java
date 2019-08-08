@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
@@ -220,6 +222,14 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			unEquipEquipment();
 		});
 		
+		tblEquipment.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount()==2) {
+					btnEquipmentEquip.doClick();
+				}
+			}
+		});
 		
 		
 		btnEquipmentAdd.addActionListener(ae ->{
@@ -755,19 +765,16 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			int modelRow =tblEquipment.convertRowIndexToModel(rowNum);
 			Object o0=tblEquipment.getValueAt(modelRow, 0);
 			Object o1=tblEquipment.getValueAt(modelRow, 1);
-			//Object o2=tblEquipment.getValueAt(modelRow, 2);
-			//Object o3=tblEquipment.getValueAt(modelRow, 3);
-			//LOGGER.info(" o0:"+o0+"o1:"+o1+" o2:"+o2+" o3:"+o3);
 			pce = (PlayerCharacterEquipment)o0;
 			name = (String)o1;
 		}
 		if(pce!=null) {
-			if(pce.isEquipped()) {
-				Popper.popError(this, "Already equipped!", "That's already equipped");
-				return;
-			} else {
-				
-			}
+//			if(pce.isEquipped()) {
+//				Popper.popError(this, "Already equipped!", "That's already equipped");
+//				return;
+//			} else {
+//				
+//			}
 			
 			EquipEquipment aei = new EquipEquipment(GuiUtils.getParent(this));
 			
