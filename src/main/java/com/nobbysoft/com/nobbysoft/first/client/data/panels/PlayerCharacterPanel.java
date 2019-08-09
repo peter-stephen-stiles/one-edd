@@ -182,8 +182,9 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	{
 		equipmentMenu.put("Arms - Melee", AddEquipmentMelee.class);
 		equipmentMenu.put("Arms - Ranged/Thrown", AddEquipmentRanged.class);
-		equipmentMenu.put("Armour", AddEquipmentArmour.class); 
 		equipmentMenu.put("Ammunition", AddEquipmentAmmunition.class); 
+		equipmentMenu.put("Armour", AddEquipmentArmour.class); 
+		equipmentMenu.put("Shield", AddEquipmentShield.class); 
 	}
 	
 

@@ -65,7 +65,8 @@ implements DAOI<WeaponMelee, String> {
 			" SELECT '"+EquipmentType.AMMUNITION.name()+"'  as type, code , name FROM weapon_ammunition " +
 			" UNION ALL " +
 			" SELECT '"+EquipmentType.ARMOUR.name()+"'  as type, code , name FROM armour " +
-			
+			" UNION ALL " +
+			" SELECT '"+EquipmentType.SHIELD.name()+"'  as type, code , name FROM shield " +			
 			")"
 			;
 					

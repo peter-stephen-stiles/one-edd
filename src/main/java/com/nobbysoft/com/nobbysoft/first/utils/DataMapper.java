@@ -120,12 +120,14 @@ public enum DataMapper {
 		daoimap.put(WeaponRanged.class,WeaponRangedDAO.class);
 		daoimap.put(WeaponAmmunition.class,WeaponAmmunitionDAO.class);
 		daoimap.put(Armour.class,ArmourDAO.class);
+		daoimap.put(Shield.class,ShieldDAO.class);
 
 		
 		equipmentDAO.put(EquipmentType.MELEE_WEAPON,WeaponMeleeDAO.class);
 		equipmentDAO.put(EquipmentType.WEAPON_RANGED,WeaponRangedDAO.class);
 		equipmentDAO.put(EquipmentType.AMMUNITION,WeaponAmmunitionDAO.class);
 		equipmentDAO.put(EquipmentType.ARMOUR,ArmourDAO.class);
+		equipmentDAO.put(EquipmentType.SHIELD,ShieldDAO.class);
 		 
 		
 		
@@ -141,6 +143,7 @@ public enum DataMapper {
 		panels.put(WeaponRanged.class, WeaponRangedPanel.class);
 		panels.put(WeaponAmmunition.class, WeaponAmmunitionPanel.class);
 		panels.put(Armour.class, ArmourPanel.class);
+		panels.put(Shield.class, ShieldPanel.class);
 		
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
@@ -157,6 +160,7 @@ public enum DataMapper {
 		entityservicemap.put(WeaponRanged.class,WeaponRangedService.class);
 		entityservicemap.put(WeaponAmmunition.class,WeaponAmmunitionService.class);
 		entityservicemap.put(Armour.class,ArmourService.class);
+		entityservicemap.put(Shield.class,ShieldService.class);
 		
 		
 
@@ -174,6 +178,7 @@ public enum DataMapper {
 		servicemap.put(WeaponRangedService.class, WeaponRangedThrownImpl.class);
 		servicemap.put(WeaponAmmunitionService.class, WeaponAmmunitionServiceImpl.class);
 		servicemap.put(ArmourService.class, ArmourServiceImpl.class);
+		servicemap.put(ShieldService.class, ShieldServiceImpl.class);
 		
 		
 		

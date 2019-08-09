@@ -280,9 +280,6 @@ public class DataFrameTabData extends PPanel{
 			}
 			{
 				// populateTable
-				// Class d = DataMapper.INSTANCE.getServiceForEntity(c);
-				//Constructor<DataServiceI> cc = d.getConstructor();
-				//DataServiceI dao = (DataServiceI) cc.newInstance();
 				
 				Class d = DataMapper.INSTANCE.getServiceForEntity(c);
 				Class bd = DataMapper.INSTANCE.getButtonClass(c);
