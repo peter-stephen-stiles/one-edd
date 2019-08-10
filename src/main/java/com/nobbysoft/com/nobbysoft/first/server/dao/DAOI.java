@@ -9,9 +9,8 @@ import com.nobbysoft.com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
 
-public interface DAOI<T extends DataDTOInterface<K>, K extends Comparable<K>> {
+public interface DAOI<T extends DataDTOInterface<K>, K extends Comparable<K>> extends CreateInterface {
 	
-	public void createTable(Connection con) throws SQLException;
 	public T get(Connection con, K key) throws SQLException;
 	public void insert(Connection con, T value) throws SQLException;
 	public List<T> getList(Connection con) throws SQLException;

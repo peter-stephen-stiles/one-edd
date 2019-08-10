@@ -140,7 +140,7 @@ public class RaceDAO implements DAOI<Race, String> {
 	public void insert(Connection con, Race value) throws SQLException {
 		String sql = "INSERT INTO Race ( " + 
 	" race_id, name , " + 
-				" has_magic_defence_bonus, multi_classable" +
+				" has_magic_defence_bonus, multi_classable," +
 				"min_male_str, max_male_str, min_female_str, max_female_str, min_male_int, max_male_int," +
 				"min_female_int, max_female_int, min_male_wis, max_male_wis, min_female_wis, max_female_wis," + 
 				"min_male_dex, max_male_dex, min_female_dex, max_female_dex, min_male_con, max_male_con, " +

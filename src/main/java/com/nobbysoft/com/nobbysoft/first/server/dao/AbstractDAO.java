@@ -18,7 +18,7 @@ import com.nobbysoft.com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
 
-public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparable> {
+public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparable>  {
 
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());

@@ -34,15 +34,24 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		 * hasMagicDefenceBonus;
 		 */
 		String tableName = "Character_Class";
-		String sql = "CREATE TABLE " + tableName
-				+ "(class_id varchar(20), name varchar(256) , hit_dice INTEGER, hit_dice_at_first_level INTEGER, max_hd_level INTEGER, master_spell_class BOOLEAN "
-				+ "PRIMARY KEY (class_id) ," + " UNIQUE  (name) )";
+		String sql = "CREATE TABLE " + tableName +
+				 "(class_id varchar(20), "+
+				" name varchar(256) , "+
+				" hit_dice INTEGER, "+
+				" hit_dice_at_first_level INTEGER, "+
+				" max_hd_level INTEGER, "+
+				" master_spell_class BOOLEAN, "
+				+ "PRIMARY KEY (class_id) ," + 
+				" UNIQUE  (name) )";
 
 		if (DbUtils.doesTableExist(con, tableName)) {
 
 		} else {
 			try (PreparedStatement ps = con.prepareStatement(sql);) {
 				ps.execute();
+			} catch (Exception ex) {
+				LOGGER.error("sql\n\n"+sql);
+				throw ex;
 			}
 		}
 		{
@@ -56,7 +65,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 					ps.execute();
 				}
 				sql = "ALTER TABLE " + tableName + " add foreign key " + column
-						+ " references CharacterClass(class_id) ";
+						+ " references Character_Class(class_id) ";
 				try (PreparedStatement ps = con.prepareStatement(sql);) {
 					ps.execute();
 				}

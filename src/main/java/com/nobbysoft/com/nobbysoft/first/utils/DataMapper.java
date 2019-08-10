@@ -3,6 +3,7 @@ package com.nobbysoft.com.nobbysoft.first.utils;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -228,9 +229,12 @@ public enum DataMapper {
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Class<DAOI>[] getDaos(){
-		
-		return daoimap.values().toArray(new Class[daoimap.size()]);
+	public Class<CreateInterface>[] getDaos(){
+		List<Class> v = new ArrayList();
+		v.addAll(daoimap.values());
+		// extra creates
+		v.add(ViewsDAO.class);
+		return v.toArray(new Class[daoimap.size()]);
  
 	}
 

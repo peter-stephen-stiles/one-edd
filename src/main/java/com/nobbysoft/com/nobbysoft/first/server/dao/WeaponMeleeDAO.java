@@ -44,40 +44,9 @@ implements DAOI<WeaponMelee, String> {
 		
 		
 		{
-			String viewName="view_equipment";
-		if(DbUtils.doesViewExist(con, viewName))
-		{
-			String view = "DROP VIEW "+viewName;
-			try (PreparedStatement ps = con.prepareStatement(view);) {			
-				ps.execute();
-			} catch (Exception ex){
-				LOGGER.info("Error in sql\n"+view);
-				throw ex;
-			}
-		}
+
 		
-		{	
-			String view = "CREATE VIEW "+viewName+" AS ("+
-			" SELECT '"+EquipmentType.MELEE_WEAPON.name()+"' as type, code , name FROM weapon_melee " +
-			" UNION ALL " +
-			" SELECT '"+EquipmentType.WEAPON_RANGED.name()+"' as type, code , name FROM weapon_ranged " +
-			" UNION ALL " +
-			" SELECT '"+EquipmentType.AMMUNITION.name()+"'  as type, code , name FROM weapon_ammunition " +
-			" UNION ALL " +
-			" SELECT '"+EquipmentType.ARMOUR.name()+"'  as type, code , name FROM armour " +
-			" UNION ALL " +
-			" SELECT '"+EquipmentType.SHIELD.name()+"'  as type, code , name FROM shield " +			
-			")"
-			;
-					
-			
-			try (PreparedStatement ps = con.prepareStatement(view);) {			
-				ps.execute();
-			} catch (Exception ex){
-				LOGGER.info("Error in sql\n"+view);
-				throw ex;
-			}
-		}
+	
 		}
 		
 		{

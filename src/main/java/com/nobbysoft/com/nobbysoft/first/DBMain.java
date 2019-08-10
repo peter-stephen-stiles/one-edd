@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.com.nobbysoft.first.common.constants.Constants;
+import com.nobbysoft.com.nobbysoft.first.server.dao.CreateInterface;
 import com.nobbysoft.com.nobbysoft.first.server.dao.DAOI;
 import com.nobbysoft.com.nobbysoft.first.server.dao.SpellDAO;
 import com.nobbysoft.com.nobbysoft.first.server.db.StartNetworkServer;
@@ -83,11 +84,11 @@ public class DBMain {
 				
 				runQuery(conn, "SELECT * FROM SYS.SYSTABLES");
 				
-				runQuery(conn, "SELECT * FROM Race");
+				//runQuery(conn, "SELECT * FROM Race");
 				
-				for(Class<DAOI> daoClass:DataMapper.INSTANCE.getDaos()){
+				for(Class<CreateInterface> daoClass:DataMapper.INSTANCE.getDaos()){
 				
-					DAOI<?, ?> dao = daoClass.newInstance(); 
+					CreateInterface dao = daoClass.newInstance(); 
 					dao.createTable(conn);
 				}
 				
