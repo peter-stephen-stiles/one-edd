@@ -8,4 +8,7 @@ public interface PDataComponent {
 	public void setReadOnly(boolean readOnly);
 	public boolean isReadOnly();
 	
+	public void setMinimumHeight(int height);
+	public void setMinimumWidth(int width);
+	
 }

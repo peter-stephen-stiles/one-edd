@@ -1,5 +1,6 @@
 package com.nobbysoft.com.nobbysoft.first.client.components.special;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
@@ -135,4 +136,30 @@ public class PWeaponVsAc extends PPanel implements PDataComponent  {
 		return txtVsAc02.isReadOnly();
 	}
 	 
+	
+	int ph = 0;
+	int pw=0;
+	@Override
+	public void setMinimumHeight(int height) {
+		ph=height;
+	}
+	@Override
+	public void setMinimumWidth(int width) {
+		pw=width;
+	}
+	@Override
+	public Dimension getPreferredSize() {
+		
+ 
+		
+		Dimension d = super.getPreferredSize();
+		if(d.getWidth()<pw) {
+			d.width=pw;
+		}
+		if(d.getHeight()<ph) {
+			d.height=ph;
+		}
+		return d;
+	}
+	
 }

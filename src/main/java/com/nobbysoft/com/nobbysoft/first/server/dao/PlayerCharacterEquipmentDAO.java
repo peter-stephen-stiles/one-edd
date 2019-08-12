@@ -22,6 +22,7 @@ import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterEquip
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipmentKey;
 import com.nobbysoft.com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.com.nobbysoft.first.common.views.NameAndEncumberence;
 import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacterEquipment;
 import com.nobbysoft.com.nobbysoft.first.server.utils.DbUtils;
 
@@ -229,20 +230,22 @@ public class PlayerCharacterEquipmentDAO
 		}
 	}
 
-	private Map<String,String> descCache = new HashMap<>();
-	private String getEquipmentDescription(Connection con,String type,String code) throws SQLException  {
+	private Map<String,NameAndEncumberence> descCache = new HashMap<>();
+	private NameAndEncumberence getEquipmentDescription(Connection con,String type,String code) throws SQLException  {
 		String key = type+":"+code;
 		if(descCache.containsKey(key)) {
 			return descCache.get(key);
 		}
 		String desc=null;
-		String sql = "SELECT name FROM view_equipment WHERE type = ? and code = ?";
+		int encum=0;
+		String sql = "SELECT name,encumberance_GP FROM view_equipment WHERE type = ? and code = ?";
 		try(PreparedStatement ps = con.prepareStatement(sql)){
 			ps.setString(1, type);
 			ps.setString(2, code);
 			try(ResultSet rs= ps.executeQuery()){
 				if(rs.next()) {
-					desc = rs.getString(1);					
+					desc = rs.getString(1);		
+					encum = rs.getInt(2);
 				}
 				
 			}
@@ -250,9 +253,10 @@ public class PlayerCharacterEquipmentDAO
 		}
 		if(desc==null) {
 			desc="UNKNOWN:"+key;
-		}
-		descCache.put(key,desc);
-		return desc;
+		}		
+		NameAndEncumberence ne = new NameAndEncumberence(desc,encum);
+		descCache.put(key,ne);
+		return ne;
 	}
 	
 	@Override
@@ -264,10 +268,10 @@ public class PlayerCharacterEquipmentDAO
 
 			@Override
 			public void hereHaveADTO(PlayerCharacterEquipment dto, boolean first)   {
-				String d;
+				NameAndEncumberence d;
 				try {
-					d = getEquipmentDescription(con,dto.getEquipmentType().name(),dto.getCode());
-				ViewPlayerCharacterEquipment v = new ViewPlayerCharacterEquipment(dto,d);
+					d = getEquipmentDescription(con,dto.getEquipmentType().name(),dto.getCode());					
+				ViewPlayerCharacterEquipment v = new ViewPlayerCharacterEquipment(dto,d.getName(),d.getEncumberence());
 				views.add(v);
 				} catch (SQLException e) {
 					LOGGER.error("ist all gone wrong for "+dto.getKey(),e);
@@ -285,7 +289,7 @@ public class PlayerCharacterEquipmentDAO
 		
 		// when we equip  to PACK or OTHER we don't need to unequip other things
 		
-		boolean unequipOthers= !((EquipmentWhere.OTHER_OR_NOT.equals(where) ||EquipmentWhere.PACK.equals(where) ));
+		boolean unequipOthers= !((EquipmentWhere.OTHER.equals(where) ||EquipmentWhere.PACK.equals(where) ));
 		
 		if (unequipOthers) {
 

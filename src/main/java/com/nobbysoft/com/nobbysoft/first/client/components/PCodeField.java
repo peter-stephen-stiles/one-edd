@@ -1,5 +1,6 @@
 package com.nobbysoft.com.nobbysoft.first.client.components;
 
+import java.awt.Dimension;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
@@ -43,6 +44,29 @@ public class PCodeField extends JTextField implements PDataComponent {
 		return !isEditable();
 	}
 
+	int ph = 0;
+	int pw=0;
+	@Override
+	public void setMinimumHeight(int height) {
+		ph=height;
+	}
+	@Override
+	public void setMinimumWidth(int width) {
+		pw=width;
+	}
+	@Override
+	public Dimension getPreferredSize() {
+		
  
+		
+		Dimension d = super.getPreferredSize();
+		if(d.getWidth()<pw) {
+			d.width=pw;
+		}
+		if(d.getHeight()<ph) {
+			d.height=ph;
+		}
+		return d;
+	}
 
 }

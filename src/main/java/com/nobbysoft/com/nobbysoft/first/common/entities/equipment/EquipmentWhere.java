@@ -13,7 +13,7 @@ public enum EquipmentWhere{
 	FOOT_R,
 	FOOT_L,
 	PACK,
-	OTHER_OR_NOT;
+	OTHER;
 	
 	public String getDesc() {
 		return name();

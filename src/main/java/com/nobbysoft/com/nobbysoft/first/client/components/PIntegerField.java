@@ -35,12 +35,10 @@ public class PIntegerField extends JTextField  implements PDataComponent {
 			return super.getMaximumSize();
 		}
 		return linkedComponent.getMaximumSize();
-	}	public Dimension getPreferredSize() {
-		if(linkedComponent==null) {
-			return super.getPreferredSize();
-		}
-		return linkedComponent.getPreferredSize();
-	}	public Dimension getSize() {
+	}	
+	
+
+	public Dimension getSize() {
 		if(linkedComponent==null) {
 			return super.getSize();
 		}
@@ -89,6 +87,32 @@ public class PIntegerField extends JTextField  implements PDataComponent {
 		return !isEditable();
 	}
  
- 
+
+	int ph = 0;
+	int pw=0;
+	@Override
+	public void setMinimumHeight(int height) {
+		ph=height;
+	}
+	@Override
+	public void setMinimumWidth(int width) {
+		pw=width;
+	}
+	@Override
+	public Dimension getPreferredSize() {
+		
+		if(linkedComponent!=null) {
+			return linkedComponent.getPreferredSize();
+		}
+		
+		Dimension d = super.getPreferredSize();
+		if(d.getWidth()<pw) {
+			d.width=pw;
+		}
+		if(d.getHeight()<ph) {
+			d.height=ph;
+		}
+		return d;
+	}
 
 }

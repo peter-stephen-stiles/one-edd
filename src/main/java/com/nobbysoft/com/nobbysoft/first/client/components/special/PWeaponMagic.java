@@ -91,4 +91,29 @@ public class PWeaponMagic extends PPanel implements PDataComponent {
 
 	}
 	
+	int ph = 0;
+	int pw=0;
+	@Override
+	public void setMinimumHeight(int height) {
+		ph=height;
+	}
+	@Override
+	public void setMinimumWidth(int width) {
+		pw=width;
+	}
+	@Override
+	public Dimension getPreferredSize() {
+		
+ 
+		
+		Dimension d = super.getPreferredSize();
+		if(d.getWidth()<pw) {
+			d.width=pw;
+		}
+		if(d.getHeight()<ph) {
+			d.height=ph;
+		}
+		return d;
+	}
+	
 }

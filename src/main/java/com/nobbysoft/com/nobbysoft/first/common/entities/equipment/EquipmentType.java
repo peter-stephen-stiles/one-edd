@@ -1,11 +1,11 @@
 package com.nobbysoft.com.nobbysoft.first.common.entities.equipment;
 
 public enum EquipmentType {
-	MELEE_WEAPON(EquipmentWhere.HAND_L,EquipmentWhere.HAND_R,EquipmentWhere.PACK,EquipmentWhere.OTHER_OR_NOT),
-	AMMUNITION(EquipmentWhere.PACK,EquipmentWhere.OTHER_OR_NOT),
-	WEAPON_RANGED(EquipmentWhere.HAND_L,EquipmentWhere.HAND_R,EquipmentWhere.PACK,EquipmentWhere.OTHER_OR_NOT),
-	SHIELD(EquipmentWhere.HAND_L,EquipmentWhere.HAND_R,EquipmentWhere.PACK,EquipmentWhere.OTHER_OR_NOT),
-	ARMOUR(EquipmentWhere.TORSO,EquipmentWhere.PACK,EquipmentWhere.OTHER_OR_NOT),
+	MELEE_WEAPON(EquipmentWhere.HAND_L,EquipmentWhere.HAND_R,EquipmentWhere.PACK,EquipmentWhere.OTHER),
+	AMMUNITION(EquipmentWhere.PACK,EquipmentWhere.OTHER),
+	WEAPON_RANGED(EquipmentWhere.HAND_L,EquipmentWhere.HAND_R,EquipmentWhere.PACK,EquipmentWhere.OTHER),
+	SHIELD(EquipmentWhere.HAND_L,EquipmentWhere.HAND_R,EquipmentWhere.PACK,EquipmentWhere.OTHER),
+	ARMOUR(EquipmentWhere.TORSO,EquipmentWhere.PACK,EquipmentWhere.OTHER),
 	ARMOUR_BONUS_GIVING(),  // don't specify so can go anywhere
 	OTHER() // don't specify so can go anywhere
 	;

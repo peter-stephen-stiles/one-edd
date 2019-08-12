@@ -35,12 +35,16 @@ public class ViewsDAO implements CreateInterface {
 		}
 
 		{
-			String view = "CREATE VIEW " + viewName + " AS (" + " SELECT '" + EquipmentType.MELEE_WEAPON.name()
-					+ "' as type, code , name FROM weapon_melee " + " UNION ALL " + " SELECT '"
-					+ EquipmentType.WEAPON_RANGED.name() + "' as type, code , name FROM weapon_ranged " + " UNION ALL "
-					+ " SELECT '" + EquipmentType.AMMUNITION.name() + "'  as type, code , name FROM weapon_ammunition "
-					+ " UNION ALL " + " SELECT '" + EquipmentType.ARMOUR.name() + "'  as type, code , name FROM armour "
-					+ " UNION ALL " + " SELECT '" + EquipmentType.SHIELD.name() + "'  as type, code , name FROM shield "
+			String view = "CREATE VIEW " + viewName + " AS (" + 
+" SELECT '" + EquipmentType.MELEE_WEAPON.name()+ "' as type, code , name,encumberance_GP FROM weapon_melee " + 
+					" UNION ALL " + 
+" SELECT '"+ EquipmentType.WEAPON_RANGED.name() + "' as type, code , name,encumberance_GP FROM weapon_ranged " + 
+" UNION ALL "+ 
+" SELECT '" + EquipmentType.AMMUNITION.name() + "'  as type, code , name,encumberance_GP FROM weapon_ammunition "+ 
+" UNION ALL " + 
+" SELECT '" + EquipmentType.ARMOUR.name() + "'  as type, code , name,encumberance_GP FROM armour "+ 
+" UNION ALL " + 
+" SELECT '" + EquipmentType.SHIELD.name() + "'  as type, code , name,encumberance_GP FROM shield "
 					+ ")";
 
 			try (PreparedStatement ps = con.prepareStatement(view);) {

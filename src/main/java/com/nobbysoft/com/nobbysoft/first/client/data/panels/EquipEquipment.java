@@ -167,7 +167,7 @@ public class EquipEquipment extends PDialog   {
 		ReturnValue<?> ret = new ReturnValue<>("");
 		
 		boolean anyGood = txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.PACK)
-				|| txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.OTHER_OR_NOT); 
+				|| txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.OTHER); 
 		
 		if(!anyGood) {
 			boolean selectedHands =txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.HAND_L)

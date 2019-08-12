@@ -11,10 +11,13 @@ public class ViewPlayerCharacterEquipment implements Serializable,DataDTOInterfa
 
 	private PlayerCharacterEquipment playerCharacterEquipment;
 	private String equipmentDescription;
+	private int encumberence;
 
-	public ViewPlayerCharacterEquipment(PlayerCharacterEquipment playerCharacterEquipment, String equipmentDescription) {
+	public ViewPlayerCharacterEquipment(PlayerCharacterEquipment playerCharacterEquipment, String equipmentDescription,
+			int encumberence) {
 		this.playerCharacterEquipment=playerCharacterEquipment;
 		this.equipmentDescription=equipmentDescription;
+		this.encumberence=encumberence;
 	}
 	
 	public ViewPlayerCharacterEquipment() { 
@@ -22,7 +25,6 @@ public class ViewPlayerCharacterEquipment implements Serializable,DataDTOInterfa
 
 	@Override
 	public PlayerCharacterEquipmentKey getKey() {
-		// TODO Auto-generated method stub
 		return playerCharacterEquipment.getKey();
 	}
 
@@ -65,6 +67,14 @@ public class ViewPlayerCharacterEquipment implements Serializable,DataDTOInterfa
 
 	public void setEquipmentDescription(String equipmentDescription) {
 		this.equipmentDescription = equipmentDescription;
+	}
+
+	public int getEncumberence() {
+		return encumberence;
+	}
+
+	public void setEncumberence(int encumberence) {
+		this.encumberence = encumberence;
 	}
 
 }
