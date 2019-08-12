@@ -22,7 +22,7 @@ import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterEquip
 import com.nobbysoft.com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipmentKey;
 import com.nobbysoft.com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
-import com.nobbysoft.com.nobbysoft.first.common.views.NameAndEncumberence;
+import com.nobbysoft.com.nobbysoft.first.common.views.NameAndEncumbrance;
 import com.nobbysoft.com.nobbysoft.first.common.views.ViewPlayerCharacterEquipment;
 import com.nobbysoft.com.nobbysoft.first.server.utils.DbUtils;
 
@@ -230,8 +230,8 @@ public class PlayerCharacterEquipmentDAO
 		}
 	}
 
-	private Map<String,NameAndEncumberence> descCache = new HashMap<>();
-	private NameAndEncumberence getEquipmentDescription(Connection con,String type,String code) throws SQLException  {
+	private Map<String,NameAndEncumbrance> descCache = new HashMap<>();
+	private NameAndEncumbrance getEquipmentDescription(Connection con,String type,String code) throws SQLException  {
 		String key = type+":"+code;
 		if(descCache.containsKey(key)) {
 			return descCache.get(key);
@@ -254,7 +254,7 @@ public class PlayerCharacterEquipmentDAO
 		if(desc==null) {
 			desc="UNKNOWN:"+key;
 		}		
-		NameAndEncumberence ne = new NameAndEncumberence(desc,encum);
+		NameAndEncumbrance ne = new NameAndEncumbrance(desc,encum);
 		descCache.put(key,ne);
 		return ne;
 	}
@@ -268,10 +268,10 @@ public class PlayerCharacterEquipmentDAO
 
 			@Override
 			public void hereHaveADTO(PlayerCharacterEquipment dto, boolean first)   {
-				NameAndEncumberence d;
+				NameAndEncumbrance d;
 				try {
 					d = getEquipmentDescription(con,dto.getEquipmentType().name(),dto.getCode());					
-				ViewPlayerCharacterEquipment v = new ViewPlayerCharacterEquipment(dto,d.getName(),d.getEncumberence());
+				ViewPlayerCharacterEquipment v = new ViewPlayerCharacterEquipment(dto,d.getName(),d.getEncumbrance());
 				views.add(v);
 				} catch (SQLException e) {
 					LOGGER.error("ist all gone wrong for "+dto.getKey(),e);

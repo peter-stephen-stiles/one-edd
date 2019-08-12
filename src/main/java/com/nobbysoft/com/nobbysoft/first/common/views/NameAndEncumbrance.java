@@ -1,18 +1,18 @@
 package com.nobbysoft.com.nobbysoft.first.common.views;
 
-public class NameAndEncumberence {
+public class NameAndEncumbrance {
 
 
 	private String name;
-	private int encumberence;
+	private int encumbrance;
 	
-	public NameAndEncumberence(String name, int encumberence) {
+	public NameAndEncumbrance(String name, int encumberence) {
 		super();
 		this.name = name;
-		this.encumberence = encumberence;
+		this.encumbrance = encumberence;
 	}
 
-	public NameAndEncumberence() {
+	public NameAndEncumbrance() {
 
 	}
 
@@ -24,19 +24,19 @@ public class NameAndEncumberence {
 		this.name = name;
 	}
 
-	public int getEncumberence() {
-		return encumberence;
+	public int getEncumbrance() {
+		return encumbrance;
 	}
 
-	public void setEncumberence(int encumberence) {
-		this.encumberence = encumberence;
+	public void setEncumbrance(int encumbrance) {
+		this.encumbrance = encumbrance;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + encumberence;
+		result = prime * result + encumbrance;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -49,8 +49,8 @@ public class NameAndEncumberence {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NameAndEncumberence other = (NameAndEncumberence) obj;
-		if (encumberence != other.encumberence)
+		NameAndEncumbrance other = (NameAndEncumbrance) obj;
+		if (encumbrance != other.encumbrance)
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -62,7 +62,7 @@ public class NameAndEncumberence {
 
 	@Override
 	public String toString() {
-		return "NameAndEncumberence [name=" + name + ", encumberence=" + encumberence + "]";
+		return "NameAndEncumberence [name=" + name + ", encumberence=" + encumbrance + "]";
 	}
 
 }
