@@ -62,55 +62,55 @@ public class MakeHTML {
 			Element body = doc.createElement("body");
 			doc.appendChild(body);
 
-			addElement(body, "h1", "Character Sheet");
+			XmlUtilities.addElement(body, "h1", "Character Sheet");
 			{
-				Element table = addElement(body, "table");
-				addAttribute(table, "border", "1");
-				Element row = addElement(table, "tr");
+				Element table = XmlUtilities.addElement(body, "table");
+				XmlUtilities.addAttribute(table, "border", "1");
+				Element row = XmlUtilities.addElement(table, "tr");
 
-				addElement(row, "th", "Character Name");
-				addElement(row, "td", pc.getCharacterName());
-				addElement(row, "th", "Gender");
-				addElement(row, "td", pc.getGender().name());
-				addElement(row, "th", "Race");
-				addElement(row, "td", pc.getRaceId());
+				XmlUtilities.addElement(row, "th", "Character Name");
+				XmlUtilities.addElement(row, "td", pc.getCharacterName());
+				XmlUtilities.addElement(row, "th", "Gender");
+				XmlUtilities.addElement(row, "td", pc.getGender().name());
+				XmlUtilities.addElement(row, "th", "Race");
+				XmlUtilities.addElement(row, "td", pc.getRaceId());
 			}
 			{
-				Element table = addElement(body, "table");
+				Element table = XmlUtilities.addElement(body, "table");
 
-				addAttribute(table, "border", "1");
+				XmlUtilities.addAttribute(table, "border", "1");
 				{
-					Element row = addElement(table, "tr");
-					addElement(row, "th", "str");
-					addElement(row, "td", pc.getAttrStr());
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "str");
+					XmlUtilities.addElement(row, "td", pc.getAttrStr());
 				}
 				{
-					Element row = addElement(table, "tr");
-					addElement(row, "th", "int");
-					addElement(row, "td", pc.getAttrInt());
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "int");
+					XmlUtilities.addElement(row, "td", pc.getAttrInt());
 				}
 				{
-					Element row = addElement(table, "tr");
-					addElement(row, "th", "wis");
-					addElement(row, "td", pc.getAttrWis());
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "wis");
+					XmlUtilities.addElement(row, "td", pc.getAttrWis());
 				}
 				{
-					Element row = addElement(table, "tr");
-					addElement(row, "th", "dex");
-					addElement(row, "td", pc.getAttrDex());
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "dex");
+					XmlUtilities.addElement(row, "td", pc.getAttrDex());
 				}
 				{
-					Element row = addElement(table, "tr");
-					addElement(row, "th", "con");
-					addElement(row, "td", pc.getAttrCon());
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "con");
+					XmlUtilities.addElement(row, "td", pc.getAttrCon());
 				}
 				{
-					Element row = addElement(table, "tr");
-					addElement(row, "th", "chr");
-					addElement(row, "td",pc.getAttrChr());
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "chr");
+					XmlUtilities.addElement(row, "td",pc.getAttrChr());
 				}
 			}
-			String xmlString = xmlToHtmlString(doc);
+			String xmlString = XmlUtilities.xmlToHtmlString(doc);
 
 			return xmlString;
 
@@ -119,46 +119,5 @@ public class MakeHTML {
 		}
 	}
 
-	private void addAttribute(Element node, String name, String value) {
 
-		((Element) node).setAttribute(name, value);
-	}
-
-	private String xmlToHtmlString(Document doc)
-			throws TransformerFactoryConfigurationError, TransformerConfigurationException, TransformerException {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		DOMSource source = new DOMSource(doc);
-		StringWriter writer = new StringWriter();
-		StreamResult result = new StreamResult(writer);
-		transformer.setOutputProperty(OutputKeys.METHOD, "html");
-		transformer.transform(source, result);
-		String xmlString = writer.getBuffer().toString();
-		return xmlString;
-	}
-
-	private Element addElement(Node n, String name) {
-		Document od = n.getOwnerDocument();
-		Element newEl = od.createElement(name);
-		n.appendChild(newEl);
-		return newEl;
-	}
-
-	private Element addElement(Node n, String name, int value) {
-		Document od = n.getOwnerDocument();
-		Element newEl = od.createElement(name);
-		n.appendChild(newEl);
-		Node tn = od.createTextNode(""+value);
-		newEl.appendChild(tn);
-		return newEl;
-	}
-	
-	private Element addElement(Node n, String name, String value) {
-		Document od = n.getOwnerDocument();
-		Element newEl = od.createElement(name);
-		n.appendChild(newEl);
-		Node tn = od.createTextNode(value);
-		newEl.appendChild(tn);
-		return newEl;
-	}
 }

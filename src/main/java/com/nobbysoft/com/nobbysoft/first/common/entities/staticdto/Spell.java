@@ -125,4 +125,11 @@ public class Spell implements Serializable, DataDTOInterface<String> {
 		this.spellId = spellId;
 	}
 
+	@Override
+	public String toString() {
+		return "Spell [spellId=" + spellId + ", spellClass=" + spellClass + ", level=" + level + ", name=" + name
+				+ ", verbal=" + verbal + ", somatic=" + somatic + ", material=" + material + ", basedUponSpell="
+				+ basedUponSpell + ", description=" + description + ", materialComponents=" + materialComponents + "]";
+	}
+
 }
