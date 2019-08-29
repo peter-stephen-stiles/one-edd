@@ -39,6 +39,17 @@ public class XmlUtilities {
 
 	}
 
+	
+	public static final String trimNbsp(String in) {
+		if(in==null){
+			return null;
+		}
+		return in.replaceAll("\u00a0"," ").trim();
+		
+		
+		
+	}
+	
 	public static Document convertStringToXML(String xmlString) {
 		// Parser that produces DOM object trees from XML content
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -220,17 +231,14 @@ public class XmlUtilities {
 
 	}
 	
-	public static String getText(Node n) {
-//		StringBuilder value=new StringBuilder("");
-		
-		return(n.getTextContent());
-		
-//		if(n.hasChildNodes()) {
-//			List<Node> kids= list(n.getChildNodes());
-//			
-//		}
-//		
-//		return value.toString();
+	public static String getText(Node n) {		
+		String s =n.getTextContent();		
+		s= s.replaceAll("\\&amp\\;", "&");
+		s= s.replaceAll("\\&lt\\;", "<");
+		s= s.replaceAll("\\&gt\\;", ">");
+		s= s.replaceAll("\\&apos\\;", "'");
+		s= s.replaceAll("\\&apos\\;", "'");		
+		return(s);	
 	}
 	
 	

@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import com.nobbysoft.com.nobbysoft.first.common.constants.Constants;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.com.nobbysoft.first.server.dao.CharacterClassDAO;
+import com.nobbysoft.com.nobbysoft.first.server.dao.SpellDAO;
 import com.nobbysoft.com.nobbysoft.first.server.db.StartNetworkServer;
 import com.nobbysoft.com.nobbysoft.first.server.utils.ConnectionManager;
 
@@ -87,6 +89,10 @@ public class ImportSpells {
 
 		return map;
 	}
+	
+	private String t(String in) {
+		return XmlUtilities.trimNbsp(in);
+	}
 
 	public ImportSpells() throws Exception {
 
@@ -136,7 +142,7 @@ public class ImportSpells {
 				Element body = XmlUtilities.getElement(docElement, "body");// should only be one body node!
 				// get all "anchor" tags. These are where the magic lies
 				List<Node> anchors = XmlUtilities.getElementsByTagName(body, "a");
-				String className = "";
+				//String className = "";
 
 				// SPELL TABLES
 				// // <CLASS>
@@ -159,7 +165,8 @@ public class ImportSpells {
 					// first node will have a CHARACTER CLASS name in.
 					String name = XmlUtilities.getAttributeValue(anchor, "name");
 					LOGGER.info("anchor name:" + name);
-					if (name != null && !name.trim().isEmpty()) {
+					if (name != null && !t(name).isEmpty()) {
+						name = t(name);
 						String nameHRef = "#" + name;
 						if (spells.containsKey(nameHRef)) {
 							InternalSpell is = spells.get(nameHRef);
@@ -179,7 +186,7 @@ public class ImportSpells {
 											// first row
 											List<Node> row = spellTable.get(rowNum++);
 											Node data = row.get(0);
-											String type = XmlUtilities.getText(data);
+											String type = t(XmlUtilities.getText(data));
 											// first row
 											// <td width="100%"><font size="2"><b><a name="Command">Command</a></b>
 											// (Enchantment/Charm)</font></td>
@@ -190,7 +197,7 @@ public class ImportSpells {
 										if (rowNum <= spellTable.size()) {
 											List<Node> row = spellTable.get(rowNum++);
 											Node data = row.get(0);
-											Map<String, String> map = parseProperties(data);
+											Map<String, String> map = parseProperties(name,data);
 											String range = map.get(RANGE);
 											String level = map.get(LEVEL);
 											String components = map.get(COMPONENTS);
@@ -199,10 +206,15 @@ public class ImportSpells {
 											String save = map.get(SAVE);
 											String area = map.get(AREA);
 											setComponents(s, components);
-											if (!(("" + s.getLevel()).equals(level.trim()))) {
+											if (!(("" + s.getLevel()).equals(t(level)))) {
 												LOGGER.info("Dodgy level on spell " + s + " >> " + level);
 											}
-
+											s.setRange(range);
+											s.setCastingTime(castingTime);
+											s.setDuration(duration);
+											s.setSavingThrow(save);
+											s.setAreaOfEffect(area);
+											
 											// Something:something&nbsp;
 										}
 										// third row
@@ -226,9 +238,9 @@ public class ImportSpells {
 
 					}
 					String classId = themToMe.get(name);
-					if (classId != null && !classId.trim().isEmpty()) {
+					if (classId != null && !t(classId).isEmpty()) {
 						// its a character class name
-						className = name;
+						//className = name;
 						LOGGER.info("character class :" + name + " id:" + classId);
 						// we need to find the "p" tag that this node is in
 						Node p = XmlUtilities.findParent(anchor, "p");
@@ -261,7 +273,7 @@ public class ImportSpells {
 											String spellName = XmlUtilities.getText(ahref);
 											InternalSpell is = new InternalSpell(level, classId, href, spellName);
 											spells.put(href, is);
-											LOGGER.info("spell:" + href + "=" + is);
+											//LOGGER.info("spell:" + href + "=" + is);
 										}
 									}
 
@@ -290,24 +302,77 @@ public class ImportSpells {
 						sidP = sid + sc;
 					}
 					is.getSpell().setSpellId(sidP);
-					LOGGER.info("Spell:" + is.getSpell());
+					//LOGGER.info("Spell:" + is.getSpell());
+					
 				}
 
 				LOGGER.info("");
 				LOGGER.info("");
-				LOGGER.info("DONE");
+				LOGGER.info("LOADED");
 				LOGGER.info("");
 				LOGGER.info("");
 			} catch (Exception ex) {
 				LOGGER.error("error", ex);
 			}
 
-			try (Connection conn = cm.getConnection();) {
-				populateMapping(conn);
-				// do stuff
-
+			LOGGER.info("");
+			LOGGER.info("");
+			LOGGER.info("WRITING TO DATABASE");
+			LOGGER.info("");
+			LOGGER.info("");
+			
+			boolean error = false;
+			List<Throwable> errors = new ArrayList<>();
+			List<Spell> errorSpells = new ArrayList<>();
+			
+			try (Connection con = cm.getConnection();) {
+				con.setAutoCommit(false);
+				SpellDAO sdao = new SpellDAO();
+				for (InternalSpell is : spells.values()) {
+					Spell ns = is.getSpell();
+					try {
+					Spell sx =null;
+					try {
+						sx=sdao.get(con, ns.getSpellId());
+					} catch (Exception ex) {
+						LOGGER.error("Error looking for spell id:"+ns.getSpellId()+ " "+ex);
+					}
+					if(sx==null) {
+						LOGGER.info("new spell:"+ns);
+						sdao.insert(con, ns);
+					} else {
+						LOGGER.info("update spell from :"+sx);
+						LOGGER.info("update spell   to :"+ns);
+						sdao.update(con, ns);
+					}
+					} catch (SQLException ex) {
+						error=true;
+						errors.add(ex);
+						errorSpells.add(ns);
+					}
+				}
+				if(error) {
+					LOGGER.error("ERRORS! "+errors.size());
+					for(int i=0,n=errors.size();i<n;i++) {
+						Throwable t = errors.get(i);
+						Spell spell = errorSpells.get(i);
+						LOGGER.error("Error writing spell "+spell,t);
+					}
+					//LOGGER.error("End of ERRORS! "+errors.size());
+					//con.rollback();
+				} else {
+					//LOGGER.info("No errors. Committing");
+					
+				}
+				con.commit();
 			}
 
+			LOGGER.info("");
+			LOGGER.info("");
+			LOGGER.info("COMPLETE OK");
+			LOGGER.info("");
+			LOGGER.info("");
+			
 		} finally {
 			cm.shutdown();
 		}
@@ -323,9 +388,11 @@ public class ImportSpells {
 	String AREA = "Area of Effect";
 	String ED = "Explanation/Description";
 
-	private Map<String, String> parseProperties(Node data) {
+	private Map<String, String> parseProperties(String name,Node data) {
 		String props = XmlUtilities.getText(data);
 		props = props.replaceAll("\\&quot\\;", "'");
+		props = props.replaceAll("\\&nbsp\\;", " ");
+		props = props.replaceAll("\\&amp\\;", " ");
 		LOGGER.info("props:"+props);
 		int p0 = props.indexOf(LEVEL);
 		int p1 = p0 + LEVEL.length() + 1;
@@ -342,7 +409,7 @@ public class ImportSpells {
 		int p12 = props.indexOf(AREA);
 		int p13 = p12 + AREA.length() + 1;
 		
-		LOGGER.info(
+		LOGGER.info(name+" >> "+
 				"p0:"+ p0+" "+ 
 						"p1:"+ p1+" "+ 
 						"p2:"+ p2+" "+ 
@@ -359,46 +426,47 @@ public class ImportSpells {
 						"p13:"+ p13+" ");
 		String level;
 		if(p1>=0 && p2 > 1) {
-			level= props.substring(p1, p2).trim();
+			level= t(props.substring(p1, p2));
 		} else {
 			level="";
 		}
 		String components;
 		if (p3>=0 && p4>=p3) {
-			components = props.substring(p3, p4).trim();
+			components = t(props.substring(p3, p4));
 		} else {
 			components="";
 		}
 		String range;
 		if (p5>=0 && p6>=p5) {
-			range = props.substring(p5, p6).trim();
+			range = t(props.substring(p5, p6));
 		} else {
 			range ="";
 		}
 		String cast;
 		if (p7>=0 && p8>=p7) {
-			cast = props.substring(p7, p8).trim();
+			cast = t(props.substring(p7, p8));
 		} else {
 			cast = "";
 		}
 		String duration;
 		if (p9>=0 && p10>=p9) {
-			duration = props.substring(p9, p10).trim();
+			duration = t(props.substring(p9, p10));
 		} else {
 			duration="";
 		}
 		String save;
 		if(p11>=0 && p12 >= p11) {
-			save= props.substring(p11, p12).trim();
+			save= t(props.substring(p11, p12));
 		} else {
 			save="";
 		}
 		String area;
-		if(p13>=0) {
-			area= props.substring(p13).trim();
+		if(p13>0) {
+			area= t(props.substring(p13));
 		} else {
 			area ="";
 		}
+		
 
 		Map<String, String> map = new HashMap<>();
 
@@ -533,13 +601,14 @@ public class ImportSpells {
 		}
 		String[] cs = components.split("\\,");
 		for (String c : cs) {
-			if (c.trim().equalsIgnoreCase("V")) {
+			c = t(c);
+			if (c.equalsIgnoreCase("V")) {
 				s.setVerbal(true);
 			}
-			if (c.trim().equalsIgnoreCase("S")) {
+			if (c.equalsIgnoreCase("S")) {
 				s.setSomatic(true);
 			}
-			if (c.trim().equalsIgnoreCase("M")) {
+			if (c.equalsIgnoreCase("M")) {
 				s.setMaterial(true);
 			}
 		}

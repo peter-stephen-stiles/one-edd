@@ -35,6 +35,13 @@ public class Spell implements Serializable, DataDTOInterface<String> {
 	private boolean material;
 	private String materialComponents;
 	private String description;
+
+	private String range;
+	private String castingTime;
+	private String duration;
+	private String savingThrow;
+	private String areaOfEffect;
+	
 	
 	private Spell basedUponSpell = null;
 
@@ -128,8 +135,50 @@ public class Spell implements Serializable, DataDTOInterface<String> {
 	@Override
 	public String toString() {
 		return "Spell [spellId=" + spellId + ", spellClass=" + spellClass + ", level=" + level + ", name=" + name
-				+ ", verbal=" + verbal + ", somatic=" + somatic + ", material=" + material + ", basedUponSpell="
-				+ basedUponSpell + ", description=" + description + ", materialComponents=" + materialComponents + "]";
+				+ ", verbal=" + verbal + ", somatic=" + somatic + ", material=" + material + ", materialComponents="
+				+ materialComponents + ", description=" + description + ", range=" + range + ", castingTime="
+				+ castingTime + ", duration=" + duration + ", savingThrow=" + savingThrow + ", areaOfEffect="
+				+ areaOfEffect + ", basedUponSpell=" + basedUponSpell + "]";
+	}
+
+	public String getRange() {
+		return range;
+	}
+
+	public void setRange(String range) {
+		this.range = range;
+	}
+
+	public String getCastingTime() {
+		return castingTime;
+	}
+
+	public void setCastingTime(String castingTime) {
+		this.castingTime = castingTime;
+	}
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
+
+	public String getSavingThrow() {
+		return savingThrow;
+	}
+
+	public void setSavingThrow(String savingThrow) {
+		this.savingThrow = savingThrow;
+	}
+
+	public String getAreaOfEffect() {
+		return areaOfEffect;
+	}
+
+	public void setAreaOfEffect(String areaOfEffect) {
+		this.areaOfEffect = areaOfEffect;
 	}
 
 }
