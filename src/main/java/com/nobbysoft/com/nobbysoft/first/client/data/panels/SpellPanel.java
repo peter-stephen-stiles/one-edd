@@ -31,7 +31,8 @@ import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
-import com.nobbysoft.com.nobbysoft.first.common.utils.ReturnValue; 
+import com.nobbysoft.com.nobbysoft.first.common.utils.ReturnValue;
+import com.nobbysoft.com.nobbysoft.first.server.dao.VC;
 import com.nobbysoft.com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
@@ -70,9 +71,30 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 	private final PCheckBox cbxMaterial = new PCheckBox("Material");
 	private final PTextArea txtMaterialComponents = new PTextArea(256);
 	private final PTextArea txtDescription = new PTextArea();
-
+/*
+				new VC("range",30),
+				new VC("casting_time",30),
+				new VC("duration",30),
+				new VC("saving_throw",30),
+				new VC("area_of_effect",60),
+				new VC("spell_type",60),
+ */
+	private final PTextField txtRange = new PTextField(30);
+	private final PTextField txtCastingTime = new PTextField(30);
+	private final PTextField txtDuration = new PTextField(30);
+	private final PTextField txtSavingThrow = new PTextField(30);
+	private final PTextField txtAreaOfEffect = new PTextField(60);
+	private final PTextField txtSpellType = new PTextField(60);
+	
+	
 	private PDataComponent[] dataComponents = new PDataComponent[] { txtSpellClass, txtLevel, txtName, cbxVerbal,
-			cbxSomatic, cbxMaterial, txtMaterialComponents, txtDescription };
+			cbxSomatic, cbxMaterial, txtMaterialComponents, txtDescription,
+			txtRange ,
+			txtCastingTime,
+			txtDuration,
+			txtSavingThrow,
+			txtAreaOfEffect,
+			txtSpellType};
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtSpellId };
 
 	private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtSpellId, txtSpellClass, txtLevel, txtName,
@@ -91,6 +113,12 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		cbxMaterial.setName("Material");
 		txtMaterialComponents.setName("Material components");
 		txtDescription.setName("Description");
+		txtRange.setName("Range");
+		txtCastingTime.setName("Casting time");
+		txtDuration.setName("Duration");
+		txtSavingThrow.setName("Saving throw");
+		txtAreaOfEffect.setName("Area of effect");
+		txtSpellType.setName("Type");
 
 		PLabel lblSpellId = new PLabel("Spell id");
 		PLabel lblSpellClass = new PLabel("Class");
@@ -99,60 +127,93 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		PLabel lblMaterialComponents = new PLabel("Material components");
 		PLabel lblDescription = new PLabel("Description");
 
+		PLabel lblRange = new PLabel(txtRange.getName());
+		PLabel lblCastingTime = new PLabel(txtCastingTime.getName());
+		PLabel lblDuration = new PLabel(txtDuration.getName());
+		PLabel lblSavingThrow = new PLabel(txtSavingThrow.getName());
+		PLabel lblAreaOfEffect = new PLabel(txtAreaOfEffect.getName());
+		PLabel lblSpellType = new PLabel(txtSpellType.getName());
+		
 		add(getLblInstructions(), GBU.text(0, 0, 2));
-		add(lblSpellId, GBU.label(0, 1));
-		add(txtSpellId, GBU.text(1, 1));
-		add(lblSpellClass, GBU.label(0, 2));
-		add(txtSpellClass, GBU.text(1, 2));
+		int row=1;
+		add(lblSpellId, GBU.label(0, row));
+		add(txtSpellId, GBU.text(1, row++));
+		add(lblSpellClass, GBU.label(0, row));
+		add(txtSpellClass, GBU.text(1, row++));
 
-		add(lblSpellLevel, GBU.label(0, 3));
-		add(txtLevel, GBU.text(1, 3));
+		add(lblSpellLevel, GBU.label(0, row));
+		add(txtLevel, GBU.text(1, row++));
 
-		add(lblName, GBU.label(0, 4));
-		add(txtName, GBU.text(1, 4));
+		add(lblName, GBU.label(0, row));
+		add(txtName, GBU.text(1, row++));
+		
+
+		add(lblSpellType, GBU.label(0, row));
+		add(txtSpellType, GBU.text(1, row++));
+		
 
 		PPanel pnlChecks = new PPanel(new FlowLayout(FlowLayout.LEFT));
 		
-		add(pnlChecks, GBU.text(1, 5));
+		add(pnlChecks, GBU.text(1, row++));
 		
 		pnlChecks.add(cbxVerbal, GBU.text(1, 5));
 		pnlChecks.add(cbxSomatic, GBU.text(1, 6));
 		pnlChecks.add(cbxMaterial, GBU.text(1, 7));
 
-		add(lblMaterialComponents, GBU.label(0, 8));
-		add(new PLabel(" "), GBU.label(0, 9));
-		add(new PLabel(" "), GBU.label(0, 10));
+		add(lblRange, GBU.label(0, row));			
+		add(txtRange, GBU.text(1, row++));
+		add(lblCastingTime, GBU.label(0, row));	
+		add(txtCastingTime, GBU.text(1, row++));
+		add(lblDuration, GBU.label(0, row));			
+		add(txtDuration, GBU.text(1, row++));
+		add(lblSavingThrow, GBU.label(0, row));
+		add(txtSavingThrow, GBU.text(1, row++));
+		add(lblAreaOfEffect, GBU.label(0, row));	
+		add(txtAreaOfEffect	, GBU.text(1, row++));
+		add(lblSpellType, GBU.label(0, row));	
+		add(txtSpellType, GBU.text(1, row++));
+		
+		add(lblMaterialComponents, GBU.label(0, row));
 		JScrollPane sclMaterialComponents = new JScrollPane(txtMaterialComponents) {
 			public Dimension getPreferredSize() {
 				Dimension d = super.getPreferredSize();
 				if(d.getWidth()< 300) {
 					d.width=300;
 				}
+				if(d.getWidth()>1000) {
+					d.width=1000;
+				}
 				if(d.getHeight()<100){
 					d.height=100;
 				}
 				return d;
 			}
 		};
-		add(sclMaterialComponents, GBU.panel(1, 8, 1, 3));
+		add(sclMaterialComponents, GBU.panel(1, row++, 1, 3));
+		add(new PLabel(" "), GBU.label(0, row++));
+		add(new PLabel(" "), GBU.label(0, row++));
 
-		add(lblDescription, GBU.label(0, 11));
-		add(new PLabel( ""), GBU.label(0, 12));
-		add(new PLabel(" "), GBU.label(0, 13));
-		add(new PLabel(" "), GBU.label(0, 14));
+		add(lblDescription, GBU.label(0, row));
 		JScrollPane sclDescription = new JScrollPane(txtDescription) {
 			public Dimension getPreferredSize() {
 				Dimension d = super.getPreferredSize();
 				if(d.getWidth()< 300) {
 					d.width=300;
 				}
+
+				if(d.getWidth()>1000) {
+					d.width=1000;
+				}
 				if(d.getHeight()<100){
 					d.height=100;
 				}
 				return d;
 			}
 		};
-		add(sclDescription, GBU.panel(1, 11, 1, 4));
+		add(sclDescription, GBU.panel(1, row++, 1, 4));
+		add(new PLabel( ""), GBU.label(0, row++));
+		add(new PLabel(" "), GBU.label(0, row++));
+		add(new PLabel(" "), GBU.label(0, row++));
 
 		add(new PLabel(""), GBU.label(99, 99));
 
@@ -188,6 +249,13 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		value.setSomatic(cbxSomatic.isSelected());
 		value.setSpellClass((String) txtSpellClass.getTheValue().getItem());
 		value.setVerbal(cbxVerbal.isSelected());
+		
+		value.setAreaOfEffect(txtAreaOfEffect.getText());
+		value.setCastingTime(txtCastingTime.getText());
+		value.setDuration(txtDuration.getText());
+		value.setRange(txtRange.getText());
+		value.setSavingThrow(txtSavingThrow.getText());
+		value.setSpellType(txtSpellType.getText());
 	}
 
 	void populateScreen(Spell value) {
@@ -200,6 +268,12 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		txtMaterialComponents.setText(value.getMaterialComponents());
 		txtName.setText(value.getName());
 		txtSpellClass.setSelectedCode(value.getSpellClass());
+		txtAreaOfEffect.setText(value.getAreaOfEffect());
+		txtCastingTime.setText(value.getCastingTime());
+		txtDuration.setText(value.getDuration());
+		txtRange.setText(value.getRange());
+		txtSavingThrow.setText(value.getSavingThrow());
+		txtSpellType.setText(value.getSpellType());
 
 	}
 
