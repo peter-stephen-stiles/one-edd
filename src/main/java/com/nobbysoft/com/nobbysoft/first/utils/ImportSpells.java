@@ -18,6 +18,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -89,17 +90,22 @@ public class ImportSpells {
 
 		return map;
 	}
-	
+
 	private String t(String in) {
-		return XmlUtilities.trimNbsp(in);
+		String ret = XmlUtilities.trimNbsp(in);
+		ret = ret.replace('\t', ' ');
+		while (ret.indexOf("  ") >= 0) {
+			ret = ret.replace("  ", " ");
+		}
+		return ret;
 	}
 
-	public ImportSpells() throws Exception {
+	public ImportSpells(boolean clear) throws Exception {
 
 		String theUrl = "http://pandaria.rpgworlds.info/cant/rules/adnd_spells.htm";
 		URL url = new URL(theUrl);
 
-		Map<String, InternalSpell> spells = new HashMap<>();
+		Map<String, List<InternalSpell>> spells = new HashMap<>();
 
 		ConnectionManager cm = new ConnectionManager();
 
@@ -109,8 +115,15 @@ public class ImportSpells {
 			// prepare our side of the data :)
 			try (Connection conn = cm.getConnection();) {
 				populateMapping(conn);
+				LOGGER.info("populated maps");
+				if (clear) {
+					String deleteAll = "DELETE FROM Spell";
+					runAction(conn, deleteAll);
+				}
+				conn.commit();
+			} catch (Exception ex) {
+				LOGGER.error("ERROR clearing Spells :( " + ex, ex);
 			}
-			LOGGER.info("populated maps");
 
 			int count = 0;
 			URLConnection connection = url.openConnection();
@@ -142,7 +155,7 @@ public class ImportSpells {
 				Element body = XmlUtilities.getElement(docElement, "body");// should only be one body node!
 				// get all "anchor" tags. These are where the magic lies
 				List<Node> anchors = XmlUtilities.getElementsByTagName(body, "a");
-				//String className = "";
+				// String className = "";
 
 				// SPELL TABLES
 				// // <CLASS>
@@ -166,73 +179,78 @@ public class ImportSpells {
 					String name = XmlUtilities.getAttributeValue(anchor, "name");
 					LOGGER.info("anchor name:" + name);
 					if (name != null && !t(name).isEmpty()) {
-						name = t(name);
 						String nameHRef = "#" + name;
+						// name = t(name); //now trim stuffs
 						if (spells.containsKey(nameHRef)) {
-							InternalSpell is = spells.get(nameHRef);
-							if (is != null) {
-								Spell s = is.getSpell();
-	
-								//
-								// back up and get the table we're in
-								//
+							List<InternalSpell> iss = spells.get(nameHRef);
+							for (InternalSpell is : iss) {
+								if (is != null) {
+									Spell s = is.getSpell();
 
-								Node table = XmlUtilities.findParent(anchor, "table");
-								if (table != null) {
-									List<List<Node>> spellTable = XmlUtilities.getTableData((Element) table);
-									{
-										int rowNum = 0;
-										if (rowNum <= spellTable.size()) {
-											// first row
-											List<Node> row = spellTable.get(rowNum++);
-											Node data = row.get(0);
-											String type = t(XmlUtilities.getText(data));
-											// first row
-											// <td width="100%"><font size="2"><b><a name="Command">Command</a></b>
-											// (Enchantment/Charm)</font></td>
-											// after the "anchor" is a text node holding the spell type
-											//
-										}
-										// second row
-										if (rowNum <= spellTable.size()) {
-											List<Node> row = spellTable.get(rowNum++);
-											Node data = row.get(0);
-											Map<String, String> map = parseProperties(name,data);
-											String range = map.get(RANGE);
-											String level = map.get(LEVEL);
-											String components = map.get(COMPONENTS);
-											String castingTime = map.get(CASTING_TIME);
-											String duration = map.get(DURATION);
-											String save = map.get(SAVE);
-											String area = map.get(AREA);
-											setComponents(s, components);
-											if (!(("" + s.getLevel()).equals(t(level)))) {
-												LOGGER.info("Dodgy level on spell " + s + " >> " + level);
-											}
-											s.setRange(range);
-											s.setCastingTime(castingTime);
-											s.setDuration(duration);
-											s.setSavingThrow(save);
-											s.setAreaOfEffect(area);
-											
-											// Something:something&nbsp;
-										}
-										// third row
-										if (rowNum <= spellTable.size()) {
-											List<Node> row = spellTable.get(rowNum++);
-											Node data = row.get(0);
-											String desc = XmlUtilities.getText(data);
-											String mc = "";											
-											if(desc.startsWith(ED)) {
-												desc = desc.substring(ED.length());
-											}
-											s.setMaterialComponents(mc);
-											s.setDescription(desc);
-										}
+									//
+									// back up and get the table we're in
+									//
 
+									Node table = XmlUtilities.findParent(anchor, "table");
+									if (table != null) {
+										List<List<Node>> spellTable = XmlUtilities.getTableData((Element) table);
+										{
+											String type = "";
+											int rowNum = 0;
+											if (rowNum <= spellTable.size()) {
+												// first row
+												List<Node> row = spellTable.get(rowNum++);
+												Node data = row.get(0);
+												type = parseType(t(XmlUtilities.getText(data)));
+												LOGGER.info("Type:" + type);
+
+												// first row
+												// <td width="100%"><font size="2"><b><a name="Command">Command</a></b>
+												// (Enchantment/Charm)</font></td>
+												// after the "anchor" is a text node holding the spell type
+												//
+											}
+											// second row
+											if (rowNum <= spellTable.size()) {
+												List<Node> row = spellTable.get(rowNum++);
+												Node data = row.get(0);
+												Map<String, String> map = parseProperties(name, data);
+												String range = map.get(RANGE);
+												String level = map.get(LEVEL);
+												String components = map.get(COMPONENTS);
+												String castingTime = map.get(CASTING_TIME);
+												String duration = map.get(DURATION);
+												String save = map.get(SAVE);
+												String area = map.get(AREA);
+												setComponents(s, components);
+												if (!(("" + s.getLevel()).equals(t(level)))) {
+													LOGGER.info("Dodgy level on spell " + s + " >> " + level);
+												}
+												s.setSpellType(type);
+												s.setRange(range);
+												s.setCastingTime(castingTime);
+												s.setDuration(duration);
+												s.setSavingThrow(save);
+												s.setAreaOfEffect(area);
+
+												// Something:something&nbsp;
+											}
+											// third row
+											if (rowNum <= spellTable.size()) {
+												List<Node> row = spellTable.get(rowNum++);
+												Node data = row.get(0);
+												String desc = XmlUtilities.getText(data);
+												String mc = "";
+												if (desc.startsWith(ED)) {
+													desc = desc.substring(ED.length());
+												}
+												s.setMaterialComponents(mc);
+												s.setDescription(desc);
+											}
+
+										}
 									}
 								}
-
 							}
 						}
 
@@ -240,7 +258,7 @@ public class ImportSpells {
 					String classId = themToMe.get(name);
 					if (classId != null && !t(classId).isEmpty()) {
 						// its a character class name
-						//className = name;
+						// className = name;
 						LOGGER.info("character class :" + name + " id:" + classId);
 						// we need to find the "p" tag that this node is in
 						Node p = XmlUtilities.findParent(anchor, "p");
@@ -270,10 +288,18 @@ public class ImportSpells {
 										Element ahref = XmlUtilities.getElement(td, "a");
 										if (ahref != null) {
 											String href = XmlUtilities.getAttributeValue(ahref, "href");
-											String spellName = XmlUtilities.getText(ahref);
+											String spellName = t(XmlUtilities.getText(ahref));
+
 											InternalSpell is = new InternalSpell(level, classId, href, spellName);
-											spells.put(href, is);
-											//LOGGER.info("spell:" + href + "=" + is);
+											List<InternalSpell> iss = new ArrayList<>();
+											if (spells.containsKey(href)) {
+												iss = spells.get(href);
+											} else {
+												iss = new ArrayList<>();
+											}
+											iss.add(is);
+											spells.put(href, iss);
+											// LOGGER.info("spell:" + href + "=" + is);
 										}
 									}
 
@@ -293,17 +319,19 @@ public class ImportSpells {
 				LOGGER.info("");
 				LOGGER.info("");
 				Map<String, String> spellIds = new HashMap<>();
-				for (InternalSpell is : spells.values()) {
-					String sid = guessSpellId(is.getSpell());
-					String sidP = sid;
-					int sc = 0;
-					while (spellIds.containsKey(sidP)) {
-						sc++;
-						sidP = sid + sc;
+				for (List<InternalSpell> iss : spells.values()) {
+					for (InternalSpell is : iss) {
+						String sid = guessSpellId(is.getSpell());
+						String sidP = sid;
+						int sc = 0;
+						while (spellIds.containsKey(sidP)) {
+							sc++;
+							sidP = sid + sc;
+						}
+						spellIds.put(sidP, sidP);
+						is.getSpell().setSpellId(sidP);
+						// LOGGER.info("Spell:" + is.getSpell());
 					}
-					is.getSpell().setSpellId(sidP);
-					//LOGGER.info("Spell:" + is.getSpell());
-					
 				}
 
 				LOGGER.info("");
@@ -320,49 +348,52 @@ public class ImportSpells {
 			LOGGER.info("WRITING TO DATABASE");
 			LOGGER.info("");
 			LOGGER.info("");
-			
+
 			boolean error = false;
 			List<Throwable> errors = new ArrayList<>();
 			List<Spell> errorSpells = new ArrayList<>();
-			
+
 			try (Connection con = cm.getConnection();) {
 				con.setAutoCommit(false);
 				SpellDAO sdao = new SpellDAO();
-				for (InternalSpell is : spells.values()) {
-					Spell ns = is.getSpell();
-					try {
-					Spell sx =null;
-					try {
-						sx=sdao.get(con, ns.getSpellId());
-					} catch (Exception ex) {
-						LOGGER.error("Error looking for spell id:"+ns.getSpellId()+ " "+ex);
-					}
-					if(sx==null) {
-						LOGGER.info("new spell:"+ns);
-						sdao.insert(con, ns);
-					} else {
-						LOGGER.info("update spell from :"+sx);
-						LOGGER.info("update spell   to :"+ns);
-						sdao.update(con, ns);
-					}
-					} catch (SQLException ex) {
-						error=true;
-						errors.add(ex);
-						errorSpells.add(ns);
+				for (List<InternalSpell> iss : spells.values()) {
+					for (InternalSpell is : iss) {
+						Spell ns = is.getSpell();
+						try {
+							LOGGER.info("spell "+ns);
+							Spell sx = null;
+							try {
+								sx = sdao.get(con, ns.getSpellId());
+							} catch (Exception ex) {
+								LOGGER.info("Spell not in database:" + ns.getSpellId() + " " + ex);
+							}
+							if (sx == null) {
+								LOGGER.info("new spell:" + ns);
+								sdao.insert(con, ns);
+							} else {
+								LOGGER.info("update spell from :" + sx);
+								LOGGER.info("update spell   to :" + ns);
+								sdao.update(con, ns);
+							}
+						} catch (SQLException ex) {
+							error = true;
+							errors.add(ex);
+							errorSpells.add(ns);
+						}
 					}
 				}
-				if(error) {
-					LOGGER.error("ERRORS! "+errors.size());
-					for(int i=0,n=errors.size();i<n;i++) {
+				if (error) {
+					LOGGER.error("ERRORS! " + errors.size());
+					for (int i = 0, n = errors.size(); i < n; i++) {
 						Throwable t = errors.get(i);
 						Spell spell = errorSpells.get(i);
-						LOGGER.error("Error writing spell "+spell,t);
+						LOGGER.error("Error writing spell " + spell, t);
 					}
-					//LOGGER.error("End of ERRORS! "+errors.size());
-					//con.rollback();
+					// LOGGER.error("End of ERRORS! "+errors.size());
+					// con.rollback();
 				} else {
-					//LOGGER.info("No errors. Committing");
-					
+					// LOGGER.info("No errors. Committing");
+
 				}
 				con.commit();
 			}
@@ -372,7 +403,7 @@ public class ImportSpells {
 			LOGGER.info("COMPLETE OK");
 			LOGGER.info("");
 			LOGGER.info("");
-			
+
 		} finally {
 			cm.shutdown();
 		}
@@ -388,12 +419,12 @@ public class ImportSpells {
 	String AREA = "Area of Effect";
 	String ED = "Explanation/Description";
 
-	private Map<String, String> parseProperties(String name,Node data) {
+	private Map<String, String> parseProperties(String name, Node data) {
 		String props = XmlUtilities.getText(data);
 		props = props.replaceAll("\\&quot\\;", "'");
 		props = props.replaceAll("\\&nbsp\\;", " ");
 		props = props.replaceAll("\\&amp\\;", " ");
-		LOGGER.info("props:"+props);
+		LOGGER.info("props:" + props);
 		int p0 = props.indexOf(LEVEL);
 		int p1 = p0 + LEVEL.length() + 1;
 		int p2 = props.indexOf(COMPONENTS);
@@ -408,65 +439,52 @@ public class ImportSpells {
 		int p11 = p10 + SAVE.length() + 1;
 		int p12 = props.indexOf(AREA);
 		int p13 = p12 + AREA.length() + 1;
-		
-		LOGGER.info(name+" >> "+
-				"p0:"+ p0+" "+ 
-						"p1:"+ p1+" "+ 
-						"p2:"+ p2+" "+ 
-						"p3:"+ p3+" "+ 
-						"p4:"+ p4+" "+ 
-						"p5:"+ p5+" "+ 
-						"p6:"+ p6+" "+ 
-						"p7:"+ p7+" "+ 
-						"p8:"+ p8+" "+ 
-						"p9:"+ p9+" "+ 
-						"p1:"+ p10+" "+ 
-						"p11:"+ p11+" "+
-						"p12:"+ p12+" "+
-						"p13:"+ p13+" ");
+
+		LOGGER.info(name + " >> " + "p0:" + p0 + " " + "p1:" + p1 + " " + "p2:" + p2 + " " + "p3:" + p3 + " " + "p4:"
+				+ p4 + " " + "p5:" + p5 + " " + "p6:" + p6 + " " + "p7:" + p7 + " " + "p8:" + p8 + " " + "p9:" + p9
+				+ " " + "p1:" + p10 + " " + "p11:" + p11 + " " + "p12:" + p12 + " " + "p13:" + p13 + " ");
 		String level;
-		if(p1>=0 && p2 > 1) {
-			level= t(props.substring(p1, p2));
+		if (p1 >= 0 && p2 > 1) {
+			level = t(props.substring(p1, p2));
 		} else {
-			level="";
+			level = "";
 		}
 		String components;
-		if (p3>=0 && p4>=p3) {
+		if (p3 >= 0 && p4 >= p3) {
 			components = t(props.substring(p3, p4));
 		} else {
-			components="";
+			components = "";
 		}
 		String range;
-		if (p5>=0 && p6>=p5) {
+		if (p5 >= 0 && p6 >= p5) {
 			range = t(props.substring(p5, p6));
 		} else {
-			range ="";
+			range = "";
 		}
 		String cast;
-		if (p7>=0 && p8>=p7) {
+		if (p7 >= 0 && p8 >= p7) {
 			cast = t(props.substring(p7, p8));
 		} else {
 			cast = "";
 		}
 		String duration;
-		if (p9>=0 && p10>=p9) {
+		if (p9 >= 0 && p10 >= p9) {
 			duration = t(props.substring(p9, p10));
 		} else {
-			duration="";
+			duration = "";
 		}
 		String save;
-		if(p11>=0 && p12 >= p11) {
-			save= t(props.substring(p11, p12));
+		if (p11 >= 0 && p12 >= p11) {
+			save = t(props.substring(p11, p12));
 		} else {
-			save="";
+			save = "";
 		}
 		String area;
-		if(p13>0) {
-			area= t(props.substring(p13));
+		if (p13 > 0) {
+			area = t(props.substring(p13));
 		} else {
-			area ="";
+			area = "";
 		}
-		
 
 		Map<String, String> map = new HashMap<>();
 
@@ -509,7 +527,7 @@ public class ImportSpells {
 			spell = new Spell();
 			spell.setLevel(level);
 			spell.setSpellClass(classId);
-			spell.setName(name);			
+			spell.setName(name);
 		}
 
 		public int getLevel() {
@@ -566,6 +584,11 @@ public class ImportSpells {
 
 		CommandLineParser parser = new DefaultParser();
 		Options options = MainUtils.baseOptions();
+		{
+			Option o = new Option("c", true, "Clear spells?");
+			o.setLongOpt("clear");
+			options.addOption(o);
+		}
 		CommandLine cmd = parser.parse(options, args);
 		if (cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
@@ -578,11 +601,19 @@ public class ImportSpells {
 		if (cmd.hasOption("d")) {
 			databaseName = cmd.getOptionValue("d");
 		}
-
+		boolean clear = false;
+		if (cmd.hasOption("c")) {
+			String c = cmd.getOptionValue("c");
+			if ("Y".equalsIgnoreCase(c)) {
+				clear = true;
+			} else if ("true".equalsIgnoreCase(c)) {
+				clear = true;
+			}
+		}
 		System.setProperty(Constants.PARMNAME_ONEEDDDB, databaseName);
 
 		new StartNetworkServer();
-		new ImportSpells();
+		new ImportSpells(clear);
 	}
 
 	public String driver = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -618,6 +649,19 @@ public class ImportSpells {
 		for (Object key : map.keySet()) {
 			Object value = map.get(key);
 			LOGGER.info(key + "=" + value);
+		}
+	}
+
+	private String parseType(String s) {
+		int ob = s.lastIndexOf('(');
+		if (ob < 0) {
+			return "";
+		}
+		int cb = s.indexOf(' ', ob);
+		if (cb > ob) {
+			return s.substring(ob, cb);
+		} else {
+			return s.substring(ob);
 		}
 	}
 }

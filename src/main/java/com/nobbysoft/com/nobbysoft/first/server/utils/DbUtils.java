@@ -48,7 +48,7 @@ INSTANCE;
 		try (ResultSet rs = dbmd.getTables( null, null, tableName.toUpperCase(),
 				new String[]{"TABLE"});) {
 			if(rs.next()){
-				LOGGER.info("table "+tableName+" already exists;");
+				//LOGGER.info("table "+tableName+" already exists;");
 				try(ResultSet rsc = dbmd.getColumns(null,null,tableName.toUpperCase(),columnName.toUpperCase())){
 					if(rsc.next()){
 						LOGGER.info("table.column "+tableName+"."+columnName+" already exists;");

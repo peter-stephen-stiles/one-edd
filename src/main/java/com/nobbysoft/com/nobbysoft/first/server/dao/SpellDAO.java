@@ -47,6 +47,7 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 				new VC("duration",30),
 				new VC("saving_throw",30),
 				new VC("area_of_effect",60),
+				new VC("spell_type",60),
 				
 		};
 		DAOUtils.createStrings(con, tableName, newStrings);
@@ -77,6 +78,7 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 		spell.setDuration(rs.getString(col++));
 		spell.setSavingThrow(rs.getString(col++));
 		spell.setAreaOfEffect(rs.getString(col++));
+		spell.setSpellType(rs.getString(col++));
 		
 		return spell;
 	}
@@ -109,6 +111,7 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 		ps.setString(col++, value.getDuration());
 		ps.setString(col++, value.getSavingThrow());
 		ps.setString(col++, value.getAreaOfEffect());
+		ps.setString(col++, value.getSpellType());
 		return col;
 	}
 
@@ -125,7 +128,8 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 				"casting_time",
 				"duration",
 				"saving_throw",
-				"area_of_effect"};
+				"area_of_effect",
+				"spell_type"};
 	}
 
 	@Override
@@ -135,7 +139,7 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 
 	@Override
 	String addOrderByClause(String sql) {
-		return sql + " ORDER BY spell_class,level,name";
+		return sql + " ORDER BY spell_class, level,name";
 	}
 
 	@Override

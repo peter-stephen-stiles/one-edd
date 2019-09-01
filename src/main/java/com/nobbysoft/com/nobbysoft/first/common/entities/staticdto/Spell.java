@@ -41,6 +41,7 @@ public class Spell implements Serializable, DataDTOInterface<String> {
 	private String duration;
 	private String savingThrow;
 	private String areaOfEffect;
+	private String spellType;
 	
 	
 	private Spell basedUponSpell = null;
@@ -138,7 +139,7 @@ public class Spell implements Serializable, DataDTOInterface<String> {
 				+ ", verbal=" + verbal + ", somatic=" + somatic + ", material=" + material + ", materialComponents="
 				+ materialComponents + ", description=" + description + ", range=" + range + ", castingTime="
 				+ castingTime + ", duration=" + duration + ", savingThrow=" + savingThrow + ", areaOfEffect="
-				+ areaOfEffect + ", basedUponSpell=" + basedUponSpell + "]";
+				+ areaOfEffect + ", basedUponSpell=" + basedUponSpell + ", spellType="+spellType+"]";
 	}
 
 	public String getRange() {
@@ -179,6 +180,14 @@ public class Spell implements Serializable, DataDTOInterface<String> {
 
 	public void setAreaOfEffect(String areaOfEffect) {
 		this.areaOfEffect = areaOfEffect;
+	}
+
+	public String getSpellType() {
+		return spellType;
+	}
+
+	public void setSpellType(String type) {
+		this.spellType = type;
 	}
 
 }
