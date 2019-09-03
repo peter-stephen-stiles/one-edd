@@ -1,4 +1,4 @@
-package com.nobbysoft.com.nobbysoft.first;
+package com.nobbysoft.first;
 
 import java.lang.invoke.MethodHandles;
 
