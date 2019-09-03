@@ -4,20 +4,19 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.sql.Connection;
 import java.util.List;
- 
+
 import javax.swing.JScrollPane;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.com.nobbysoft.first.client.components.*;
+import com.nobbysoft.com.nobbysoft.first.client.components.PCheckBox;
 import com.nobbysoft.com.nobbysoft.first.client.components.PCodeField;
 import com.nobbysoft.com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.com.nobbysoft.first.client.components.PDataComponent;
-import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerField;
+import com.nobbysoft.com.nobbysoft.first.client.components.PIntegerCombo;
+import com.nobbysoft.com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.com.nobbysoft.first.client.components.PTextArea;
 import com.nobbysoft.com.nobbysoft.first.client.components.PTextField;
@@ -26,13 +25,11 @@ import com.nobbysoft.com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.CharacterClass;
-import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.com.nobbysoft.first.common.utils.ReturnValue;
-import com.nobbysoft.com.nobbysoft.first.server.dao.VC;
 import com.nobbysoft.com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
@@ -174,6 +171,7 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		add(txtSpellType, GBU.text(1, row++));
 		
 		add(lblMaterialComponents, GBU.label(0, row));
+		txtMaterialComponents.setWrapStyleWord(true);
 		JScrollPane sclMaterialComponents = new JScrollPane(txtMaterialComponents) {
 			public Dimension getPreferredSize() {
 				Dimension d = super.getPreferredSize();
@@ -189,11 +187,13 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 				return d;
 			}
 		};
+		sclMaterialComponents.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		add(sclMaterialComponents, GBU.panel(1, row++, 1, 3));
 		add(new PLabel(" "), GBU.label(0, row++));
 		add(new PLabel(" "), GBU.label(0, row++));
 
 		add(lblDescription, GBU.label(0, row));
+		txtDescription.setWrapStyleWord(true);
 		JScrollPane sclDescription = new JScrollPane(txtDescription) {
 			public Dimension getPreferredSize() {
 				Dimension d = super.getPreferredSize();
@@ -210,6 +210,7 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 				return d;
 			}
 		};
+		sclDescription.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		add(sclDescription, GBU.panel(1, row++, 1, 4));
 		add(new PLabel( ""), GBU.label(0, row++));
 		add(new PLabel(" "), GBU.label(0, row++));

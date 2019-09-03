@@ -126,6 +126,8 @@ public class XmlUtilities {
 	}
 
 	
+	
+	
 	public static Node getNodeAfterwards(Element n,String name) {
 		// need to walk along until we find a node called "name"
 		Node ret=null;
@@ -161,12 +163,12 @@ public class XmlUtilities {
 	}
 	
 	public static List<Node> list(NodeList nl) {
-		LOGGER.info("node list len:" + nl.getLength());
+		//LOGGER.info("node list len:" + nl.getLength());
 		List<Node> list = new ArrayList<>();
 		for (int i = 0, n = nl.getLength(); i < n; i++) {
 			list.add(nl.item(i));
 		}
-		LOGGER.info("list len:" + list.size());
+		//LOGGER.info("list len:" + list.size());
 		return list;
 	}
 
@@ -237,7 +239,8 @@ public class XmlUtilities {
 		s= s.replaceAll("\\&lt\\;", "<");
 		s= s.replaceAll("\\&gt\\;", ">");
 		s= s.replaceAll("\\&apos\\;", "'");
-		s= s.replaceAll("\\&apos\\;", "'");		
+		s= s.replaceAll("\\&quot\\;", "\"");	
+		s=s.replace("½", "1/2");
 		return(s);	
 	}
 	
@@ -261,4 +264,36 @@ public class XmlUtilities {
 	}
 	
 
+	public static Node getNodeBefore(Element n,String name) {
+		// need to walk along until we find a node called "name"
+		Node ret=null;
+
+		// else siblings
+		Node ns = n.getPreviousSibling();
+		if(ns==null) {
+			ns = n.getParentNode();
+		}
+		while(ns!=null){
+			// is ns an element
+			if(ns instanceof Element) {
+				Element ee =(Element)ns;
+				if(ee.getNodeName().equals(name)) {
+					return ee;
+				}
+//				NodeList kide = ee.getElementsByTagName(name);
+//				if(kide.getLength()>0) {
+//					return kide.item(0);
+//				}
+			}
+			Node ps = ns.getPreviousSibling();
+			if(ps==null) {
+				ps=ns.getParentNode();
+			} 
+			ns=ps;
+		}
+		
+		
+		return ret;
+	}
+	
 }

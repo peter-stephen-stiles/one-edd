@@ -12,11 +12,11 @@ public class PTextArea extends JTextArea  implements PDataComponent{
 
 	public PTextArea() {
 		super();
-		
+		setLineWrap(true);
 	}
 	public PTextArea(int length) {
 		super();
-		
+		setLineWrap(true);
 		LengthLimitingDocument doc = new LengthLimitingDocument(length,false,false);
 		setDocument(doc);
 	}

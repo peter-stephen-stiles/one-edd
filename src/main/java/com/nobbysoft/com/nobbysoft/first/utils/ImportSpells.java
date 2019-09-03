@@ -75,21 +75,26 @@ public class ImportSpells {
 		themToMe.put("MAGIC-USERS", muId);
 		themToMe.put("ILLUSIONISTS", illId);
 
+		themToMe.put("CLERIC SPELLS", clericId);
+		themToMe.put("DRUID SPELLS", druidId);
+		themToMe.put("MAGIC-USER SPELLS", muId);
+		themToMe.put("ILLUSIONIST SPELLS", illId);
+
 	}
 
-	private Map<String, String> colonMap(String[] strings) {
-		Map<String, String> map = new HashMap<>();
-		for (String s : strings) {
-			int c = s.indexOf(':');
-			if (c > 0) {
-				String key = s.substring(0, c);
-				String value = s.substring(c + 1);
-				map.put(key, value);
-			}
-		}
-
-		return map;
-	}
+//	private Map<String, String> colonMap(String[] strings) {
+//		Map<String, String> map = new HashMap<>();
+//		for (String s : strings) {
+//			int c = s.indexOf(':');
+//			if (c > 0) {
+//				String key = s.substring(0, c);
+//				String value = s.substring(c + 1);
+//				map.put(key, value);
+//			}
+//		}
+//
+//		return map;
+//	}
 
 	private String t(String in) {
 		String ret = XmlUtilities.trimNbsp(in);
@@ -101,11 +106,13 @@ public class ImportSpells {
 	}
 
 	public ImportSpells(boolean clear) throws Exception {
-
+		
+		Map<String, String> spellIds = new HashMap<>();
+		
 		String theUrl = "http://pandaria.rpgworlds.info/cant/rules/adnd_spells.htm";
 		URL url = new URL(theUrl);
 
-		Map<String, List<InternalSpell>> spells = new HashMap<>();
+		Map<String, Map<String,InternalSpell>> spells = new HashMap<>();
 
 		ConnectionManager cm = new ConnectionManager();
 
@@ -173,18 +180,55 @@ public class ImportSpells {
 				// <ETC>
 				// <SPELL> <ETC>
 				// <ETC>
+				String currentCharacterClass=null;
 				for (Node anchor : anchors) {
 
-					// first node will have a CHARACTER CLASS name in.
+					// first node may have a CHARACTER CLASS name in.
 					String name = XmlUtilities.getAttributeValue(anchor, "name");
-					LOGGER.info("anchor name:" + name);
 					if (name != null && !t(name).isEmpty()) {
+						LOGGER.info("anchor name:" + name);
 						String nameHRef = "#" + name;
-						// name = t(name); //now trim stuffs
-						if (spells.containsKey(nameHRef)) {
-							List<InternalSpell> iss = spells.get(nameHRef);
-							for (InternalSpell is : iss) {
+						if(t(name).endsWith("First Level Spells:")) {
+							LOGGER.info("#### oooh! {}",name);
+							// need to find new character class id
+							// need to look at the table before the table before this node...
+							//
+							Node table1 = XmlUtilities.getNodeBefore((Element)anchor,"table");
+							if(table1!=null)  {
+								String tt = XmlUtilities.getText(table1);
+								String sss=null;
+								Node strong0=XmlUtilities.getElement((Element)table1,"strong");
+								if(strong0!=null) {
+									String text0 = XmlUtilities.getText(strong0);
+									 sss=themToMe.get(text0);
+									if(sss!=null) {
+										currentCharacterClass=sss;
+										LOGGER.info("####. Current character class {}",sss);
+									}
+								}
+								if(sss==null){
+								
+								Node table0 = XmlUtilities.getNodeBefore((Element)table1,"table");
+								if(table0!=null) {
+									String ttt = XmlUtilities.getText(table0);
+									Node strong=XmlUtilities.getElement((Element)table0,"strong");
+									String text = XmlUtilities.getText(strong);
+									sss=themToMe.get(text);
+									if(sss!=null) {
+										currentCharacterClass=sss;
+										LOGGER.info("#### Current character class {}",sss);
+									}
+									
+								}
+								}
+							}
+							
+						} else if (spells.containsKey(nameHRef)) {// name = t(name); //now trim stuffs
+							LOGGER.info("Spell group for found name: {}, looking for class: {} ",nameHRef,currentCharacterClass);
+							InternalSpell is = spells.get(nameHRef).get(currentCharacterClass);
+							{
 								if (is != null) {
+									LOGGER.info("Found correct spell {} {}",is.getName(),is.getClassId());
 									Spell s = is.getSpell();
 
 									//
@@ -214,6 +258,9 @@ public class ImportSpells {
 											if (rowNum <= spellTable.size()) {
 												List<Node> row = spellTable.get(rowNum++);
 												Node data = row.get(0);
+												if("Guards And Wards".equals(name)) {
+													LOGGER.info("Guards And Wards!!!\n"+data+"\n\n\n");
+												}
 												Map<String, String> map = parseProperties(name, data);
 												String range = map.get(RANGE);
 												String level = map.get(LEVEL);
@@ -223,6 +270,9 @@ public class ImportSpells {
 												String save = map.get(SAVE);
 												String area = map.get(AREA);
 												setComponents(s, components);
+												if("Guards And Wards".equals(name)) {
+													LOGGER.info("Guards And Wards!!!\n"+s+"\n\n\n");
+												}
 												if (!(("" + s.getLevel()).equals(t(level)))) {
 													LOGGER.info("Dodgy level on spell " + s + " >> " + level);
 												}
@@ -242,7 +292,7 @@ public class ImportSpells {
 												String desc = XmlUtilities.getText(data);
 												String mc = "";
 												if (desc.startsWith(ED)) {
-													desc = desc.substring(ED.length());
+													desc = desc.substring(ED.length()+1);
 												}
 												s.setMaterialComponents(mc);
 												s.setDescription(desc);
@@ -250,16 +300,19 @@ public class ImportSpells {
 
 										}
 									}
+								} else {
+									LOGGER.info("Couldn't find spell for {}, {}",currentCharacterClass,nameHRef);
 								}
 							}
-						}
+						}  
 
 					}
 					String classId = themToMe.get(name);
 					if (classId != null && !t(classId).isEmpty()) {
 						// its a character class name
 						// className = name;
-						LOGGER.info("character class :" + name + " id:" + classId);
+						LOGGER.info("####### CURRENT CHARACTER CLASS :{} id: {}", name,classId);
+						currentCharacterClass=classId;
 						// we need to find the "p" tag that this node is in
 						Node p = XmlUtilities.findParent(anchor, "p");
 						if (p != null) {
@@ -274,32 +327,61 @@ public class ImportSpells {
 							// THe first row has column headings
 							// the second row is blanks
 							// data starts on the third row
-
+							
+							// will re-use this a fair bit :)
+							int[] spellLevelsByColumn = new int[9];// most can be 9
+							
 							int rowCount = 0;
 							for (List<Node> row : classSpells) {
-								if (rowCount > 1) {
+								String colZero = (XmlUtilities.getText(row.get(0)));
+								String czt=t(colZero);
+								if("Number".equalsIgnoreCase(czt)) {
+									// sets spell level base
+									for(int j=1,m=row.size();j<m;j++) {
+										String colValue = t(XmlUtilities.getText(row.get(j)));
+										if(colValue!=null&&!colValue.isEmpty()) {
+											String c = colValue.substring(0,1);
+											try {
+												int level = Integer.parseInt(c);
+												spellLevelsByColumn[j]=level;
+											} catch (NumberFormatException nfe) {
+												//meh
+												LOGGER.info("couldn't parse "+czt);
+											}
+										}
+									}
+									continue;//nothing else on a number row.
+								} else {
 									// a number should be in the first table cell
-									String numString = XmlUtilities.getText(row.get(0));
+									String numString = colZero;
+									try {
+										int spellNum = Integer.parseInt(numString);
+									} catch (NumberFormatException nfe) {
+										rowCount++;
+										continue;// skip the line if not a valid number:)
+									}
 									for (int i = 1, n = row.size(); i < n; i++) {
-										// each node should have a "a href" and a text value
-										int level = i;
+
+										int level = spellLevelsByColumn[i];
 
 										Node td = row.get(i);
 										Element ahref = XmlUtilities.getElement(td, "a");
 										if (ahref != null) {
 											String href = XmlUtilities.getAttributeValue(ahref, "href");
 											String spellName = t(XmlUtilities.getText(ahref));
-
+											LOGGER.info("Found spell class {} name {}",classId,spellName);
 											InternalSpell is = new InternalSpell(level, classId, href, spellName);
-											List<InternalSpell> iss = new ArrayList<>();
+											makeSpellId(spellIds, is);
+											Map<String,InternalSpell> iss;
 											if (spells.containsKey(href)) {
 												iss = spells.get(href);
 											} else {
-												iss = new ArrayList<>();
+												iss = new HashMap<>();
+												spells.put(href, iss);
 											}
-											iss.add(is);
-											spells.put(href, iss);
-											// LOGGER.info("spell:" + href + "=" + is);
+											LOGGER.info("Storing spell class:{} name:{}",is.getClassId(),is.getName());
+											iss.put(is.getClassId(),is);
+											
 										}
 									}
 
@@ -318,21 +400,7 @@ public class ImportSpells {
 				LOGGER.info("Finally");
 				LOGGER.info("");
 				LOGGER.info("");
-				Map<String, String> spellIds = new HashMap<>();
-				for (List<InternalSpell> iss : spells.values()) {
-					for (InternalSpell is : iss) {
-						String sid = guessSpellId(is.getSpell());
-						String sidP = sid;
-						int sc = 0;
-						while (spellIds.containsKey(sidP)) {
-							sc++;
-							sidP = sid + sc;
-						}
-						spellIds.put(sidP, sidP);
-						is.getSpell().setSpellId(sidP);
-						// LOGGER.info("Spell:" + is.getSpell());
-					}
-				}
+				 
 
 				LOGGER.info("");
 				LOGGER.info("");
@@ -356,12 +424,13 @@ public class ImportSpells {
 			try (Connection con = cm.getConnection();) {
 				con.setAutoCommit(false);
 				SpellDAO sdao = new SpellDAO();
-				for (List<InternalSpell> iss : spells.values()) {
-					for (InternalSpell is : iss) {
+				for (Map<String,InternalSpell> iss : spells.values()) {
+					for (InternalSpell is : iss.values()) {
 						Spell ns = is.getSpell();
+						Spell sx = null;
 						try {
-							LOGGER.info("spell "+ns);
-							Spell sx = null;
+							LOGGER.info("spell class {} name {}",ns.getClass(),ns.getName());
+							sx = null;
 							try {
 								sx = sdao.get(con, ns.getSpellId());
 							} catch (Exception ex) {
@@ -410,6 +479,21 @@ public class ImportSpells {
 
 	}
 
+	private void makeSpellId(Map<String, String> spellIds,  InternalSpell is) {
+		{
+			String sid = guessSpellId(is.getSpell());
+			String sidP = sid;
+			int sc = 0;
+			while (spellIds.containsKey(sidP)) {
+				sc++;
+				sidP = sid + sc;
+			}
+			spellIds.put(sidP, sidP);
+			is.getSpell().setSpellId(sidP);
+			// LOGGER.info("Spell:" + is.getSpell());
+		}
+	}
+
 	String LEVEL = "Level";
 	String COMPONENTS = "Components";
 	String RANGE = "Range";
@@ -427,18 +511,41 @@ public class ImportSpells {
 		LOGGER.info("props:" + props);
 		int p0 = props.indexOf(LEVEL);
 		int p1 = p0 + LEVEL.length() + 1;
+
+		if(p0==-1) {
+			p1=-1;
+		}
 		int p2 = props.indexOf(COMPONENTS);
 		int p3 = p2 + COMPONENTS.length() + 1;
+		if(p2==-1) {
+			p3=-1;
+		}
 		int p4 = props.indexOf(RANGE);
 		int p5 = p4 + RANGE.length() + 1;
+		if(p4==-1) {
+			p5=-1;
+		}
 		int p6 = props.indexOf(CASTING_TIME);
+
 		int p7 = p6 + CASTING_TIME.length() + 1;
+		if(p6==-1) {
+			p7=-1;
+		}
 		int p8 = props.indexOf(DURATION);
 		int p9 = p8 + DURATION.length() + 1;
+		if(p8==-1) {
+			p9=-1;
+		}
 		int p10 = props.indexOf(SAVE);
 		int p11 = p10 + SAVE.length() + 1;
+		if(p10==-1) {
+			p11=-1;
+		}
 		int p12 = props.indexOf(AREA);
 		int p13 = p12 + AREA.length() + 1;
+		if(p12==-1) {
+			p13=-1;
+		}
 
 		LOGGER.info(name + " >> " + "p0:" + p0 + " " + "p1:" + p1 + " " + "p2:" + p2 + " " + "p3:" + p3 + " " + "p4:"
 				+ p4 + " " + "p5:" + p5 + " " + "p6:" + p6 + " " + "p7:" + p7 + " " + "p8:" + p8 + " " + "p9:" + p9
@@ -646,10 +753,13 @@ public class ImportSpells {
 	}
 
 	private void dumpMap(Map<?, ?> map) {
+		StringBuilder sb =new StringBuilder("["); 
 		for (Object key : map.keySet()) {
 			Object value = map.get(key);
-			LOGGER.info(key + "=" + value);
+			sb.append(key).append("=").append(value).append(",");
 		}
+		sb.append("]");
+		LOGGER.info(sb.toString());
 	}
 
 	private String parseType(String s) {
