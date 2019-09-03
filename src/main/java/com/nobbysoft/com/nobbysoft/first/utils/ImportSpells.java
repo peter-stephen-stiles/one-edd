@@ -147,7 +147,7 @@ public class ImportSpells {
 					}
 				}
 			}
-			LOGGER.info("read data");
+			LOGGER.info("Now read data.");
 			//
 			try {
 				Document doc = XmlUtilities.cleanHtml(sb.toString());
@@ -189,7 +189,7 @@ public class ImportSpells {
 						LOGGER.info("anchor name:" + name);
 						String nameHRef = "#" + name;
 						if(t(name).endsWith("First Level Spells:")) {
-							LOGGER.info("#### oooh! {}",name);
+							//LOGGER.info("#### oooh! {}",name);
 							// need to find new character class id
 							// need to look at the table before the table before this node...
 							//
@@ -203,7 +203,7 @@ public class ImportSpells {
 									 sss=themToMe.get(text0);
 									if(sss!=null) {
 										currentCharacterClass=sss;
-										LOGGER.info("####. Current character class {}",sss);
+										//LOGGER.info("####. Current character class {}",sss);
 									}
 								}
 								if(sss==null){
@@ -216,7 +216,7 @@ public class ImportSpells {
 									sss=themToMe.get(text);
 									if(sss!=null) {
 										currentCharacterClass=sss;
-										LOGGER.info("#### Current character class {}",sss);
+										//LOGGER.info("#### Current character class {}",sss);
 									}
 									
 								}
@@ -257,10 +257,7 @@ public class ImportSpells {
 											// second row
 											if (rowNum <= spellTable.size()) {
 												List<Node> row = spellTable.get(rowNum++);
-												Node data = row.get(0);
-												if("Guards And Wards".equals(name)) {
-													LOGGER.info("Guards And Wards!!!\n"+data+"\n\n\n");
-												}
+												Node data = row.get(0); 
 												Map<String, String> map = parseProperties(name, data);
 												String range = map.get(RANGE);
 												String level = map.get(LEVEL);
@@ -270,9 +267,7 @@ public class ImportSpells {
 												String save = map.get(SAVE);
 												String area = map.get(AREA);
 												setComponents(s, components);
-												if("Guards And Wards".equals(name)) {
-													LOGGER.info("Guards And Wards!!!\n"+s+"\n\n\n");
-												}
+ 
 												if (!(("" + s.getLevel()).equals(t(level)))) {
 													LOGGER.info("Dodgy level on spell " + s + " >> " + level);
 												}
@@ -311,7 +306,7 @@ public class ImportSpells {
 					if (classId != null && !t(classId).isEmpty()) {
 						// its a character class name
 						// className = name;
-						LOGGER.info("####### CURRENT CHARACTER CLASS :{} id: {}", name,classId);
+						//LOGGER.info("####### CURRENT CHARACTER CLASS :{} id: {}", name,classId);
 						currentCharacterClass=classId;
 						// we need to find the "p" tag that this node is in
 						Node p = XmlUtilities.findParent(anchor, "p");
@@ -369,7 +364,7 @@ public class ImportSpells {
 										if (ahref != null) {
 											String href = XmlUtilities.getAttributeValue(ahref, "href");
 											String spellName = t(XmlUtilities.getText(ahref));
-											LOGGER.info("Found spell class {} name {}",classId,spellName);
+											//LOGGER.info("Found spell class {} name {}",classId,spellName);
 											InternalSpell is = new InternalSpell(level, classId, href, spellName);
 											makeSpellId(spellIds, is);
 											Map<String,InternalSpell> iss;
@@ -437,11 +432,11 @@ public class ImportSpells {
 								LOGGER.info("Spell not in database:" + ns.getSpellId() + " " + ex);
 							}
 							if (sx == null) {
-								LOGGER.info("new spell:" + ns);
+								LOGGER.info("New spell:" + ns);
 								sdao.insert(con, ns);
 							} else {
-								LOGGER.info("update spell from :" + sx);
-								LOGGER.info("update spell   to :" + ns);
+								LOGGER.info("Update spell from :" + sx);
+								LOGGER.info("Update spell   to :" + ns);
 								sdao.update(con, ns);
 							}
 						} catch (SQLException ex) {
@@ -458,10 +453,10 @@ public class ImportSpells {
 						Spell spell = errorSpells.get(i);
 						LOGGER.error("Error writing spell " + spell, t);
 					}
-					// LOGGER.error("End of ERRORS! "+errors.size());
-					// con.rollback();
+					 LOGGER.error("End of ERRORS! "+errors.size());
+					 con.rollback();
 				} else {
-					// LOGGER.info("No errors. Committing");
+					 LOGGER.info("No errors. Committing");
 
 				}
 				con.commit();
@@ -469,7 +464,7 @@ public class ImportSpells {
 
 			LOGGER.info("");
 			LOGGER.info("");
-			LOGGER.info("COMPLETE OK");
+			LOGGER.info("COMPLETED");
 			LOGGER.info("");
 			LOGGER.info("");
 
