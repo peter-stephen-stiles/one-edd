@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import com.nobbysoft.com.nobbysoft.first.client.components.special.DicePanel;
+import com.nobbysoft.first.client.components.special.DicePanel;
 
 import junit.framework.TestCase;
 
