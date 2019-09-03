@@ -144,13 +144,13 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 
 	@Override
 	String getFilterWhere() {
-		return "  spell_id like ? " + " OR name like ? " + " OR spell_class like ? ";
+		return "  spell_id like ? " + " OR upper(name) like ? " + " OR upper(spell_class) like ? ";
 	}
 
 	@Override
 	void setFilterParameters(PreparedStatement ps, String filter) throws SQLException {
-		String f = "%" + filter + "%";
-		ps.setString(1, f.toUpperCase());
+		String f = ("%" + filter + "%").toUpperCase();
+		ps.setString(1, f);
 		ps.setString(2, f);
 		ps.setString(3, f);
 
