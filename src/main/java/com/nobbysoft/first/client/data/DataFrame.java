@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.client.components.PButtonPanel;
 import com.nobbysoft.first.client.data.tabs.DataFrameTabCharacters;
 import com.nobbysoft.first.client.data.tabs.DataFrameTabData;
+import com.nobbysoft.first.client.data.tabs.DataFrameTabSqlMain;
 import com.nobbysoft.first.client.utils.GuiUtils;
 
 public class DataFrame extends JFrame {
@@ -48,9 +49,11 @@ public class DataFrame extends JFrame {
 		pnlTabs.setFont(GuiUtils.getHeaderFont());
 		
 		DataFrameTabData pnlStaticData = new DataFrameTabData();
-		DataFrameTabCharacters pnlCharacters = new DataFrameTabCharacters();		
+		DataFrameTabCharacters pnlCharacters = new DataFrameTabCharacters();
+		DataFrameTabSqlMain pnlSql = new DataFrameTabSqlMain();
 		pnlTabs.addTab("Characters", pnlCharacters);
 		pnlTabs.addTab("Static data", pnlStaticData);
+		pnlTabs.addTab("Sql", pnlSql);
 
 		add(pnlTabs,BorderLayout.CENTER);
 		add(pnlBottomButtons, BorderLayout.SOUTH);
