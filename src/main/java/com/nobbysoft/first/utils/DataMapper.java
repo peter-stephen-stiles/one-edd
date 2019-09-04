@@ -149,7 +149,8 @@ public enum DataMapper {
 		servicemap.put(ArmourService.class, ArmourServiceImpl.class);
 		servicemap.put(ShieldService.class, ShieldServiceImpl.class);
 		
-		
+
+		servicemap.put(SqlService.class, SqlServiceImpl.class);
 		
 	}
 	

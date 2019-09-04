@@ -10,6 +10,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+
 public class GuiUtils {
 
 	private GuiUtils() {
@@ -138,4 +141,11 @@ public class GuiUtils {
 			return null;
 		}
 	}
+	
+	public static final boolean askYesNoQuestion(JComponent source,String question) {
+		
+		int ret= JOptionPane.showConfirmDialog(source, question, "Question", JOptionPane.YES_NO_OPTION);
+		return (ret==JOptionPane.OK_OPTION);
+	}
+	
 }
