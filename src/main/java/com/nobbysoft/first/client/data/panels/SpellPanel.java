@@ -171,14 +171,14 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		int row=1;
 		add(lblSpellId, GBU.label(0, row));
 		add(txtSpellId, GBU.text(1, row++));
+		
 		add(lblSpellClass, GBU.label(0, row));
-		add(txtSpellClass, GBU.text(1, row++));
-
-		add(lblSpellLevel, GBU.label(0, row));
-		add(txtLevel, GBU.text(1, row++));
+		add(txtSpellClass, GBU.text(1, row));
+		add(lblSpellLevel, GBU.label(2, row));
+		add(txtLevel, GBU.text(3, row++));
 
 		add(lblName, GBU.label(0, row));
-		add(txtName, GBU.text(1, row++));
+		add(txtName, GBU.text(1, row++,3));
 		
  
 		
@@ -187,20 +187,22 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 
 		PLabel lblChecks = new PLabel("Component(s)"); 
 		add(lblChecks, GBU.label(0, row));
-		add(pnlChecks, GBU.text(1, row++));
+		add(pnlChecks, GBU.hPanel(1, row++,3,1));
 		
 		pnlChecks.add(cbxVerbal, GBU.text(1, 5));
 		pnlChecks.add(cbxSomatic, GBU.text(1, 6));
 		pnlChecks.add(cbxMaterial, GBU.text(1, 7));
 
 		add(lblRange, GBU.label(0, row));			
-		add(txtRange, GBU.text(1, row++));
-		add(lblCastingTime, GBU.label(0, row));	
-		add(txtCastingTime, GBU.text(1, row++));
+		add(txtRange, GBU.text(1, row));
+		add(lblCastingTime, GBU.label(2, row));	
+		add(txtCastingTime, GBU.text(3, row++));
+		
 		add(lblDuration, GBU.label(0, row));			
-		add(txtDuration, GBU.text(1, row++));
-		add(lblSavingThrow, GBU.label(0, row));
-		add(txtSavingThrow, GBU.text(1, row++));
+		add(txtDuration, GBU.text(1, row));
+		add(lblSavingThrow, GBU.label(2, row));
+		add(txtSavingThrow, GBU.text(3, row++));
+		
 		add(lblAreaOfEffect, GBU.label(0, row));	
 		add(txtAreaOfEffect	, GBU.text(1, row++)); 
 		
@@ -209,7 +211,8 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		int nrow=0;
 		pnlTypes.add(cbxTypeAbjuration, GBU.button(0, nrow));
 		pnlTypes.add(cbxTypeAlteration, GBU.button(1, nrow));
-		pnlTypes.add(cbxTypeCharm, GBU.button(2, nrow++));
+		pnlTypes.add(cbxTypeCharm, GBU.button(2, nrow));
+		pnlTypes.add(new PLabel("     "), GBU.text(3, nrow++));
 		
 		pnlTypes.add(cbxTypeConjuration, GBU.button(0, nrow));
 		pnlTypes.add(cbxTypeDivination, GBU.button(1, nrow));
@@ -228,7 +231,8 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 
 		PLabel lblType = new PLabel("Type(s)"); 
 		add(lblType, GBU.label(0, row));
-		add(pnlTypes, GBU.text(1, row++));
+		add(pnlTypes, GBU.hPanelNoPad(1, row++,3,2));
+		add(new PLabel(" "), GBU.label(0, row++));
 		
 		add(lblMaterialComponents, GBU.label(0, row));
 		txtMaterialComponents.setWrapStyleWord(true);
@@ -241,14 +245,17 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 				if(d.getWidth()>1000) {
 					d.width=1000;
 				}
-				if(d.getHeight()<100){
+				if(d.getHeight()<40){
+					d.height=40;
+				}
+				if(d.getHeight()>100){
 					d.height=100;
 				}
 				return d;
 			}
 		};
 		sclMaterialComponents.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		add(sclMaterialComponents, GBU.panel(1, row++, 1, 3));
+		add(sclMaterialComponents, GBU.panel(1, row++, 3, 2));
 		add(new PLabel(" "), GBU.label(0, row++));
 		add(new PLabel(" "), GBU.label(0, row++));
 
@@ -271,7 +278,7 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 			}
 		};
 		sclDescription.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		add(sclDescription, GBU.panel(1, row++, 1, 4));
+		add(sclDescription, GBU.panel(1, row++, 3, 4));
 		add(new PLabel( ""), GBU.label(0, row++));
 		add(new PLabel(" "), GBU.label(0, row++));
 		add(new PLabel(" "), GBU.label(0, row++));
