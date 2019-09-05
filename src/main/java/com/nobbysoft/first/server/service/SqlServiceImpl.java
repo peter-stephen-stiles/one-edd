@@ -28,4 +28,10 @@ public class SqlServiceImpl implements SqlService {
 
 	}
 
+	
+	public void runUpdate(String sql) throws SQLException{
+		try(Connection con = cm.getConnection()){
+			 dao.runSqlUpdate(con, sql);
+			}
+	}
 }

@@ -15,6 +15,14 @@ public class SqlDAO {
 	public SqlDAO() { 
 	}
 	
+
+	public void runSqlUpdate(Connection con,String sql) throws SQLException{
+
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.executeUpdate();
+		}
+	}
+	
 	public void runSql(Connection con,String sql,ResultSetListener listener) throws SQLException{
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){
