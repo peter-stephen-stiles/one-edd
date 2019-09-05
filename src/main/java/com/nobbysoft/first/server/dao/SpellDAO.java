@@ -52,6 +52,20 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 		};
 		DAOUtils.createStrings(con, tableName, newStrings);
 
+		String[] newBoos = new String[] {"type_Abjuration",
+				"type_Alteration",
+				"type_Charm",
+				"type_Conjuration",
+				"type_Divination",
+				"type_Enchantment",
+				"type_Evocation",
+				"type_Illusion",
+				"type_Invocation",
+				"type_Necromantic",
+				"type_Phantasm",
+				"type_Possession",
+				"type_Summoning"};
+		DAOUtils.createBooleans(con, tableName, newBoos);
 
 	}
 
@@ -77,8 +91,22 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 		spell.setCastingTime(rs.getString(col++));
 		spell.setDuration(rs.getString(col++));
 		spell.setSavingThrow(rs.getString(col++));
-		spell.setAreaOfEffect(rs.getString(col++));
-		spell.setSpellType(rs.getString(col++));
+		spell.setAreaOfEffect(rs.getString(col++)); 
+		
+		spell.setTypeAbjuration(rs.getBoolean(col++));
+		spell.setTypeAlteration(rs.getBoolean(col++));
+		spell.setTypeCharm(rs.getBoolean(col++));
+		spell.setTypeConjuration(rs.getBoolean(col++));
+		spell.setTypeDivination(rs.getBoolean(col++));
+		spell.setTypeEnchantment(rs.getBoolean(col++));
+		spell.setTypeEvocation(rs.getBoolean(col++));
+		spell.setTypeIllusion(rs.getBoolean(col++));
+		spell.setTypeInvocation(rs.getBoolean(col++));
+		spell.setTypeNecromantic(rs.getBoolean(col++));
+		spell.setTypePhantasm(rs.getBoolean(col++));
+		spell.setTypePossession(rs.getBoolean(col++));
+		spell.setTypeSummoning(rs.getBoolean(col++));
+
 		
 		return spell;
 	}
@@ -110,8 +138,22 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 		ps.setString(col++, value.getCastingTime());
 		ps.setString(col++, value.getDuration());
 		ps.setString(col++, value.getSavingThrow());
-		ps.setString(col++, value.getAreaOfEffect());
-		ps.setString(col++, value.getSpellType());
+		ps.setString(col++, value.getAreaOfEffect()); 
+		
+		ps.setBoolean(col++,value.isTypeAbjuration());
+		ps.setBoolean(col++,value.isTypeAlteration());
+		ps.setBoolean(col++,value.isTypeCharm());
+		ps.setBoolean(col++,value.isTypeConjuration());
+		ps.setBoolean(col++,value.isTypeDivination());
+		ps.setBoolean(col++,value.isTypeEnchantment());
+		ps.setBoolean(col++,value.isTypeEvocation());
+		ps.setBoolean(col++,value.isTypeIllusion());
+		ps.setBoolean(col++,value.isTypeInvocation());
+		ps.setBoolean(col++,value.isTypeNecromantic());
+		ps.setBoolean(col++,value.isTypePhantasm());
+		ps.setBoolean(col++,value.isTypePossession());
+		ps.setBoolean(col++,value.isTypeSummoning());
+
 		return col;
 	}
 
@@ -129,7 +171,19 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 				"duration",
 				"saving_throw",
 				"area_of_effect",
-				"spell_type"};
+				"type_Abjuration",
+				"type_Alteration",
+				"type_Charm",
+				"type_Conjuration",
+				"type_Divination",
+				"type_Enchantment",
+				"type_Evocation",
+				"type_Illusion",
+				"type_Invocation",
+				"type_Necromantic",
+				"type_Phantasm",
+				"type_Possession",
+				"type_Summoning"};
 	}
 
 	@Override

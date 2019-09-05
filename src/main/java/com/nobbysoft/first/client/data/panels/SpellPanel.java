@@ -68,20 +68,28 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 	private final PCheckBox cbxMaterial = new PCheckBox("Material");
 	private final PTextArea txtMaterialComponents = new PTextArea(256);
 	private final PTextArea txtDescription = new PTextArea();
-/*
-				new VC("range",30),
-				new VC("casting_time",30),
-				new VC("duration",30),
-				new VC("saving_throw",30),
-				new VC("area_of_effect",60),
-				new VC("spell_type",60),
- */
+
 	private final PTextField txtRange = new PTextField(30);
 	private final PTextField txtCastingTime = new PTextField(30);
 	private final PTextField txtDuration = new PTextField(30);
 	private final PTextField txtSavingThrow = new PTextField(30);
-	private final PTextField txtAreaOfEffect = new PTextField(60);
-	private final PTextField txtSpellType = new PTextField(60);
+	private final PTextField txtAreaOfEffect = new PTextField(60); 
+	
+
+	private final PCheckBox cbxTypeAbjuration = new PCheckBox("Abjuration");
+	private final PCheckBox cbxTypeAlteration = new PCheckBox("Alteration");
+	private final PCheckBox cbxTypeCharm = new PCheckBox("Charm");
+	private final PCheckBox cbxTypeConjuration = new PCheckBox("Conjuration");
+	private final PCheckBox cbxTypeDivination = new PCheckBox("Divination");
+	private final PCheckBox cbxTypeEnchantment = new PCheckBox("Enchantment");
+	private final PCheckBox cbxTypeEvocation = new PCheckBox("Evocation");
+	private final PCheckBox cbxTypeIllusion = new PCheckBox("Illusion");
+	private final PCheckBox cbxTypeInvocation = new PCheckBox("Invocation");
+	private final PCheckBox cbxTypeNecromantic = new PCheckBox("Necromantic");
+	private final PCheckBox cbxTypePhantasm = new PCheckBox("Phantasm");
+	private final PCheckBox cbxTypePossession = new PCheckBox("Possession");
+	private final PCheckBox cbxTypeSummoning = new PCheckBox("Summoning");
+
 	
 	
 	private PDataComponent[] dataComponents = new PDataComponent[] { txtSpellClass, txtLevel, txtName, cbxVerbal,
@@ -91,7 +99,19 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 			txtDuration,
 			txtSavingThrow,
 			txtAreaOfEffect,
-			txtSpellType};
+			cbxTypeAbjuration ,
+			cbxTypeAlteration, 
+			cbxTypeCharm ,
+			cbxTypeConjuration,
+			cbxTypeDivination ,
+			cbxTypeEnchantment,
+			cbxTypeEvocation ,
+			cbxTypeIllusion  ,
+			cbxTypeInvocation ,
+			cbxTypeNecromantic,
+			cbxTypePhantasm  ,
+			cbxTypePossession, 
+			cbxTypeSummoning };
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtSpellId };
 
 	private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtSpellId, txtSpellClass, txtLevel, txtName,
@@ -115,7 +135,24 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		txtDuration.setName("Duration");
 		txtSavingThrow.setName("Saving throw");
 		txtAreaOfEffect.setName("Area of effect");
-		txtSpellType.setName("Type");
+		
+		cbxTypeAbjuration.setName("Abjuration");
+		cbxTypeAlteration.setName("Alteration");
+		cbxTypeCharm.setName("Charm");
+		cbxTypeConjuration.setName("Conjuration");
+		
+		cbxTypeDivination.setName("Divination");
+		cbxTypeEnchantment.setName("Enchantment");
+		cbxTypeEvocation.setName("Evocation");
+		cbxTypeIllusion.setName("Illusion");
+		
+		cbxTypeInvocation.setName("Invocation");
+		cbxTypeNecromantic.setName("Necromantic");
+		cbxTypePhantasm.setName("Phantasm");
+		cbxTypePossession.setName("Possession");
+		
+		cbxTypeSummoning .setName("Summoning");
+
 
 		PLabel lblSpellId = new PLabel("Spell id");
 		PLabel lblSpellClass = new PLabel("Class");
@@ -128,8 +165,7 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		PLabel lblCastingTime = new PLabel(txtCastingTime.getName());
 		PLabel lblDuration = new PLabel(txtDuration.getName());
 		PLabel lblSavingThrow = new PLabel(txtSavingThrow.getName());
-		PLabel lblAreaOfEffect = new PLabel(txtAreaOfEffect.getName());
-		PLabel lblSpellType = new PLabel(txtSpellType.getName());
+		PLabel lblAreaOfEffect = new PLabel(txtAreaOfEffect.getName()); 
 		
 		add(getLblInstructions(), GBU.text(0, 0, 2));
 		int row=1;
@@ -144,13 +180,13 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		add(lblName, GBU.label(0, row));
 		add(txtName, GBU.text(1, row++));
 		
-
-		add(lblSpellType, GBU.label(0, row));
-		add(txtSpellType, GBU.text(1, row++));
+ 
 		
 
 		PPanel pnlChecks = new PPanel(new FlowLayout(FlowLayout.LEFT));
-		
+
+		PLabel lblChecks = new PLabel("Component(s)"); 
+		add(lblChecks, GBU.label(0, row));
 		add(pnlChecks, GBU.text(1, row++));
 		
 		pnlChecks.add(cbxVerbal, GBU.text(1, 5));
@@ -166,9 +202,33 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		add(lblSavingThrow, GBU.label(0, row));
 		add(txtSavingThrow, GBU.text(1, row++));
 		add(lblAreaOfEffect, GBU.label(0, row));	
-		add(txtAreaOfEffect	, GBU.text(1, row++));
-		add(lblSpellType, GBU.label(0, row));	
-		add(txtSpellType, GBU.text(1, row++));
+		add(txtAreaOfEffect	, GBU.text(1, row++)); 
+		
+
+		PPanel pnlTypes = new PPanel(new GridBagLayout());
+		int nrow=0;
+		pnlTypes.add(cbxTypeAbjuration, GBU.button(0, nrow));
+		pnlTypes.add(cbxTypeAlteration, GBU.button(1, nrow));
+		pnlTypes.add(cbxTypeCharm, GBU.button(2, nrow++));
+		
+		pnlTypes.add(cbxTypeConjuration, GBU.button(0, nrow));
+		pnlTypes.add(cbxTypeDivination, GBU.button(1, nrow));
+		pnlTypes.add(cbxTypeEnchantment, GBU.button(2, nrow++));
+		
+		pnlTypes.add(cbxTypeEvocation, GBU.button(0, nrow));
+		pnlTypes.add(cbxTypeIllusion, GBU.button(1, nrow));
+		pnlTypes.add(cbxTypeInvocation, GBU.button(2, nrow++));
+		
+		pnlTypes.add(cbxTypeNecromantic, GBU.button(0, nrow));
+		pnlTypes.add(cbxTypePhantasm, GBU.button(1, nrow));
+		pnlTypes.add(cbxTypePossession, GBU.button(2, nrow++));
+		
+		pnlTypes.add(cbxTypeSummoning , GBU.button(0, nrow));
+
+
+		PLabel lblType = new PLabel("Type(s)"); 
+		add(lblType, GBU.label(0, row));
+		add(pnlTypes, GBU.text(1, row++));
 		
 		add(lblMaterialComponents, GBU.label(0, row));
 		txtMaterialComponents.setWrapStyleWord(true);
@@ -255,8 +315,22 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		value.setCastingTime(txtCastingTime.getText());
 		value.setDuration(txtDuration.getText());
 		value.setRange(txtRange.getText());
-		value.setSavingThrow(txtSavingThrow.getText());
-		value.setSpellType(txtSpellType.getText());
+		value.setSavingThrow(txtSavingThrow.getText()); 
+		
+		value.setTypeAbjuration(cbxTypeAbjuration.isSelected());
+		value.setTypeAlteration(cbxTypeAlteration.isSelected());
+		value.setTypeCharm(cbxTypeCharm.isSelected());
+		value.setTypeConjuration(cbxTypeConjuration.isSelected());
+		value.setTypeDivination(cbxTypeDivination.isSelected());
+		value.setTypeEnchantment(cbxTypeEnchantment.isSelected());
+		value.setTypeEvocation(cbxTypeEvocation.isSelected());
+		value.setTypeIllusion(cbxTypeIllusion.isSelected());
+		value.setTypeInvocation(cbxTypeInvocation.isSelected());
+		value.setTypeNecromantic(cbxTypeNecromantic.isSelected());
+		value.setTypePhantasm(cbxTypePhantasm.isSelected());
+		value.setTypePossession(cbxTypePossession.isSelected());
+		value.setTypeSummoning(cbxTypeSummoning .isSelected());
+
 	}
 
 	void populateScreen(Spell value) {
@@ -273,9 +347,23 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		txtCastingTime.setText(value.getCastingTime());
 		txtDuration.setText(value.getDuration());
 		txtRange.setText(value.getRange());
-		txtSavingThrow.setText(value.getSavingThrow());
-		txtSpellType.setText(value.getSpellType());
+		txtSavingThrow.setText(value.getSavingThrow()); 
 
+		cbxTypeAbjuration.setSelected(value.isTypeAbjuration());
+		cbxTypeAlteration.setSelected(value.isTypeAlteration());
+		cbxTypeCharm.setSelected(value.isTypeCharm());
+		cbxTypeConjuration.setSelected(value.isTypeConjuration());
+		cbxTypeDivination.setSelected(value.isTypeDivination());
+		cbxTypeEnchantment.setSelected(value.isTypeEnchantment());
+		cbxTypeEvocation.setSelected(value.isTypeEvocation());
+		cbxTypeIllusion.setSelected(value.isTypeIllusion());
+		cbxTypeInvocation.setSelected(value.isTypeInvocation());
+		cbxTypeNecromantic.setSelected(value.isTypeNecromantic());
+		cbxTypePhantasm.setSelected(value.isTypePhantasm());
+		cbxTypePossession.setSelected(value.isTypePossession());
+		cbxTypeSummoning .setSelected(value.isTypeSummoning());
+
+		
 	}
 
 	void populateCombos() {
