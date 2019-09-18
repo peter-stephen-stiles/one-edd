@@ -2,60 +2,41 @@ package com.nobbysoft.first.client.data.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
-import java.awt.Point;
 import java.awt.Window;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.first.client.components.PBasicTableWithModel;
 import com.nobbysoft.first.client.components.PButton;
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
-import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTextField;
-import com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
 import com.nobbysoft.first.client.components.special.PComboAlignment;
 import com.nobbysoft.first.client.components.special.PComboGender;
 import com.nobbysoft.first.client.components.special.PExceptionalStrength;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
-import com.nobbysoft.first.client.utils.Popper;
-import com.nobbysoft.first.common.entities.equipment.EquipmentI;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
-import com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
-import com.nobbysoft.first.common.servicei.PlayerCharacterEquipmentService;
 import com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.first.common.servicei.RaceService;
-import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.ReturnValue;
-import com.nobbysoft.first.common.views.ViewPlayerCharacterEquipment;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")

@@ -372,7 +372,7 @@ private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>
 				tblEquipment.addRow(new Object[] {
 						pce,	
 						desc,
-						pce.getEquipmentType().getDesc(),
+						pce.getEquipmentType(),
 						pce.isEquipped(),
 						pce.getEquippedWhere()
 				});

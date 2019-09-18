@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.ListCellRenderer;
 
 import com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.first.common.utils.SU;
 import com.nobbysoft.first.utils.DataMapper;
 
 public class PListCellRenderer<E> extends JLabel implements ListCellRenderer<E> {
@@ -45,7 +46,7 @@ public class PListCellRenderer<E> extends JLabel implements ListCellRenderer<E> 
 			} else if(value instanceof String) {
 				setText((String)value);
 			} else {
-				setText(value.toString());
+				setText(SU.getDescription(value));
 			}
 		} else {
 			setText(" ");

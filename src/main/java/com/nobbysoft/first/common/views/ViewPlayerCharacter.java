@@ -45,8 +45,8 @@ public class ViewPlayerCharacter implements Serializable,DataDTOInterface<Intege
 				playerCharacter.getCharacterName(), 
 				playerCharacter.getRaceId(),
 				classNames,
-				playerCharacter.getGender().name(),
-				playerCharacter.getAlignment().name()
+				playerCharacter.getGender(),
+				playerCharacter.getAlignment()
 				};
 	}
 
@@ -68,8 +68,10 @@ public class ViewPlayerCharacter implements Serializable,DataDTOInterface<Intege
 	public String[] getColumnCodedListTypes() { 
 		return new String[] {null,null,
 				Constants.CLI_RACE,null,
-				Constants.CLI_GENDER,
-				Constants.CLI_ALIGNMENT};
+				null,null,
+				//Constants.CLI_GENDER,
+				//Constants.CLI_ALIGNMENT
+				};
 	}
 	
 	

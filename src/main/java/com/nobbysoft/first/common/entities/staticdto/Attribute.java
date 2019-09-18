@@ -5,7 +5,7 @@ public enum Attribute {
 	INTELLIGENCE("INT","Intelligence",2),
 	WISDOM("WIS","Wisdom",3),
 	DEXTERITY("DEX","Dexterity",4),
-	CONSTITUTION("CON","Constritution",5),
+	CONSTITUTION("CON","Constitution",5),
 	CHARISMA("CHR","Charisma",6);
 	
 	public String getAbbr() {

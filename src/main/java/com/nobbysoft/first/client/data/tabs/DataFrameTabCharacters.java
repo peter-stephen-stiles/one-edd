@@ -286,7 +286,6 @@ public class DataFrameTabCharacters extends PPanel {
 		String[] clis = d.getColumnCodedListTypes();
 		for (int i = 1, n = w.length; i <= n; i++) {
 			int width = w[i - 1];
-			//LOGGER.info("setting column " + i + " width " + width);
 			TableColumn tc = tcm.getColumn(i);
 			tc.setMinWidth(20);
 			if (width >= 0) {

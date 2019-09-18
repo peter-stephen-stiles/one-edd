@@ -1,5 +1,7 @@
 package com.nobbysoft.first.common.entities.equipment;
 
+import com.nobbysoft.first.common.utils.SU;
+
 public enum EquipmentWhere{
 	HAND_R,
 	HAND_L,
@@ -15,7 +17,16 @@ public enum EquipmentWhere{
 	PACK,
 	OTHER;
 	
+	private String description;
+	public String getDescription() {
+		return description;
+	}
+	EquipmentWhere(){
+		description = name().replace("_", " ");	
+		description=SU.proper(description);		
+	}
+	
 	public String getDesc() {
-		return name();
+		return description;
 	}
 	}

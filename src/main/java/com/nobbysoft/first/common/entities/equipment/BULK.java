@@ -15,6 +15,9 @@ public enum BULK {
 	public String getDesc() {
 		return desc;
 	}
+	public String getDescription() {
+		return desc;
+	}
 	public int getRelative() {
 		return relative;
 	} 

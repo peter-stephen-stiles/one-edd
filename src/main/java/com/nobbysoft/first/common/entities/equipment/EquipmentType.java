@@ -1,5 +1,7 @@
 package com.nobbysoft.first.common.entities.equipment;
 
+import com.nobbysoft.first.common.utils.SU;
+
 public enum EquipmentType {
 	MELEE_WEAPON(EquipmentWhere.HAND_L,EquipmentWhere.HAND_R,EquipmentWhere.PACK,EquipmentWhere.OTHER),
 	AMMUNITION(EquipmentWhere.PACK,EquipmentWhere.OTHER),
@@ -9,6 +11,11 @@ public enum EquipmentType {
 	ARMOUR_BONUS_GIVING(),  // don't specify so can go anywhere
 	OTHER() // don't specify so can go anywhere
 	;
+
+	private String description;
+	public String getDescription() {
+		return description;
+	}
 	
 	public String getDesc() {
 		return name();
@@ -31,6 +38,9 @@ public enum EquipmentType {
 	
 	EquipmentType(EquipmentWhere... validWheres){
 		this.validWheres = validWheres;
+
+		description = name().replace("_", " ");	
+		description=SU.proper(description);		
 	}
 	
 }

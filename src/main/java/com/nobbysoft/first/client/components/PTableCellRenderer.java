@@ -2,6 +2,9 @@ package com.nobbysoft.first.client.components;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -9,6 +12,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import com.nobbysoft.first.client.utils.GuiUtils;
+import com.nobbysoft.first.common.utils.SU;
 
 public class PTableCellRenderer extends DefaultTableCellRenderer {
 	
@@ -22,6 +26,9 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
 		selected=l.getBackground().darker().darker();
 	}
 
+	
+
+	
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus,
             int row, int column) {
@@ -30,7 +37,7 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
                  row,  column);
     	if(value!=null) {
 	    	if (c instanceof JLabel) {
-	    		((JLabel)c).setText(value.toString());
+	    		((JLabel)c).setText(SU.getDescription(value));
 	    	}	  
 	    	
     	} 
