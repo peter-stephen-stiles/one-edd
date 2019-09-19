@@ -48,7 +48,6 @@ INSTANCE;
 		try (ResultSet rs = dbmd.getTables( null, null, tableName.toUpperCase(),
 				new String[]{"TABLE"});) {
 			if(rs.next()){
-				//LOGGER.info("table "+tableName+" already exists;");
 				try(ResultSet rsc = dbmd.getColumns(null,null,tableName.toUpperCase(),columnName.toUpperCase())){
 					if(rsc.next()){
 						LOGGER.info("table.column "+tableName+"."+columnName+" already exists;");
@@ -61,4 +60,28 @@ INSTANCE;
 		return false;
 	}
 
+	public static final boolean isTableColumnFK(Connection con, String tableName, String columnName, String otherTable)
+			throws SQLException {
+		DatabaseMetaData dbmd = con.getMetaData();
+		
+		
+		
+		try (ResultSet rs = dbmd.getImportedKeys( null, null, tableName.toUpperCase());) {
+			while(rs.next()){
+				String fkc = rs.getString("FKCOLUMN_NAME");
+				String fkt = rs.getString("FKTABLE_NAME");
+				String pkc = rs.getString("PKCOLUMN_NAME"); // not used..
+				String pkt = rs.getString("PKTABLE_NAME");
+				if(tableName.equalsIgnoreCase(fkt) &&
+					columnName.equalsIgnoreCase(fkc) &&
+					otherTable.equalsIgnoreCase(pkt) ){
+						LOGGER.info("table.column "+tableName+"."+columnName+" is a FK");
+						return true;
+					}					
+				} 
+			}
+		return false;
+	}	
+	
+	
 }

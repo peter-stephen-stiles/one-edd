@@ -81,6 +81,7 @@ public enum DataMapper {
 		daoimap.put(Spell.class, SpellDAO.class);
 		daoimap.put(Race.class, RaceDAO.class);
 		daoimap.put(CharacterClass.class, CharacterClassDAO.class);
+		daoimap.put(CharacterClassSpell.class, CharacterClassSpellDAO.class);
 		daoimap.put(RaceClassLimit.class, RaceClassLimitDAO.class);
 		daoimap.put(Constitution.class,ConstitutionDAO.class);
 		daoimap.put(Strength.class,StrengthDAO.class);
@@ -119,6 +120,7 @@ public enum DataMapper {
 		//entityservicemap.put(PlayerCharacterSpellclass, PlayerCharacterSpellService.class);
 		entityservicemap.put(PlayerCharacterEquipment.class, PlayerCharacterEquipmentService.class);
 		entityservicemap.put(CharacterClass.class, CharacterClassService.class);
+		entityservicemap.put(CharacterClassSpell.class, CharacterClassSpellService.class);
 		entityservicemap.put(Spell.class, SpellService.class);
 		entityservicemap.put(Race.class, RaceService.class);
 		entityservicemap.put(RaceClassLimit.class, RaceClassLimitService.class);
@@ -136,6 +138,7 @@ public enum DataMapper {
 		servicemap.put(PlayerCharacterService.class, PlayerCharacterServiceImpl.class);
 		servicemap.put(PlayerCharacterEquipmentService.class, PlayerCharacterEquipmentServiceImpl.class);
 		servicemap.put(CharacterClassService.class, CharacterClassServiceImpl.class);
+		servicemap.put(CharacterClassSpellService.class, CharacterClassSpellServiceImpl.class);
 		servicemap.put(SpellService.class, SpellServiceImpl.class);
 		servicemap.put(RaceService.class, RaceServiceImpl.class);
 		servicemap.put(RaceClassLimitService.class, RaceClassLimitServiceImpl.class);
