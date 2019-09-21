@@ -15,16 +15,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PButtonPanel;
-import com.nobbysoft.first.client.data.tabs.DataFrameTabCharacters;
-import com.nobbysoft.first.client.data.tabs.DataFrameTabData;
 import com.nobbysoft.first.client.data.tabs.DataFrameTabSql;
 import com.nobbysoft.first.client.utils.GuiUtils;
 
-public class DataFrame extends JFrame {
+public class SqlFrame extends JFrame {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass()); 
 
-	public DataFrame() throws SQLException { 
+	public SqlFrame() throws SQLException { 
 		jbInit();
 	}
 
@@ -38,7 +36,7 @@ public class DataFrame extends JFrame {
 
 	private void jbInit() {
 		setLayout(new BorderLayout(5, 5));
-		setTitle("First Edition D&D");
+		setTitle("First Edition D&D - SQL Editor");
 		
  
 		PButtonPanel pnlBottomButtons = new PButtonPanel();
@@ -47,11 +45,9 @@ public class DataFrame extends JFrame {
 
 		JTabbedPane pnlTabs = new JTabbedPane();
 		pnlTabs.setFont(GuiUtils.getHeaderFont());
-		
-		DataFrameTabData pnlStaticData = new DataFrameTabData();
-		DataFrameTabCharacters pnlCharacters = new DataFrameTabCharacters();
-		pnlTabs.addTab("Characters", pnlCharacters);
-		pnlTabs.addTab("Static data", pnlStaticData);
+
+		DataFrameTabSql pnlSql = new DataFrameTabSql();
+		pnlTabs.addTab("Sql", pnlSql);
 
 		add(pnlTabs,BorderLayout.CENTER);
 		add(pnlBottomButtons, BorderLayout.SOUTH);

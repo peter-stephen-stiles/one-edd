@@ -53,20 +53,33 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 			}
 		}
 		{
+			
+			
+//	CONSTRAINT FLTS_FK FOREIGN KEY (FLIGHT_ID, SEGMENT_NUMBER)  			REFERENCES Flights (FLIGHT_ID, SEGMENT_NUMBER)			
 			// add some constraints
-			String column = "class_id";			
+			String column = "class_id";
+			String constraintName = "CCS_class_to_class";
 			if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {
-				sql = "ALTER TABLE " + tableName + " add foreign key " + column
-						+ " references Character_Class(class_id) ";
+				sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
+						+ ") references Character_Class(class_id) ";
 				try (PreparedStatement ps = con.prepareStatement(sql);) {
 					ps.execute();
+				} catch (Exception ex) {
+					LOGGER.error("Error running SQL\n"+sql,ex);
+					throw ex;
 				}
-			}column = "spell_class_id";			
+			}
+			
+			column = "spell_class_id";			
+		 constraintName = "CCS_spell_class_to_class";
 			if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {
-				sql = "ALTER TABLE " + tableName + " add foreign key " + column
-						+ " references Character_Class(class_id) ";
+				sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
+						+ ") references Character_Class(class_id) ";
 				try (PreparedStatement ps = con.prepareStatement(sql);) {
 					ps.execute();
+				} catch (Exception ex) {
+					LOGGER.error("Error running SQL\n"+sql,ex);
+					throw ex;
 				}
 			}
 		}
@@ -140,7 +153,7 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 	@Override
 	String addOrderByClause(String sql) {
 
-		return " ORDER BY class_id,spell_class_id,level";
+		return sql+" ORDER BY class_id,spell_class_id,level";
 	}
 
 	@Override

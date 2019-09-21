@@ -41,6 +41,7 @@ import com.nobbysoft.first.client.components.PListCellRenderer;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTable;
 import com.nobbysoft.first.client.components.PTableCellRenderer;
+import com.nobbysoft.first.client.components.TableUtils;
 import com.nobbysoft.first.client.data.MaintenanceDialog;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.first.client.data.panels.DataButtonsInterface;
@@ -60,6 +61,7 @@ public class DataFrameTabData extends PPanel{
 	private DefaultTableModel tmData = new DefaultTableModel();
 	private PTable tblData = new PTable(tmData);
 
+	private TableUtils tableUtils = new TableUtils();
 	private JTextField txtFilter = new JTextField();
 
 	private final PButtonPanel pnlDataButtons = new PButtonPanel();
@@ -321,54 +323,12 @@ public class DataFrameTabData extends PPanel{
 		}
 	}
 
-	private TableCellRenderer defaultTcr = new PTableCellRenderer();
-	private Map<String, TableCellRenderer> renderers = new HashMap<>();
 
 	private void columns(DataDTOInterface<?> d) {
-
-		LOGGER.info("setting columns");
-		tmData.addColumn("");
-		String[] h = d.getRowHeadings();
-		for (String s : h) {
-			tmData.addColumn(s);
-		}
-		TableColumnModel tcm = tblData.getColumnModel();
-		TableColumn fc = tcm.getColumn(0);
-		fc.setWidth(0);
-		fc.setMinWidth(0);
-		fc.setPreferredWidth(0);
-		fc.setMaxWidth(0);
-		fc.setWidth(0);
-		Integer[] w = d.getColumnWidths();
-		String[] clis = d.getColumnCodedListTypes();
-		for (int i = 1, n = w.length; i <= n; i++) {
-			int width = w[i - 1];
-			//LOGGER.info("setting column " + i + " width " + width);
-			TableColumn tc = tcm.getColumn(i);
-			tc.setMinWidth(20);
-			if (width >= 0) {
-				tc.setWidth(width);
-				tc.setPreferredWidth(width);
-			} else {
-				//LOGGER.info("no width set");
-			}
-			tc.setMaxWidth(5000);
-			TableCellRenderer tcr = defaultTcr;
-			if (clis.length > (i - 1)) {
-				String cli = clis[i - 1];
-				if (cli != null) {
-					if (renderers.containsKey(cli)) {
-						tcr = renderers.get(cli);
-					} else {
-						tcr = new PCodedListCellRenderer(cli);
-						renderers.put(cli, tcr);
-					}
-				}
-			}
-			tc.setCellRenderer(tcr);
-		}
-
+		tableUtils.columns(d,tmData,tblData);
 	}
+		
+
 
 	public void clearTable(boolean needNewStructure) {
 		while (tmData.getRowCount() > 0) {

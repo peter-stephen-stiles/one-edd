@@ -4,15 +4,18 @@ import java.awt.Window;
 import java.util.*;
 
 import com.nobbysoft.first.client.components.PButton;
+import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 
 public class CharacterClassButtons implements DataButtonsInterface<CharacterClass> {
 
 	private static final String ROLL_HP = "Roll HP";
+	private static final String SPELLS = "Spells By Level";
 
 	public CharacterClassButtons() {
 
 		rowButtons.add(ROLL_HP);
+		rowButtons.add(SPELLS);
 		tableButtons.add("Everybody dance now");
 	}
 
@@ -39,6 +42,12 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 			dialog.pack();
 			dialog.setVisible(true);
 			
+		} else if (SPELLS.equals(name)) {			
+			ClassSpellsDialog dialog = new ClassSpellsDialog(window,"Spells for "+object.getName());
+			dialog.initialise(object);
+			dialog.setLocationRelativeTo(null);
+			dialog.pack();
+			dialog.setVisible(true);
 		}
 		
 	}

@@ -67,7 +67,7 @@ public class CharacterClassSpell implements Serializable, DataDTOInterface<Chara
 				"Lvl 6 Spells",
 				"Lvl 7 Spells",
 				"Lvl 8 Spells",
-				"Lvl 9 Spells",
+				"Lvl 9 Spells"
 		};
 	}
 
