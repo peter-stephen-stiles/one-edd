@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nobbysoft.first.common.entities.meta.DTOColumn;
+import com.nobbysoft.first.common.entities.meta.DTOConstraint;
+import com.nobbysoft.first.common.entities.meta.DTOIndex;
 import com.nobbysoft.first.common.entities.meta.DTOTable;
 import com.nobbysoft.first.common.utils.ResultSetListener;
 
@@ -133,6 +135,7 @@ public class SqlDAO {
 					int row=0;
 					while(rs.next()) {
 						DTOColumn dto = new DTOColumn();
+						dto.setTableCat(rs.getString("TABLE_CAT"));
 						dto.setTableSchem(rs.getString("TABLE_SCHEM"));
 						dto.setTableName(rs.getString("TABLE_NAME"));
 						dto.setColumnName(rs.getString("COLUMN_NAME"));
@@ -166,104 +169,104 @@ public class SqlDAO {
 			}
 			return list;
 		}
-	
-	public void metaDataIndexes(Connection con,String catalog, String schema, String tableName, ResultSetListener listener)  throws SQLException {
+	public List<DTOIndex>  metaDataIndexes(Connection con,String catalog, String schema, String tableName)  throws SQLException {
 		
+		List<DTOIndex> list = new ArrayList<>();
 		DatabaseMetaData d = con.getMetaData();
 		try {
 			
-			try(ResultSet rs = d.getIndexInfo(catalog, schema, tableName, false, true)	){
-				
-				ResultSetMetaData rsmd = rs.getMetaData();
-				listener.haveTheMetaData(rsmd);
-				
-				List<String> labels = new ArrayList<>();
-				for(int i=0,n=rsmd.getColumnCount();i<n;i++) {
-					labels.add(rsmd.getColumnLabel(i+1));
-				}
-				listener.haveTheColumnLabels(labels.toArray(new String[labels.size()]));
-				
-				int row=0;
-				while(rs.next()) {
+			try(ResultSet rs = d.getIndexInfo(catalog, schema, tableName, false, true)
+				) {
 
-					List<Object> data = new ArrayList<>();
-					for(int i=0,n=rsmd.getColumnCount();i<n;i++) {
-						Object o = rs.getObject(i+1);
-						data.add(o);
-					}
-					listener.haveARow(row, data.toArray());
-					row++;
+				while(rs.next()) {
+					DTOIndex dto = new DTOIndex();
+					dto.setTableCat(rs.getString("TABLE_CAT"));
+					dto.setTableSchem(rs.getString("TABLE_SCHEM"));
+					dto.setTableName(rs.getString("TABLE_NAME"));
+					dto.setNonUnique(rs.getBoolean("NON_UNIQUE"));
+					dto.setIndexQualifier(rs.getString("INDEX_QUALIFIER"));
+					dto.setIndexName(rs.getString("INDEX_NAME"));
+					dto.setType(rs.getShort("TYPE"));
+					dto.setOrdinalPosition(rs.getShort("ORDINAL_POSITION"));
+					dto.setColumnName(rs.getString("COLUMN_NAME"));
+					dto.setAscOrDesc(rs.getString("ASC_OR_DESC"));
+					dto.setCardinality(rs.getLong("CARDINALITY"));
+					dto.setPages(rs.getLong("PAGES"));
+					dto.setFilterCondition(rs.getString("FILTER_CONDITION"));
+
+					list.add(dto);
 				}
 				
 			}
 			
 		} finally {
-			listener.finished();
+
 		}
-		
+		return list;
 	}
-	
-	public void metaDataConstraints(Connection con,String catalog, String schema, String tableName, ResultSetListener listener)  throws SQLException {
+
+	public List<DTOConstraint>  metaDataConstraints(Connection con,String catalog, String schema, String tableName)  throws SQLException {
 		
+		List<DTOConstraint> list = new ArrayList<>();
 		DatabaseMetaData d = con.getMetaData();
 		try {
 			
-			{
-				int row=0;
-				try(ResultSet rs = d.getExportedKeys(catalog, schema, tableName)	){
-					
-					ResultSetMetaData rsmd = rs.getMetaData();
-					listener.haveTheMetaData(rsmd);
-					
-					List<String> labels = new ArrayList<>();
-					for(int i=0,n=rsmd.getColumnCount();i<n;i++) {
-						labels.add(rsmd.getColumnLabel(i+1));
-					}
-					listener.haveTheColumnLabels(labels.toArray(new String[labels.size()]));
-					
-					while(rs.next()) {
+			try(ResultSet rs = d.getExportedKeys(catalog, schema, tableName)
+				) {
 
-						List<Object> data = new ArrayList<>();
-						for(int i=0,n=rsmd.getColumnCount();i<n;i++) {
-							Object o = rs.getObject(i+1);
-							data.add(o);
-						}
-						listener.haveARow(row, data.toArray());
-						row++;
-					}
-					
+				while(rs.next()) {
+					DTOConstraint dto = new DTOConstraint();
+					dto.setPktableCat(rs.getString("PKTABLE_CAT"));
+					dto.setPktableSchem(rs.getString("PKTABLE_SCHEM"));
+					dto.setPktableName(rs.getString("PKTABLE_NAME"));
+					dto.setPkcolumnName(rs.getString("PKCOLUMN_NAME"));
+					dto.setFktableCat(rs.getString("FKTABLE_CAT"));
+					dto.setFktableSchem(rs.getString("FKTABLE_SCHEM"));
+					dto.setFktableName(rs.getString("FKTABLE_NAME"));
+					dto.setFkcolumnName(rs.getString("FKCOLUMN_NAME"));
+					dto.setKeySeq(rs.getShort("KEY_SEQ"));
+					dto.setUpdateRule(rs.getShort("UPDATE_RULE"));
+					dto.setDeleteRule(rs.getShort("DELETE_RULE"));
+					dto.setFkName(rs.getString("FK_NAME"));
+					dto.setPkName(rs.getString("PK_NAME"));
+					dto.setDeferrability(rs.getShort("DEFERRABILITY"));
+
+
+					list.add(dto);
 				}
-				}{
-					int row=0;
-					try(ResultSet rs = d.getImportedKeys(catalog, schema, tableName)	){
-						
-						ResultSetMetaData rsmd = rs.getMetaData();
-						listener.haveTheMetaData(rsmd);
-						
-						List<String> labels = new ArrayList<>();
-						for(int i=0,n=rsmd.getColumnCount();i<n;i++) {
-							labels.add(rsmd.getColumnLabel(i+1));
-						}
-						listener.haveTheColumnLabels(labels.toArray(new String[labels.size()]));
-						
-						while(rs.next()) {
+				
+			}
+			
+			
+			try(ResultSet rs = d.getImportedKeys(catalog, schema, tableName)
+				) {
 
-							List<Object> data = new ArrayList<>();
-							for(int i=0,n=rsmd.getColumnCount();i<n;i++) {
-								Object o = rs.getObject(i+1);
-								data.add(o);
-							}
-							listener.haveARow(row, data.toArray());
-							row++;
-						}
-						
-					}
-					}
+				while(rs.next()) {
+					DTOConstraint dto = new DTOConstraint();
+					dto.setPktableCat(rs.getString("PKTABLE_CAT"));
+					dto.setPktableSchem(rs.getString("PKTABLE_SCHEM"));
+					dto.setPktableName(rs.getString("PKTABLE_NAME"));
+					dto.setPkcolumnName(rs.getString("PKCOLUMN_NAME"));
+					dto.setFktableCat(rs.getString("FKTABLE_CAT"));
+					dto.setFktableSchem(rs.getString("FKTABLE_SCHEM"));
+					dto.setFktableName(rs.getString("FKTABLE_NAME"));
+					dto.setFkcolumnName(rs.getString("FKCOLUMN_NAME"));
+					dto.setKeySeq(rs.getShort("KEY_SEQ"));
+					dto.setUpdateRule(rs.getShort("UPDATE_RULE"));
+					dto.setDeleteRule(rs.getShort("DELETE_RULE"));
+					dto.setFkName(rs.getString("FK_NAME"));
+					dto.setPkName(rs.getString("PK_NAME"));
+					dto.setDeferrability(rs.getShort("DEFERRABILITY"));
+
+					list.add(dto);
+				}
+				
+			}
 			
 		} finally {
-			listener.finished();
+
 		}
-		
+		return list;
 	}
-	
+		
 }

@@ -56,12 +56,14 @@ public class DataFrameTabSql extends PPanel {
 			SqlPanel sqlPanelX = new SqlPanel();
 			sqlPanelX.setName("Sql#"+panelCount++);
 			pnlSqlTabs.addTab(sqlPanelX.getName(), sqlPanelX);
+			pnlSqlTabs.setSelectedComponent(sqlPanelX);
 			sqlPanelX.addActionListener(a2e->{removeSqlTab(a2e);});
 		});
 		btnNewMetaTab.addActionListener(ae->{
 			DBMDPanel sqlPanelX = new DBMDPanel();
 			sqlPanelX.setName("Meta#"+panelCount++);
 			pnlSqlTabs.addTab(sqlPanelX.getName(), sqlPanelX);
+			pnlSqlTabs.setSelectedComponent(sqlPanelX);
 			sqlPanelX.addActionListener(a2e->{removeSqlTab(a2e);});
 		});
 		pnlSqlTabs.addMouseListener(new MouseListener() {

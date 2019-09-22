@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nobbysoft.first.common.entities.meta.DTOColumn;
+import com.nobbysoft.first.common.entities.meta.DTOConstraint;
+import com.nobbysoft.first.common.entities.meta.DTOIndex;
 import com.nobbysoft.first.common.entities.meta.DTOTable;
 import com.nobbysoft.first.common.servicei.SqlService;
 import com.nobbysoft.first.common.utils.ResultSetListener;
@@ -51,19 +53,6 @@ public class SqlServiceImpl implements SqlService {
 		
 	}
  
-	public void metaDataIndexes(String catalog, String schema, String tableName, ResultSetListener listener)
-			throws SQLException {
-		try(Connection con = cm.getConnection()){
-			dao.metaDataIndexes(con, catalog, schema, tableName, listener);
-			}
-	}
- 
-	public void metaDataConstraints(String catalog, String schema, String tableName, ResultSetListener listener)
-			throws SQLException {
-		try(Connection con = cm.getConnection()){
-			dao.metaDataConstraints(con, catalog, schema, tableName, listener);
-			}
-	}
 
 	@Override
 	public List<DTOTable> metaDataTables(String tableNameFilter) throws SQLException {
@@ -74,5 +63,19 @@ public class SqlServiceImpl implements SqlService {
 			
 		}
 		return list;
+	}
+
+	@Override
+	public List<DTOIndex> metaDataIndexes(String catalog, String schema, String tableName) throws SQLException {
+		try(Connection con = cm.getConnection()){
+			return dao.metaDataIndexes(con, catalog, schema, tableName);
+			}
+	}
+
+	@Override
+	public List<DTOConstraint> metaDataConstraints(String catalog, String schema, String tableName) throws SQLException {
+		try(Connection con = cm.getConnection()){
+			return dao.metaDataConstraints(con, catalog, schema, tableName);
+			}
 	}
 }

@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.nobbysoft.first.common.entities.meta.DTOColumn;
+import com.nobbysoft.first.common.entities.meta.DTOConstraint;
+import com.nobbysoft.first.common.entities.meta.DTOIndex;
 import com.nobbysoft.first.common.entities.meta.DTOTable;
 import com.nobbysoft.first.common.utils.ResultSetListener;
 
@@ -14,6 +16,8 @@ public interface SqlService {
 
 	public List<DTOTable> metaDataTables(String tableNameFilter) throws SQLException;
 	public List<DTOColumn> metaDataColumns(String catalog, String schema, String tableName) throws SQLException;
+	public List<DTOIndex> metaDataIndexes(String catalog, String schema, String tableName) throws SQLException;
+	public List<DTOConstraint> metaDataConstraints(String catalog, String schema, String tableName) throws SQLException;
  
 	
 }
