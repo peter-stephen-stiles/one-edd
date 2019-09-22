@@ -36,11 +36,11 @@ import com.nobbysoft.first.common.servicei.SqlService;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
-public class DBMDPanel extends PPanel {
+public class SqlDBMDPanel extends PPanel {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-	public DBMDPanel() {
+	public SqlDBMDPanel() {
 		super();
 		jbInit();
 	}

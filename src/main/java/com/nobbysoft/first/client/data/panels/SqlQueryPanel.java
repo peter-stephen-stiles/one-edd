@@ -30,10 +30,10 @@ import com.nobbysoft.first.common.servicei.SqlService;
 import com.nobbysoft.first.common.utils.ResultSetListener;
 import com.nobbysoft.first.utils.DataMapper;
 
-public class SqlPanel extends PPanel {
+public class SqlQueryPanel extends PPanel {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass()); 
-	public SqlPanel() {
+	public SqlQueryPanel() {
 		super();
 		jbInit();
 	}

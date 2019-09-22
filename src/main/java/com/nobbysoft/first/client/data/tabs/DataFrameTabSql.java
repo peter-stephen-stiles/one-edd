@@ -25,8 +25,8 @@ import com.nobbysoft.first.client.components.PButtonPanel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTable;
 import com.nobbysoft.first.client.components.PTextArea;
-import com.nobbysoft.first.client.data.panels.DBMDPanel;
-import com.nobbysoft.first.client.data.panels.SqlPanel;
+import com.nobbysoft.first.client.data.panels.SqlDBMDPanel;
+import com.nobbysoft.first.client.data.panels.SqlQueryPanel;
 import com.nobbysoft.first.client.utils.GuiUtils; 
 
 @SuppressWarnings("serial")
@@ -48,19 +48,19 @@ public class DataFrameTabSql extends PPanel {
 		pnlTopButtons.add(btnNewMetaTab);
 		add(pnlTopButtons,BorderLayout.NORTH);
 		add(pnlSqlTabs,BorderLayout.CENTER);
-		SqlPanel sqlPanel = new SqlPanel();
+		SqlQueryPanel sqlPanel = new SqlQueryPanel();
 		sqlPanel.addActionListener(ae->{removeSqlTab(ae);});
 		sqlPanel.setName("Sql#1");
 		pnlSqlTabs.addTab(sqlPanel.getName(), sqlPanel);
 		btnNewSqlTab.addActionListener(ae->{
-			SqlPanel sqlPanelX = new SqlPanel();
+			SqlQueryPanel sqlPanelX = new SqlQueryPanel();
 			sqlPanelX.setName("Sql#"+panelCount++);
 			pnlSqlTabs.addTab(sqlPanelX.getName(), sqlPanelX);
 			pnlSqlTabs.setSelectedComponent(sqlPanelX);
 			sqlPanelX.addActionListener(a2e->{removeSqlTab(a2e);});
 		});
 		btnNewMetaTab.addActionListener(ae->{
-			DBMDPanel sqlPanelX = new DBMDPanel();
+			SqlDBMDPanel sqlPanelX = new SqlDBMDPanel();
 			sqlPanelX.setName("Meta#"+panelCount++);
 			pnlSqlTabs.addTab(sqlPanelX.getName(), sqlPanelX);
 			pnlSqlTabs.setSelectedComponent(sqlPanelX);
