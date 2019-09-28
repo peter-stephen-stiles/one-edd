@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -43,8 +44,8 @@ public class ClassSpellsDialog extends JDialog {
 		populateTable();
 	}
  
- 
-	private final PBasicTableWithModel tblData = new PBasicTableWithModel();
+	private final DefaultTableModel tmData =  new DefaultTableModel();
+	private final PTable tblData = new PTable(tmData);
 	
 	private void jbInit() {
 		setLayout(new BorderLayout(5,5));
@@ -87,24 +88,30 @@ public class ClassSpellsDialog extends JDialog {
 	private Map<String, TableCellRenderer> renderers = new HashMap<>();
 	
 private void setupTable() {
-	List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-	CharacterClassSpell c = new CharacterClassSpell(); // just need a DTO to get the bacis.
+	CharacterClassSpell c = new CharacterClassSpell(); // just need a DTO to get the basics.
 	String[] rh = c.getRowHeadings();
 	Integer[] rw = c.getColumnWidths();
 	String[] cci = c.getColumnCodedListTypes();
+	tmData.setColumnIdentifiers(rh);
 	for(int i=0,n=rh.length;i<n;i++) {
-		String h = rh[i];
+		TableColumn tc = tblData.getColumn(rh[i]);
 		int w = rw[i];
-		if(Utils.isEmptyString(h) && w==0) {
-			columnConfigs.add(new ColumnConfig("", 0, 0, 0));
+		if(w==0) {
+			tc.setMinWidth(0);
+			tc.setMaxWidth(0);
+			tc.setPreferredWidth(0);
 		} else {
-			columnConfigs.add(new ColumnConfig(h, 20, w, 5000)); 
+			tc.setMinWidth(20);
+			tc.setMaxWidth(w);
+			tc.setPreferredWidth(5000);
+		}
+		if(cci[i]!=null) {
+			
 		}
 		
 		
 	}
 	
-	tblData.setUpColumns(columnConfigs);
 	
 	/**
 	 * 
@@ -113,9 +120,10 @@ private void setupTable() {
 	 * 
 	 */
 	
-	for (int i = 1, n = rh.length; i <= n; i++) {
+	for (int i = 1, n = rh.length; i < n; i++) {
 		LOGGER.info("column "+i);
-		TableColumn tc = tblData.getColumn(i);
+		
+		TableColumn tc = tblData.getColumnModel().getColumn(i);
  
 		TableCellRenderer tcr = defaultTcr;
 		if (cci.length > (i - 1)) {
