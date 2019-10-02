@@ -42,7 +42,10 @@ public class CharacterClassSpell implements Serializable, DataDTOInterface<Chara
 	@Override
 	public Object[] getAsRow() {
 		// TODO Auto-generated method stub
-		return new Object[] {this,classId,spellClassId,level,
+		return new Object[] {this,
+				classId,
+				spellClassId,
+				level,
 				level1Spells,
 				level2Spells,
 				level3Spells,
@@ -57,8 +60,7 @@ public class CharacterClassSpell implements Serializable, DataDTOInterface<Chara
 
 	@Override
 	public String[] getRowHeadings() {
-		// TODO Auto-generated method stub
-		return new String[] {"Class","Spell class","Level",
+		return new String[] {"","Class","Spell class","Level",
 				"Lvl 1 Spells",
 				"Lvl 2 Spells",
 				"Lvl 3 Spells",
@@ -75,7 +77,8 @@ public class CharacterClassSpell implements Serializable, DataDTOInterface<Chara
 	@Override
 	public Integer[] getColumnWidths() {
 		// TODO Auto-generated method stub
-		return new Integer[] {100,100,50,
+		return new Integer[] {0,100,100,
+				50,
 				50,
 				50,
 				50,
@@ -104,7 +107,7 @@ public class CharacterClassSpell implements Serializable, DataDTOInterface<Chara
 				null,
 				null,
 				null,
-				};
+				null,};
 	}
 
 

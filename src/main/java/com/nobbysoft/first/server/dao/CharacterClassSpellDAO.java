@@ -37,7 +37,7 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 		 */
 		String sql = "CREATE TABLE " + tableName +
 				 "(class_id varchar(20), "+
-				" spell_class_id varchar(2) , "+				
+				" spell_class_id varchar(20) , "+				
 				" level INTEGER, "
 				+ "PRIMARY KEY (class_id,spell_Class_Id,level) " + 
 				"  )";
@@ -158,12 +158,12 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 
 	@Override
 	String getFilterWhere() {
-		return "";
+		return "  class_id = ? ";
 	}
 
 	@Override
 	void setFilterParameters(PreparedStatement ps, String filter) throws SQLException {
-		// no filtering
+		ps.setString(1, filter);
 	}
 
 	@Override

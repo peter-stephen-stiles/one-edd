@@ -26,7 +26,10 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
 		selected=l.getBackground().darker().darker();
 	}
 
-	
+	private boolean zerosAsBlanks=false;
+	public void setZerosAsBlanks(boolean zerosAsBlanks) {
+		this.zerosAsBlanks=zerosAsBlanks;
+	}
 
 	
     public Component getTableCellRendererComponent(JTable table, Object value,
@@ -37,7 +40,11 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
                  row,  column);
     	if(value!=null) {
 	    	if (c instanceof JLabel) {
-	    		((JLabel)c).setText(SU.getDescription(value));
+	    		String d= SU.getDescription(value);
+	    		if(zerosAsBlanks&&"0".contentEquals(d)) {
+	    			d="";
+	    		}
+	    		((JLabel)c).setText(d);
 	    	}	  
 	    	
     	} 

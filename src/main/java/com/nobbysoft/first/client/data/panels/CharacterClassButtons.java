@@ -38,15 +38,15 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 			// roll up a character class
 			RollHPDialog dialog = new RollHPDialog(window,"Roll "+object.getName()+" hit points");
 			dialog.initialise(object);
-			dialog.setLocationRelativeTo(null);
 			dialog.pack();
+			dialog.setLocationRelativeTo(null);			
 			dialog.setVisible(true);
 			
 		} else if (SPELLS.equals(name)) {			
 			ClassSpellsDialog dialog = new ClassSpellsDialog(window,"Spells for "+object.getName());
 			dialog.initialise(object);
-			dialog.setLocationRelativeTo(null);
 			dialog.pack();
+			dialog.setLocationRelativeTo(null);			
 			dialog.setVisible(true);
 		}
 		
