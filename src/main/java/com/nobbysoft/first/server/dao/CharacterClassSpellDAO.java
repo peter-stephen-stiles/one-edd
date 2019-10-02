@@ -206,5 +206,20 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 		
 	}
 
+	public int getMaxSpellLevelInTable(Connection con,String characterClassId) throws SQLException {
+		
+		String sql = "SELECT MAX(level) FROM "+tableName+" WHERE class_id = ?";
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setString(1, characterClassId);
+			try(ResultSet rs = ps.executeQuery()){
+				if(rs.next()) {
+					return rs.getInt(1);
+				} else {
+					return 0;
+				}
+			}
+		}
+		
+	}
 
 }

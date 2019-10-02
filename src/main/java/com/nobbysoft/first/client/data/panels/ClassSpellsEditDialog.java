@@ -165,10 +165,11 @@ public class ClassSpellsEditDialog
 		add(new PLabel(""),GBU.label(99, 99));	
 	}
 
-	public void defaultClass(){
+	public void defaultAdd(int level){
 		if(parent!=null) {
 			txtSpellClass.setSelectedCode(parent.getClassId());
 		}
+		txtClassLevel.setIntegerValue(level);
 	}
 	
 	@Override

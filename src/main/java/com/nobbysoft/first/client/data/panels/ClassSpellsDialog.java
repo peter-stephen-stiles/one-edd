@@ -222,7 +222,7 @@ CharacterClassSpellService getDataService() {
 			ClassSpellsEditDialog mpi = new ClassSpellsEditDialog();
 			mpi.setParent(characterClass);
 			mpi.initAdd("Add spells for "+characterClass.getName() );
-			mpi.defaultClass();
+			mpi.defaultAdd(1+getMaxLevel(characterClass.getClassId()));
 			MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Add", mpi);
 			md.pack();
 			md.setLocationRelativeTo(null);
@@ -297,7 +297,7 @@ CharacterClassSpellService getDataService() {
 				 {
 					ClassSpellsEditDialog mpi = new ClassSpellsEditDialog();
 					mpi.setParent(characterClass);
-					mpi.initCopy(dto, "Add ");
+					mpi.initCopy(dto, "Add spells for "+characterClass.getName());
 					MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Add", mpi);
 					md.pack();
 					md.setLocationRelativeTo(null);
@@ -313,4 +313,15 @@ CharacterClassSpellService getDataService() {
 		return GuiUtils.getParent(this);
 	}
 
+	private int getMaxLevel(String classId) {
+		CharacterClassSpellService service = getDataService();
+		
+		try{
+			return service.getMaxSpellLevelInTable(classId)	;
+		} catch (SQLException e) {
+			Popper.popError(this,e);
+		}
+		return 1;
+	}
+	
 }

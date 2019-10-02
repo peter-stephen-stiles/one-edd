@@ -83,5 +83,12 @@ public class CharacterClassSpellServiceImpl implements CharacterClassSpellServic
 			}
 	}
 
- 
+
+	@Override
+	public int getMaxSpellLevelInTable(String characterClassId) throws SQLException {
+		try(Connection con = cm.getConnection()){
+			 return dao.getMaxSpellLevelInTable(con,characterClassId);
+			}
+	}
+	
 }
