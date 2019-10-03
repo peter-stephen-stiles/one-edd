@@ -18,12 +18,18 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
 	
 	private Color text;
 	private Color background;
+	private Color darkBackground;
 	private Color selected;
+	private Color darkSelected;
+	private Color oppositeText;
 	public  PTableCellRenderer() {
 		JLabel l = new JLabel();
 		text =l.getForeground();
 		background=l.getBackground();
-		selected=l.getBackground().darker().darker();
+		darkBackground =l.getBackground().darker(); 
+		selected=l.getBackground().darker().darker().darker();
+		darkSelected=l.getBackground().darker().darker().darker().darker().darker();
+		oppositeText=new Color( 0xFFFFFF ^ text.getRGB());
 	}
 
 	private boolean zerosAsBlanks=false;
@@ -31,6 +37,32 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
 		this.zerosAsBlanks=zerosAsBlanks;
 	}
 
+	private Color determineForeground(int row, boolean isSelected) {
+		// row 0,1,2 = white
+		// row 3,4,5 = grey
+		// row 6,7,8
+		// divide by 3
+		// is it divisible by 2?
+		int d = row / 3;
+		if(d%2==0) {
+			return text;
+		} else {
+			return isSelected?oppositeText:text;
+		}
+	}
+	private Color determineBackground(int row, boolean isSelected) {
+		// row 0,1,2 = white
+		// row 3,4,5 = grey
+		// row 6,7,8
+		// divide by 3
+		// is it divisible by 2?
+		int d = row / 3;
+		if(d%2==0) {
+			return isSelected?selected:background;
+		} else {
+			return isSelected?darkSelected:darkBackground;
+		}
+	}
 	
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus,
@@ -49,12 +81,8 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
 	    	
     	} 
     	{
-    		c.setForeground(text);
-    		if(isSelected||hasFocus) {
-    			c.setBackground(selected);
-    		} else {
-    			c.setBackground(background);
-    		}
+    		c.setForeground(determineForeground(row,isSelected||hasFocus));
+       		c.setBackground(determineBackground(row,isSelected||hasFocus));
     	}
     	return c;
     	
