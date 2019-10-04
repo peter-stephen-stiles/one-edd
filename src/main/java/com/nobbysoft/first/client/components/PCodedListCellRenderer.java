@@ -24,60 +24,24 @@ import com.nobbysoft.first.server.dao.CodedListDAO;
 import com.nobbysoft.first.server.utils.ConnectionManager;
 import com.nobbysoft.first.utils.DataMapper;
 
-public class PCodedListCellRenderer extends DefaultTableCellRenderer {
+public class PCodedListCellRenderer extends PTableCellRenderer {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 	private final String codedListType;
 	
-	private Color text;
-	private Color background;
-	private Color darkBackground;
-	private Color selected;
-	private Color darkSelected;
-	private Color oppositeText;
+ 
 	
 	private Map<Comparable,String> itemMap = null; 
 	
 	public PCodedListCellRenderer(String codedListType) {
+		super();
 		this.codedListType=codedListType;
-		JLabel l = new JLabel();
-		text =l.getForeground();
-		background=l.getBackground();
-		darkBackground =l.getBackground().darker(); 
-		selected=l.getBackground().darker().darker().darker();
-		darkSelected=l.getBackground().darker().darker().darker().darker().darker();
-		oppositeText=new Color( 0xFFFFFF ^ text.getRGB());
+		
 	}
 
-	private Color determineForeground(int row, boolean isSelected) {
-		// row 0,1,2 = white
-		// row 3,4,5 = grey
-		// row 6,7,8
-		// divide by 3
-		// is it divisible by 2?
-		int d = row / 3;
-		if(d%2==0) {
-			return text;
-		} else {
-			return isSelected?oppositeText:text;
-		}
-	}
-	
-	private Color determineBackground(int row, boolean isSelected) {
-		// row 0,1,2 = white
-		// row 3,4,5 = grey
-		// row 6,7,8
-		// divide by 3
-		// is it divisible by 2?
-		int d = row / 3;
-		if(d%2==0) {
-			return isSelected?selected:background;
-		} else {
-			return isSelected?darkSelected:darkBackground;
-		}
-	}
-	
-	private String getItemDesc(Object value) {
+ 
+ 
+	public String getItemDesc(Object value) {
 		if(itemMap==null) {
 			// given the "codedListType" call the CodeListDAO
 			try{
@@ -97,28 +61,6 @@ public class PCodedListCellRenderer extends DefaultTableCellRenderer {
 		
 		
 	}
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus,
-            int row, int column) {
-    	Component c= super.getTableCellRendererComponent( table,  value,
-                 isSelected,  hasFocus,
-                 row,  column);
-    	
-    	if (c instanceof JLabel) {
-    		JLabel lbl =((JLabel)c);
-    		lbl.setText(getItemDesc(value));
-    		
-        	{
-        		c.setForeground(determineForeground(row,isSelected||hasFocus));
-       			c.setBackground(determineBackground(row,isSelected||hasFocus));
-        		 
-        	}
-    		
-    	} 
-    	return c;
-    	
-    }
-
  
     
 }

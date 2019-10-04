@@ -72,10 +72,7 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
                  row,  column);
     	if(value!=null) {
 	    	if (c instanceof JLabel) {
-	    		String d= SU.getDescription(value);
-	    		if(zerosAsBlanks&&"0".contentEquals(d)) {
-	    			d="";
-	    		}
+	    		String d = getItemDesc(value);
 	    		((JLabel)c).setText(d);
 	    	}	  
 	    	
@@ -87,6 +84,21 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
     	return c;
     	
     }
+
+    
+    /**
+     * override/re-write this method to implement something weird and wonderful
+     * 
+     * @param value
+     * @return a string representation of that value
+     */
+	protected String getItemDesc(Object value) {
+		String d= SU.getDescription(value);
+		if(zerosAsBlanks&&"0".contentEquals(d)) {
+			d="";
+		}
+		return d;
+	}
 
 	
 }
