@@ -150,7 +150,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		};
   
 	private PlayerCharacterEquipmentPanel pnlEquipmentDetails ;
-	private PPanel pnlSpellDetails ;
+	private PlayerCharacterSpellPanel pnlSpellDetails ;
 	
 	public void jbInit() {
 
@@ -158,7 +158,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 		final PPanel pnlCharacterDetails = new PPanel(new GridBagLayout());
 		pnlEquipmentDetails = new PlayerCharacterEquipmentPanel();
-		pnlSpellDetails = new PPanel(new BorderLayout());
+		pnlSpellDetails = new PlayerCharacterSpellPanel();
 		
 		///
 		/// Equipment details
@@ -442,13 +442,22 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 		
 		pnlEquipmentDetails.initialiseCharacter(cid, txtCharacterName.getText());
+		pnlSpellDetails.initialiseCharacter(cid, txtCharacterName.getText());
 		
  }
 
 
 	@Override
 	PDataComponent[] getButtonComponents() { 
-		return pnlEquipmentDetails.getButtonComponents();
+		List<PDataComponent> bs = new ArrayList<>();
+		for(PDataComponent c:pnlEquipmentDetails.getButtonComponents()) {
+			bs.add(c);
+		}
+
+		for(PDataComponent c:pnlSpellDetails.getButtonComponents()) {
+			bs.add(c);
+		}
+		return bs.toArray(new PDataComponent[bs.size()]);
 	}
 
 

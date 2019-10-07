@@ -118,7 +118,7 @@ public enum DataMapper {
 		
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
-		//entityservicemap.put(PlayerCharacterSpellclass, PlayerCharacterSpellService.class);
+		entityservicemap.put(PlayerCharacterSpell.class, PlayerCharacterSpellService.class);
 		entityservicemap.put(PlayerCharacterEquipment.class, PlayerCharacterEquipmentService.class);
 		entityservicemap.put(CharacterClass.class, CharacterClassService.class);
 		entityservicemap.put(CharacterClassSpell.class, CharacterClassSpellService.class);
@@ -138,6 +138,7 @@ public enum DataMapper {
 
 		servicemap.put(PlayerCharacterService.class, PlayerCharacterServiceImpl.class);
 		servicemap.put(PlayerCharacterEquipmentService.class, PlayerCharacterEquipmentServiceImpl.class);
+		servicemap.put(PlayerCharacterSpellService.class, PlayerCharacterSpellServiceImpl.class);
 		servicemap.put(CharacterClassService.class, CharacterClassServiceImpl.class);
 		servicemap.put(CharacterClassSpellService.class, CharacterClassSpellServiceImpl.class);
 		servicemap.put(SpellService.class, SpellServiceImpl.class);

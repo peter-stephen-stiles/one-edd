@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +18,12 @@ import com.nobbysoft.first.common.entities.pc.*;
 import com.nobbysoft.first.common.entities.staticdto.Alignment;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.Gender;
+import com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.first.common.views.NameAndEncumbrance;
+import com.nobbysoft.first.common.views.ViewPlayerCharacterEquipment;
+import com.nobbysoft.first.common.views.ViewPlayerCharacterSpell;
 import com.nobbysoft.first.server.utils.DbUtils;
 
 public class PlayerCharacterSpellDAO 
@@ -168,6 +173,54 @@ public class PlayerCharacterSpellDAO
 	@Override
 	public List<PlayerCharacterSpell> getForPC(Connection con, int pcId) throws SQLException {
 		return getListFromPartialKey( con, new String[] {"pc_id"},new Object[] {pcId}) ;
+	}
+
+	private SpellDAO spellDAO = new SpellDAO();
+	private Map<String,Spell> spellMap = new HashMap<>(); // cache for a bit :)
+	
+	private Spell getSpell(Connection con,String spellId) throws SQLException {
+		if(spellMap.containsKey(spellId)) {
+			return spellMap.get(spellId);
+		}
+		Spell s= spellDAO.get(con, spellId);
+		spellMap.put(spellId, s);
+		return s;
+	}
+
+
+	public List<ViewPlayerCharacterSpell> getViewForPC(Connection con, int pcId) throws SQLException {
+		
+		List<ViewPlayerCharacterSpell> views = new ArrayList<>();
+		
+		getListFromPartialKey( con, new String[] {"pc_id"},new Object[] {pcId}, new DTORowListener<PlayerCharacterSpell>() {
+
+			@Override
+			public void hereHaveADTO(PlayerCharacterSpell dto, boolean first)   {
+				Spell d;
+				try {
+					d = getSpell(con,dto.getSpellId());					
+					ViewPlayerCharacterSpell v = new ViewPlayerCharacterSpell();
+					v.setPlayerCharacterSpell(dto);
+					v.setSpell(d);
+					views.add(v);
+				} catch (SQLException e) {
+					LOGGER.error("its all gone wrong for "+dto.getKey(),e);
+				}
+				
+			}
+			
+		}) ;
+		
+		return views;
+	}
+	
+	public List<Spell> getViewNotForPC(Connection con,int pcId, int level, String spellClassId,String filterName) throws SQLException{
+		
+
+		List<Spell> views = new ArrayList<>();
+		
+		return views;
+		
 	}
 	
 }
