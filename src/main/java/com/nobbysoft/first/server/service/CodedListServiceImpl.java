@@ -24,28 +24,44 @@ public class CodedListServiceImpl implements CodedListService {
 	@Override
 	public List<CodedListItem<?>> getCodedListWithNullOption(String type) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getCodedListWithNullOption(con,type);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public Map<Comparable, String> getCodedListMapWithNullOption(String type) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getCodedListMapWithNullOption(con,type);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public Map<Comparable, String> getCodedListMap(String type) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getCodedListMap(con,type);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<CodedListItem<?>> getCodedList(String type) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getCodedList(con,type);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 

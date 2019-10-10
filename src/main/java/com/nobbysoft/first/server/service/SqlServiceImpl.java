@@ -29,7 +29,11 @@ public class SqlServiceImpl implements SqlService {
 	public void runSql(String sql, ResultSetListener listener) throws SQLException {
 		
 		try(Connection con = cm.getConnection()){
+			try {
 			 dao.runSql(con, sql, listener);
+			} finally {
+			con.rollback();
+			}
 			}
 		
 
@@ -38,7 +42,11 @@ public class SqlServiceImpl implements SqlService {
 	
 	public void runUpdate(String sql) throws SQLException{
 		try(Connection con = cm.getConnection()){
+			try {							
 			 dao.runSqlUpdate(con, sql);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
@@ -48,7 +56,11 @@ public class SqlServiceImpl implements SqlService {
 	public List<DTOColumn> metaDataColumns(String catalog, String schema, String tableName)
 			throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.metaDataColumns(con, catalog, schema, tableName);
+			} finally {
+			con.rollback();
+			}
 			}
 		
 	}
@@ -58,9 +70,12 @@ public class SqlServiceImpl implements SqlService {
 	public List<DTOTable> metaDataTables(String tableNameFilter) throws SQLException {
 		List<DTOTable> list = null;
 		try(Connection con = cm.getConnection()){
-			
+			try {
 			list=dao.metaDataTables(con, tableNameFilter);
-			
+
+			} finally {
+			con.rollback();
+			}
 		}
 		return list;
 	}
@@ -68,14 +83,22 @@ public class SqlServiceImpl implements SqlService {
 	@Override
 	public List<DTOIndex> metaDataIndexes(String catalog, String schema, String tableName) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.metaDataIndexes(con, catalog, schema, tableName);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<DTOConstraint> metaDataConstraints(String catalog, String schema, String tableName) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.metaDataConstraints(con, catalog, schema, tableName);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 }

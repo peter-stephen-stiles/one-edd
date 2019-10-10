@@ -41,14 +41,14 @@ implements Serializable,DataDTOInterface<PlayerCharacterSpellKey>{
 				this,
 				spell.getSpellClass(),
 				spell.getLevel(), 
-				spell.getDescription(),
+				spell.getName(),
 				playerCharacterSpell.getInMemory()
 				};
 	}
 
 	@Override
 	public String[] getRowHeadings() {
-		return new String[] {"","Spell Class","Level","Description","#Mem"};
+		return new String[] {"","Spell Class","Level","Name","#Mem"};
 	}
 
 	@Override

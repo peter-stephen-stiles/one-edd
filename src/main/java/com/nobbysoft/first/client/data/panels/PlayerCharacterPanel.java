@@ -442,7 +442,15 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		
 		
 		pnlEquipmentDetails.initialiseCharacter(cid, txtCharacterName.getText());
-		pnlSpellDetails.initialiseCharacter(cid, txtCharacterName.getText());
+		if(pc!=null) {
+			pnlSpellDetails.initialiseCharacter(pc);
+		} else {
+			PlayerCharacter c = new PlayerCharacter();
+			c.setPcId(cid);
+			c.setCharacterName(txtCharacterName.getText());
+			c.setFirstClass((String)txtClass1.getSelectedCode());
+			pnlSpellDetails.initialiseCharacter(pc);
+		}
 		
  }
 

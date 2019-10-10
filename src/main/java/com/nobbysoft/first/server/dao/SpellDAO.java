@@ -11,13 +11,9 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.first.common.entities.DTORowListener;
-import com.nobbysoft.first.common.entities.equipment.WeaponMelee;
 import com.nobbysoft.first.common.entities.staticdto.Spell;
-import com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.server.utils.DbUtils;
-import com.nobbysoft.first.utils.DataMapper;
 
 public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, String> {
 
@@ -196,6 +192,8 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 		return sql + " ORDER BY spell_class, level,name";
 	}
 
+ 
+	
 	@Override
 	String getFilterWhere() {
 		return "  spell_id like ? " + " OR upper(name) like ? " + " OR upper(spell_class) like ? ";
@@ -222,4 +220,63 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 		dto.setDescription(rs.getString(col++));
 	}
 
+	
+	public List<Spell> getSpellsNotForPC(Connection con,int pcId, int level, String spellClassId,String filterName) throws SQLException{
+		
+		boolean filterByLevel = (level >0);
+		boolean filterBySpellClassId = (spellClassId!=null&& spellClassId.trim().length()>0);
+		boolean filterByName = (filterName!=null&& filterName.trim().length()>0);
+
+		String sql = "SELECT ";
+		sql = addKeyFields(sql, "t0");
+		sql = addDataFields(sql,"t0");
+		sql = sql + " FROM "+getTableName()+" as t0 ";
+		sql = sql + " WHERE NOT EXISTS(";
+		sql = sql + " SELECT '.' FROM player_character_spell pcs WHERE pcs.pc_id = ? AND pcs.spell_id = t0.spell_id ";
+		sql = sql + ")";
+		
+		if(filterByLevel) {
+			sql = sql + " AND t0.level = ? ";
+		}
+		if(filterBySpellClassId) {
+			sql = sql + " AND t0.spell_class = ? ";
+		}
+		if(filterByName) {
+			sql = sql + " AND UPPER(t0.name) like ? ";
+		}
+		sql = sql+  " ORDER BY t0.spell_class, t0.level,t0.name";
+		List<Spell> data = new ArrayList<>();
+		boolean first=true;
+		
+		LOGGER.info("SQL:"+sql);
+		
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			int col=1;
+			ps.setLong(col++, pcId);
+			if(filterByLevel) {
+				ps.setLong(col++, level);
+			}
+			if(filterBySpellClassId) {
+				ps.setString(col++, spellClassId);
+			}
+			if(filterByName) {
+				ps.setString(col++, "%" + filterName.toUpperCase().trim()+"%");
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					Spell dto = dtoFromRS(rs);
+	 
+					data.add(dto);
+					first=false;
+				}
+
+			}
+		}
+
+		
+		
+		return data;
+		
+	}
+	
 }

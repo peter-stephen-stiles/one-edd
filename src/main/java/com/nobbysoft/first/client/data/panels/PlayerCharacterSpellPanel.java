@@ -29,7 +29,8 @@ import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
 import com.nobbysoft.first.client.utils.GuiUtils;
-import com.nobbysoft.first.client.utils.Popper; 
+import com.nobbysoft.first.client.utils.Popper;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
 import com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.first.common.servicei.DataServiceI;
@@ -51,10 +52,12 @@ public class PlayerCharacterSpellPanel extends PPanel {
 	
 	private int pcId;
 	private String characterName=null;
+	private PlayerCharacter pc=null;
 	
-	public void initialiseCharacter(int pcId,String characterName) {
-		this.pcId=pcId;
-		this.characterName=characterName;
+	public void initialiseCharacter(PlayerCharacter pc) {
+		this.pcId=pc.getPcId();
+		this.characterName=pc.getCharacterName();
+		this.pc = pc;
 		
 
 		SwingUtilities.invokeLater(()->populateSpellTable());
@@ -202,7 +205,7 @@ private final PBasicTableWithModel tblSpell = new PBasicTableWithModel(SpellConf
 	private void addSpell() {
 		
 		AddPlayerCharacterSpell add = new AddPlayerCharacterSpell(GuiUtils.getParent(this));
-		add.setPcId(pcId);
+		add.setPcId(pc.getPcId(),pc.getFirstClass());
 		add.pack();
 		add.setLocationRelativeTo(null);
 		add.setVisible(true);
@@ -260,7 +263,7 @@ private final PBasicTableWithModel tblSpell = new PBasicTableWithModel(SpellConf
 		Object selectedObject = null;
 		if(sr>=0 &&sr<tblSpell.getRowCount()) {
 			int modelRow =tblSpell.convertRowIndexToModel(sr);
-			selectedObject = (PlayerCharacterSpell)tblSpell.getValueAt(modelRow, 0);
+			selectedObject = (ViewPlayerCharacterSpell)tblSpell.getValueAt(modelRow, 0);
 		}
  
 		int[] memorised = new int[10];// no 0th levels :)

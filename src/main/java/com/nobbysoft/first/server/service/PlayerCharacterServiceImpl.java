@@ -38,37 +38,57 @@ public class PlayerCharacterServiceImpl implements PlayerCharacterService {
 	@Override
 	public void createTable() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 		 dao.createTable(con);
+			} finally {
+			con.rollback();
+			}
 		}
 	}
 
 	@Override
 	public PlayerCharacter get(Integer key) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.get(con,key);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void insert(PlayerCharacter value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.insert(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<PlayerCharacter> getList() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getList(con);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<PlayerCharacter> getFilteredList(String filter) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getFilteredList(con,filter);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
@@ -77,13 +97,18 @@ public class PlayerCharacterServiceImpl implements PlayerCharacterService {
 
 	public List<ViewPlayerCharacter> getViewList(String filter) throws SQLException{
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getViewList(con,filter);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 	
 	@Override
 	public void delete(PlayerCharacter value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);			 
 			 //
 			for(PlayerCharacterDetailI child:children) {
@@ -94,28 +119,44 @@ public class PlayerCharacterServiceImpl implements PlayerCharacterService {
 			 dao.delete(con,value);
 			 //
 			 con.commit();
+			} finally {
+			con.rollback();
 			}
+			}
+			
 	}
 
 	@Override
 	public void update(PlayerCharacter value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.update(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<CodedListItem<Integer>> getAsCodedList() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			 return dao.getAsCodedList(con);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	public int getNextId() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getNextid(con);
+			} finally {
+			con.rollback();
+			}
 		}
 	}
 	

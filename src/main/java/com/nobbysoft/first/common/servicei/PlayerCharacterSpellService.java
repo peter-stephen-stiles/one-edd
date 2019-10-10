@@ -15,7 +15,7 @@ public interface PlayerCharacterSpellService extends DataServiceI<PlayerCharacte
 	public List<ViewPlayerCharacterSpell> getViewForPC(int pcId) throws SQLException;
 	public List<PlayerCharacterSpell> getForPC(int pcId) throws SQLException;
 	
-	public List<Spell> getViewNotForPC(int pcId, int level, String spellClassId,String filterName) throws SQLException;
+	public List<Spell> getSpellsNotForPC(int pcId, int level, String spellClassId,String filterName) throws SQLException;
 
 	
 }

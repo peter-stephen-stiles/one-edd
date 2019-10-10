@@ -23,62 +23,96 @@ public class ArmourServiceImpl implements ArmourService {
 	@Override
 	public void createTable() throws SQLException {
 		try(Connection con = cm.getConnection()){
-		 dao.createTable(con);
+			try {
+				dao.createTable(con);
+				con.commit();
+			} finally {
+			con.rollback();
+			}
 		}
 	}
 
 	@Override
 	public Armour get(String key) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.get(con,key);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void insert(Armour value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.insert(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<Armour> getList() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getList(con);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<Armour> getFilteredList(String filter) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getFilteredList(con,filter);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void delete(Armour value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.delete(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void update(Armour value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.update(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<CodedListItem<String>> getAsCodedList() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			 return dao.getAsCodedList(con);
+
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 

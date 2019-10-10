@@ -23,72 +23,113 @@ public class CharacterClassServiceImpl implements CharacterClassService {
 	@Override
 	public void createTable() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 		 dao.createTable(con);
+
+		} finally {
+		con.rollback();
+		}
 		}
 	}
 
 	@Override
 	public CharacterClass get(String key) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.get(con,key);
+
+		} finally {
+		con.rollback();
+		}
 			}
 	}
 
 	@Override
 	public void insert(CharacterClass value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.insert(con,value);
 			 con.commit();
+
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<CharacterClass> getList() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getList(con);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<CharacterClass> getFilteredList(String filter) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getFilteredList(con,filter);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void delete(CharacterClass value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.delete(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void update(CharacterClass value) throws SQLException {
 		try(Connection con = cm.getConnection()){
-			con.setAutoCommit(false);
+			try{
+				con.setAutoCommit(false);
 			 dao.update(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<CodedListItem<String>> getAsCodedList() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			 return dao.getAsCodedList(con);
+
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 
 	public List<CodedListItem<String>>  getSpellClassesAsCodedList(){
 		try(Connection con = cm.getConnection()){
+			try {
 			 return dao.getSpellClassesAsCodedList(con);
+			} finally {
+			con.rollback();
+			}	
 			} catch (SQLException e) {
 				throw new IllegalStateException("Trouble with getting spell classes",e);
-			}
+
+		}
 	}
 	
 }

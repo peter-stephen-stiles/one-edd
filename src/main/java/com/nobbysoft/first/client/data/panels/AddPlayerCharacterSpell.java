@@ -4,11 +4,19 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Dialog.ModalityType;
 import java.lang.invoke.MethodHandles;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Vector;
+
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +41,7 @@ import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.views.ViewPlayerCharacterSpell;
 import com.nobbysoft.first.utils.DataMapper;
+ 
 
 public class AddPlayerCharacterSpell extends PDialog {
 
@@ -57,9 +66,13 @@ public class AddPlayerCharacterSpell extends PDialog {
 	private PList<Spell> listOfSpells = new PList();
 	
 	private int pcId;
+	private String classId;
 	
-	public void setPcId(int pcId) {
+	public void setPcId(int pcId, String classId) {
 		this.pcId=pcId;
+		this.classId=classId;
+		// may fail
+		cbxSpellClasses.setSelectedCode(classId);
 	}
 	
 	
@@ -92,9 +105,43 @@ public class AddPlayerCharacterSpell extends PDialog {
 		pnlBottom.add(btnConfirm);
 		pnlBottom.add(btnCancel);
 		add(pnlBottom,BorderLayout.SOUTH);
+		JScrollPane sclListOfSpells = new JScrollPane(listOfSpells) {
+			public Dimension getPreferredSize() {
+				Dimension d = super.getPreferredSize();
+				if(d.width<500) {
+					d.width=500;
+				}
+				if(d.height<300) {
+					d.height=300;
+				}
+				return d;
+			}
+		};
+		add(sclListOfSpells,BorderLayout.CENTER);
 		
-		add(listOfSpells,BorderLayout.CENTER);
-		
+		listOfSpells.setCellRenderer(new ListCellRenderer<Spell>() {
+			final JLabel lbl = new JLabel();
+			final Color back = lbl.getBackground();
+			final Color dark = Color.cyan;
+			final boolean op = lbl.isOpaque();
+			@Override
+			public Component getListCellRendererComponent(JList<? extends Spell> list, Spell value, int index,
+					boolean isSelected, boolean cellHasFocus) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(value.getSpellId()).append(" - ").append(className(value.getSpellClass())).append( " - ");
+				sb.append(value.getName()).append(" ( level ").append(value.getLevel()).append(")");
+				lbl.setText(sb.toString());
+				if(isSelected||cellHasFocus){
+					lbl.setOpaque(true);
+					lbl.setBackground(dark);
+				} else {
+					lbl.setOpaque(op);
+					lbl.setBackground(back);
+				}
+				return lbl;
+			}
+			
+		});
 	}
 
 	DataServiceI getDataService(Class clazz) {
@@ -102,6 +149,10 @@ public class AddPlayerCharacterSpell extends PDialog {
 		return dao;
 	}
 
+	private String className(String classId) {
+		return classId;
+	}
+	
 	
 	private void refresh() {
 		LOGGER.info("filtering:");
@@ -114,7 +165,7 @@ public class AddPlayerCharacterSpell extends PDialog {
 		String filterName = txtNameFilter.getText().toLowerCase().trim();
 		PlayerCharacterSpellService pces = (PlayerCharacterSpellService )getDataService(PlayerCharacterSpell.class);
 		try {
-			List<Spell> list = pces.getViewNotForPC(pcId, level, spellClassId, filterName);
+			List<Spell> list = pces.getSpellsNotForPC(pcId, level, spellClassId, filterName);
 			Vector<Spell> v= new Vector<>();
 			v.addAll(list);
 			listOfSpells.setListData(v);
@@ -145,6 +196,22 @@ public class AddPlayerCharacterSpell extends PDialog {
 	}
 	
 	private void confirm() {
+		
+		if(listOfSpells.getSelectedValue()!=null) {
+			Spell spell = listOfSpells.getSelectedValue();
+			PlayerCharacterSpell pcs = new PlayerCharacterSpell();
+			pcs.setPcId(pcId);
+			pcs.setSpellId(spell.getSpellId());
+			pcs.setInMemory(0);
+			PlayerCharacterSpellService pces = (PlayerCharacterSpellService )getDataService(PlayerCharacterSpell.class);
+			try {
+				pces.insert(pcs);
+				cancelled=false;
+				dispose();
+			} catch (SQLException e) {
+				Popper.popError(this, e);
+			}
+		}
 		
 		//
 		//

@@ -24,62 +24,96 @@ public class CharacterClassSpellServiceImpl implements CharacterClassSpellServic
 	@Override
 	public void createTable() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 		 dao.createTable(con);
+
+			} finally {
+			con.rollback();
+			}
 		}
 	}
 
 	@Override
 	public CharacterClassSpell get(CharacterClassSpellKey key) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.get(con,key);
+
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void insert(CharacterClassSpell value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.insert(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<CharacterClassSpell> getList() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getList(con);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<CharacterClassSpell> getFilteredList(String filter) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getFilteredList(con,filter);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void delete(CharacterClassSpell value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.delete(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void update(CharacterClassSpell value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.update(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<CodedListItem<CharacterClassSpellKey>> getAsCodedList() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			 return dao.getAsCodedList(con);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
@@ -87,7 +121,11 @@ public class CharacterClassSpellServiceImpl implements CharacterClassSpellServic
 	@Override
 	public int getMaxSpellLevelInTable(String characterClassId) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			 return dao.getMaxSpellLevelInTable(con,characterClassId);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 	

@@ -68,6 +68,13 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 		return sql;
 	}
 	 
+	 String addKeyFields(String sql, String tableAlias) {
+		for(String key:getKeys()) {
+			sql = sql + " "+tableAlias+"."+key+",";
+		}
+		return sql;
+	}
+	 
  
 	
 	 String addKeyColumnsForUpdate(String sql) {
@@ -110,6 +117,18 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 				sql=sql+", ";
 			}
 			sql = sql + " "+field;
+			first=false;
+		}
+		return sql;
+	}
+	 
+	 String addDataFields(String sql, String tableAlias) {
+		boolean first=true;
+		for(String field:getData()) {
+			if(!first) {
+				sql=sql+", ";
+			}
+			sql = sql + " "+tableAlias+"."+field;
 			first=false;
 		}
 		return sql;

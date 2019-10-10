@@ -23,62 +23,94 @@ public class SpellServiceImpl implements SpellService {
 	@Override
 	public void createTable() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 		 dao.createTable(con);
+			} finally {
+			con.rollback();
+			}
 		}
 	}
 
 	@Override
 	public Spell get(String key) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.get(con,key);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void insert(Spell value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.insert(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<Spell> getList() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getList(con);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<Spell> getFilteredList(String filter) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getFilteredList(con,filter);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void delete(Spell value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.delete(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public void update(Spell value) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			con.setAutoCommit(false);
 			 dao.update(con,value);
 			 con.commit();
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 
 	@Override
 	public List<CodedListItem<String>> getAsCodedList() throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			 return dao.getAsCodedList(con);
+			} finally {
+			con.rollback();
+			}
 			}
 	}
 }

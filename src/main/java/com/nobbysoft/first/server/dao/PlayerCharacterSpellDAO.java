@@ -214,13 +214,6 @@ public class PlayerCharacterSpellDAO
 		return views;
 	}
 	
-	public List<Spell> getViewNotForPC(Connection con,int pcId, int level, String spellClassId,String filterName) throws SQLException{
-		
 
-		List<Spell> views = new ArrayList<>();
-		
-		return views;
-		
-	}
 	
 }
