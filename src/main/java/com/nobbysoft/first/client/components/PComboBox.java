@@ -123,6 +123,12 @@ public class PComboBox<E> extends JComboBox<E> implements PDataComponent {
 		return !isEnabled();
 	}
 	
+	
+	public void clear() {
+		DefaultComboBoxModel model = (DefaultComboBoxModel)this.getModel();
+		model.removeAllElements();
+	}
+	
 	public void setList(List<?> list){
 		// remove all items
 		DefaultComboBoxModel model = (DefaultComboBoxModel)this.getModel();
