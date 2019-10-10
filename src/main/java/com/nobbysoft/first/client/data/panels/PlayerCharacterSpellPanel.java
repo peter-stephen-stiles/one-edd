@@ -32,6 +32,7 @@ import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpellKey;
 import com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
@@ -76,13 +77,6 @@ public class PlayerCharacterSpellPanel extends PPanel {
 		    btnSpellMemorise ,
 			btnSpellForget  };
 
-	
-/**
- 				spell.getSpellClass(),
-				spell.getLevel(), 
-				spell.getDescription(),
-				playerCharacterSpell.getInMemory() 		
- */
 private final ColumnConfig[] SpellConfigs = new ColumnConfig[] {
 		new ColumnConfig("",0,0,0),
 		new ColumnConfig("Spell Class",20,200,5000),
@@ -117,6 +111,9 @@ private final PBasicTableWithModel tblSpell = new PBasicTableWithModel(SpellConf
 		pnlSpellButtons.add(btnSpellMemorise);
 		pnlSpellButtons.add(btnSpellForget);
 		
+		
+		btnSpellMemorise.addActionListener(ae->memorise());
+		btnSpellForget.addActionListener(ae->forget());
 		
 		JScrollPane sclSpell = new JScrollPane(tblSpell);
 		
@@ -162,37 +159,6 @@ private final PBasicTableWithModel tblSpell = new PBasicTableWithModel(SpellConf
 		return buttonComponents;
 	}
 
-
-	private void addSpell(String title) {
-		
-//		Class[] pt = new Class[] {Window.class};
-//		
-//		Constructor<? extends AddSpellI> c;
-		try {
-//			c = clazz.getConstructor(pt);
-//
-//			AddSpellI aei = c.newInstance(GuiUtils.getParent(this));
-//			
-//			aei.setTitleAndCharacterName(title, pcId, characterName);
-//			PDialog dialog =(PDialog)aei;
-//			
-//			
-//			dialog.pack();
-//			dialog.setLocationRelativeTo(null);
-//			dialog.setVisible(true);
-//			if(!aei.isCancelled()) {
-//				// refresh the list!
-//				populateSpellTable();
-//			}
-		
-		
-		} catch (Exception e) {
-			Popper.popError(this, e);
-		}
-		
-	}	
-
- 
 	
 	
 	DataServiceI getDataService(Class clazz) {
@@ -219,31 +185,40 @@ private final PBasicTableWithModel tblSpell = new PBasicTableWithModel(SpellConf
 	
 	private void removeSpell() {
 		PlayerCharacterSpell pce=null;
-		String name="";
+		ViewPlayerCharacterSpell vpce=null;
+		//String name="";
 		int rowNum=tblSpell.getSelectedRow();
 		if(rowNum>=0) {
-			int modelRow =tblSpell.convertRowIndexToModel(rowNum);
-			Object o0=tblSpell.getValueAt(modelRow, 0);
-			Object o1=tblSpell.getValueAt(modelRow, 1);
-			//Object o2=tblSpell.getValueAt(modelRow, 2);
-			//Object o3=tblSpell.getValueAt(modelRow, 3);
-			//LOGGER.info(" o0:"+o0+"o1:"+o1+" o2:"+o2+" o3:"+o3);
-			pce = ((ViewPlayerCharacterSpell)o0).getPlayerCharacterSpell();
-			name = (String)o1;
-		}
-		if(pce!=null) {
-			String desc = pce.getDescription();
-			boolean ok=Popper.popYesNoQuestion(this,"Remove Spell","Confirm that you want to remove "+name+"?");
-			if(ok) {
-				PlayerCharacterSpellService pces = (PlayerCharacterSpellService )getDataService(PlayerCharacterSpell.class);
-				try {
-					pces.delete(pce);
-					populateSpellTable();
-				} catch (SQLException e) {
-					Popper.popError(this, e);
-				}				
+			vpce = getSelectedSpell(rowNum);
+		
+			pce = vpce.getPlayerCharacterSpell();
+			if(pce!=null) {
+				String desc = vpce.getSpell().getName();
+				boolean ok=Popper.popYesNoQuestion(this,"Remove Spell","Confirm that you want to remove spell "+desc+"?");
+				if(ok) {
+					PlayerCharacterSpellService pces = (PlayerCharacterSpellService )getDataService(PlayerCharacterSpell.class);
+					try {
+						pces.delete(pce);
+						populateSpellTable();
+					} catch (SQLException e) {
+						Popper.popError(this, e);
+					}				
+				}
 			}
 		}
+	}
+
+	private ViewPlayerCharacterSpell getSelectedSpell(int rowNum) {
+		ViewPlayerCharacterSpell vpce;
+		int modelRow =tblSpell.convertRowIndexToModel(rowNum);
+		Object o0=tblSpell.getValueAt(modelRow, 0);
+		//Object o1=tblSpell.getValueAt(modelRow, 1);
+		//Object o2=tblSpell.getValueAt(modelRow, 2);
+		//Object o3=tblSpell.getValueAt(modelRow, 3);
+		//LOGGER.info(" o0:"+o0+"o1:"+o1+" o2:"+o2+" o3:"+o3);
+		vpce=(ViewPlayerCharacterSpell)o0;			
+		//name = (String)o1;
+		return vpce;
 	}
 
 
@@ -257,10 +232,59 @@ private final PBasicTableWithModel tblSpell = new PBasicTableWithModel(SpellConf
 		return pce;
 	}
 	
+	private void memorise() {
+		
+		PlayerCharacterSpell pce=null;
+		ViewPlayerCharacterSpell vpce=null;
+		//String name="";
+		int rowNum=tblSpell.getSelectedRow();
+		if(rowNum>=0) {
+			vpce = getSelectedSpell(rowNum);		
+			pce = vpce.getPlayerCharacterSpell();
+			if(pce!=null) {
+				PlayerCharacterSpellService pces = (PlayerCharacterSpellService )getDataService(PlayerCharacterSpell.class);
+				try {
+					PlayerCharacterSpell spell = pces.get(pce.getKey());				
+					spell.setInMemory(spell.getInMemory()+1);
+					pces.update(spell);
+					populateSpellTable();
+				} catch (Exception e) {
+					Popper.popError(this, e);
+				}
+			}
+			}
+		
+	}
+	private void forget() {
+		
+		PlayerCharacterSpell pce=null;
+		ViewPlayerCharacterSpell vpce=null;
+		//String name="";
+		int rowNum=tblSpell.getSelectedRow();
+		if(rowNum>=0) {
+			vpce = getSelectedSpell(rowNum);		
+			pce = vpce.getPlayerCharacterSpell();
+			if(pce!=null) {
+				PlayerCharacterSpellService pces = (PlayerCharacterSpellService )getDataService(PlayerCharacterSpell.class);
+				try {
+					PlayerCharacterSpell spell = pces.get(pce.getKey());
+					if(spell.getInMemory()>0) {
+						spell.setInMemory(spell.getInMemory()-1);
+						pces.update(spell);
+					}
+					populateSpellTable();					
+				} catch (Exception e) {
+					Popper.popError(this, e);
+				}
+			}
+			}
+		
+	}
+	
 	private void populateSpellTable() {
 
 		int sr = tblSpell.getSelectedRow();
-		Object selectedObject = null;
+		ViewPlayerCharacterSpell selectedObject = null;
 		if(sr>=0 &&sr<tblSpell.getRowCount()) {
 			int modelRow =tblSpell.convertRowIndexToModel(sr);
 			selectedObject = (ViewPlayerCharacterSpell)tblSpell.getValueAt(modelRow, 0);
@@ -289,11 +313,13 @@ private final PBasicTableWithModel tblSpell = new PBasicTableWithModel(SpellConf
 			}
 			if(selectedObject!=null) {
 				//LOGGER.info("selected object "+selectedObject);
+				PlayerCharacterSpellKey k0=selectedObject.getKey();
 				for(int i=0,n=tblSpell.getRowCount();i<n;i++) {
 					int modelRow =tblSpell.convertRowIndexToModel(i);
-					Object value = tblSpell.getValueAt(modelRow, 0);
+					ViewPlayerCharacterSpell value = (ViewPlayerCharacterSpell)tblSpell.getValueAt(modelRow, 0);
 					//LOGGER.info("value "+value);
-					if(value.equals(selectedObject)) {
+					PlayerCharacterSpellKey k1=value.getKey();
+					if(k0.equals(k1)) {
 						//LOGGER.info("selected "+i + " model row:"+modelRow);
 						tblSpell.getSelectionModel().setSelectionInterval(i,i);
 						break;

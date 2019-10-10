@@ -84,12 +84,13 @@ public class PlayerCharacterSpellDAO
 
 	 int setPSFromKeys(PlayerCharacterSpell value, PreparedStatement ps, int col) throws SQLException {
 		ps.setInt(col++, value.getPcId());
+		ps.setString(col++, value.getSpellId());
 		return col;
 	}
 
 	 int setPSFromData(PlayerCharacterSpell value, PreparedStatement ps, int col) throws SQLException {
  
-		ps.setString(col++, value.getSpellId());	
+		//ps.setString(col++, value.getSpellId());	
 		ps.setInt(col++, value.getInMemory()); 
 		
 		

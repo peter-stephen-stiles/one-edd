@@ -43,4 +43,31 @@ public class PlayerCharacterSpellKey implements Comparable<PlayerCharacterSpellK
 
 	private int pcId;
 	private String spellId;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + pcId;
+		result = prime * result + ((spellId == null) ? 0 : spellId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PlayerCharacterSpellKey other = (PlayerCharacterSpellKey) obj;
+		if (pcId != other.pcId)
+			return false;
+		if (spellId == null) {
+			if (other.spellId != null)
+				return false;
+		} else if (!spellId.equals(other.spellId))
+			return false;
+		return true;
+	}
 }
