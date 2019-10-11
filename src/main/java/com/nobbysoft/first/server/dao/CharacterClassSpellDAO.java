@@ -221,5 +221,27 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 		}
 		
 	}
+	
+	public List<String> getSpellClassesForClasses(Connection con,List<String> classIds) throws SQLException {
+		List<String> spellClassesForClasses = new ArrayList<>();
+		
+		String sql = "SELECT spell_class_id FROM "+tableName+" WHERE class_id = ?";
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			for(String characterClassId:classIds) {					
+				ps.setString(1, characterClassId);
+				try(ResultSet rs = ps.executeQuery()){
+					while(rs.next()) {
+						String cid = rs.getString(1);
+						if(!spellClassesForClasses.contains(cid)) {
+							spellClassesForClasses.add(cid);
+						}
+					} 
+				}
+			}
+			ps.clearParameters();
+		}
+		return spellClassesForClasses;
+	}
+	
 
 }

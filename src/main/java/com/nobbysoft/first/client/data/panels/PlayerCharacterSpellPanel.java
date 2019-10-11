@@ -134,8 +134,7 @@ public class PlayerCharacterSpellPanel extends PPanel {
 			}
 		});
 
-		btnSpellAdd.addActionListener(ae -> {
-			LOGGER.info("pop up now!");
+		btnSpellAdd.addActionListener(ae -> {			
 			addSpell();
 
 		});
@@ -153,9 +152,12 @@ public class PlayerCharacterSpellPanel extends PPanel {
 	}
 
 	private void addSpell() {
-
+		if(pc==null) {
+			Popper.popError(this, "Save first", "You have to save your character before you add spells, sorry!");
+			return;
+		}
 		AddPlayerCharacterSpell add = new AddPlayerCharacterSpell(GuiUtils.getParent(this));
-		add.setPcId(pc.getPcId(), pc.getFirstClass());
+		add.setPcId(pc);
 		add.pack();
 		add.setLocationRelativeTo(null);
 		add.setVisible(true);

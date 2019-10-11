@@ -10,9 +10,11 @@ import java.awt.Dimension;
 import java.awt.Dialog.ModalityType;
 import java.lang.invoke.MethodHandles;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -33,8 +35,11 @@ import com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.constants.Constants;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassSpell;
 import com.nobbysoft.first.common.entities.staticdto.Spell;
+import com.nobbysoft.first.common.servicei.CharacterClassSpellService;
 import com.nobbysoft.first.common.servicei.CodedListService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
@@ -46,6 +51,8 @@ import com.nobbysoft.first.utils.DataMapper;
 public class AddPlayerCharacterSpell extends PDialog {
 
 
+
+	private static final String ANY_CLASS = "{any}";
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 	
@@ -65,17 +72,69 @@ public class AddPlayerCharacterSpell extends PDialog {
 	
 	private PList<Spell> listOfSpells = new PList();
 	
-	private int pcId;
-	private String classId;
+	private PlayerCharacter pc;	
 	
-	public void setPcId(int pcId, String classId) {
-		this.pcId=pcId;
-		this.classId=classId;
-		// may fail
-		cbxSpellClasses.setSelectedCode(classId);
+	public void setPcId(PlayerCharacter pc) {
+		this.pc=pc;
+		
+		initialiseSpellClassCombo(pc);
+	}
+
+
+
+	private void initialiseSpellClassCombo(PlayerCharacter pc) {
+		List<String> classes = new ArrayList<>();
+		classes.add(pc.getFirstClass());
+		if(pc.getSecondClass()!=null) {
+			classes.add(pc.getSecondClass());
+			if(pc.getThirdClass()!=null) {
+				classes.add(pc.getThirdClass());			
+			}
+		}
+		
+		CharacterClassSpellService ccs = (CharacterClassSpellService)getDataService(CharacterClassSpell.class);
+		
+		
+		CodedListService cliDao = (CodedListService)DataMapper.INSTANCE.getNonDataService(CodedListService.class);
+		
+		
+		
+		try {
+			
+			List<String> valid = ccs.getSpellClassesForClasses(classes);
+			
+			List<CodedListItem<?>> listy = (cliDao.getCodedList(Constants.CLI_MAGIC_CLASS));
+
+			List<CodedListItem<?>> listo = new ArrayList<>();
+			for(CodedListItem cli:listy) {
+				if( valid.contains(cli.getItem())) {
+					listo.add(cli);
+				}
+			}
+			
+			 // filter out of list anything in listy thats not in validSpellClasses
+			
+			
+				
+		cbxSpellClasses.setList(listo);
+		
+		if(listo.size()==0) {
+			btnConfirm.setReadOnly(true);
+			btnFilter.setReadOnly(true);
+		}
+		
+		
+		} catch (SQLException e) {
+			LOGGER.error("Error getting coded list",e);
+		}
+			
+		//cbxSpellClasses.setSelectedCode(pc.getFirstClass());
+		
+
 	}
 	
-	
+	private PButton btnFilter = new PButton("Filter");
+	private PButton btnConfirm = new PButton("Confirm");
 	
 	private void jbInit() {
 		this.setLayout(new BorderLayout(5,5));
@@ -89,7 +148,7 @@ public class AddPlayerCharacterSpell extends PDialog {
 		pnlHeader.add(cbxLevel,GBU.text(3,0));
 		pnlHeader.add(new PLabel("Name filter:"),GBU.label(0,1));
 		pnlHeader.add(txtNameFilter,GBU.text(1,1,2));
-		PButton btnFilter = new PButton("Filter");
+		
 		pnlHeader.add(btnFilter,GBU.button(3,1));
 		btnFilter.addActionListener(ae -> refresh());
 		pnlHeader.add(new PLabel(""),GBU.label(99, 99));
@@ -97,7 +156,6 @@ public class AddPlayerCharacterSpell extends PDialog {
 		add(pnlHeader,BorderLayout.NORTH);
 
 		PButton btnCancel = new PButton("Cancel");
-		PButton btnConfirm = new PButton("Confirm");
 		
 		btnCancel.addActionListener(ae->dispose());
 		btnConfirm.addActionListener(ae->confirm());
@@ -165,7 +223,7 @@ public class AddPlayerCharacterSpell extends PDialog {
 		String filterName = txtNameFilter.getText().toLowerCase().trim();
 		PlayerCharacterSpellService pces = (PlayerCharacterSpellService )getDataService(PlayerCharacterSpell.class);
 		try {
-			List<Spell> list = pces.getSpellsNotForPC(pcId, level, spellClassId, filterName);
+			List<Spell> list = pces.getSpellsNotForPC(pc.getPcId(), level, spellClassId, filterName);
 			Vector<Spell> v= new Vector<>();
 			v.addAll(list);
 			listOfSpells.setListData(v);
@@ -178,15 +236,7 @@ public class AddPlayerCharacterSpell extends PDialog {
 	
 	private void populateCombos() {
 		
-		CodedListService cliDao = (CodedListService)DataMapper.INSTANCE.getNonDataService(CodedListService.class);
-		
-		try {
-			cbxSpellClasses.setList(cliDao.getCodedList(Constants.CLI_MAGIC_CLASS));
-		} catch (SQLException e) {
-			LOGGER.error("Error getting coded list",e);
-		}
-		// plus		
-		cbxSpellClasses.insertItemAt(new CodedListItem<String>(null,"{any}"),0);
+
 		
 	}
 	
@@ -200,7 +250,7 @@ public class AddPlayerCharacterSpell extends PDialog {
 		if(listOfSpells.getSelectedValue()!=null) {
 			Spell spell = listOfSpells.getSelectedValue();
 			PlayerCharacterSpell pcs = new PlayerCharacterSpell();
-			pcs.setPcId(pcId);
+			pcs.setPcId(pc.getPcId());
 			pcs.setSpellId(spell.getSpellId());
 			pcs.setInMemory(0);
 			PlayerCharacterSpellService pces = (PlayerCharacterSpellService )getDataService(PlayerCharacterSpell.class);

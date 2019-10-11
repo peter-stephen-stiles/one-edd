@@ -128,5 +128,16 @@ public class CharacterClassSpellServiceImpl implements CharacterClassSpellServic
 			}
 			}
 	}
+
+	
+	public List<String> getSpellClassesForClasses(List<String> classIds) throws SQLException{
+		try(Connection con = cm.getConnection()){
+			try {
+			 return dao.getSpellClassesForClasses(con,classIds);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
 	
 }
