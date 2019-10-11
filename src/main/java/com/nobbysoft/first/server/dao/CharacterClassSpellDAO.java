@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.first.common.entities.equipment.Armour;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.staticdto.*;
 import com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.first.common.utils.CodedListItem;
@@ -206,6 +207,35 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 		
 	}
 
+	public List<CharacterClassSpell> getAllowedSpells(Connection con, int pcId) throws SQLException{
+		
+		List<CharacterClassSpell> allowedSpells = new ArrayList<>();
+		
+		// get the character
+		PlayerCharacterDAO pcDAO = new PlayerCharacterDAO();
+		PlayerCharacter pc = pcDAO.get(con, pcId);
+		Map<String,Integer> classAndLevel = new HashMap<>();
+		classAndLevel.put(pc.getFirstClass(),pc.getFirstClassLevel());
+		if(pc.getSecondClass()!=null) {
+			classAndLevel.put(pc.getSecondClass(),pc.getSecondClassLevel());
+			if(pc.getThirdClass()!=null) {
+				classAndLevel.put(pc.getThirdClass(),pc.getThirdClassLevel());
+			}
+
+		}
+		String[] queryFields = new String[] {"CLASS_ID","LEVEL"};
+		for(String classId:classAndLevel.keySet()) {
+			int ml = getMaxSpellLevelInTable(con,classId);
+			int lvl = classAndLevel.get(classId);
+			//
+			Object[] fieldValues = new Object[] {classId,(lvl<ml)?lvl:ml};
+			allowedSpells.addAll( super.getListFromPartialKey(con, queryFields, fieldValues));
+		}
+		
+		
+		return allowedSpells;
+	}
+	
 	public int getMaxSpellLevelInTable(Connection con,String characterClassId) throws SQLException {
 		
 		String sql = "SELECT MAX(level) FROM "+tableName+" WHERE class_id = ?";

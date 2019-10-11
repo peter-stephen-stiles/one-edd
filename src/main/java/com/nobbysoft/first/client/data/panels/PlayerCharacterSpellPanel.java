@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.invoke.MethodHandles;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,9 @@ import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpellKey;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassSpell;
 import com.nobbysoft.first.common.entities.staticdto.Spell;
+import com.nobbysoft.first.common.servicei.CharacterClassSpellService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
 import com.nobbysoft.first.common.utils.CodedListItem;
@@ -50,12 +53,15 @@ public class PlayerCharacterSpellPanel extends PPanel {
 	private int pcId;
 	private String characterName = null;
 	private PlayerCharacter pc = null;
+	private Map<String,CharacterClassSpell> allowedSpells = new HashMap<>();
 
 	public void initialiseCharacter(PlayerCharacter pc) {
 		this.pcId = pc.getPcId();
 		this.characterName = pc.getCharacterName();
 		this.pc = pc;
 
+		populateAllowedSpells();
+		
 		SwingUtilities.invokeLater(() -> populateSpellTable());
 	}
 
@@ -145,8 +151,7 @@ public class PlayerCharacterSpellPanel extends PPanel {
 	public PDataComponent[] getButtonComponents() {
 		return buttonComponents;
 	}
-
-	DataServiceI getDataService(Class clazz) {
+	private DataServiceI getDataService(Class clazz) {
 		DataServiceI dao = DataMapper.INSTANCE.getDataService(clazz);
 		return dao;
 	}
@@ -330,15 +335,48 @@ public class PlayerCharacterSpellPanel extends PPanel {
 			}
 
 			for (String sc : memorisedMap.keySet()) {
-
+				CharacterClassSpell ccs = allowedSpells.get(sc);
+				if(ccs==null) {					
+					ccs = new CharacterClassSpell();
+					ccs.setLevel1Spells(0);
+					ccs.setLevel2Spells(0);
+					ccs.setLevel3Spells(0);
+					ccs.setLevel4Spells(0);
+					ccs.setLevel5Spells(0);
+					ccs.setLevel6Spells(0);
+					ccs.setLevel7Spells(0);
+					ccs.setLevel8Spells(0);
+					ccs.setLevel9Spells(0);
+				}
+				int[] max = new int[] {
+						0,
+						ccs.getLevel1Spells(),
+						ccs.getLevel2Spells(),
+						ccs.getLevel3Spells(),
+						ccs.getLevel4Spells(),
+						ccs.getLevel5Spells(),
+						ccs.getLevel6Spells(),
+						ccs.getLevel7Spells(),
+						ccs.getLevel8Spells(),
+						ccs.getLevel9Spells()
+				};
+				boolean tooMany = false;
 				int[] memorised = memorisedMap.get(sc);
 				StringBuilder sb = new StringBuilder(sc).append(" ");
 				for (int i = 1, n = 10; i < n; i++) {
 					if (i > 1) {
 						sb.append(", ");
 					}
-					sb.append("Lvl:").append(i).append(" ").append(memorised[i]);
+					int count =memorised[i];
+					sb.append("Lvl:").append(i).append(" ").append(count);
+					if(count>max[i]) {
+						sb.append("*");
+						tooMany = true;
+					}
 
+				}
+				if(tooMany) {
+					sb.append(" (TOO MANY!)");
 				}
 				LOGGER.info(sb.toString());
 				CodedListItem cli = new CodedListItem(sc, sb.toString());
@@ -347,6 +385,22 @@ public class PlayerCharacterSpellPanel extends PPanel {
 			}
 
 		}
+	}
+	
+	
+	private void populateAllowedSpells() {
+		
+		CharacterClassSpellService ccss = (CharacterClassSpellService)getDataService(CharacterClassSpell.class); 
+		try {
+			List<CharacterClassSpell> as =  (ccss.getAllowedSpells(pc.getPcId()));
+			for(CharacterClassSpell ccs:as) {
+				allowedSpells.put(ccs.getSpellClassId(),ccs);
+			}
+		} catch (SQLException e) {
+			Popper.popError(this, e);
+			return;
+		} 		
+		
 	}
 
 }

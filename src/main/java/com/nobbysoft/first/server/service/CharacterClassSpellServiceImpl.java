@@ -130,6 +130,17 @@ public class CharacterClassSpellServiceImpl implements CharacterClassSpellServic
 	}
 
 	
+	public List<CharacterClassSpell> getAllowedSpells( int pcId) throws SQLException{
+		try(Connection con = cm.getConnection()){
+			try {
+			 return dao.getAllowedSpells(con,pcId);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
+	
+	
 	public List<String> getSpellClassesForClasses(List<String> classIds) throws SQLException{
 		try(Connection con = cm.getConnection()){
 			try {

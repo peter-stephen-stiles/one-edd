@@ -11,4 +11,6 @@ public interface CharacterClassSpellService extends DataServiceI<CharacterClassS
 	public int getMaxSpellLevelInTable(String characterClassId) throws SQLException;
 	
 	public List<String> getSpellClassesForClasses(List<String> classIds) throws SQLException;
+	
+	public List<CharacterClassSpell> getAllowedSpells( int pcId) throws SQLException;
 }
