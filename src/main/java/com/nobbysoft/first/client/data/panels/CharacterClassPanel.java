@@ -20,6 +20,7 @@ import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTextField;
+import com.nobbysoft.first.client.components.special.PComboArcaneOrDivine;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
@@ -56,6 +57,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 
 	private final PIntegerCombo txtHpAfterNameLevel = new PIntegerCombo(0,5);
 	private final PCheckBox cbxMasterSpellClass = new PCheckBox("Is a master spell class?");
+	private final PComboArcaneOrDivine cbxArcaneOrDivine = new PComboArcaneOrDivine();
 
 
 	private final PCheckBox cbxHighConBonus = new PCheckBox("Has high con bonus?");
@@ -97,7 +99,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 	private PDataComponent[] dataComponents = new PDataComponent[] {  txtName,txtHitDice, txtHitDiceAtFirstLevel,txtMaxHdLevel,txtHpAfterNameLevel,cbxMasterSpellClass,txtParentClass,
 			txtMinStr,txtMinInt,txtMinWis,txtMinDex,txtMinCon,txtMinChr,txtPrimeRequisite1,
 			txtPrimeRequisite2,txtPrimeRequisite3,
-			txtXpBonusPercent, txtProficienciesAtFirstLevel, txtNonProficiencyPenalty, txtNewProficiencyEveryXLevels,cbxHighConBonus
+			txtXpBonusPercent, txtProficienciesAtFirstLevel, txtNonProficiencyPenalty, txtNewProficiencyEveryXLevels,cbxHighConBonus,cbxArcaneOrDivine
 			 };
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtCharacterClassId };
 	private PDataComponent[] buttonComponents = new PDataComponent[] {  };
@@ -116,6 +118,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		txtMaxHdLevel.setName("Maximum Level for hit dice");
 		txtHpAfterNameLevel.setName("HP per level after Name level");
 		cbxMasterSpellClass.setName(cbxMasterSpellClass.getText());
+		cbxArcaneOrDivine.setName("If spell class, Arcane or Divine?");
 		txtParentClass.setName("Parent class");
 		txtMinStr.setName("Min Str");
 		txtMinInt.setName("Min Int");
@@ -156,6 +159,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		PLabel lblPrimeRequisite3 = new PLabel(txtPrimeRequisite3.getName());
 
 		PLabel lblXpBonusPercent = new PLabel(txtXpBonusPercent.getName()); 
+		PLabel lblArcaneOrDivine = new PLabel(cbxArcaneOrDivine.getName());
 		
 		
 		PPanel pnlLeft = new PPanel(new GridBagLayout());
@@ -217,6 +221,13 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		row++;
 		pnlLeft.add(cbxMasterSpellClass, GBU.text(1, row));
 		row++;
+		pnlLeft.add(lblArcaneOrDivine, GBU.label(0,row));
+		pnlLeft.add(cbxArcaneOrDivine, GBU.text(1, row));
+		
+		
+		
+		
+		row++;
 		pnlLeft.add(cbxHighConBonus, GBU.text(1, row));
 		
 		row++;
@@ -249,36 +260,36 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		int pr3=((Integer)txtPrimeRequisite3.getSelectedCode());
 		  if(pr1==0&&pr2>0) {
 			  txtPrimeRequisite2.requestFocusInWindow();
-			  return new ReturnValue<Object>(true,"Cannot select pr#2 if you don't select pr#1");
+			  return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE,"Cannot select pr#2 if you don't select pr#1");
 		  }
 
 		  if(pr2==0&&pr3>0) {
 			  txtPrimeRequisite3.requestFocusInWindow();
-			  return new ReturnValue<Object>(true,"Cannot select pr#3 if you don't select pr#2 and pr#1");
+			  return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE,"Cannot select pr#3 if you don't select pr#2 and pr#1");
 		  }
 		  
 		  if(pr1>0 && pr1 == pr2) {
 			  txtPrimeRequisite2.requestFocusInWindow();
-			  return new ReturnValue<Object>(true,"Cannot select same value for pr#1 and pr#2");
+			  return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE,"Cannot select same value for pr#1 and pr#2");
 		  }
 		  if(pr1>0 && pr1 == pr3) {
 			  txtPrimeRequisite3.requestFocusInWindow();
-			  return new ReturnValue<Object>(true,"Cannot select same value for pr#1 and pr#3");
+			  return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE,"Cannot select same value for pr#1 and pr#3");
 		  }
 
 		  if(pr2>0 && pr2 == pr3) {
 			  txtPrimeRequisite3.requestFocusInWindow();
-			  return new ReturnValue<Object>(true,"Cannot select same value for pr#2 and pr#3");
+			  return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE,"Cannot select same value for pr#2 and pr#3");
 		  }
 		  int bon = txtXpBonusPercent.getIntegerValue();
 		  if(pr1==0 && bon > 0) {
 			  txtXpBonusPercent.requestFocusInWindow();
-			  return new ReturnValue<Object>(true,"Can't have a bonus without prime requisites.");
+			  return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE,"Can't have a bonus without prime requisites.");
 			  
 		  }
 		  if(bon<0 || bon > 100) {
 			  txtXpBonusPercent.requestFocusInWindow();
-			  return new ReturnValue<Object>(true,"Bonus must be between 0 and 100");
+			  return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE,"Bonus must be between 0 and 100");
 		  }
 		  
 		int inw =	txtProficienciesAtFirstLevel.getIntegerValue();
@@ -286,16 +297,30 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		int npexl=	txtNewProficiencyEveryXLevels.getIntegerValue();
 		if(inw<1) {
 			txtProficienciesAtFirstLevel.requestFocusInWindow();
-			  return new ReturnValue<Object>(true, txtProficienciesAtFirstLevel.getName()+" must be > 0");
+			  return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE, txtProficienciesAtFirstLevel.getName()+" must be > 0");
 		}
 		if(npp>=0) {
 			txtNonProficiencyPenalty.requestFocusInWindow();
-			  return new ReturnValue<Object>(true, txtNonProficiencyPenalty.getName()+" must be < 0");
+			  return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE, txtNonProficiencyPenalty.getName()+" must be < 0");
 		}
 		if(npexl<1) {
 			txtNewProficiencyEveryXLevels.requestFocusInWindow();
-			  return new ReturnValue<Object>(true, txtNewProficiencyEveryXLevels.getName()+" must be > 0");
+			  return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE, txtNewProficiencyEveryXLevels.getName()+" must be > 0");
 		}  
+		
+		String aod = cbxArcaneOrDivine.getArcaneOrDivine();
+		if(cbxMasterSpellClass.isSelected()) {
+			if(aod==null) {
+				cbxMasterSpellClass.requestFocusInWindow();
+				return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE, "If this is a master spell class you must pick spell type.");
+			}
+		} else {
+			if(aod!=null) {
+				cbxMasterSpellClass.requestFocusInWindow();
+				return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE, "If this is not a master spell class you must pick neither for spell type.");
+			}
+		}
+		
 		return new ReturnValue<Object>("");
 	}
 
@@ -308,6 +333,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		value.setHitDiceAtFirstLevel((Integer)txtHitDiceAtFirstLevel.getSelectedCode());
 		value.setMaxHdLevel(txtMaxHdLevel.getIntegerValue());
 		value.setMasterSpellClass(cbxMasterSpellClass.isSelected());
+		value.setArcaneOrDivineMasterSpellClass(cbxArcaneOrDivine.getArcaneOrDivine());
 		value.setParentClassId((String)txtParentClass.getSelectedCode());
 		value.setHpAfterNameLevel(txtHpAfterNameLevel.getIntegerValue());
 
@@ -341,6 +367,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		txtHitDiceAtFirstLevel.setSelectedCode(value.getHitDiceAtFirstLevel());
 		txtMaxHdLevel.setIntegerValue(value.getMaxHdLevel());
 		cbxMasterSpellClass.setSelected(value.isMasterSpellClass());
+		cbxArcaneOrDivine.setSelectedCode(value.getArcaneOrDivineMasterSpellClass());
 		txtParentClass.setSelectedCode(value.getParentClassId());
 		txtHpAfterNameLevel.setIntegerValue(value.getHpAfterNameLevel());
 		txtMinStr.setSelectedCode(value.getMinStr());

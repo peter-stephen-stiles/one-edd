@@ -27,10 +27,14 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 
 	private boolean highConBonus;
 	
+	private String arcaneOrDivineMasterSpellClass; // A or D or null 
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((arcaneOrDivineMasterSpellClass == null) ? 0 : arcaneOrDivineMasterSpellClass.hashCode());
 		result = prime * result + ((classId == null) ? 0 : classId.hashCode());
 		result = prime * result + (highConBonus ? 1231 : 1237);
 		result = prime * result + hitDice;
@@ -66,6 +70,11 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 		if (getClass() != obj.getClass())
 			return false;
 		CharacterClass other = (CharacterClass) obj;
+		if (arcaneOrDivineMasterSpellClass == null) {
+			if (other.arcaneOrDivineMasterSpellClass != null)
+				return false;
+		} else if (!arcaneOrDivineMasterSpellClass.equals(other.arcaneOrDivineMasterSpellClass))
+			return false;
 		if (classId == null) {
 			if (other.classId != null)
 				return false;
@@ -362,5 +371,13 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 
 	public void setHighConBonus(boolean highConBonus) {
 		this.highConBonus = highConBonus;
+	}
+
+	public String getArcaneOrDivineMasterSpellClass() {
+		return arcaneOrDivineMasterSpellClass;
+	}
+
+	public void setArcaneOrDivineMasterSpellClass(String arcaneOrDivineMasterSpellClass) {
+		this.arcaneOrDivineMasterSpellClass = arcaneOrDivineMasterSpellClass;
 	}
 }

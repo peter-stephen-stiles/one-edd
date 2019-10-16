@@ -102,6 +102,12 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 			String[] newBoos = new String[] {"high_con_bonus"};
 			DAOUtils.createBooleans(con, tableName, newBoos);
 		}
+		
+		{
+		VC[] newStrings = new VC[] {new VC("arcane_Or_Divine_Master_Spell_Class",1)};
+		DAOUtils.createStrings(con, tableName, newStrings);
+		}
+		
 
 	}
 
@@ -112,7 +118,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		sql = sql
 				+ "name ,hit_dice, hit_dice_at_first_level,max_hd_level, master_spell_class, parent_class_id,hp_after_name_level, "
 				+ "min_str,min_int,min_wis,min_dex,min_con,min_chr, prime_requisite_1,prime_requisite_2,prime_requisite_3,xp_bonus_percent,"+
-				"pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, new_proficiency_every_x_levels,high_con_bonus";
+				"pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, new_proficiency_every_x_levels,high_con_bonus,arcane_Or_Divine_Master_Spell_Class";
 		sql = sql + " FROM Character_Class  WHERE ";
 		sql = addKeyColumnsForUpdate(sql);
 		//sql = sql + " class_id = ? ";
@@ -158,6 +164,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		dto.setNonProficiencyPenalty(rs.getInt(col++));
 		dto.setNewProficiencyEveryXLevels(rs.getInt(col++));
 		dto.setHighConBonus(rs.getBoolean(col++));
+		dto.setArcaneOrDivineMasterSpellClass(rs.getString(col++));
 		return dto;
 	}
 
@@ -167,7 +174,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		sql = addKeyFields(sql);
 		sql = addDataFIelds(sql);
 		sql = sql + ") values ( ";
-		sql = sql + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ";
+		sql = sql + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ";
 		sql = sql + ")";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			int col = 1;
@@ -182,7 +189,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		sql = sql
 				+ "name ,hit_dice, hit_dice_at_first_level,max_hd_level, master_spell_class,parent_class_id,hp_after_name_level , "
 				+ "min_str,min_int,min_wis,min_dex,min_con,min_chr, prime_requisite_1,prime_requisite_2,prime_requisite_3,"
-				+ "xp_bonus_percent,pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, new_proficiency_every_x_levels,high_con_bonus";
+				+ "xp_bonus_percent,pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, new_proficiency_every_x_levels,high_con_bonus,arcane_Or_Divine_Master_Spell_Class";
 		return sql;
 	}
 
@@ -214,6 +221,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		ps.setInt(col++, value.getNonProficiencyPenalty());
 		ps.setInt(col++, value.getNewProficiencyEveryXLevels());
 		ps.setBoolean(col++, value.isHighConBonus());
+		ps.setString(col++, value.getArcaneOrDivineMasterSpellClass());
 		return col;
 	}
 
@@ -362,7 +370,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 				+ " prime_requisite_1 = ?," + " prime_requisite_2 = ?," + " prime_requisite_3 = ?,"
 				+ " xp_bonus_percent = ?," + " pr_value_for_xp_bonus = ?,"+
 				"proficiencies_at_first_level = ?," + "non_proficiency_penalty = ?,"+ "new_proficiency_every_x_levels = ?,"
-				+"high_con_bonus = ?";
+				+"high_con_bonus = ?, arcane_Or_Divine_Master_Spell_Class = ?";
 		return sql;
 	}
 
