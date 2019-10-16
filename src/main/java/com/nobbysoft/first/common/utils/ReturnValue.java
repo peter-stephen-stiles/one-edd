@@ -6,13 +6,20 @@ public class ReturnValue<T> {
 	private T value;
 	private boolean error=true;
 
+	public enum IS_ERROR{TRUE,FALSE};
 	 
 	public ReturnValue(T value) { 
 		this.value=value;
 		this.error=false;
 		this.errorMessage=null;
 	}
-	 
+
+	public ReturnValue(IS_ERROR error,String errorMessage) { 
+		this.value=null;
+		this.error=error==IS_ERROR.TRUE;
+		this.errorMessage=errorMessage;
+	}
+	
 	public ReturnValue(boolean error,String errorMessage) { 
 		this.value=null;
 		this.error=error;

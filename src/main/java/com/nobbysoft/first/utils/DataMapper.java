@@ -85,6 +85,7 @@ public enum DataMapper {
 		daoimap.put(CharacterClassSpell.class, CharacterClassSpellDAO.class);
 		daoimap.put(RaceClassLimit.class, RaceClassLimitDAO.class);
 		daoimap.put(Constitution.class,ConstitutionDAO.class);
+		daoimap.put(Intelligence.class,IntelligenceDAO.class);
 		daoimap.put(Strength.class,StrengthDAO.class);
 		daoimap.put(Dexterity.class,DexterityDAO.class);
 		daoimap.put(WeaponMelee.class,WeaponMeleeDAO.class);
@@ -108,6 +109,7 @@ public enum DataMapper {
 		panels.put(CharacterClass.class,CharacterClassPanel.class);
 		panels.put(RaceClassLimit.class, RaceClassLimitPanel.class);
 		panels.put(Constitution.class, ConstitutionPanel.class);
+		panels.put(Intelligence.class, IntelligencePanel.class);
 		panels.put(Strength.class, StrengthPanel.class);
 		panels.put(Dexterity.class, DexterityPanel.class);
 		panels.put(WeaponMelee.class, WeaponMeleePanel.class);
@@ -125,7 +127,8 @@ public enum DataMapper {
 		entityservicemap.put(Spell.class, SpellService.class);
 		entityservicemap.put(Race.class, RaceService.class);
 		entityservicemap.put(RaceClassLimit.class, RaceClassLimitService.class);
-		entityservicemap.put(Constitution.class, ConstitutionService.class);
+		entityservicemap.put(Constitution.class, ConstitutionService.class);//
+		entityservicemap.put(Intelligence.class, IntelligenceService.class);//
 		entityservicemap.put(Strength.class, StrengthService.class);
 		entityservicemap.put(Dexterity.class,DexterityService.class);
 		entityservicemap.put(WeaponMelee.class,WeaponMeleeService.class);
@@ -145,7 +148,8 @@ public enum DataMapper {
 		servicemap.put(RaceService.class, RaceServiceImpl.class);
 		servicemap.put(RaceClassLimitService.class, RaceClassLimitServiceImpl.class);
 		servicemap.put(CodedListService.class, CodedListServiceImpl.class);
-		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);
+		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);//
+		servicemap.put(IntelligenceService.class, IntelligenceServiceImpl.class);//Intelligence
 		servicemap.put(StrengthService.class, StrengthServiceImpl.class);
 		servicemap.put(DexterityService.class, DexterityServiceImpl.class);
 		servicemap.put(WeaponMeleeService.class, WeaponMeleeServiceImpl.class);

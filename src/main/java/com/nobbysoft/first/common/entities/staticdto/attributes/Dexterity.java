@@ -30,16 +30,7 @@ public class Dexterity  implements AbilityScoreI,Comparable<Dexterity>, Serializ
 	public String getDescription() {
 		return Integer.toString(abilityScore);
 	}
-/*
- 	private int reactionAttackAdjustment;
-	private int defensiveAdjustment;
-	
-	private int pickPockets;
-	private int openLocks;
-	private int locateRemoveTraps;
-	private int moveSilently;
-	private int hideInShadows; 
- */
+ 
 	@Override
 	public Object[] getAsRow() {
 		return new Object[] {this,abilityScore, 
@@ -54,7 +45,7 @@ public class Dexterity  implements AbilityScoreI,Comparable<Dexterity>, Serializ
 
 	@Override
 	public String[] getRowHeadings() {
-		return new String[] {"Con","React/att adj","Def adj)","Pick pockets",
+		return new String[] {"DEX","React/att adj","Def adj)","Pick pockets",
 				"Open locks","Loc/rem traps","Move silent","Hide in shadows"};
 	}
 

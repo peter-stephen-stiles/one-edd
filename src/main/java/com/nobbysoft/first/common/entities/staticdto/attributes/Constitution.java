@@ -100,7 +100,7 @@ public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Se
 
 	@Override
 	public String[] getRowHeadings() {
-		return new String[] {"Con","Hp Adj","(fighters)","System Shock Survival","Resurrection Survival"};
+		return new String[] {"CON","Hp Adj","(fighters)","System Shock Survival","Resurrection Survival"};
 	}
 
 	@Override

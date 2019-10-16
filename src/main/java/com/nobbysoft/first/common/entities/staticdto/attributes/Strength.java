@@ -96,7 +96,7 @@ public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializab
 	@Override
 	public String[] getRowHeadings() {
 		// TODO Auto-generated method stub
-		return new String[] {"Ability","%","-%","To hit","Dam","Weight","Open","Op Mag","BB/LG"};
+		return new String[] {"STR","%","-%","To hit","Dam","Weight","Open","Op Mag","BB/LG"};
 	}
 	@Override
 	public Integer[] getColumnWidths() {

@@ -27,7 +27,7 @@ public class PIntegerCombo extends PComboBox<Integer> {
 	public PIntegerCombo(int min, int max, boolean showPlus) {
 		super();
 		this.showPlus=showPlus;
-		setRange(min,max);
+		setRange(min,max,1);
 		addRenderer();
 	}
 	
@@ -35,14 +35,19 @@ public class PIntegerCombo extends PComboBox<Integer> {
 		super();
 		this.showPlus=showPlus;
 		this.showZero=showZero;
-		setRange(min,max);
+		setRange(min,max,1);
+		addRenderer();
+	}
+
+	public PIntegerCombo(int min, int max, int gap) {
+		super();
+		setRange(min,max,gap);
 		addRenderer();
 	}
 	
-	
 	public PIntegerCombo(int min, int max) {
 		super();
-		setRange(min,max);
+		setRange(min,max,1);
 		addRenderer();
 	}
 	
@@ -51,14 +56,14 @@ public class PIntegerCombo extends PComboBox<Integer> {
 	}
 	
 	
-	public void setRange(int min,int max) {
+	public void setRange(int min,int max, int gap) {
 		
 		int cv = getIntegerValue();
 		
 		this.min=min;
 		this.max=max;
 		List<Integer> vals = new ArrayList<>();
-		for(int i=min;i<max+1;i++) {
+		for(int i=min;i<max+1;i+=gap) {
 			vals.add(new Integer(i));
 		}
 		setList(vals);
