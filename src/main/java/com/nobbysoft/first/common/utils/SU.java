@@ -11,6 +11,64 @@ public class SU {
 	private SU() {
 	}
 
+	/**
+	 * string form of a chance on a D6 i.e. 1/6 or 3/6; zero not displayed
+	 * @param value
+	 * @return
+	 */
+	public static String i6(int value) {
+		if(value==0) {
+			return "";
+		} else {
+			return ""+value+"/6";
+		} 
+	}	
+		
+	
+	/**
+	 * string form of a percentage i.e. 35% or -16%; zero not displayed
+	 * @param value
+	 * @return
+	 */
+	public static String p(int value) {
+		if(value>0) {
+			return ""+value+"%";
+		} else if (value<0) {
+			return ""+value+"%";
+		} else {
+			return "";
+		}
+	}	
+	
+	/**
+	 * string form of a percentage "adjustment" i.e. +35% or -16%; zero not displayed
+	 * @param value
+	 * @return
+	 */
+	public static String ap(int value) {
+		if(value>0) {
+			return "+"+value+"%";
+		} else if (value<0) {
+			return ""+value+"%";
+		} else {
+			return "";
+		}
+	}
+	/**
+	 * string form of an "adjustment" i.e. +32 or -4; zero not displayed
+	 * @param value
+	 * @return
+	 */
+	public static String a(int value) {
+		if(value>0) {
+			return "+"+value;
+		} else if (value<0) {
+			return ""+value;
+		} else {
+			return "";
+		}
+	}
+	
 	public static final boolean notBlank(String s) {
 		if(s==null) {
 			return false;

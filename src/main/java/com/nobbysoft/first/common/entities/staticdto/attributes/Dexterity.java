@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.first.common.entities.staticdto.AbilityScoreI;
+import com.nobbysoft.first.common.utils.SU;
 
 public class Dexterity  implements AbilityScoreI,Comparable<Dexterity>, Serializable, DataDTOInterface<Integer>{
 
@@ -30,22 +31,24 @@ public class Dexterity  implements AbilityScoreI,Comparable<Dexterity>, Serializ
 	public String getDescription() {
 		return Integer.toString(abilityScore);
 	}
- 
+
+
+	
 	@Override
 	public Object[] getAsRow() {
 		return new Object[] {this,abilityScore, 
-				reactionAttackAdjustment,
-				defensiveAdjustment,
-				pickPockets,
-				openLocks,
-				locateRemoveTraps,
-				moveSilently,
-				hideInShadows};
+				SU.a(reactionAttackAdjustment),
+				SU.a(defensiveAdjustment),
+				SU.ap(pickPockets),
+				SU.ap(openLocks),
+				SU.ap(locateRemoveTraps),
+				SU.ap(moveSilently),
+				SU.ap(hideInShadows)};
 	}
 
 	@Override
 	public String[] getRowHeadings() {
-		return new String[] {"DEX","React/att adj","Def adj)","Pick pockets",
+		return new String[] {"DEX","React/att adj","Def adj","Pick pockets",
 				"Open locks","Loc/rem traps","Move silent","Hide in shadows"};
 	}
 

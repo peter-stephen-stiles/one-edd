@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.first.common.entities.staticdto.AbilityScoreI;
+import com.nobbysoft.first.common.utils.SU;
 
 public class Intelligence implements AbilityScoreI,Comparable<Intelligence>, Serializable, DataDTOInterface<Integer>{
 
@@ -83,8 +84,8 @@ public class Intelligence implements AbilityScoreI,Comparable<Intelligence>, Ser
 	@Override
 	public Object[] getAsRow() {
 		return new Object[] {this,abilityScore, 
-			possibleAdditionalLanguages,
-			chanceToKnowSpell,
+			SU.a(possibleAdditionalLanguages),
+			SU.p(chanceToKnowSpell),
 			minSpellsPerLevel,
 			maxSpellsPerLevel
 			};

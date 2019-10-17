@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.first.common.entities.staticdto.AbilityScoreI;
+import com.nobbysoft.first.common.utils.SU;
 
 @SuppressWarnings("serial")
 public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializable, DataDTOInterface<StrengthKey>{
@@ -12,6 +13,7 @@ public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializab
 	}
 	@Override
 	public String toString() {
+		
 		return "Strength [abilityScore=" + abilityScore + ", exceptionalStrength=" + exceptionalStrength
 				+ ", exceptionalStrengthTo=" + exceptionalStrengthTo + ", hitProbability=" + hitProbability
 				+ ", damageAdjustment=" + damageAdjustment + ", weightAllowance=" + weightAllowance + ", openDoors="
@@ -91,7 +93,16 @@ public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializab
 	@Override
 	public Object[] getAsRow() {
 		// TODO Auto-generated method stub
-		return new Object[] {this,abilityScore,exceptionalStrength,exceptionalStrengthTo,hitProbability,damageAdjustment,weightAllowance,openDoors,openMagicalDoors,bendBarsLiftGates};
+		return new Object[] {this,abilityScore,
+				SU.p(exceptionalStrength),
+				SU.p(exceptionalStrengthTo),
+				SU.a(hitProbability),
+				SU.a(damageAdjustment),
+				weightAllowance,
+				SU.i6(openDoors),
+				SU.i6(openMagicalDoors),
+				SU.p(bendBarsLiftGates)
+						};
 	}
 	@Override
 	public String[] getRowHeadings() {
