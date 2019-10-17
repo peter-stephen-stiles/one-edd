@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.first.common.entities.staticdto.AbilityScoreI;
+import com.nobbysoft.first.common.utils.SU;
 
 public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Serializable, DataDTOInterface<Integer>{
 
@@ -109,9 +110,14 @@ public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Se
 
 	@Override
 	public Object[] getAsRow() {
-		return new Object[] {this,abilityScore, hitPointAdjustment,hitPointAdjustmentHigh,systemShockSurvival,resurrectionSurvival,
+		return new Object[] {this,
+				abilityScore, 
+				SU.a(hitPointAdjustment),
+				SU.a(hitPointAdjustmentHigh),
+				SU.p(systemShockSurvival),
+				SU.p(resurrectionSurvival),
 				getSpellBonusString(),
-				getSpellFailureString(), 
+				SU.p(divineSpellChanceFailure), 
 				getSpellMaxSpellLevelString()};
 	}
 
@@ -131,16 +137,7 @@ public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Se
 		}
 	}
 	
-	public String getSpellFailureString() {
-		if(divineSpellChanceFailure<0) {
-			return "";
-		} else {
-			if(divineMaxSpellLevel==0) {
-				return "";
-			}
-			return ""+divineSpellChanceFailure+"%";
-		}
-	}
+ 
 	
 	public String getSpellBonusString() {
 		if (divineSpellBonusSpellLevel<1) {
