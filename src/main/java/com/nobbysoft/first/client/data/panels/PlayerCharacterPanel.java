@@ -88,6 +88,15 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private final PIntegerField txtClassHp3 = new PIntegerField();
 	private final PIntegerField txtClassHpTotal = new PIntegerField();
 	
+	
+
+
+	private final PIntegerField txtClassExperience1 = new PIntegerField(false);
+	private final PIntegerField txtClassExperience2 = new PIntegerField(false);
+	private final PIntegerField txtClassExperience3 = new PIntegerField(false);
+	 
+
+	private final PIntegerField[] experience = new PIntegerField[]{txtClassExperience1,txtClassExperience2,txtClassExperience3};
 
 	private final PIntegerField txtClassLevel1 = new PIntegerField();
 	private final PIntegerField txtClassLevel2 = new PIntegerField();
@@ -146,7 +155,8 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		txtExceptionalStrength,
 		txtClass1,		txtClass2,		txtClass3,
 		txtClassLevel1,txtClassLevel2,txtClassLevel3,
-		txtClassHp1,txtClassHp2,txtClassHp3,txtClassHpTotal
+		txtClassHp1,txtClassHp2,txtClassHp3,txtClassHpTotal,
+		txtClassExperience1,txtClassExperience2,txtClassExperience3
 		};
   
 	private PlayerCharacterEquipmentPanel pnlEquipmentDetails ;
@@ -188,7 +198,9 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		txtClass1.setName("Class (1)");
 		txtClass2.setName("Class (2)");
 		txtClass3.setName("Class (3)");
-		
+		txtClassExperience1.setName("XP for Class (1)");
+		txtClassExperience2.setName("XP for Class (2)");
+		txtClassExperience3.setName("XP for Class (3)");
 		txtAttrStr.setName("Str");
 		txtAttrInt.setName("Int");
 		txtAttrWis.setName("Wis");
@@ -278,25 +290,41 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		pnlBelow.add(txtClass3, GBU.text(1, 10));
 		//
 
-		pnlBelow.add(txtClassLevel1,GBU.text(2, 8));
-		pnlBelow.add(txtClassLevel2,GBU.text(2, 9));
-		pnlBelow.add(txtClassLevel3,GBU.text(2, 10));
+		pnlBelow.add(new PLabel("Level"),GBU.label(2, 8));
+		pnlBelow.add(new PLabel("Level"),GBU.label(2, 9));
+		pnlBelow.add(new PLabel("Level"),GBU.label(2, 10));		
+		
+		pnlBelow.add(txtClassLevel1,GBU.text(3, 8));
+		pnlBelow.add(txtClassLevel2,GBU.text(3, 9));
+		pnlBelow.add(txtClassLevel3,GBU.text(3, 10));
 
-		pnlBelow.add(new PLabel("Level"),GBU.label(3, 8));
-		pnlBelow.add(new PLabel("Level"),GBU.label(3, 9));
-		pnlBelow.add(new PLabel("Level"),GBU.label(3, 10));
+
+
+		pnlBelow.add(new PLabel("HP"),GBU.label(4, 8));
+		pnlBelow.add(new PLabel("HP"),GBU.label(4, 9));
+		pnlBelow.add(new PLabel("HP"),GBU.label(4, 10));		
 		
-		pnlBelow.add(txtClassHp1,GBU.text(4, 8));
-		pnlBelow.add(txtClassHp2,GBU.text(4, 9));
-		pnlBelow.add(txtClassHp3,GBU.text(4, 10));
+		pnlBelow.add(txtClassHp1,GBU.text(5, 8));
+		pnlBelow.add(txtClassHp2,GBU.text(5, 9));
+		pnlBelow.add(txtClassHp3,GBU.text(5, 10));
 		
-		pnlBelow.add(new PLabel("HP"),GBU.button(5, 8));
-		pnlBelow.add(new PLabel("HP"),GBU.button(5, 9));
-		pnlBelow.add(new PLabel("HP"),GBU.button(5, 10));
+
 		
+		pnlBelow.add(new PLabel("XP"),GBU.label(6, 8));
+		pnlBelow.add(new PLabel("XP"),GBU.label(6, 9));
+		pnlBelow.add(new PLabel("XP"),GBU.label(6, 10));
+
 		
-		pnlBelow.add(txtClassHpTotal,GBU.text(4, 11));
-		pnlBelow.add(new PLabel("total"),GBU.button(5, 11));
+		pnlBelow.add(txtClassExperience1,GBU.text(7, 8));
+		pnlBelow.add(txtClassExperience2,GBU.text(7, 9));
+		pnlBelow.add(txtClassExperience3,GBU.text(7, 10)); 
+		
+		PButton btnAddXp = new PButton("Add XP");
+		
+		pnlBelow.add(btnAddXp,GBU.button(7, 11));
+				
+		pnlBelow.add(new PLabel("total"),GBU.label(4, 11));
+		pnlBelow.add(txtClassHpTotal,GBU.text(5, 11));
 
 		
 		btnRoll.addActionListener(ae ->roll());
@@ -364,6 +392,10 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		value.setFirstClassLevel(txtClassLevel1.getIntegerValue());
 		value.setSecondClassLevel(txtClassLevel2.getIntegerValue());
 		value.setThirdClassLevel(txtClassLevel3.getIntegerValue());
+
+		value.setFirstClassExperience(txtClassExperience1.getIntegerValue());
+		value.setSecondClassExperience(txtClassExperience2.getIntegerValue());
+		value.setThirdClassExperience(txtClassExperience3.getIntegerValue());
 		
 		value.setExceptionalStrength(txtExceptionalStrength.getExceptionalStrength());
 
@@ -436,6 +468,10 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		txtClassLevel1.setIntegerValue(value.getFirstClassLevel());
 		txtClassLevel2.setIntegerValue(value.getSecondClassLevel());
 		txtClassLevel3.setIntegerValue(value.getThirdClassLevel());
+
+		txtClassExperience1.setIntegerValue(value.getFirstClassExperience());
+		txtClassExperience2.setIntegerValue(value.getSecondClassExperience());
+		txtClassExperience3.setIntegerValue(value.getThirdClassExperience());
 		
 		txtClassHpTotal.setIntegerValue(value.getHp());
 		txtExceptionalStrength.setExceptionalStrength(value.getExceptionalStrength());

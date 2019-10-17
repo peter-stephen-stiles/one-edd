@@ -15,6 +15,7 @@ public class PIntegerField extends JTextField  implements PDataComponent {
 		setDocument (new IntegerLimitingDocument());
 		
 	}
+		
 	public PIntegerField(boolean allowNegative) {
 		setDocument (new IntegerLimitingDocument(allowNegative));
 		
