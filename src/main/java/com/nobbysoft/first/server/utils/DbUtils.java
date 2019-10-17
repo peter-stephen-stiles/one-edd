@@ -21,12 +21,12 @@ INSTANCE;
 		DatabaseMetaData dbmd = con.getMetaData();
 		try (ResultSet rs = dbmd.getTables( null, null, tableName.toUpperCase(),
 				new String[]{"TABLE"});) {
-			if(rs.next()){
-				LOGGER.info("table "+tableName+" already exists; good.");
+			if(rs.next()){				
 				return true;
-			}
+			} 
 
 		}
+		LOGGER.info("table "+tableName+" does not exist.");
 		return false;
 	}
 
@@ -34,12 +34,12 @@ INSTANCE;
 		DatabaseMetaData dbmd = con.getMetaData();
 		try (ResultSet rs = dbmd.getTables( null, null, tableName.toUpperCase(),
 				new String[]{"VIEW"});) {
-			if(rs.next()){
-				LOGGER.info("view "+tableName+" already exists; good.");
+			if(rs.next()){				
 				return true;
 			}
 
 		}
+		LOGGER.info("view "+tableName+" does not exist.");
 		return false;
 	}
 	
@@ -49,14 +49,14 @@ INSTANCE;
 				new String[]{"TABLE"});) {
 			if(rs.next()){
 				try(ResultSet rsc = dbmd.getColumns(null,null,tableName.toUpperCase(),columnName.toUpperCase())){
-					if(rsc.next()){
-						LOGGER.info("table.column "+tableName+"."+columnName+" already exists;");
+					if(rsc.next()){						
 						return true;
 					}
 				} 
 			}
 
 		}
+		LOGGER.info("table.column "+tableName+"."+columnName+" does not exist.");
 		return false;
 	}
 
@@ -80,6 +80,7 @@ INSTANCE;
 					}					
 				} 
 			}
+		LOGGER.info("table.column "+tableName+"."+columnName+" is NOT a FK");
 		return false;
 	}	
 	

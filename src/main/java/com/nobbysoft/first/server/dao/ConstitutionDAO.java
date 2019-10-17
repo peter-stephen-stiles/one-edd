@@ -37,14 +37,14 @@ public class ConstitutionDAO extends AbstractDAO<Constitution, Integer> implemen
 		}
 
 		String[] newInts = new String[] { "hit_Point_Adjustment", "hit_Point_Adjustment_High", "system_Shock_Survival",
-				"resurrection_Survival" };
+				"resurrection_Survival","divine_Spell_Chance_Failure", "divine_Spell_Bonus_Spell_Level","divine_Max_Spell_Level" };
 		DAOUtils.createInts(con, tableName, newInts);
 
 	}
 
 	private String[] keys = new String[] { "ability_score" };
 	private String[] data = new String[] { "hit_Point_Adjustment", "hit_Point_Adjustment_High", "system_Shock_Survival",
-			"resurrection_Survival" };
+			"resurrection_Survival","divine_Spell_Chance_Failure", "divine_Spell_Bonus_Spell_Level","divine_Max_Spell_Level" };
 
 	String[] getKeys() {
 		return keys;
@@ -67,6 +67,9 @@ public class ConstitutionDAO extends AbstractDAO<Constitution, Integer> implemen
 		dto.setHitPointAdjustmentHigh(rs.getInt(col++));
 		dto.setSystemShockSurvival(rs.getInt(col++));
 		dto.setResurrectionSurvival(rs.getInt(col++));
+		dto.setDivineSpellChanceFailure(rs.getInt(col++));
+		dto.setDivineSpellBonusSpellLevel(rs.getInt(col++));
+		dto.setDivineMaxSpellLevel(rs.getInt(col++));
 		return dto;
 	}
 
@@ -88,6 +91,10 @@ public class ConstitutionDAO extends AbstractDAO<Constitution, Integer> implemen
 		ps.setInt(col++, value.getHitPointAdjustmentHigh());
 		ps.setInt(col++, value.getSystemShockSurvival());
 		ps.setInt(col++, value.getResurrectionSurvival());
+		ps.setInt(col++, value.getDivineSpellChanceFailure());
+		ps.setInt(col++, value.getDivineSpellBonusSpellLevel());
+		ps.setInt(col++, value.getDivineMaxSpellLevel());
+		
 		return col;
 	}
 
