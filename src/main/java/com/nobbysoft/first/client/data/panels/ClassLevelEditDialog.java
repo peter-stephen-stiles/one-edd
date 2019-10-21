@@ -1,0 +1,285 @@
+package com.nobbysoft.first.client.data.panels;
+
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+
+import javax.swing.JScrollPane;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.nobbysoft.first.client.components.PCheckBox;
+import com.nobbysoft.first.client.components.PComboBox;
+import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PIntegerCombo;
+import com.nobbysoft.first.client.components.PIntegerField;
+import com.nobbysoft.first.client.components.PLabel;
+import com.nobbysoft.first.client.components.PPanel;
+import com.nobbysoft.first.client.components.PTextArea;
+import com.nobbysoft.first.client.components.PTextField;
+import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.utils.GBU;
+import com.nobbysoft.first.client.utils.GuiUtils;
+import com.nobbysoft.first.client.utils.Popper;
+import com.nobbysoft.first.common.entities.staticdto.*;
+import com.nobbysoft.first.common.servicei.CharacterClassService;
+import com.nobbysoft.first.common.servicei.DataServiceI;
+import com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.first.common.utils.ReturnValue;
+import com.nobbysoft.first.utils.DataMapper;
+
+public class ClassLevelEditDialog 
+  extends AbstractDataPanel<CharacterClassLevel, CharacterClassLevelKey>
+  implements MaintenancePanelInterface<CharacterClassLevel> {
+
+	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+
+	private final PComboBox<CodedListItem<String>> txtCharacterClass = new PComboBox<>();
+	
+	private final PIntegerCombo txtClassLevel = new PIntegerCombo(1,30) {
+		public Dimension getPreferredSize() {
+			Dimension d= super.getPreferredSize();
+			if(d.width<60) {
+				d.width=60;
+			}
+			return d;
+		}
+	};
+	
+	private final class IC extends PIntegerCombo{
+		public IC() {
+			super(0,30);
+		}
+		public Dimension getPreferredSize() {
+			Dimension d= super.getPreferredSize();
+			if(d.width<60) {
+				d.width=60;
+			}
+			return d;
+		}
+	}
+	
+	private final PIntegerField txtFromXp = new PIntegerField();
+	private final PIntegerField txtToXp = new PIntegerField();
+	
+	private PTextField txtLevelTitle = new PTextField(30);
+	private PCheckBox cbxNameLevel = new PCheckBox("Is this name level?");
+	private PTextArea txtNotes = new PTextArea(4000);
+
+	
+	private CharacterClass parent=null;
+	public void setParent(CharacterClass parent) {
+		this.parent=parent;
+		if(txtCharacterClass.getModel().getSize()>1) {
+			txtCharacterClass.setSelectedCode(parent.getClassId());
+		}
+	}
+	
+	public ClassLevelEditDialog() {
+		setLayout(new GridBagLayout());
+		jbInit();
+	}
+	
+	@Override
+	PDataComponent[] getButtonComponents() {
+		// TODO Auto-generated method stub
+		return new PDataComponent[] {};
+	}
+
+	@Override
+	DataServiceI<?, ?> getDataService() {
+		DataServiceI dao  = DataMapper.INSTANCE.getDataService(CharacterClassLevel.class);
+		return dao;
+	}
+
+	PDataComponent[] dataComp = new PDataComponent[] {
+			txtFromXp ,
+			txtFromXp,
+			txtLevelTitle,
+			cbxNameLevel,
+			txtNotes
+			};
+	
+	@Override
+	PDataComponent[] getDataComponents() { 
+		return dataComp;
+	}
+
+	@Override
+	PDataComponent[] getKeyComponents() { 
+		return new PDataComponent[] {txtClassLevel};
+	}
+
+	@Override
+	PDataComponent[] getMandatoryComponents() { 
+		return new PDataComponent[] {};
+	}
+
+
+
+	
+	@Override
+	void jbInit() {
+		txtCharacterClass.setReadOnly(true);
+		
+		txtCharacterClass.setName("Character Class");
+		
+		txtClassLevel.setName("Class Level");
+		txtFromXp.setName("From XP");
+		txtToXp.setName("To XP");
+		txtLevelTitle.setName("Level Title");
+		txtNotes.setName("Notes");
+
+		int row=0;
+		add(new PLabel(txtCharacterClass.getName()),GBU.label(0, row));
+		add(txtCharacterClass,GBU.text(1, row));		
+
+		add(new PLabel(txtClassLevel.getName()),GBU.label(2, row));
+		add(txtClassLevel,GBU.text(3, row));
+		
+		row++;
+		
+		add(new PLabel(txtFromXp.getName()),GBU.label(0, row));
+		add(txtFromXp,GBU.text(1, row));
+		
+		add(new PLabel(txtToXp.getName()),GBU.label(2, row));
+		add(txtToXp,GBU.text(3,row));
+		
+		row++;
+		
+		add(new PLabel(txtLevelTitle.getName()),GBU.label(0, row));
+		add(txtLevelTitle,GBU.text(1, row,2));		
+		add(cbxNameLevel,GBU.text(3, row));
+		
+		row++;
+		add(new PLabel(txtNotes.getName()),GBU.label(0, row));//
+		row++;
+		JScrollPane sclNotes= new JScrollPane(txtNotes) {
+			public Dimension getPreferredSize() {
+				Dimension d= super.getPreferredSize();
+				if(d.height<80) {
+					d.height=80;
+				}
+				return d;
+			}
+		};
+		add(sclNotes,GBU.panel(0, row,4,1));	
+		
+		// spacer
+		add(new PLabel(""),GBU.label(99, 99));	
+	}
+
+	public void defaultAdd(int level){
+		txtClassLevel.setIntegerValue(level);
+	}
+	
+	@Override
+	void populateCombos() {
+
+		try {
+			CharacterClassService dao = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
+//			{
+//				List<CodedListItem<String>> list = dao.getLevelClassesAsCodedList();
+//
+//				for (CodedListItem<String> cli : list) {
+//					LOGGER.info("Level class " + cli);
+//					txtLevelClass.addItem(cli);					
+//				}
+//			}
+			{
+				List<CodedListItem<String>> list = dao.getAsCodedList();
+
+				for (CodedListItem<String> cli : list) {
+					LOGGER.info("character class " + cli);
+					if(parent!=null) {
+						if(parent.getClassId()!=null) {
+							if(parent.getClassId().contentEquals(cli.getItem())) {
+								txtCharacterClass.addItem(cli);
+							}
+						}
+					}
+					if(parent==null) {
+						txtCharacterClass.addItem(cli);
+					}
+				}
+			}
+			
+		} catch (Exception ex) {
+			Popper.popError(GuiUtils.getParent(this), ex);
+
+		}
+	}
+
+	@Override
+	void populateFromScreen(CharacterClassLevel value, boolean includingKeys) {
+		value.setLevel(txtClassLevel.getIntegerValue());
+		value.setFromXp(txtFromXp.getIntegerValue());
+		value.setToXp(txtToXp.getIntegerValue());
+		value.setLevelTitle(txtLevelTitle.getText());
+		value.setNameLevel(cbxNameLevel.isSelected());
+		value.setNotes(txtNotes.getText());
+//		value.setLevelClassId((String)txtLevelClass.getSelectedCode());
+//		
+//		value.setLevel1Levels(txtLevel1.getIntegerValue());
+//		value.setLevel2Levels(txtLevel2.getIntegerValue());
+//		value.setLevel3Levels(txtLevel3.getIntegerValue());
+//		value.setLevel4Levels(txtLevel4.getIntegerValue());
+//		value.setLevel5Levels(txtLevel5.getIntegerValue());
+//		value.setLevel6Levels(txtLevel6.getIntegerValue());
+//		value.setLevel7Levels(txtLevel7.getIntegerValue());
+//		value.setLevel8Levels(txtLevel8.getIntegerValue());
+//		value.setLevel9Levels(txtLevel9.getIntegerValue());
+		
+	}
+
+	@Override
+	void populateScreen(CharacterClassLevel value) {
+		txtClassLevel.setIntegerValue(value.getLevel());
+		txtFromXp.setIntegerValue(value.getFromXp());
+		txtToXp.setIntegerValue(value.getToXp());
+		txtLevelTitle.setText(value.getLevelTitle());
+		cbxNameLevel.setSelected(value.isNameLevel());
+		txtNotes.setText(value.getNotes());
+//		txtLevelClass.setSelectedCode(value.getLevelClassId());
+//		
+//		txtLevel1.setIntegerValue(value.getLevel1Levels());
+//		txtLevel2.setIntegerValue(value.getLevel2Levels());
+//		txtLevel3.setIntegerValue(value.getLevel3Levels());
+//		txtLevel4.setIntegerValue(value.getLevel4Levels());
+//		txtLevel5.setIntegerValue(value.getLevel5Levels());
+//		txtLevel6.setIntegerValue(value.getLevel6Levels());
+//		txtLevel7.setIntegerValue(value.getLevel7Levels());
+//		txtLevel8.setIntegerValue(value.getLevel8Levels());
+//		txtLevel9.setIntegerValue(value.getLevel9Levels());
+//		
+		
+	}
+
+	@Override
+	ReturnValue<?> validateScreen() {
+		
+		long xp0 = txtFromXp.getIntegerValue();
+		long xp1 = txtToXp.getIntegerValue();
+		if(xp1<xp0){
+			return new ReturnValue(ReturnValue.IS_ERROR.TRUE,"'To' XP cannot be less than 'From' Xp");
+		}
+		if(xp0==0 && xp1==0) {
+			return new ReturnValue(ReturnValue.IS_ERROR.TRUE,"'To' XP cannot be less than 'From' Xp");
+		}
+		
+		return new ReturnValue(""); //no error
+	}
+
+	@Override
+	CharacterClassLevel newT() { 
+		CharacterClassLevel ccs = new CharacterClassLevel();
+		ccs.setClassId(parent.getClassId());
+		return ccs;
+	}
+
+	
+}

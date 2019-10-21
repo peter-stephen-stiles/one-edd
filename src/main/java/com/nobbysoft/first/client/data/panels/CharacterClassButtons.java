@@ -10,11 +10,13 @@ import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 public class CharacterClassButtons implements DataButtonsInterface<CharacterClass> {
 
 	private static final String ROLL_HP = "Roll HP";
+	private static final String LEVELS = "Levels";
 	private static final String SPELLS = "Spells By Level";
 
 	public CharacterClassButtons() {
 
 		rowButtons.add(ROLL_HP);
+		rowButtons.add(LEVELS);
 		rowButtons.add(SPELLS);
 		tableButtons.add("Everybody dance now");
 	}
@@ -42,7 +44,13 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 			dialog.setLocationRelativeTo(null);			
 			dialog.setVisible(true);
 			
-		} else if (SPELLS.equals(name)) {			
+		} else if (LEVELS.equals(name)) {			
+			ClassLevelsDialog dialog = new ClassLevelsDialog(window,"Levels for "+object.getName());
+			dialog.initialise(object);
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);			
+			dialog.setVisible(true);
+		}else if (SPELLS.equals(name)) {			
 			ClassSpellsDialog dialog = new ClassSpellsDialog(window,"Spells for "+object.getName());
 			dialog.initialise(object);
 			dialog.pack();
