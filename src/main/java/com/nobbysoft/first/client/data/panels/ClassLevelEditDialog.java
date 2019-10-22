@@ -86,7 +86,6 @@ public class ClassLevelEditDialog
 	
 	@Override
 	PDataComponent[] getButtonComponents() {
-		// TODO Auto-generated method stub
 		return new PDataComponent[] {};
 	}
 
@@ -173,8 +172,9 @@ public class ClassLevelEditDialog
 		add(new PLabel(""),GBU.label(99, 99));	
 	}
 
-	public void defaultAdd(int level){
+	public void defaultAdd(int level, int xp){
 		txtClassLevel.setIntegerValue(level);
+		txtFromXp.setIntegerValue(xp);
 	}
 	
 	@Override
@@ -222,18 +222,8 @@ public class ClassLevelEditDialog
 		value.setLevelTitle(txtLevelTitle.getText());
 		value.setNameLevel(cbxNameLevel.isSelected());
 		value.setNotes(txtNotes.getText());
-//		value.setLevelClassId((String)txtLevelClass.getSelectedCode());
-//		
-//		value.setLevel1Levels(txtLevel1.getIntegerValue());
-//		value.setLevel2Levels(txtLevel2.getIntegerValue());
-//		value.setLevel3Levels(txtLevel3.getIntegerValue());
-//		value.setLevel4Levels(txtLevel4.getIntegerValue());
-//		value.setLevel5Levels(txtLevel5.getIntegerValue());
-//		value.setLevel6Levels(txtLevel6.getIntegerValue());
-//		value.setLevel7Levels(txtLevel7.getIntegerValue());
-//		value.setLevel8Levels(txtLevel8.getIntegerValue());
-//		value.setLevel9Levels(txtLevel9.getIntegerValue());
-		
+
+
 	}
 
 	@Override
@@ -244,18 +234,8 @@ public class ClassLevelEditDialog
 		txtLevelTitle.setText(value.getLevelTitle());
 		cbxNameLevel.setSelected(value.isNameLevel());
 		txtNotes.setText(value.getNotes());
-//		txtLevelClass.setSelectedCode(value.getLevelClassId());
-//		
-//		txtLevel1.setIntegerValue(value.getLevel1Levels());
-//		txtLevel2.setIntegerValue(value.getLevel2Levels());
-//		txtLevel3.setIntegerValue(value.getLevel3Levels());
-//		txtLevel4.setIntegerValue(value.getLevel4Levels());
-//		txtLevel5.setIntegerValue(value.getLevel5Levels());
-//		txtLevel6.setIntegerValue(value.getLevel6Levels());
-//		txtLevel7.setIntegerValue(value.getLevel7Levels());
-//		txtLevel8.setIntegerValue(value.getLevel8Levels());
-//		txtLevel9.setIntegerValue(value.getLevel9Levels());
-//		
+
+
 		
 	}
 

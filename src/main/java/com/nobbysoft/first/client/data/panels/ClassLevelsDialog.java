@@ -30,6 +30,7 @@ import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassLevel;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassLevelKey;
 import com.nobbysoft.first.common.servicei.CharacterClassLevelService;
 import com.nobbysoft.first.utils.DataMapper;
 
@@ -220,7 +221,12 @@ CharacterClassLevelService getDataService() {
 			ClassLevelEditDialog mpi = new ClassLevelEditDialog();
 			mpi.setParent(characterClass);
 			mpi.initAdd("Add Level for "+characterClass.getName() );
-			mpi.defaultAdd(1+getMaxLevel(characterClass.getClassId()));
+			try {
+				CharacterClassLevel m =getMaxLevel(characterClass.getClassId()); 
+				mpi.defaultAdd(1+m.getLevel(),1+m.getToXp());
+			} catch (Exception ex) {
+				mpi.defaultAdd(1,0);
+			}
 			MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Add", mpi);
 			md.pack();
 			md.setLocationRelativeTo(null);
@@ -311,15 +317,21 @@ CharacterClassLevelService getDataService() {
 		return GuiUtils.getParent(this);
 	}
 
-	private int getMaxLevel(String classId) {
+	private CharacterClassLevel getMaxLevel(String classId) {
 		CharacterClassLevelService service = getDataService();
 		
 		try{
-			return service.getMaxLevelLevelInTable(classId)	;
+			int ml= service.getMaxLevelLevelInTable(classId)	;
+			if(ml>0) {
+				CharacterClassLevelKey key = new CharacterClassLevelKey();
+				key.setClassId(classId);
+				key.setLevel(ml);
+				return service.get(key);
+			} 
 		} catch (SQLException e) {
 			Popper.popError(this,e);
 		}
-		return 1;
+		return null;
 	}
 	
 }
