@@ -2,18 +2,14 @@ package com.nobbysoft.first.client.components;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.common.utils.SU;
 
+@SuppressWarnings("serial")
 public class PTableCellRenderer extends DefaultTableCellRenderer {
 	
 	private Color text;
@@ -58,9 +54,9 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
 		// is it divisible by 2?
 		int d = row / 3;
 		if(d%2==0) {
-			return isSelected?selected:background;
+			return isSelected?darkSelected:darkBackground;			
 		} else {
-			return isSelected?darkSelected:darkBackground;
+			return isSelected?selected:background;
 		}
 	}
 	
