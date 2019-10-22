@@ -36,8 +36,6 @@ public class PListCellRenderer<E> extends JLabel implements ListCellRenderer<E> 
 			setOpaque(opaque);
 			setBackground(dftBackground);
 		}
-		//setBackground(isSelected ||cellHasFocus? focusBackground : dftBackground);
-		
 		if(value!=null) {
 			if(value instanceof CodedListItem) {
 				setText(((CodedListItem)value).getDescription());
