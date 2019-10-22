@@ -13,6 +13,7 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 	private int maxHdLevel;
 	private boolean masterSpellClass;
 	private int hpAfterNameLevel;
+	private int xpPerLevelAfterNameLevel;
 	
 	private String parentClassId; 
 	
@@ -58,6 +59,7 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 		result = prime * result + primeRequisite3;
 		result = prime * result + proficienciesAtFirstLevel;
 		result = prime * result + xpBonusPercent;
+		result = prime * result + xpPerLevelAfterNameLevel;
 		return result;
 	}
 
@@ -129,6 +131,8 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 		if (proficienciesAtFirstLevel != other.proficienciesAtFirstLevel)
 			return false;
 		if (xpBonusPercent != other.xpBonusPercent)
+			return false;
+		if (xpPerLevelAfterNameLevel != other.xpPerLevelAfterNameLevel)
 			return false;
 		return true;
 	}
@@ -361,9 +365,18 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 	}
 	
      @Override
-     public String toString() {
-    	 return name;
-     }
+	public String toString() {
+		return "CharacterClass [classId=" + classId + ", name=" + name + ", hitDice=" + hitDice
+				+ ", hitDiceAtFirstLevel=" + hitDiceAtFirstLevel + ", maxHdLevel=" + maxHdLevel + ", masterSpellClass="
+				+ masterSpellClass + ", hpAfterNameLevel=" + hpAfterNameLevel + ", xpPerLevelAfterNameLevel="
+				+ xpPerLevelAfterNameLevel + ", parentClassId=" + parentClassId + ", minStr=" + minStr + ", minInt="
+				+ minInt + ", minWis=" + minWis + ", minDex=" + minDex + ", minCon=" + minCon + ", minChr=" + minChr
+				+ ", proficienciesAtFirstLevel=" + proficienciesAtFirstLevel + ", highConBonus=" + highConBonus
+				+ ", arcaneOrDivineMasterSpellClass=" + arcaneOrDivineMasterSpellClass + ", newProficiencyEveryXLevels="
+				+ newProficiencyEveryXLevels + ", nonProficiencyPenalty=" + nonProficiencyPenalty + ", primeRequisite1="
+				+ primeRequisite1 + ", primeRequisite2=" + primeRequisite2 + ", primeRequisite3=" + primeRequisite3
+				+ ", xpBonusPercent=" + xpBonusPercent + ", prValueForXpBonus=" + prValueForXpBonus + "]";
+	}
 
 	public boolean isHighConBonus() {
 		return highConBonus;
@@ -379,5 +392,13 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 
 	public void setArcaneOrDivineMasterSpellClass(String arcaneOrDivineMasterSpellClass) {
 		this.arcaneOrDivineMasterSpellClass = arcaneOrDivineMasterSpellClass;
+	}
+
+	public int getXpPerLevelAfterNameLevel() {
+		return xpPerLevelAfterNameLevel;
+	}
+
+	public void setXpPerLevelAfterNameLevel(int xpPerLevelAfterNameLevel) {
+		this.xpPerLevelAfterNameLevel = xpPerLevelAfterNameLevel;
 	}
 }

@@ -89,6 +89,8 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 	// xpBonusPercent
 
 	private final PIntegerField txtXpBonusPercent = new PIntegerField();
+	 
+	private final PIntegerField txtXpPerLevelAfterNameLevel = new PIntegerField();
 	
 	private final PComboBox<CodedListItem<Integer>>[] attCombos = new PComboBox[] {
 		txtMinStr,txtMinInt,txtMinWis,txtMinDex,txtMinCon,txtMinChr
@@ -99,7 +101,8 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 	private PDataComponent[] dataComponents = new PDataComponent[] {  txtName,txtHitDice, txtHitDiceAtFirstLevel,txtMaxHdLevel,txtHpAfterNameLevel,cbxMasterSpellClass,txtParentClass,
 			txtMinStr,txtMinInt,txtMinWis,txtMinDex,txtMinCon,txtMinChr,txtPrimeRequisite1,
 			txtPrimeRequisite2,txtPrimeRequisite3,
-			txtXpBonusPercent, txtProficienciesAtFirstLevel, txtNonProficiencyPenalty, txtNewProficiencyEveryXLevels,cbxHighConBonus,cbxArcaneOrDivine
+			txtXpBonusPercent, txtProficienciesAtFirstLevel, txtNonProficiencyPenalty, txtNewProficiencyEveryXLevels,cbxHighConBonus,cbxArcaneOrDivine,
+			txtXpPerLevelAfterNameLevel
 			 };
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtCharacterClassId };
 	private PDataComponent[] buttonComponents = new PDataComponent[] {  };
@@ -117,6 +120,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		txtHitDiceAtFirstLevel.setName("#Hit dice at first level");
 		txtMaxHdLevel.setName("Maximum Level for hit dice");
 		txtHpAfterNameLevel.setName("HP per level after Name level");
+		txtXpPerLevelAfterNameLevel.setName("XP per level after Name level");
 		cbxMasterSpellClass.setName(cbxMasterSpellClass.getText());
 		cbxArcaneOrDivine.setName("If spell class, Arcane or Divine?");
 		txtParentClass.setName("Parent class");
@@ -141,6 +145,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		PLabel lblHitDiceAtFirstLevel = new PLabel(txtHitDiceAtFirstLevel.getName());
 		PLabel lblMaxHdLevel = new PLabel(txtMaxHdLevel.getName()); 
 		PLabel lblHpAfterNameLevel = new PLabel(txtHpAfterNameLevel.getName());
+		PLabel lblXpPerLevelAfterNameLevel = new PLabel(txtXpPerLevelAfterNameLevel.getName());
 		PLabel lblParentClass = new PLabel(txtParentClass.getName());
 		PLabel lblProficienciesAtFirstLevel = new PLabel(txtProficienciesAtFirstLevel.getName());
 		PLabel lblNonProficiencyPenalty = new PLabel(txtNonProficiencyPenalty.getName());
@@ -217,6 +222,13 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		row++;
 		pnlLeft.add(lblHpAfterNameLevel, GBU.label(0,row));
 		pnlLeft.add(txtHpAfterNameLevel, GBU.text(1, row));
+		
+		row++;
+		pnlLeft.add(lblXpPerLevelAfterNameLevel, GBU.label(0,row));
+		pnlLeft.add(txtXpPerLevelAfterNameLevel, GBU.text(1, row));
+		
+		
+		
 		
 		row++;
 		pnlLeft.add(cbxMasterSpellClass, GBU.text(1, row));
@@ -336,7 +348,8 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		value.setArcaneOrDivineMasterSpellClass(cbxArcaneOrDivine.getArcaneOrDivine());
 		value.setParentClassId((String)txtParentClass.getSelectedCode());
 		value.setHpAfterNameLevel(txtHpAfterNameLevel.getIntegerValue());
-
+		value.setXpPerLevelAfterNameLevel(txtXpPerLevelAfterNameLevel.getIntegerValue());
+		
 		value.setMinStr((Integer)txtMinStr.getSelectedCode());
 		value.setMinInt((Integer)txtMinInt.getSelectedCode());
 		value.setMinWis((Integer)txtMinWis.getSelectedCode());
@@ -370,6 +383,8 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		cbxArcaneOrDivine.setSelectedCode(value.getArcaneOrDivineMasterSpellClass());
 		txtParentClass.setSelectedCode(value.getParentClassId());
 		txtHpAfterNameLevel.setIntegerValue(value.getHpAfterNameLevel());
+		txtXpPerLevelAfterNameLevel.setIntegerValue(value.getXpPerLevelAfterNameLevel());
+		
 		txtMinStr.setSelectedCode(value.getMinStr());
 		txtMinInt.setSelectedCode(value.getMinInt());
 		txtMinWis.setSelectedCode(value.getMinWis());
