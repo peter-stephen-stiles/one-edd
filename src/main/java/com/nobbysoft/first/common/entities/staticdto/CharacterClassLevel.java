@@ -30,7 +30,7 @@ public class CharacterClassLevel implements Serializable, DataDTOInterface<Chara
 		return new String[] {Constants.CLI_CLASS,null,null,null,null,null,null};
 	}
 
-	private static final Integer[] w =new Integer[]{0,120,120,120,120,120,-1};
+	private static final Integer[] w =new Integer[]{0,120,120,250,120,120,400};
 	public Integer[] getColumnWidths(){
 		return w;
 	}

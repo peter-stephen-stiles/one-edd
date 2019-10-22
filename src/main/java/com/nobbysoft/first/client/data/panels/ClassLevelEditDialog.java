@@ -1,9 +1,7 @@
 package com.nobbysoft.first.client.data.panels;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
@@ -18,27 +16,39 @@ import com.nobbysoft.first.client.components.PDataComponent;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
-import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTextArea;
 import com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
-import com.nobbysoft.first.common.entities.staticdto.*;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassLevel;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassLevelKey;
 import com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
 
+@SuppressWarnings("serial")
 public class ClassLevelEditDialog 
   extends AbstractDataPanel<CharacterClassLevel, CharacterClassLevelKey>
   implements MaintenancePanelInterface<CharacterClassLevel> {
 
+ 
+
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-	private final PComboBox<CodedListItem<String>> txtCharacterClass = new PComboBox<>();
+	private final PComboBox<CodedListItem<String>> txtCharacterClass = new PComboBox<CodedListItem<String>>() {
+		public Dimension getPreferredSize() {
+			Dimension d = super.getPreferredSize();
+			if(d.width<150) {
+				d.width = 150;
+			}
+			return d;
+		}
+	};
 	
 	private final PIntegerCombo txtClassLevel = new PIntegerCombo(1,30) {
 		public Dimension getPreferredSize() {
