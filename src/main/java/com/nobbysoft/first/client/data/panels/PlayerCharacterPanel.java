@@ -26,9 +26,11 @@ import com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.first.client.components.special.PComboAlignment;
 import com.nobbysoft.first.client.components.special.PComboGender;
 import com.nobbysoft.first.client.components.special.PExceptionalStrength;
+import com.nobbysoft.first.client.components.special.ThreeClasses;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
+import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.Race;
@@ -48,6 +50,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	public PlayerCharacterPanel() {
 		setLayout(new BorderLayout());
 		jbInit();
+		populateCombos();
 	}
  
 	
@@ -67,45 +70,15 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private final PTextField txtPlayerName = new PTextField(128);
 	private final PComboAlignment txtAlignment = new PComboAlignment();
 
-	
+	private final PButton btnAddXp = new PButton("Add XP");
 	private final CharacterClass noClass = new CharacterClass();
 
-	private final PComboBox<CharacterClass> txtClass1 = new PComboBox<>();
-	private final PComboBox<CharacterClass> txtClass2 = new PComboBox<>();
-	private final PComboBox<CharacterClass> txtClass3 = new PComboBox<>();
- 
-	private final PComboBox[] classCombos = new PComboBox[]{txtClass1,txtClass2,txtClass3};
-	
- 
 	private final PComboGender txtGender = new PComboGender();
-
-	private final PLabel lblClass1 = new PLabel();
-	private final PLabel lblClass2 = new PLabel();
-	private final PLabel lblClass3 = new PLabel();
-
-	private final PIntegerField txtClassHp1 = new PIntegerField();
-	private final PIntegerField txtClassHp2 = new PIntegerField();
-	private final PIntegerField txtClassHp3 = new PIntegerField();
-	private final PIntegerField txtClassHpTotal = new PIntegerField();
 	
+	private final ThreeClasses threeClasses = new ThreeClasses();
 	
-
-
-	private final PIntegerField txtClassExperience1 = new PIntegerField(false);
-	private final PIntegerField txtClassExperience2 = new PIntegerField(false);
-	private final PIntegerField txtClassExperience3 = new PIntegerField(false);
-	 
-
-	private final PIntegerField[] experience = new PIntegerField[]{txtClassExperience1,txtClassExperience2,txtClassExperience3};
-
-	private final PIntegerField txtClassLevel1 = new PIntegerField();
-	private final PIntegerField txtClassLevel2 = new PIntegerField();
-	private final PIntegerField txtClassLevel3 = new PIntegerField();
-	
-	private final PIntegerField[] levels = new PIntegerField[]{txtClassLevel1,txtClassLevel2,txtClassLevel3};
-	
-	private final PLabel[] classLabels = new PLabel[]{lblClass1,lblClass2,lblClass3};
-	private final PIntegerField[] hpValuesLabels = new PIntegerField[]{txtClassHp1,txtClassHp2,txtClassHp3};
+ 
+ 
 	private final PComboBox<Race> txtRace = new PComboBox<>();
   
 	private final PExceptionalStrength txtExceptionalStrength = new PExceptionalStrength() ;
@@ -153,10 +126,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private PDataComponent[] disableThese = new PDataComponent[] {
 		txtAttrStr,txtAttrInt,txtAttrWis,txtAttrDex,txtAttrCon,txtAttrChr,txtGender,txtRace,
 		txtExceptionalStrength,
-		txtClass1,		txtClass2,		txtClass3,
-		txtClassLevel1,txtClassLevel2,txtClassLevel3,
-		txtClassHp1,txtClassHp2,txtClassHp3,txtClassHpTotal,
-		txtClassExperience1,txtClassExperience2,txtClassExperience3
+		threeClasses 
 		};
   
 	private PlayerCharacterEquipmentPanel pnlEquipmentDetails ;
@@ -195,12 +165,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		txtGender.setName("Gender");
 		txtRace.setName("Race");
 		txtAlignment.setName("Alignment");
-		txtClass1.setName("Class (1)");
-		txtClass2.setName("Class (2)");
-		txtClass3.setName("Class (3)");
-		txtClassExperience1.setName("XP for Class (1)");
-		txtClassExperience2.setName("XP for Class (2)");
-		txtClassExperience3.setName("XP for Class (3)");
+
 		txtAttrStr.setName("Str");
 		txtAttrInt.setName("Int");
 		txtAttrWis.setName("Wis");
@@ -216,10 +181,6 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		PLabel lblAlignment = new PLabel(txtAlignment.getName());
 		
 
-
-		lblClass1.setText(txtClass1.getName());
-		lblClass2.setText(txtClass2.getName());
-		lblClass3.setText(txtClass3.getName());
 		
 		PLabel lblMinStr = new PLabel(txtAttrStr.getName());
 		PLabel lblMinInt = new PLabel(txtAttrInt.getName());
@@ -281,50 +242,16 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		pnlLeft.add(txtRace, GBU.text(1, 7));
 
 
-		pnlBelow.add(lblClass1, GBU.label(0,8));
-		pnlBelow.add(lblClass2, GBU.label(0,9));
-		pnlBelow.add(lblClass3, GBU.label(0,10));
+		pnlBelow.add(threeClasses,GBU.hPanel(0, 0, 2, 1));
 		
-		pnlBelow.add(txtClass1, GBU.text(1, 8));
-		pnlBelow.add(txtClass2, GBU.text(1, 9));
-		pnlBelow.add(txtClass3, GBU.text(1, 10));
-		//
-
-		pnlBelow.add(new PLabel("Level"),GBU.label(2, 8));
-		pnlBelow.add(new PLabel("Level"),GBU.label(2, 9));
-		pnlBelow.add(new PLabel("Level"),GBU.label(2, 10));		
 		
-		pnlBelow.add(txtClassLevel1,GBU.text(3, 8));
-		pnlBelow.add(txtClassLevel2,GBU.text(3, 9));
-		pnlBelow.add(txtClassLevel3,GBU.text(3, 10));
-
-
-
-		pnlBelow.add(new PLabel("HP"),GBU.label(4, 8));
-		pnlBelow.add(new PLabel("HP"),GBU.label(4, 9));
-		pnlBelow.add(new PLabel("HP"),GBU.label(4, 10));		
 		
-		pnlBelow.add(txtClassHp1,GBU.text(5, 8));
-		pnlBelow.add(txtClassHp2,GBU.text(5, 9));
-		pnlBelow.add(txtClassHp3,GBU.text(5, 10));
-		
-
-		
-		pnlBelow.add(new PLabel("XP"),GBU.label(6, 8));
-		pnlBelow.add(new PLabel("XP"),GBU.label(6, 9));
-		pnlBelow.add(new PLabel("XP"),GBU.label(6, 10));
-
-		
-		pnlBelow.add(txtClassExperience1,GBU.text(7, 8));
-		pnlBelow.add(txtClassExperience2,GBU.text(7, 9));
-		pnlBelow.add(txtClassExperience3,GBU.text(7, 10)); 
-		
-		PButton btnAddXp = new PButton("Add XP");
-		
-		pnlBelow.add(btnAddXp,GBU.button(7, 11));
+		pnlBelow.add(btnAddXp,GBU.button(1, 2));
 				
-		pnlBelow.add(new PLabel("total"),GBU.label(4, 11));
-		pnlBelow.add(txtClassHpTotal,GBU.text(5, 11));
+		
+		btnAddXp.addActionListener(ae->addXp());
+		
+
 
 		
 		btnRoll.addActionListener(ae ->roll());
@@ -344,7 +271,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 
 	  ReturnValue<?> validateScreen() {
  
-		  if(!txtClass1.isVisible()) {
+		  if(!threeClasses.hasCharacterClass()) {
 			  new ReturnValue<Object>(true,"You must roll and select a character class!");
 		  }
 		  
@@ -359,9 +286,10 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		value.setPlayerName(txtPlayerName.getText());
 		value.setGender(txtGender.getGender());
 		value.setRaceId(((Race)txtRace.getSelectedItem()).getRaceId());
-		CharacterClass c1 = ((CharacterClass)txtClass1.getSelectedItem());
-		CharacterClass c2 = ((CharacterClass)txtClass2.getSelectedItem());
-		CharacterClass c3 = ((CharacterClass)txtClass3.getSelectedItem());
+		CharacterClass[] classes= threeClasses.getClasses();
+		CharacterClass c1 = classes[0];
+		CharacterClass c2 = classes[1];
+		CharacterClass c3 = classes[2];
 		
 		value.setFirstClass(c1.getClassId()); 
 		LOGGER.info("first class "+value.getFirstClass() + " c1:"+c1.getClassId());
@@ -385,17 +313,18 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		value.setAttrCon((Integer)txtAttrCon.getIntegerValue());
 		value.setAttrChr((Integer)txtAttrChr.getIntegerValue());
 
-		value.setFirstClassHp(txtClassHp1.getIntegerValue());
-		value.setSecondClassHp(txtClassHp2.getIntegerValue());
-		value.setThirdClassHp(txtClassHp3.getIntegerValue());
-		
-		value.setFirstClassLevel(txtClassLevel1.getIntegerValue());
-		value.setSecondClassLevel(txtClassLevel2.getIntegerValue());
-		value.setThirdClassLevel(txtClassLevel3.getIntegerValue());
-
-		value.setFirstClassExperience(txtClassExperience1.getIntegerValue());
-		value.setSecondClassExperience(txtClassExperience2.getIntegerValue());
-		value.setThirdClassExperience(txtClassExperience3.getIntegerValue());
+		int[] hp = threeClasses.getHp();
+		value.setFirstClassHp(hp[0]);
+		value.setSecondClassHp(hp[1]);
+		value.setThirdClassHp(hp[2]);
+		int[] levels = threeClasses.getLevels();
+		value.setFirstClassLevel(levels[0]);
+		value.setSecondClassLevel(levels[1]);
+		value.setThirdClassLevel(levels[2]);
+		int[] xp = threeClasses.getXp();
+		value.setFirstClassExperience(xp[0]);
+		value.setSecondClassExperience(xp[1]);
+		value.setThirdClassExperience(xp[2]);
 		
 		value.setExceptionalStrength(txtExceptionalStrength.getExceptionalStrength());
 
@@ -415,21 +344,11 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			  }
 		  }
 	  }
-	  private void selectClass(PComboBox<CharacterClass> combo, String classId) {
-		  combo.setSelectedIndex(0);
-		  if(classId!=null) {
-			  for(int i=0,n=combo.getItemCount();i<n;i++) {
-				  CharacterClass c = combo.getItemAt(i);
-				  if(c.getClassId().contentEquals(classId)) {
-					  combo.setSelectedIndex(i);
-					  break;
-				  }
-			  }
-		  }
-	  }
+
 	  
 	  
 	  private PlayerCharacter pc;
+	  private boolean newPlayer = true;
 	  
 	  void populateScreen(PlayerCharacter value){
 		  this.pc = value;
@@ -441,8 +360,11 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			} catch (SQLException e) {
 				LOGGER.error("Error getting sequence",e);
 			}
-			 
+			 newPlayer = true; 
+		  } else {
+			  newPlayer = false;
 		  }
+			  btnAddXp.setReadOnly(newPlayer);
 		txtPcId.setIntegerValue(cid);  
 		txtCharacterName.setText(value.getCharacterName());  
 		txtPlayerName.setText(value.getPlayerName());
@@ -450,9 +372,11 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		selectRace(txtRace,value.getRaceId());
 		txtAlignment.setAlignment(value.getAlignment());
 
-		selectClass(txtClass1,value.getFirstClass());
-		selectClass(txtClass2,value.getSecondClass());
-		selectClass(txtClass3,value.getThirdClass());
+		String[] classes= new String[] {
+		value.getFirstClass(),
+		value.getSecondClass(),
+		value.getThirdClass()};
+		threeClasses.setClasses(classes);
 		
 		txtAttrStr.setIntegerValue(value.getAttrStr());
 		txtAttrInt.setIntegerValue(value.getAttrInt());
@@ -461,19 +385,29 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 		txtAttrCon.setIntegerValue(value.getAttrCon());
 		txtAttrChr.setIntegerValue(value.getAttrChr()); 
 
-		txtClassHp1.setIntegerValue(value.getFirstClassHp());
-		txtClassHp2.setIntegerValue(value.getSecondClassHp());
-		txtClassHp3.setIntegerValue(value.getThirdClassHp());
+		int[] hp = new int[] {			
+		value.getFirstClassHp(),
+		value.getSecondClassHp(),
+		value.getThirdClassHp()
+		};
+		threeClasses.setHp(hp);
 		
-		txtClassLevel1.setIntegerValue(value.getFirstClassLevel());
-		txtClassLevel2.setIntegerValue(value.getSecondClassLevel());
-		txtClassLevel3.setIntegerValue(value.getThirdClassLevel());
+		int[] levels = new int[] {
+		value.getFirstClassLevel(),
+		value.getSecondClassLevel(),
+		value.getThirdClassLevel()
+		};
+		threeClasses.setClassLevels(levels);
 
-		txtClassExperience1.setIntegerValue(value.getFirstClassExperience());
-		txtClassExperience2.setIntegerValue(value.getSecondClassExperience());
-		txtClassExperience3.setIntegerValue(value.getThirdClassExperience());
+		int[] xp = new int[] {
+		(value.getFirstClassExperience()),
+		(value.getSecondClassExperience()),
+		(value.getThirdClassExperience())
+		};
+		threeClasses.setExperience(xp);
 		
-		txtClassHpTotal.setIntegerValue(value.getHp());
+		
+		threeClasses.setClassHpTotal(value.getHp());
 		txtExceptionalStrength.setExceptionalStrength(value.getExceptionalStrength());
 		
 		
@@ -484,7 +418,8 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			PlayerCharacter c = new PlayerCharacter();
 			c.setPcId(cid);
 			c.setCharacterName(txtCharacterName.getText());
-			c.setFirstClass((String)txtClass1.getSelectedCode());
+			c.setFirstClass(threeClasses.getClasses()[0].getClassId());// could be nasty
+			
 			pnlSpellDetails.initialiseCharacter(pc);
 		}
 		
@@ -494,6 +429,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	@Override
 	PDataComponent[] getButtonComponents() { 
 		List<PDataComponent> bs = new ArrayList<>();
+		bs.add(btnAddXp);//
 		for(PDataComponent c:pnlEquipmentDetails.getButtonComponents()) {
 			bs.add(c);
 		}
@@ -555,25 +491,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			LOGGER.error("Err getting races",e);
 		}
 		
-		CharacterClassService characterClassService = (CharacterClassService)DataMapper.INSTANCE.getNonDataService(CharacterClassService.class);
-		
-		try {
-			
-			List<CharacterClass> classes = characterClassService.getList();
-			
-	 
-			
-			for(int i=0,n=3;i<n;i++){
-				List<CharacterClass> useMe = new ArrayList<>();
-				useMe.add(noClass);
-				useMe.addAll(classes);
-				classCombos[i].setList(useMe);
-				classCombos[i].setSelectedItem(noClass);
-			}
-			
-		} catch (SQLException e) {
-			LOGGER.error("Err getting races",e);
-		}
+
 		
 	}
 
@@ -597,9 +515,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 	private ReturnValue<?> addOrCopy(ReturnValue<?> rv) {
 		if(!rv.isError()) {
 			
-			for(int i=0,n=3;i<n;i++){
-				classCombos[i].setVisible(false); 
-			}
+			threeClasses.setClassCombosVisible(false);
 			
 			  {
 					 PlayerCharacterService ccs= (PlayerCharacterService) getDataService();
@@ -633,28 +549,29 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter,Inte
 			}
 			List<CharacterClass> classes = cr.getCharacterClasses();
 			List<Integer> hps= cr.getHitPoints();
-			txtClassHpTotal.setIntegerValue(0); 
-			int totalhp=0;
-			for(int i=0,n=3;i<n;i++){
-				classCombos[i].setVisible(false); 
-				classCombos[i].setSelectedItem(noClass);
-				hpValuesLabels[i].setText("");
-				levels[i].setIntegerValue(0);				
-			}
-			for(int i=0,n=classes.size();i<n;i++){
-				classCombos[i].setVisible(true); 
-				classCombos[i].setSelectedItem(classes.get(i));
-				hpValuesLabels[i].setIntegerValue(hps.get(i));
-				totalhp+=hps.get(i);
-				levels[i].setIntegerValue(1);
-			}
+			threeClasses.rolled(classes, hps);
+
+			
 			txtExceptionalStrength.setExceptionalStrength(cr.getExceptionalStrength());
-			txtClassHpTotal.setIntegerValue(totalhp);
 			
 		}
 	}
 
 
+	private void addXp() {
+		// need to pop up a small window, showing experience and having an "enter some new" button
+		//
+		if(newPlayer) {
+			Popper.popError(this, "Have to save first", "This is a new character, save them first before adding XP");
+			return;
+		}
+		Race race =(Race)txtRace.getSelectedItem();
+		PlayerCharacterAddXpDialog addXp = new PlayerCharacterAddXpDialog(GuiUtils.getParent(this));
+		addXp.setPlayerCharacter(pc,race);
+		addXp.pack();		
+		addXp.setLocationRelativeTo(null);
+		addXp.setVisible(true);
+	}
 
 	
 }
