@@ -82,6 +82,7 @@ public class PlayerCharacterSpellPanel extends PPanel {
 
 	private final PBasicTableWithModel tblSpell = new PBasicTableWithModel(SpellConfigs);
 
+	private PComboBox<CodedListItem<String>> txtAllByLevel = new PComboBox<>();
 	private PComboBox<CodedListItem<String>> txtMemByLevel = new PComboBox<>();
 
 	private void disableThings() {
@@ -114,8 +115,13 @@ public class PlayerCharacterSpellPanel extends PPanel {
 		add(sclSpell, BorderLayout.CENTER);
 		add(pnlInfo, BorderLayout.SOUTH);
 
-		pnlInfo.add(new PLabel("Memorised by level:"), GBU.label(0, 0));
-		pnlInfo.add(txtMemByLevel, GBU.text(1, 0));
+		
+		//  
+		pnlInfo.add(new PLabel("Allowed by level:"), GBU.label(0, 0));
+		pnlInfo.add(txtAllByLevel, GBU.text(1, 0));
+
+		pnlInfo.add(new PLabel("Memorised by level:"), GBU.label(0, 1));
+		pnlInfo.add(txtMemByLevel, GBU.text(1, 1));
 
 		btnSpellRemove.addActionListener(ae -> {
 			removeSpell();
@@ -362,25 +368,25 @@ public class PlayerCharacterSpellPanel extends PPanel {
 				};
 				boolean tooMany = false;
 				int[] memorised = memorisedMap.get(sc);
-				StringBuilder sb = new StringBuilder(sc).append(" ");
+				StringBuilder sbMemorised = new StringBuilder(sc).append(" ");
 				for (int i = 1, n = 10; i < n; i++) {
 					if (i > 1) {
-						sb.append(", ");
+						sbMemorised.append(", ");
 					}
 					int count =memorised[i];
-					sb.append("Lvl:").append(i).append(" ").append(count);
-					if(count>max[i]) {
-						sb.append("*");
+					sbMemorised.append("Lvl:").append(i).append(" ").append(count);
+					int maxSpellsPerLevel =max[i];
+					if(count>maxSpellsPerLevel) {
+						sbMemorised.append("*");
 						tooMany = true;
 					}
 
 				}
 				if(tooMany) {
-					sb.append(" (TOO MANY!)");
+					sbMemorised.append(" (TOO MANY!)");
 				}
-				LOGGER.info(sb.toString());
-				CodedListItem cli = new CodedListItem(sc, sb.toString());
-				txtMemByLevel.addItem(cli);
+				LOGGER.info(sbMemorised.toString());				
+				txtMemByLevel.addItem(new CodedListItem(sc, sbMemorised.toString()));
 
 			}
 
@@ -389,13 +395,44 @@ public class PlayerCharacterSpellPanel extends PPanel {
 	
 	
 	private void populateAllowedSpells() {
-		
+
+		txtAllByLevel.clear();
 		CharacterClassSpellService ccss = (CharacterClassSpellService)getDataService(CharacterClassSpell.class); 
 		try {
 			List<CharacterClassSpell> as =  (ccss.getAllowedSpells(pc.getPcId()));
 			for(CharacterClassSpell ccs:as) {
 				allowedSpells.put(ccs.getSpellClassId(),ccs);
+				int[] max = new int[] {
+						0,
+						ccs.getLevel1Spells(),
+						ccs.getLevel2Spells(),
+						ccs.getLevel3Spells(),
+						ccs.getLevel4Spells(),
+						ccs.getLevel5Spells(),
+						ccs.getLevel6Spells(),
+						ccs.getLevel7Spells(),
+						ccs.getLevel8Spells(),
+						ccs.getLevel9Spells()
+				};
+
+				StringBuilder sbMax = new StringBuilder(ccs.getSpellClassId()).append(" ");
+				for (int i = 1, n = 10; i < n; i++) {
+
+					int maxSpellsPerLevel =max[i];
+					if(maxSpellsPerLevel>0) {
+						if (i > 1) {
+							sbMax.append(", ");
+						}
+						sbMax.append("Lvl:").append(i).append(" ").append(maxSpellsPerLevel);
+					}
+				}
+				
+				
+				LOGGER.info(sbMax.toString());				 
+				txtAllByLevel.addItem(new CodedListItem(ccs.getSpellClassId(), sbMax.toString()));
+			
 			}
+			
 		} catch (SQLException e) {
 			Popper.popError(this, e);
 			return;

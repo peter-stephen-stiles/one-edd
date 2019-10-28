@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -121,5 +123,30 @@ public class ConstitutionDAO extends AbstractDAO<Constitution, Integer> implemen
 			ps.setInt(1, 99);
 		}
 	}
+	
+	public Map<Integer,Integer> getBonusSpells(Connection con, int constitution) throws SQLException {
+		int[] bonuses = new int[10];
+		for(int i=0,n=bonuses.length;i<n;i++) {
+			bonuses[i]=0;
+		}
+		Map<Integer,Integer> bonus = new HashMap<>();
+		for(int i=3,n = constitution;i<=n;i++) {
+			Constitution c= get(con,i);
+			int lvl=c.getDivineSpellBonusSpellLevel();
+			if(lvl>=0) {
+				bonuses[lvl] = bonuses[lvl]+1;
+			}
+			
+		}
+		for(int i=1,n=10;i<n;i++) {
+			int bon = bonuses[i];
+			if(bon>0) {
+				bonus.put(i, bon);
+			}
+		}
+		return bonus;	
+	}
+	
+	
 
 }

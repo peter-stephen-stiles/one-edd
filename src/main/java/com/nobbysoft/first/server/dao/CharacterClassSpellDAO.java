@@ -17,6 +17,7 @@ import com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.first.common.entities.equipment.Armour;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.staticdto.*;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
 import com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.server.utils.DbUtils;
@@ -207,6 +208,14 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 		
 	}
 
+	
+	/**
+	 * this includes constitution bonuses
+	 * @param con
+	 * @param pcId
+	 * @return
+	 * @throws SQLException
+	 */
 	public List<CharacterClassSpell> getAllowedSpells(Connection con, int pcId) throws SQLException{
 		
 		List<CharacterClassSpell> allowedSpells = new ArrayList<>();
@@ -214,6 +223,13 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 		// get the character
 		PlayerCharacterDAO pcDAO = new PlayerCharacterDAO();
 		PlayerCharacter pc = pcDAO.get(con, pcId);
+		CharacterClassDAO ccDAO = new CharacterClassDAO();
+		
+		
+		ConstitutionDAO conDAO = new ConstitutionDAO();
+		
+		Map<Integer,Integer> bonusSpells = conDAO.getBonusSpells(con, pc.getAttrCon());
+		
 		Map<String,Integer> classAndLevel = new HashMap<>();
 		classAndLevel.put(pc.getFirstClass(),pc.getFirstClassLevel());
 		if(pc.getSecondClass()!=null) {
@@ -226,15 +242,43 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 		String[] queryFields = new String[] {"CLASS_ID","LEVEL"};
 		for(String classId:classAndLevel.keySet()) {
 			int ml = getMaxSpellLevelInTable(con,classId);
+			boolean isDivine =  "D".equalsIgnoreCase( ccDAO.get(con,classId).getArcaneOrDivineMasterSpellClass());
 			int lvl = classAndLevel.get(classId);
 			//
 			Object[] fieldValues = new Object[] {classId,(lvl<ml)?lvl:ml};
-			allowedSpells.addAll( super.getListFromPartialKey(con, queryFields, fieldValues));
+			List<CharacterClassSpell> spells =super.getListFromPartialKey(con, queryFields, fieldValues);
+			for(CharacterClassSpell s:spells ) {
+				s =withBonus(s,bonusSpells);
+				allowedSpells.add(s);
+			}			
 		}
 		
 		
 		return allowedSpells;
 	}
+	
+	private CharacterClassSpell withBonus(CharacterClassSpell ccs,Map<Integer,Integer> bon){
+		boolean anyBonus=false;
+		Map<Integer,Integer> sbl = ccs.spellsByLevel();
+		for(Integer level:sbl.keySet()) {
+			int count =sbl.get(level);
+			if(count>0) {
+				Integer bonus =bon.get(level);
+				if(bonus!=null) {
+					int bi = bonus.intValue();
+					int tot = bi+count;
+					ccs.setLevelXSpell(level,tot);
+					anyBonus=true;
+				}
+			}
+		}
+		
+
+		LOGGER.info("ccs "+ccs+" any bonus?"+anyBonus);
+		return ccs;
+	}
+	
+	
 	
 	public int getMaxSpellLevelInTable(Connection con,String characterClassId) throws SQLException {
 		

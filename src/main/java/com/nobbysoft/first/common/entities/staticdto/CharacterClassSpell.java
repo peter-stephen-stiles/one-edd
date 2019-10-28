@@ -1,6 +1,8 @@
 package com.nobbysoft.first.common.entities.staticdto;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.nobbysoft.first.common.constants.Constants;
 import com.nobbysoft.first.common.entities.DataDTOInterface;
@@ -141,6 +143,45 @@ public class CharacterClassSpell implements Serializable, DataDTOInterface<Chara
 	}
 
 
+	public Map<Integer,Integer> spellsByLevel (){
+		Map<Integer,Integer> map = new HashMap<>();
+
+		map.put(1, level1Spells);
+		map.put(2, level2Spells);
+		map.put(3, level3Spells);
+		map.put(4, level4Spells);
+		map.put(5, level5Spells);
+		map.put(6, level6Spells);
+		map.put(7, level7Spells);
+		map.put(8, level8Spells);
+		map.put(9, level9Spells);
+		return map;
+	}
+	
+	public void setLevelXSpell(int level, int spells) {
+		if(level==1) {
+			level1Spells = spells;
+		}else if(level==2) {
+			level2Spells = spells;
+		}else if(level==3) {
+			level3Spells = spells;
+		}else if(level==4) {
+			level4Spells = spells;
+		}else if(level==5) {
+			level5Spells = spells;
+		}else if(level==6) {
+			level6Spells = spells;
+		}else if(level==7) {
+			level7Spells = spells;
+		}else if(level==8) {
+			level8Spells = spells;
+		}else if(level==9) {
+			level9Spells = spells;
+		}else {
+		throw new IllegalStateException("No such spell level as "+level);	
+		}
+	}
+	
 	public int getLevel1Spells() {
 		return level1Spells;
 	}
