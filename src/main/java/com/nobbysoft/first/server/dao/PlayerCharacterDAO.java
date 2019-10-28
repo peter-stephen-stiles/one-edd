@@ -97,7 +97,10 @@ public class PlayerCharacterDAO extends AbstractDAO<PlayerCharacter,Integer> imp
 				"first_class_level",
 				"second_class_level",
 				"third_class_level",
-				"exceptional_strength"};
+				"exceptional_strength",
+				"first_class_experience",
+				"second_class_experience",
+				"third_class_experience",};
 		DAOUtils.createInts(con, tableName, newInts);
 
 	}
@@ -143,6 +146,10 @@ public class PlayerCharacterDAO extends AbstractDAO<PlayerCharacter,Integer> imp
 		dto.setThirdClassLevel(rs.getInt(col++));
 						
 		dto.setExceptionalStrength(rs.getInt(col++));
+		
+		dto.setFirstClassExperience(rs.getInt(col++));
+		dto.setSecondClassExperience(rs.getInt(col++));
+		dto.setThirdClassExperience(rs.getInt(col++));
 
 		
 		return dto;
@@ -184,8 +191,12 @@ public class PlayerCharacterDAO extends AbstractDAO<PlayerCharacter,Integer> imp
 		ps.setInt(col++, value.getFirstClassLevel());
 		ps.setInt(col++, value.getSecondClassLevel());
 		ps.setInt(col++, value.getThirdClassLevel());
-		
+
 		ps.setInt(col++, value.getExceptionalStrength());
+
+		ps.setInt(col++, value.getFirstClassExperience());
+		ps.setInt(col++, value.getSecondClassExperience());
+		ps.setInt(col++, value.getThirdClassExperience());
 		
 		return col;
 	}
@@ -260,7 +271,10 @@ public class PlayerCharacterDAO extends AbstractDAO<PlayerCharacter,Integer> imp
 				"first_class_level",
 				"second_class_level",
 				"third_class_level",
-				"exceptional_strength"
+				"exceptional_strength",
+				"first_class_experience",
+				"second_class_experience",
+				"third_class_experience"
 };
 	}
 

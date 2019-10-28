@@ -9,5 +9,11 @@ public interface CharacterClassLevelService extends DataServiceI<CharacterClassL
  
 	public int getMaxLevelLevelInTable(String characterClassId) throws SQLException;
 	 
-	 
+	public int getMaxAllowedLevel(int pcId, String characterClassId) throws SQLException; 
+	
+	public CharacterClassLevel getThisLevel(String characterClassId, int level) throws SQLException;
+	
+
+	public CharacterClassLevel getNameLevel(String characterClassId) throws SQLException;
+	
 }

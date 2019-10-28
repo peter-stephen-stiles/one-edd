@@ -217,7 +217,100 @@ public class CharacterClassLevelDAO extends AbstractDAO<CharacterClassLevel, Cha
 		
 	}
 	
-
+	public CharacterClassLevel getNameLevelInTable(Connection con,String characterClassId) throws SQLException {
+		
+		String sql = "SELECT MAX(level) FROM "+tableName+" WHERE class_id = ? and name_Level = TRUE";
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setString(1, characterClassId);
+			try(ResultSet rs = ps.executeQuery()){
+				if(rs.next()) {
+					CharacterClassLevelKey key = new CharacterClassLevelKey();
+					key.setClassId(characterClassId);
+					key.setLevel(rs.getInt(1));
+					return get(con,key);
+				} else {
+					return null;
+				}
+			}
+		}
+		
+	}
 	
 
+	public int getMaxAllowedLevel(Connection con,
+			int pcId, 
+			String characterClassId) throws SQLException{
+		PlayerCharacterDAO pcDAO = new PlayerCharacterDAO();
+		RaceDAO raceDAO = new RaceDAO();
+		RaceClassLimitDAO rclDAO = new RaceClassLimitDAO(); 
+		
+		PlayerCharacter pc = pcDAO.get(con, pcId);
+		Race race = raceDAO.get(con, pc.getRaceId());
+		RaceClassLimitKey rclKey = new RaceClassLimitKey();
+		rclKey.setClassId(characterClassId);
+		rclKey.setRaceId(race.getRaceId());
+		RaceClassLimit raceClassLimit= rclDAO.get(con, rclKey);
+		
+		// need to codify the ATTRIBUTE that we're comparing against for the max levels...
+		
+		// simply return the ML
+		
+		return  (raceClassLimit.getMaxLevel());
+		 
+	}
+
+	
+	public CharacterClassLevel getThisLevel(Connection con,String characterClassId, int level) throws SQLException {
+
+		CharacterClassDAO ccDAO = new CharacterClassDAO (); 
+		
+		CharacterClass characterClass = ccDAO.get(con, characterClassId);
+		
+		CharacterClassLevel wanted = null;
+
+		CharacterClassLevelKey key = new CharacterClassLevelKey();		
+		key.setClassId(characterClassId);
+		key.setLevel(level);
+		
+		//int ml = getMaxLevelInTable(con,characterClassId);
+		//if(ml>level) {		
+		//} else {
+		//	key.setLevel(ml);
+		//}
+		CharacterClassLevel tryOne = null;
+		try {
+			tryOne=get(con,key);
+		} catch (RecordNotFoundException ee) {
+			// ok, we're allowed to be here
+		}
+		// gets the level OR the biggest level
+		
+		CharacterClassLevel nameLevel = getNameLevelInTable(con,characterClassId);
+		
+		if(nameLevel==null ) {
+			// no name level, so we have to have the right level or else we can't do jack!
+			// at this point if tryOne isn't null we've got an error :O
+			return tryOne;
+		} else {
+			// there is a name level
+			if(level<nameLevel.getLevel()) {
+				return tryOne;
+			} else {
+				// need to make up a level!				
+				int diff = level - nameLevel.getLevel(); 
+				CharacterClassLevel characterClasslevel = new CharacterClassLevel();
+				int fromXp = nameLevel.getFromXp()+ diff * characterClass.getXpPerLevelAfterNameLevel();
+				int toXp = nameLevel.getToXp()+ diff * characterClass.getXpPerLevelAfterNameLevel();
+				characterClasslevel.setClassId(characterClassId);
+				characterClasslevel.setLevel(level);
+				characterClasslevel.setLevelTitle(nameLevel.getLevelTitle()+ "("+level+"th level)");
+				characterClasslevel.setNameLevel(false);
+				characterClasslevel.setNotes("");
+				characterClasslevel.setFromXp(fromXp);
+				characterClasslevel.setToXp(toXp);
+				return characterClasslevel; 
+			}
+		}		
+	}
+	
 }

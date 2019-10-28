@@ -129,7 +129,36 @@ public class CharacterClassLevelServiceImpl implements CharacterClassLevelServic
 			}
 	}
 
+	public int getMaxAllowedLevel(int pcId, String characterClassId) throws SQLException{
+		
+		try(Connection con = cm.getConnection()){
+			try {
+			 return dao.getMaxAllowedLevel(con,pcId,characterClassId);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
+
+	public CharacterClassLevel getThisLevel(String characterClassId, int level) throws SQLException {
+		try(Connection con = cm.getConnection()){
+			try {
+			 return dao.getThisLevel(con,characterClassId,level);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
 	
- 
+	
+	public CharacterClassLevel getNameLevel(String characterClassId) throws SQLException{
+		try(Connection con = cm.getConnection()){
+			try {
+			 return dao.getNameLevelInTable(con,characterClassId);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
 	
 }
