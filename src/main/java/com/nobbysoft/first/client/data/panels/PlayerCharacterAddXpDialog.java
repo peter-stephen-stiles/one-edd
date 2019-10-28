@@ -58,6 +58,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		lblRaceName.setText(race.getName());
 
 		threeClasses.setFromPlayer(playerCharacter);
+		
 		// initialise !
 	}
 	
@@ -178,7 +179,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 				for (int i=0,n=classCount;i<n;i++) {
 					CharacterClass characterClass = characterClasses[i];
 					PlayerCharacterLevel playerCharacterLevel = playerCharacter.getClassDetails()[i];
-					ReturnValue<String> ret =  addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,xpAdd);
+					ReturnValue<String> ret =  addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,perClassXp);
 					if(ret.isError()) {
 						return ret;
 					}
