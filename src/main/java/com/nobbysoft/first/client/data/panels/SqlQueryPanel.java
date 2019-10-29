@@ -14,6 +14,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -93,6 +94,9 @@ public class SqlQueryPanel extends PPanel {
 		SwingUtilities.invokeLater(()->{
 			splPane.setDividerLocation(150);
 		});
+		
+		tblData.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		
 		
 	}
 	

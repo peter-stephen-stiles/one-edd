@@ -50,12 +50,14 @@ public class RaceClassLimitPanel extends AbstractDataPanel<RaceClassLimit,RaceCl
 	private final PComboBox<CodedListItem<Integer>> txtMaxLevelPrEq17 = new PComboBox<>();
 	private final PComboBox<CodedListItem<Integer>> txtMaxLevelPrLt17 = new PComboBox<>();
 	
+	private final PComboBox<CodedListItem<Integer>> txtlimitingAttribute = new PComboBox<>();
+	
 	//private final PIntegerField txtMaxLevel = new PIntegerField();
 	private final PTextArea txtLimitingFactors = new PTextArea(256); 
 	private final PCheckBox cbxNpcClassOnly = new PCheckBox("NPC only?");
 	
 	private PDataComponent[] dataComponents = new PDataComponent[] {  txtMaxLevel,txtLimitingFactors,
-			cbxNpcClassOnly,txtMaxLevelPrEq17,txtMaxLevelPrLt17
+			cbxNpcClassOnly,txtMaxLevelPrEq17,txtMaxLevelPrLt17,txtlimitingAttribute
 	 };
 private PDataComponent[] keyComponents = new PDataComponent[] { txtRaceId, txtClassId};
 private PDataComponent[] buttonComponents = new PDataComponent[] {  };
@@ -107,6 +109,7 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 		txtMaxLevelPrLt17.setName("Maximum level if Pr<17");
 		txtLimitingFactors.setName("Level limiting factors");
 		cbxNpcClassOnly.setName(cbxNpcClassOnly.getText());
+		txtlimitingAttribute.setName("Limiting attribute");
 		
 
 		PLabel lblRaceId = new PLabel(txtRaceId.getName()); 
@@ -115,29 +118,43 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 		PLabel lblMaxLevelPrEq17 = new PLabel(txtMaxLevelPrEq17.getName()); 
 		PLabel lblMaxLevelPrLt17 = new PLabel(txtMaxLevelPrLt17.getName()); 
 		PLabel lblLimitingFactors = new PLabel(txtLimitingFactors.getName()); 
+		PLabel lbllimitingAttribute = new PLabel(txtlimitingAttribute.getName());
 		
 		
-		add(getLblInstructions(), GBU.text(0, 0, 2)); 
-		add(lblRaceId, GBU.label(0, 1));
-		add(txtRaceId, GBU.text(1, 1)); 
+		int row=0;
 		
-		add(lblClassId, GBU.label(0, 2));
-		add(txtClassId, GBU.text(1, 2)); 
+		add(getLblInstructions(), GBU.text(0, row, 2));
+		
+		row++;
+		add(lblRaceId, GBU.label(0, row));
+		add(txtRaceId, GBU.text(1, row)); 
+		row++;
+		add(lblClassId, GBU.label(0, row));
+		add(txtClassId, GBU.text(1, row)); 
+		row++;
+		add(cbxNpcClassOnly, GBU.text(1, row));
+		
+		row++;
+		add(lblMaxLevel, GBU.label(0, row));
+		add(txtMaxLevel, GBU.text(1, row));
+		row++;
+		add(lblMaxLevelPrEq17, GBU.label(0, row));
+		add(txtMaxLevelPrEq17, GBU.text(1, row));
+		row++;
+		add(lblMaxLevelPrLt17, GBU.label(0, row));
+		add(txtMaxLevelPrLt17, GBU.text(1, row));  
+		row++;
+		add(lbllimitingAttribute, GBU.label(0, row));
+		add(txtlimitingAttribute, GBU.text(1, row));  
+		row++;
+		add(lblLimitingFactors, GBU.label(0, row));
 
-		add(cbxNpcClassOnly, GBU.text(1, 3));
-		
-
-		add(lblMaxLevel, GBU.label(0, 4));
-		add(txtMaxLevel, GBU.text(1, 4));  
-		add(lblMaxLevelPrEq17, GBU.label(0, 5));
-		add(txtMaxLevelPrEq17, GBU.text(1, 5));  
-		add(lblMaxLevelPrLt17, GBU.label(0, 6));
-		add(txtMaxLevelPrLt17, GBU.text(1, 6));  
-		
-		add(lblLimitingFactors, GBU.label(0, 8));
-		add(new PLabel(""), GBU.label(0, 9));
 		JScrollPane sclLimitingFactors = new JScrollPane(txtLimitingFactors);
-		add(sclLimitingFactors, GBU.panel(1, 8, 1, 2));
+		add(sclLimitingFactors, GBU.panel(1, row, 1, 2));
+
+		row++;
+		add(new PLabel(""), GBU.label(0, row));
+		row++;
 		
 		add(new PLabel(""), GBU.label(99, 99));
 	}
@@ -153,7 +170,12 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 		}
 		
 		 
-		
+		{
+			
+		 
+			txtlimitingAttribute.setList(cliDao.getAttributesWithZero());
+			
+		}
 		 {
 				
 			try {
@@ -203,6 +225,7 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 		value.setMaxLevelPrEq17((Integer)txtMaxLevelPrEq17.getSelectedCode());
 		value.setMaxLevelPrLt17((Integer)txtMaxLevelPrLt17.getSelectedCode());
 		value.setNpcClassOnly(cbxNpcClassOnly.isSelected());
+		value.setLimitingAttribute((Integer)txtlimitingAttribute.getSelectedCode());
 	}
 
 	@Override
@@ -216,7 +239,7 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 		txtMaxLevelPrEq17.setSelectedCode(value.getMaxLevelPrEq17());
 		txtMaxLevelPrLt17.setSelectedCode(value.getMaxLevelPrLt17());
 		cbxNpcClassOnly.setSelected(value.isNpcClassOnly());
-		
+		txtlimitingAttribute.setSelectedCode(value.getLimitingAttribute());
 	}
 
 	@Override

@@ -25,6 +25,8 @@ public class RaceClassLimit  implements Serializable, DataDTOInterface<RaceClass
 	private int maxLevel;
 	// for now, just text :}
 	private String limitingFactors;
+	
+	private int limitingAttribute; // str,con etc
 	private boolean npcClassOnly;
 	private int maxLevelPrEq17 ;
 	private int maxLevelPrLt17;
@@ -64,11 +66,11 @@ public class RaceClassLimit  implements Serializable, DataDTOInterface<RaceClass
 	}
 	@Override
 	public Object[] getAsRow() { 
-		return new Object[] {this,raceId,classId,maxLevel, limitingFactors,npcClassOnly};
+		return new Object[] {this,raceId,classId,maxLevel,  getLimitingAttributeString(),npcClassOnly};
 	}
 	@Override
 	public String[] getRowHeadings() { 
-		return new String[] {"Race","Class","Max level","Limiting factors","NPC only?"};
+		return new String[] {"Race","Class","Max level","Limiting attribute","NPC only?"};
 	}
 	@Override
 	public Integer[] getColumnWidths() { 
@@ -106,11 +108,77 @@ public class RaceClassLimit  implements Serializable, DataDTOInterface<RaceClass
 	@Override
 	public String toString() {
 		return "RaceClassLimit [raceId=" + raceId + ", classId=" + classId + ", maxLevel=" + maxLevel
-				+ ", limitingFactors=" + limitingFactors + ", npcClassOnly=" + npcClassOnly + ", maxLevelPrEq17="
-				+ maxLevelPrEq17 + ", maxLevelPrLt17=" + maxLevelPrLt17 + "]";
+				+ ", limitingFactors=" + limitingFactors + ", limitingAttribute=" + limitingAttribute
+				+ ", npcClassOnly=" + npcClassOnly + ", maxLevelPrEq17=" + maxLevelPrEq17 + ", maxLevelPrLt17="
+				+ maxLevelPrLt17 + "]";
+	}
+
+	public int getLimitingAttribute() {
+		return limitingAttribute;
+	}
+
+	public void setLimitingAttribute(int limitingAttribute) {
+		this.limitingAttribute = limitingAttribute;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((classId == null) ? 0 : classId.hashCode());
+		result = prime * result + limitingAttribute;
+		result = prime * result + ((limitingFactors == null) ? 0 : limitingFactors.hashCode());
+		result = prime * result + maxLevel;
+		result = prime * result + maxLevelPrEq17;
+		result = prime * result + maxLevelPrLt17;
+		result = prime * result + (npcClassOnly ? 1231 : 1237);
+		result = prime * result + ((raceId == null) ? 0 : raceId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RaceClassLimit other = (RaceClassLimit) obj;
+		if (classId == null) {
+			if (other.classId != null)
+				return false;
+		} else if (!classId.equals(other.classId))
+			return false;
+		if (limitingAttribute != other.limitingAttribute)
+			return false;
+		if (limitingFactors == null) {
+			if (other.limitingFactors != null)
+				return false;
+		} else if (!limitingFactors.equals(other.limitingFactors))
+			return false;
+		if (maxLevel != other.maxLevel)
+			return false;
+		if (maxLevelPrEq17 != other.maxLevelPrEq17)
+			return false;
+		if (maxLevelPrLt17 != other.maxLevelPrLt17)
+			return false;
+		if (npcClassOnly != other.npcClassOnly)
+			return false;
+		if (raceId == null) {
+			if (other.raceId != null)
+				return false;
+		} else if (!raceId.equals(other.raceId))
+			return false;
+		return true;
 	}
 	
-	
+	public String getLimitingAttributeString() {
+		if(limitingAttribute<1||limitingAttribute>6) {
+			return "";
+		}
+		return Attribute.fromIndex(limitingAttribute).getDescription();
+	}
 	
 	
 }

@@ -251,11 +251,20 @@ public class CharacterClassLevelDAO extends AbstractDAO<CharacterClassLevel, Cha
 		rclKey.setRaceId(race.getRaceId());
 		RaceClassLimit raceClassLimit= rclDAO.get(con, rclKey);
 		
+		
+		int limit = raceClassLimit.getMaxLevel();
 		// need to codify the ATTRIBUTE that we're comparing against for the max levels...
+		if(raceClassLimit.getLimitingAttribute()>0) {
+			// need to check against the XX attribute of the PV
+			int attValue = pc.getAttributeValue(Attribute.fromIndex(raceClassLimit.getLimitingAttribute()));
+			if(attValue<17) {
+				 limit = raceClassLimit.getMaxLevelPrLt17();
+			} else if(attValue==17){
+				limit = raceClassLimit.getMaxLevelPrEq17();
+			} 
+		}
 		
-		// simply return the ML
-		
-		return  (raceClassLimit.getMaxLevel());
+		return  (limit);
 		 
 	}
 

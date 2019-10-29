@@ -55,30 +55,12 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 			}
 		}
 		
+ 
+ 
+		// limitingAttribute limiting_Attribute
 		{
-			// max_level_pr_eq_17, max_level_pr_lt_17 maxLevelPrEq17 maxLevelPrLt17
-			String column="max_level_pr_eq_17";
-			String dataType = "INTEGER";
-				
-			if(!DbUtils.doesTableColumnExist(con, tableName, column)){
-				sql = "ALTER TABLE " + tableName +" add column "+column+" " +dataType;
-				try (PreparedStatement ps = con.prepareStatement(sql);) {
-					ps.execute();
-				} 
-			}
-		}
-		
-		{
-			// max_level_pr_lt_17 maxLevelPrLt17 
-			String column="max_level_pr_lt_17";
-			String dataType = "INTEGER";
-				
-			if(!DbUtils.doesTableColumnExist(con, tableName, column)){
-				sql = "ALTER TABLE " + tableName +" add column "+column+" " +dataType;
-				try (PreparedStatement ps = con.prepareStatement(sql);) {
-					ps.execute();
-				} 
-			}
+			String[] newInts = new String[] {"max_level_pr_eq_17","max_level_pr_lt_17","limiting_Attribute"};
+			DAOUtils.createInts(con, tableName, newInts);
 		}
 		
 	}
@@ -90,7 +72,7 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 	public RaceClassLimit get(Connection con, RaceClassLimitKey key) throws SQLException {
 		String sql = "SELECT " + 
 					" race_id, class_id ,max_level , limiting_factors,npc_class_only "+
-				",max_level_pr_eq_17, max_level_pr_lt_17"+
+				",max_level_pr_eq_17, max_level_pr_lt_17,limiting_Attribute"+
 				" FROM Race_Class_Limit "
 				+ " WHERE race_id = ? and class_id = ?";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -108,6 +90,7 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 					dto.setNpcClassOnly(rs.getBoolean(col++));
 					dto.setMaxLevelPrEq17(rs.getInt(col++));
 					dto.setMaxLevelPrLt17(rs.getInt(col++));
+					dto.setLimitingAttribute(rs.getInt(col++));
 					return (dto);
 
 				} else {
@@ -121,8 +104,8 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 	@Override
 	public void insert(Connection con, RaceClassLimit value) throws SQLException {
 		String sql = "INSERT INTO Race_Class_limit ( " + 
-	              " race_id, class_id ,max_level , limiting_factors,npc_class_only,max_level_pr_eq_17, max_level_pr_lt_17 ) VALUES ( "
-				+ "?,?,?,?,?,?,?) ";
+	              " race_id, class_id ,max_level , limiting_factors,npc_class_only,max_level_pr_eq_17, max_level_pr_lt_17,limiting_Attribute ) VALUES ( "
+				+ "?,?,?,?,?,?,?,?) ";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			int col=1;
 			ps.setString(col++, value.getRaceId());
@@ -132,6 +115,7 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 			ps.setBoolean(col++, value.isNpcClassOnly());
 			ps.setInt(col++, value.getMaxLevelPrEq17());
 			ps.setInt(col++, value.getMaxLevelPrLt17());
+			ps.setInt(col++, value.getLimitingAttribute());
 			ps.executeUpdate();
 		}
 	}
@@ -146,7 +130,7 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 	@Override
 	public List<RaceClassLimit> getList(Connection con,DTORowListener<RaceClassLimit> listener) throws SQLException {
 		String sql = "SELECT t0.race_id, t0.class_id ,t0.max_level , t0.limiting_factors,t0.npc_class_only "+
-	",t0.max_level_pr_eq_17, t0.max_level_pr_lt_17"+
+	",t0.max_level_pr_eq_17, t0.max_level_pr_lt_17,t0.limiting_Attribute "+
 	            " FROM Race_Class_Limit t0 "+
 				" LEFT OUTER JOIN Character_Class t1 on t1.class_id = t0.class_id"+
 	            " LEFT OUTER JOIN Race t2 ON t2.race_id = t0.race_id "+
@@ -166,6 +150,7 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 					dto.setNpcClassOnly(rs.getBoolean(col++));
 					dto.setMaxLevelPrEq17(rs.getInt(col++));
 					dto.setMaxLevelPrLt17(rs.getInt(col++));
+					dto.setLimitingAttribute(rs.getInt(col++));
 					if(listener!=null) {
 						listener.hereHaveADTO(dto, first);
 					} else {
@@ -191,7 +176,7 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 		}
 		
 		String sql = "SELECT t0.race_id, t0.class_id ,t0.max_level , t0.limiting_factors, t0.npc_class_only "+
-		",t0.max_level_pr_eq_17, t0.max_level_pr_lt_17"+
+		",t0.max_level_pr_eq_17, t0.max_level_pr_lt_17,t0.limiting_Attribute"+
 	            " FROM Race_Class_Limit t0 "+
 				" LEFT OUTER JOIN Character_Class t1 on t1.class_id = t0.class_id"+
 	            " LEFT OUTER JOIN Race t2 ON t2.race_id = t0.race_id "+
@@ -216,6 +201,7 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 					dto.setNpcClassOnly(rs.getBoolean(col++));
 					dto.setMaxLevelPrEq17(rs.getInt(col++));
 					dto.setMaxLevelPrLt17(rs.getInt(col++));
+					dto.setLimitingAttribute(rs.getInt(col++));
 					if(listener!=null) {
 						listener.hereHaveADTO(dto, first);
 					} else {
@@ -252,7 +238,8 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 						" limiting_factors   = ?, "+
 						" npc_class_only     = ?, "+
 						" max_level_pr_eq_17 = ?, "+
-					    " max_level_pr_lt_17 = ?  " +
+					    " max_level_pr_lt_17 = ?, " +
+						" limiting_Attribute = ?  " +
 				" WHERE race_id = ? "+
 				"   AND class_id = ? "
 				;
@@ -264,13 +251,14 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 			ps.setBoolean(col++, value.isNpcClassOnly()); 
 			ps.setInt(col++, value.getMaxLevelPrEq17());
 			ps.setInt(col++, value.getMaxLevelPrLt17());
+			ps.setInt(col++, value.getLimitingAttribute());
 			//
 			//
 			ps.setString(col++, value.getRaceId()); 
 			ps.setString(col++, value.getClassId()); 
 			int rows=ps.executeUpdate();
 			if(rows==0){
-				throw new RecordNotFoundException("Can't find Race Class LImit to delete it id=" + value.getKey());
+				throw new RecordNotFoundException("Can't find Race Class Limit to delete it id=" + value.getKey());
 			}
 		}
 	}

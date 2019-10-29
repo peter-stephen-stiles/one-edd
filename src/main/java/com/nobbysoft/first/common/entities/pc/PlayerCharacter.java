@@ -7,6 +7,7 @@ import java.util.List;
 import com.nobbysoft.first.common.constants.Constants;
 import com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.first.common.entities.staticdto.Alignment;
+import com.nobbysoft.first.common.entities.staticdto.Attribute;
 import com.nobbysoft.first.common.entities.staticdto.ClassType;
 import com.nobbysoft.first.common.entities.staticdto.Gender;
 
@@ -40,6 +41,28 @@ public class PlayerCharacter implements Serializable, DataDTOInterface<Integer> 
 	private int attrCon;
 	private int attrChr;
 
+	public int getAttributeValue(Attribute a) {
+		
+		if (a.equals(Attribute.STRENGTH)) {
+			return attrStr;
+		} else if  (a.equals(Attribute.INTELLIGENCE)) {
+			return attrInt;
+		} else if  (a.equals(Attribute.WISDOM)) {
+			return attrWis;
+		} else if  (a.equals(Attribute.DEXTERITY)) {
+			return attrDex;
+		} else if  (a.equals(Attribute.CONSTITUTION)) {
+			return attrCon;
+		} else if  (a.equals(Attribute.CHARISMA)) {
+			return attrChr;
+		} else {
+			return 0;
+		}
+		
+		
+		
+	}
+	
 	private int initialCon;
 
 	private String firstClass = null;
