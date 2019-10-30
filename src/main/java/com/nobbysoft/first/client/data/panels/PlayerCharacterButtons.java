@@ -58,12 +58,12 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 				RaceService rs = (RaceService) getDataService(Race.class);
 				PlayerCharacter pc = ccs.get(object.getPlayerCharacter().getPcId());
 				Race race = rs.get(pc.getRaceId());
-				PlayerCharacterAddXpDialog addXp = new PlayerCharacterAddXpDialog(window);
-				addXp.setPlayerCharacter(pc, race);
-				addXp.pack();
-				addXp.setLocationRelativeTo(null);
-				addXp.setVisible(true);
-				if (!addXp.isCancelled()) {
+				PlayerCharacterAddXpDialog dialog = new PlayerCharacterAddXpDialog(window);
+				dialog.setPlayerCharacter(pc, race);
+				dialog.pack();
+				dialog.setLocationRelativeTo(null);
+				dialog.setVisible(true);
+				if (!dialog.isCancelled()) {
 					ccs.update(pc);
 					pc = ccs.get(pc.getPcId());
 					return true;
@@ -73,6 +73,44 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 				return false;
 			} 
 			return false;
+		} else if(SPELLS.equals(name)) {	
+			try {
+			PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);
+			RaceService rs = (RaceService) getDataService(Race.class);
+			PlayerCharacter pc = ccs.get(object.getPlayerCharacter().getPcId());
+			
+			PlayerCharacterSpellDialog dialog = new PlayerCharacterSpellDialog(window,"Spells for "+object.getDescription());
+			dialog.initialiseCharacter(pc);
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);
+			dialog.setVisible(true);
+			
+			return true;
+			} catch (Exception ex) {
+				Popper.popError(window, ex);
+				return false;
+			} 
+			
+		}else if(EQUIPMENT.equals(name)) {	
+			try {
+			PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);
+			RaceService rs = (RaceService) getDataService(Race.class);
+			PlayerCharacter pc = ccs.get(object.getPlayerCharacter().getPcId());
+			
+			PlayerCharacterEquipmentDialog dialog = new PlayerCharacterEquipmentDialog(window,"Equipment for "+object.getDescription());
+			dialog.initialiseCharacter(pc);
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);
+			dialog.setVisible(true);
+			
+			return true;
+			} catch (Exception ex) {
+				Popper.popError(window, ex);
+				return false;
+			} 
+			
+		} else {
+			
 		}
 			 
 		return false;
