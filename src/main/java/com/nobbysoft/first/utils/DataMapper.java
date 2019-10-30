@@ -72,6 +72,7 @@ public enum DataMapper {
 	
 	{
 		buttonmap.put(CharacterClass.class, CharacterClassButtons.class);
+		buttonmap.put(PlayerCharacter.class, PlayerCharacterButtons.class);
 		
 
 		daoimap.put(PlayerCharacter.class, PlayerCharacterDAO.class);

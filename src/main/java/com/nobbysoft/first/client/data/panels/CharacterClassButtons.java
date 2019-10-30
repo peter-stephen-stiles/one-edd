@@ -35,7 +35,7 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 	}
 
 	@Override
-	public void doRowButton(Window window,String name, CharacterClass object) {
+	public boolean doRowButton(Window window,String name, CharacterClass object) {
 		if(ROLL_HP.equals(name)) {
 			// roll up a character class
 			RollHPDialog dialog = new RollHPDialog(window,"Roll "+object.getName()+" hit points");
@@ -43,6 +43,7 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);			
 			dialog.setVisible(true);
+			return false;
 			
 		} else if (LEVELS.equals(name)) {			
 			ClassLevelsDialog dialog = new ClassLevelsDialog(window,"Levels for "+object.getName());
@@ -50,20 +51,22 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);			
 			dialog.setVisible(true);
+			return false;
 		}else if (SPELLS.equals(name)) {			
 			ClassSpellsDialog dialog = new ClassSpellsDialog(window,"Spells for "+object.getName());
 			dialog.initialise(object);
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);			
 			dialog.setVisible(true);
+			return false;
 		}
+		return false;
 		
 	}
 
 	@Override
-	public void doTableButton(Window window,String name) {
-		// TODO Auto-generated method stub
-		
+	public boolean doTableButton(Window window,String name) {
+		return false;		
 	}
 
 }

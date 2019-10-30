@@ -7,6 +7,8 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
@@ -31,6 +33,7 @@ import javax.swing.table.TableColumnModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nobbysoft.first.client.components.PButton;
 import com.nobbysoft.first.client.components.PButtonPanel;
 import com.nobbysoft.first.client.components.PCodedListCellRenderer;
 import com.nobbysoft.first.client.components.PComboBox;
@@ -40,12 +43,14 @@ import com.nobbysoft.first.client.components.PTable;
 import com.nobbysoft.first.client.components.PTableCellRenderer;
 import com.nobbysoft.first.client.data.MaintenanceDialog;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.ButtonActioner;
 import com.nobbysoft.first.client.data.panels.CharacterRoller;
 import com.nobbysoft.first.client.data.panels.CharacterSheet;
 import com.nobbysoft.first.client.data.panels.PlayerCharacterPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
+import com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.servicei.PlayerCharacterService;
@@ -145,14 +150,15 @@ public class DataFrameTabCharacters extends PPanel {
 		});
 		
 		tblData.setAutoResizeMode(PTable.AUTO_RESIZE_LAST_COLUMN);
-		
 
-//		tblData.getSelectionModel().addListSelectionListener(se ->{
-////			if(!se.getValueIsAdjusting()) {
-////				enableRowButtons(tblData.getSelectedRowCount()>0);
-////			}
-//			
-//		});
+		tblData.getSelectionModel().addListSelectionListener(se ->{
+			if(!se.getValueIsAdjusting()) {
+				if(buttonActioner!=null) {
+					buttonActioner.enableRowButtons(tblData.getSelectedRowCount()>0);
+				}
+			}
+			
+		});
 		
 		tblData.addMouseListener(new MouseAdapter() {
 
@@ -167,27 +173,20 @@ public class DataFrameTabCharacters extends PPanel {
 		});
 
  
+		doButtons();
+		
 
- 
-		
-		
-//		PButtonPanel btnPanel = new PButtonPanel ();
-//		
-//		
-//		PButton btnRoll = new PButton("Roll new character");
-//		
-//		
-//		btnPanel.add(btnRoll);
-//		
-//
-//		btnRoll.addActionListener(ae ->{
-//			rollingRollingRolling();
-//		});
-//		
-//		add(btnPanel,BorderLayout.NORTH);
 	}
-
-	
+ButtonActioner buttonActioner=null;
+	private void doButtons() {
+		Class bd = DataMapper.INSTANCE.getButtonClass(PlayerCharacter.class);
+		 {
+			if(buttonActioner==null) {
+				buttonActioner=new ButtonActioner(getWindow(), pnlDataButtons, rowButtonListener, tableButtonListener);
+			}
+			buttonActioner.buttons(bd);
+		}
+	}
 	
 	private void rollingRollingRolling() {
 		LOGGER.info("Rolling");
@@ -456,6 +455,58 @@ public class DataFrameTabCharacters extends PPanel {
 		}
 	}
 	
+	private ActionListener rowButtonListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(buttonActioner==null) {
+				LOGGER.info("tried to press button but it didn't work (1)");
+				return;
+			}
+			if (!buttonActioner.haveDBI()) {
+				LOGGER.info("tried to press button but it didn't work (2)");
+				return;
+			}
+			PButton source = (PButton) e.getSource();
+			String name = e.getActionCommand();
+
+			int r = tblData.getSelectedRow();
+			if (r < 0 && tblData.getRowCount() > 0) {
+				r = 0;
+				tblData.selectRow(r);
+			}
+			if (r >= 0 && r < tblData.getRowCount()) {
+				DataDTOInterface dto = (DataDTOInterface) tmData.getValueAt(r, 0);
+				boolean refresh=buttonActioner.doRowButton(getWindow(),name, dto);
+				if(refresh) {
+					populateTable();
+				}
+			}
+
+		}
+
+	};
+
+
 	
+	private ActionListener tableButtonListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(buttonActioner==null) {
+				LOGGER.info("tried to press button but it didn't work (3)");
+				return;
+			}
+			if (!buttonActioner.haveDBI()) {
+				LOGGER.info("tried to press button but it didn't work (4)");
+				return;
+			}
+			PButton source = (PButton) e.getSource();
+			String name = e.getActionCommand();
+			boolean refresh =buttonActioner.doTableButton(getWindow(),name);
+			if(refresh) {
+				populateTable();
+			}
+		}
+
+	};
 	
 }

@@ -1,52 +1,35 @@
 package com.nobbysoft.first.client.data.tabs;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
 import java.awt.GridBagLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JButton;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PButton;
 import com.nobbysoft.first.client.components.PButtonPanel;
-import com.nobbysoft.first.client.components.PCodedListCellRenderer;
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PLabel;
-import com.nobbysoft.first.client.components.PListCellRenderer;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTable;
-import com.nobbysoft.first.client.components.PTableCellRenderer;
 import com.nobbysoft.first.client.components.TableUtils;
 import com.nobbysoft.first.client.data.MaintenanceDialog;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
-import com.nobbysoft.first.client.data.panels.DataButtonsInterface;
+import com.nobbysoft.first.client.data.panels.ButtonActioner;
 import com.nobbysoft.first.client.utils.GBU;
-import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.first.common.servicei.DataServiceI;
@@ -120,7 +103,9 @@ public class DataFrameTabData extends PPanel{
 
 		tblData.getSelectionModel().addListSelectionListener(se ->{
 			if(!se.getValueIsAdjusting()) {
-				enableRowButtons(tblData.getSelectedRowCount()>0);
+				if(buttonActioner!=null) {
+					buttonActioner.enableRowButtons(tblData.getSelectedRowCount()>0);
+				}
 			}
 			
 		});
@@ -162,23 +147,27 @@ public class DataFrameTabData extends PPanel{
 	}
 
 	private Class last = null;
-	private DataButtonsInterface dbi = null;
-
-	private void enableRowButtons(boolean enable) {
-		SwingUtilities.invokeLater(() ->{
-			for(PButton button:rowButtons) {
-				button.setEnabled(enable);
-			} 
-	});
-	}
+	//private DataButtonsInterface dbi = null;
+//
+//	private void enableRowButtons(boolean enable) {
+//		SwingUtilities.invokeLater(() ->{
+//			for(PButton button:rowButtons) {
+//				button.setEnabled(enable);
+//			} 
+//	});
+//	}
 	
-	private List<PButton> rowButtons = new ArrayList<>();
-	private List<PButton> tableButtons = new ArrayList<>();
+	//private List<PButton> rowButtons = new ArrayList<>();
+	//private List<PButton> tableButtons = new ArrayList<>();
 	private ActionListener rowButtonListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (dbi == null) {
-				LOGGER.info("tried to press button but it didn't work");
+			if(buttonActioner==null) {
+				LOGGER.info("tried to press button but it didn't work (1)");
+				return;
+			}
+			if (!buttonActioner.haveDBI()) {
+				LOGGER.info("tried to press button but it didn't work (2)");
 				return;
 			}
 			PButton source = (PButton) e.getSource();
@@ -191,7 +180,10 @@ public class DataFrameTabData extends PPanel{
 			}
 			if (r >= 0 && r < tblData.getRowCount()) {
 				DataDTOInterface dto = (DataDTOInterface) tmData.getValueAt(r, 0);
-				dbi.doRowButton(getWindow(),name, dto);
+				boolean refresh=buttonActioner.doRowButton(getWindow(),name, dto);
+				if(refresh) {
+					populateTable();
+				}
 			}
 
 		}
@@ -203,69 +195,34 @@ public class DataFrameTabData extends PPanel{
 	private ActionListener tableButtonListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (dbi == null) {
-				LOGGER.info("tried to press button but it didn't work");
+			if(buttonActioner==null) {
+				LOGGER.info("tried to press button but it didn't work (3)");
+				return;
+			}
+			if (!buttonActioner.haveDBI()) {
+				LOGGER.info("tried to press button but it didn't work (4)");
 				return;
 			}
 			PButton source = (PButton) e.getSource();
 			String name = e.getActionCommand();
-			dbi.doTableButton(getWindow(),name);
+			boolean refresh=buttonActioner.doTableButton(getWindow(),name);
+			if(refresh) {
+				populateTable();
+			}
 		}
 
 	};
 
-	private void buttons(Class buttonClass) {
-
-		SwingUtilities.invokeLater(() ->{
-		
-			try {
-			
-		pnlDataButtons.removeAll();
-		for (PButton button : rowButtons) {
-			button.removeActionListeners();
+	
+	private ButtonActioner buttonActioner;
+	
+	private void buttons(Class<?> bd) {
+		if(buttonActioner==null) {
+			buttonActioner=new ButtonActioner(getWindow(), pnlDataButtons, rowButtonListener, tableButtonListener);
 		}
-		for (PButton button : tableButtons) {
-			button.removeActionListeners();
-		}
-		// removed old, do we need new?
-		if (buttonClass == null) {
-			return;
-		}
-
-		try {
-			Constructor cn = buttonClass.getConstructor();
-			dbi = (DataButtonsInterface) cn.newInstance();
-			rowButtons.clear();
-			tableButtons.clear();
-
-			for (Object name : dbi.getRowButtonNames()) {
-				PButton button = new PButton(name.toString());
-				button.setActionCommand(button.getName());
-				button.addActionListener(rowButtonListener);
-				button.setEnabled(false);
-				rowButtons.add(button);
-				pnlDataButtons.add(button);
-			}
-			if (rowButtons.size() > 0 && tableButtons.size() > 0) {
-				pnlDataButtons.add(new PLabel("  "));
-			}
-			for (Object name : dbi.getTableButtonNames()) {
-				PButton button = new PButton(name.toString());
-				button.setActionCommand(button.getName());
-				button.addActionListener(tableButtonListener);
-				tableButtons.add(button);
-				pnlDataButtons.add(button);
-			}
-
-		} catch (Exception ex) {
-			LOGGER.error("Error doing buttons", ex);
-			Popper.popError(getWindow(), ex);
-		}
-			} finally {
-				pnlDataButtons.revalidate();
-			}
-		});
+		buttonActioner.buttons(bd);
 	}
+
 
 	private void populateTable() {
 

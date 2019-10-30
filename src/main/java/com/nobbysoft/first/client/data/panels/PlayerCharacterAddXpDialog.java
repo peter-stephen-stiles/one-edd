@@ -153,14 +153,15 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		Constitution constitution = conService.get(playerCharacter.getAttrCon());
 		PlayerCharacterService playerCharacterService =getPCService();
 		
+		PlayerCharacterLevel[] playerCharacterLevels = playerCharacter.getClassDetails();
 		
 		if(playerCharacter.getSecondClass()==null) {
 			// only one class, p'easy!
 			// remember can only go up one level at a time..
 			CharacterClass characterClass = characterClasses[0];
-			PlayerCharacterLevel playerCharacterLevel = playerCharacter.getClassDetails()[0];
+			PlayerCharacterLevel playerCharacterLevel = playerCharacterLevels[0];
 			
-			ReturnValue<String> ret = addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,xpAdd);
+			ReturnValue<String> ret = addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,xpAdd,0);
 			if(ret.isError()) {
 				return ret;
 			} else {
@@ -178,21 +179,32 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 				}
 				for (int i=0,n=classCount;i<n;i++) {
 					CharacterClass characterClass = characterClasses[i];
-					PlayerCharacterLevel playerCharacterLevel = playerCharacter.getClassDetails()[i];
-					ReturnValue<String> ret =  addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,perClassXp);
+					PlayerCharacterLevel playerCharacterLevel = playerCharacterLevels[i];
+					ReturnValue<String> ret =  addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,perClassXp,0);
 					if(ret.isError()) {
 						return ret;
 					}
 				}
 				playerCharacterService.update(playerCharacter);
 			} else {
+				
+				
+				
 				// dual classable only
 				// add XP to biggest class only
 				int classCount = playerCharacter.classCount();
+				int maxLevel = 0;
+				for(int i=0,n=classCount-1;i<n;i++){
+					CharacterClass characterClass = characterClasses[i];
+					int pcl = playerCharacterLevels[i].getThisClassLevel();
+					if(pcl>maxLevel) {
+						maxLevel = pcl;
+					}
+				}
 
 				CharacterClass characterClass = characterClasses[classCount-1];
-				PlayerCharacterLevel playerCharacterLevel = playerCharacter.getClassDetails()[classCount-1];
-				ReturnValue<String> ret = addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,xpAdd);
+				PlayerCharacterLevel playerCharacterLevel = playerCharacterLevels[classCount-1];
+				ReturnValue<String> ret = addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,xpAdd,maxLevel);
 				if(ret.isError()) {
 					return ret;
 				} else {
@@ -208,7 +220,8 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 			PlayerCharacterLevel playerCharacterLevel, 
 			CharacterClass characterClass,
 			Constitution constitution,
-			int xpAdd) throws SQLException {
+			int xpAdd,
+			int maxOtherLevel) throws SQLException {
 
 		CharacterClassLevelService cclService = getDataService();
 		
@@ -236,7 +249,8 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		CharacterClassLevel nameLevel = cclService.getNameLevel(characterClass.getClassId()); // could be null!
 		
 		int newXp = xp +  xpAdd;
-		if(newXp>thisLevel.getToXp()) {
+		// maxOtherLevel is used by DualClass character.
+		if(newXp>thisLevel.getToXp() && level>=maxOtherLevel) {
 			// level up!
 			int newLevel = level+1;
 			int newHp=0;

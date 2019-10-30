@@ -10,7 +10,7 @@ public interface DataButtonsInterface<T> {
 	public List<String> getRowButtonNames();
 	public List<String> getTableButtonNames();
 	
-	public void doRowButton(Window window,String name, T object);
-	public void doTableButton(Window window,String name);
+	public boolean doRowButton(Window window,String name, T object);
+	public boolean doTableButton(Window window,String name);
 	
 }
