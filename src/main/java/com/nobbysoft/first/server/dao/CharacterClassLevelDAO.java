@@ -224,9 +224,13 @@ public class CharacterClassLevelDAO extends AbstractDAO<CharacterClassLevel, Cha
 			ps.setString(1, characterClassId);
 			try(ResultSet rs = ps.executeQuery()){
 				if(rs.next()) {
+					int level = rs.getInt(1);
+					if(level<1) {
+						return null;
+					}
 					CharacterClassLevelKey key = new CharacterClassLevelKey();
 					key.setClassId(characterClassId);
-					key.setLevel(rs.getInt(1));
+					key.setLevel(level);
 					return get(con,key);
 				} else {
 					return null;

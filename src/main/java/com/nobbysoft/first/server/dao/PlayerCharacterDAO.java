@@ -14,6 +14,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterHp;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterHpKey;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.staticdto.Alignment;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.Gender;
@@ -25,9 +28,11 @@ import com.nobbysoft.first.server.utils.DbUtils;
 public class PlayerCharacterDAO extends AbstractDAO<PlayerCharacter,Integer> implements DAOI<PlayerCharacter, Integer>{
 
 	public PlayerCharacterDAO() { 
+
+		hpDao = new PlayerCharacterHpDAO();
 	}
 
-
+	private final PlayerCharacterHpDAO hpDao;
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
  
@@ -313,5 +318,73 @@ public class PlayerCharacterDAO extends AbstractDAO<PlayerCharacter,Integer> imp
 	}
 
  
+	public void update(Connection con,PlayerCharacter pc) throws SQLException {		
+		PlayerCharacterLevel[] classDetailsBefore=get(con,pc.getPcId()).getClassDetails(); // get prior details
+		super.update(con, pc);
+		PlayerCharacterLevel[] classDetailsAfter=get(con,pc.getPcId()).getClassDetails(); // get after details
+		for(int i=0,n=classDetailsAfter.length;i<n;i++) {
+			PlayerCharacterLevel after = classDetailsAfter[i];
+			PlayerCharacterLevel before = null;
+			if(i<classDetailsBefore.length) {
+				before = classDetailsBefore[i];
+			}
+			if(before==null) {
+				// no "before" value so just add one
+				 PlayerCharacterHp hp = new PlayerCharacterHp();
+				 hp.setPcId(pc.getPcId());
+				 hp.setClassId(after.getThisClass());
+				 hp.setLevel(after.getThisClassLevel());
+				 hp.setHpIncrement(after.getThisClassHp());
+				 hpDao.insert(con, hp);
+			} else {
+				// before is not null
+				int increment = after.getThisClassHp() - before.getThisClassHp();
+				
+				if(after.getThisClassLevel()!=before.getThisClassLevel()) {
+					// new level - so even if increment zero we want to add a row
+					 PlayerCharacterHp hp = new PlayerCharacterHp();
+					 hp.setPcId(pc.getPcId());
+					 hp.setClassId(after.getThisClass());
+					 hp.setLevel(after.getThisClassLevel());
+					 hp.setHpIncrement(increment);
+					 hpDao.insert(con, hp);
+				} else if (increment!=0) {
+					// same level and the HP have changed! need to update the row (if its there)
+					PlayerCharacterHp hp = null;
+					try {
+						PlayerCharacterHpKey key = new PlayerCharacterHpKey (pc.getPcId(),after.getThisClass(),after.getThisClassLevel()); 
+						hp=hpDao.get(con, key);
+						hp.setHpIncrement(hp.getHpIncrement()+increment);
+						hpDao.update(con, hp);
+						//
+					} catch (Exception ex) {
+						// not there insert a new one!
+						 hp = new PlayerCharacterHp();
+						 hp.setPcId(pc.getPcId());
+						 hp.setClassId(after.getThisClass());
+						 hp.setLevel(after.getThisClassLevel());
+						 hp.setHpIncrement(increment);
+						 hpDao.insert(con, hp);
+					}
+				}
+			}
+		}
+	}
+	
+	
+	public void insert(Connection con,PlayerCharacter pc) throws SQLException {
+		super.insert(con,pc);
+	 PlayerCharacterLevel[] classDetails=pc.getClassDetails();
+	 for(PlayerCharacterLevel details: classDetails) {
+		 if(details.getThisClass()!=null) {
+			 PlayerCharacterHp hp = new PlayerCharacterHp();
+			 hp.setPcId(pc.getPcId());
+			 hp.setClassId(details.getThisClass());
+			 hp.setLevel(details.getThisClassLevel());
+			 hp.setHpIncrement(details.getThisClassHp());
+			 hpDao.insert(con, hp);
+		 }
+	 }
+	}
 	
 }

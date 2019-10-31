@@ -46,14 +46,13 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 	private final PIntegerField txtClassExperience2 = new PIntegerField(false);
 	private final PIntegerField txtClassExperience3 = new PIntegerField(false);
 
-
 	private final PTextField txtClassNextExperience1 = new PTextField();
 	private final PTextField txtClassNextExperience2 = new PTextField();
 	private final PTextField txtClassNextExperience3 = new PTextField();
-	
+
 	private final PTextField[] nextExperience = new PTextField[] { txtClassNextExperience1, txtClassNextExperience2,
 			txtClassNextExperience3 };
-	
+
 	private final PIntegerField[] experience = new PIntegerField[] { txtClassExperience1, txtClassExperience2,
 			txtClassExperience3 };
 
@@ -75,29 +74,28 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 
 			txtClass1, txtClass2, txtClass3, txtClassLevel1, txtClassLevel2, txtClassLevel3, txtClassHp1, txtClassHp2,
 			txtClassHp3, txtClassHpTotal, txtClassExperience1, txtClassExperience2, txtClassExperience3,
-			 txtClassNextExperience1, txtClassNextExperience2,
-				txtClassNextExperience3};
+			txtClassNextExperience1, txtClassNextExperience2, txtClassNextExperience3 };
 
 	public ThreeClasses() {
 		super(new GridBagLayout());
 		populateCombos();
 		jbInit();
 	}
-	
+
 	private void setMinimumWidths() {
-		 for(PComboBox c: classCombos) {
-			 c.setMinimumWidth(50);
-		 }
-		 for(PIntegerField c: experience) {
-			 c.setMinimumWidth(50);
-		 }
-		 for(PIntegerField c: levels) {
-			 c.setMinimumWidth(50);
-		 }
-		 for(PIntegerField c: hpValuesLabels) {
-			 c.setMinimumWidth(50);
-		 }
-		 
+		for (PComboBox c : classCombos) {
+			c.setMinimumWidth(50);
+		}
+		for (PIntegerField c : experience) {
+			c.setMinimumWidth(50);
+		}
+		for (PIntegerField c : levels) {
+			c.setMinimumWidth(50);
+		}
+		for (PIntegerField c : hpValuesLabels) {
+			c.setMinimumWidth(50);
+		}
+
 	}
 
 	private void jbInit() {
@@ -112,7 +110,6 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 		txtClassNextExperience1.setName("XP for Next Level (1)");
 		txtClassNextExperience2.setName("XP for Next Level (2)");
 		txtClassNextExperience3.setName("XP for Next Level (3)");
-		
 
 		lblClass1.setText(txtClass1.getName());
 		lblClass2.setText(txtClass2.getName());
@@ -159,8 +156,6 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 		add(txtClassNextExperience2, GBU.text(9, 9));
 		add(txtClassNextExperience3, GBU.text(9, 10));
 
-		
-		
 		add(new PLabel("total"), GBU.label(4, 11));
 		add(txtClassHpTotal, GBU.text(5, 11));
 
@@ -267,8 +262,6 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 		txtClassExperience3.setIntegerValue(xp[2]);
 	}
 
-
-	
 	public void setClassHpTotal(int hp) {
 		txtClassHpTotal.setIntegerValue(hp);
 	}
@@ -372,44 +365,46 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 
 	}
 
-	
 	public void goGetNextXp() {
-		for(PTextField c:nextExperience) {
+		for (PTextField c : nextExperience) {
 			c.setTheValue("");
 			c.setToolTipText("");
 		}
 		CharacterClassLevelService characterClassLevelService = (CharacterClassLevelService) DataMapper.INSTANCE
 				.getNonDataService(CharacterClassLevelService.class);
 		//
-		int i=0;
-		for(PComboBox classCombo:classCombos) {
+		int i = 0;
+		for (PComboBox classCombo : classCombos) {
 			Object cco = classCombo.getSelectedItem();
-			if(cco!=null) {
-				CharacterClass cc = (CharacterClass)cco;
-				PIntegerField txtLevel =levels[i];
-				PTextField nextXp=nextExperience[i];
-				PIntegerField exp= experience[i];
-				int xp = exp.getIntegerValue();
-				int level = txtLevel.getIntegerValue();
-				try {
-				CharacterClassLevel ccl = characterClassLevelService.getThisLevel(cc.getClassId(), level);
-				if(ccl!=null) {
-					if(ccl.getFromXp()!=ccl.getToXp()) {
-						int next = ccl.getToXp()+1;
-						int inc = (next - xp);
-						nextXp.setTheValue(""+(next));
-						nextXp.setToolTipText("need "+inc);
-					} else {
-						nextXp.setTheValue("(max)");	
+			if (cco != null) {
+				CharacterClass cc = (CharacterClass) cco;
+				if (cc.getClassId() != null) 
+				{
+					PIntegerField txtLevel = levels[i];
+					PTextField nextXp = nextExperience[i];
+					PIntegerField exp = experience[i];
+					int xp = exp.getIntegerValue();
+					int level = txtLevel.getIntegerValue();
+					try {
+						CharacterClassLevel ccl = characterClassLevelService.getThisLevel(cc.getClassId(), level);
+						if (ccl != null && ccl.getClassId() != null) {
+							if (ccl.getFromXp() != ccl.getToXp()) {
+								int next = ccl.getToXp() + 1;
+								int inc = (next - xp);
+								nextXp.setTheValue("" + (next));
+								nextXp.setToolTipText("need " + inc);
+							} else {
+								nextXp.setTheValue("(max)");
+							}
+						}
+					} catch (Exception ex) {
+						LOGGER.error("Error looking for class:" + cc.getClassId() + " level:" + level, ex);
+						nextXp.setTheValue("");
 					}
-				}
-				} catch (Exception ex) {
-					LOGGER.error("Error looking for class:"+cc.getClassId()+" level:" +level,ex);
-					nextXp.setTheValue("");
 				}
 			}
 			i++;
 		}
 	}
-	
+
 }

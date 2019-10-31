@@ -5,12 +5,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.views.ViewPlayerCharacter;
 import com.nobbysoft.first.server.dao.PlayerCharacterDAO;
 import com.nobbysoft.first.server.dao.PlayerCharacterDetailI;
 import com.nobbysoft.first.server.dao.PlayerCharacterEquipmentDAO;
+import com.nobbysoft.first.server.dao.PlayerCharacterHpDAO;
 import com.nobbysoft.first.server.dao.PlayerCharacterSpellDAO;
 import com.nobbysoft.first.server.utils.ConnectionManager;
 
@@ -63,6 +65,8 @@ public class PlayerCharacterServiceImpl implements PlayerCharacterService {
 			try {
 			con.setAutoCommit(false);
 			 dao.insert(con,value);
+			 // hpDao
+			 //
 			 con.commit();
 			} finally {
 			con.rollback();

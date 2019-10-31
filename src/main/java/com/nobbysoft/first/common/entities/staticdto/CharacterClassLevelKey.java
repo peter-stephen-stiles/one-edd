@@ -70,7 +70,7 @@ public class CharacterClassLevelKey implements Comparable<CharacterClassLevelKey
 
 	@Override
 	public String toString() {
-		return "CharacterClassSpellsKey [classId=" + classId +  ", level=" + level
+		return "CharacterClassLevelKey [classId=" + classId +  ", level=" + level
 				+ "]";
 	}
 
