@@ -241,9 +241,9 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		
 
 		int mostHD = characterClass.getMaxHdLevel();
-		if(level==mostHD) {
-			return  new ReturnValue<String>(ReturnValue.IS_ERROR.TRUE,"Already at maximum level!");
-		}
+//		if(level==mostHD) {
+//			return  new ReturnValue<String>(ReturnValue.IS_ERROR.TRUE,"Already at maximum level!");
+//		}
 		
 		
 		CharacterClassLevel nameLevel = cclService.getNameLevel(characterClass.getClassId()); // could be null!
@@ -264,7 +264,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 				}
 			} else {
 				// just add spome points
-				newHp = hp+characterClass.getHpAfterNameLevel();
+				newHp = characterClass.getHpAfterNameLevel();
 			}
 			
 			CharacterClassLevel newLevelDetails = cclService.getThisLevel(characterClass.getClassId(),newLevel);
