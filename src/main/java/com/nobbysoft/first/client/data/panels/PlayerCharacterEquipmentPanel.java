@@ -49,6 +49,12 @@ public class PlayerCharacterEquipmentPanel extends PPanel {
 		jbInit();
 	}
 	
+	private PlayerCharacterUpdatedListener pcUpdatedListener;
+	
+	public void addPlayerCharacterUpdatedListener(PlayerCharacterUpdatedListener pcUpdatedListener) {
+		this.pcUpdatedListener = pcUpdatedListener;
+	}
+	
 	private int pcId;
 	private String characterName=null;
 	

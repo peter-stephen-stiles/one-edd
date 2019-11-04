@@ -40,6 +40,11 @@ public class PlayerCharacterHpPanel extends PPanel {
 		jbInit();
 	}
 
+	private PlayerCharacterUpdatedListener pcUpdatedListener;
+	
+	public void addPlayerCharacterUpdatedListener(PlayerCharacterUpdatedListener pcUpdatedListener) {
+		this.pcUpdatedListener = pcUpdatedListener;
+	}
 	private int pcId;
 	private String characterName = null;
 	private PlayerCharacter pc = null;
@@ -131,7 +136,10 @@ public class PlayerCharacterHpPanel extends PPanel {
 		if (!add.isCancelled()) {
 			// refresh
 			LOGGER.info("Refreshing table");
-			populateTable();
+			if(pcUpdatedListener!=null) {
+				pcUpdatedListener.playerCharacterUpdated(pc);
+			}
+			//populateTable();
 		}
 
 	}

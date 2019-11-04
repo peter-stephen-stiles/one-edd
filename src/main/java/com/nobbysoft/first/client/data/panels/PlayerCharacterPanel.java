@@ -42,7 +42,7 @@ import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
 public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Integer>
-		implements MaintenancePanelInterface<PlayerCharacter> {
+		implements MaintenancePanelInterface<PlayerCharacter> ,PlayerCharacterUpdatedListener{
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -122,6 +122,10 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 		pnlEquipmentDetails = new PlayerCharacterEquipmentPanel();
 		pnlSpellDetails = new PlayerCharacterSpellPanel();
 		pnlHpDetails = new PlayerCharacterHpPanel();
+
+		pnlEquipmentDetails.addPlayerCharacterUpdatedListener(this);
+		pnlSpellDetails.addPlayerCharacterUpdatedListener(this);
+		pnlHpDetails.addPlayerCharacterUpdatedListener(this);
 		
 		pnlTabs.addTab("Character", pnlCharacterDetails);
 		pnlTabs.addTab("Equipment", pnlEquipmentDetails);
@@ -306,10 +310,10 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 	private boolean newPlayer = true;
 
 	void populateScreen(PlayerCharacter value) {
-		this.pc = value;
+		PlayerCharacterService ccs = (PlayerCharacterService) getDataService();		
+		
 		int cid = value.getPcId();
-		if (cid <= 0) {
-			PlayerCharacterService ccs = (PlayerCharacterService) getDataService();
+		if (cid <= 0) {			
 			try {
 				cid = ccs.getNextId();
 			} catch (SQLException e) {
@@ -317,7 +321,12 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 			}
 			newPlayer = true;
 		} else {
-			newPlayer = false;
+			try {
+				pc = ccs.get(value.getKey());
+				newPlayer = false;
+			} catch (SQLException e) {
+				LOGGER.error("Error getting sequence", e);
+			}
 		}
 		btnAddXp.setReadOnly(newPlayer);
 		txtPcId.setIntegerValue(cid);
@@ -448,7 +457,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 					txtPcId.setIntegerValue(cid);
 				} catch (SQLException e) {
 					LOGGER.error("Error getting sequence", e);
-					rv = new ReturnValue(true, "Error getting sequence");
+					rv = new ReturnValue<String>(true, "Error getting sequence");
 				}
 
 			}
@@ -515,6 +524,12 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 		} finally {
 			populateScreen(pc);
 		}
+	}
+
+	@Override
+	public void playerCharacterUpdated(PlayerCharacter pc) {
+		populateScreen(pc);
+		
 	}
 
 }
