@@ -48,7 +48,7 @@ import com.nobbysoft.first.common.views.ViewPlayerCharacterSpell;
 import com.nobbysoft.first.utils.DataMapper;
  
 
-public class AddPlayerCharacterSpell extends PDialog {
+public class PlayerCharacterAddSpell extends PDialog {
 
 
 
@@ -58,7 +58,7 @@ public class AddPlayerCharacterSpell extends PDialog {
 	
 	private boolean cancelled= true;
  
-	public AddPlayerCharacterSpell(Window owner) {
+	public PlayerCharacterAddSpell(Window owner) {
 		super(owner);
 
 		setModalityType(ModalityType.APPLICATION_MODAL);
