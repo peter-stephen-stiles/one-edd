@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterHp;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterHpKey;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.views.ViewPlayerCharacterHp;
 import com.nobbysoft.first.server.utils.DbUtils;
@@ -174,6 +177,9 @@ public class PlayerCharacterHpDAO
 
 	public List<ViewPlayerCharacterHp> getViewForPC(Connection con, int pcId) throws SQLException {
 		
+		Map<String,CharacterClass> classes = new HashMap<>();
+		CharacterClassDAO ccDAO = new CharacterClassDAO();
+		
 		List<ViewPlayerCharacterHp> views = new ArrayList<>();
 		
 		getListFromPartialKey( con, new String[] {"pc_id"},new Object[] {pcId}, new DTORowListener<PlayerCharacterHp>() {
@@ -183,7 +189,16 @@ public class PlayerCharacterHpDAO
 			 
 				try { 					
 					ViewPlayerCharacterHp v = new ViewPlayerCharacterHp();
-					v.setPlayerCharacterHp(dto);					 
+					v.setPlayerCharacterHp(dto);
+					CharacterClass cc=null;
+					String classId = dto.getClassId();
+					if(classes.containsKey(classId)) {
+						cc = classes.get(classId);
+					} else {
+						cc = ccDAO.get(con, classId);
+						classes.put(classId, cc);
+					}
+					v.setClassName(cc.getName());
 					views.add(v);
 				} catch (Exception e) {
 					LOGGER.error("its all gone wrong for "+dto.getKey(),e);

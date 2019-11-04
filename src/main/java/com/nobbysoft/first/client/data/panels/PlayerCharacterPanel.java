@@ -112,6 +112,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 
 	private PlayerCharacterEquipmentPanel pnlEquipmentDetails;
 	private PlayerCharacterSpellPanel pnlSpellDetails;
+	private PlayerCharacterHpPanel pnlHpDetails;
 
 	public void jbInit() {
 
@@ -120,10 +121,12 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 		final PPanel pnlCharacterDetails = new PPanel(new GridBagLayout());
 		pnlEquipmentDetails = new PlayerCharacterEquipmentPanel();
 		pnlSpellDetails = new PlayerCharacterSpellPanel();
-
+		pnlHpDetails = new PlayerCharacterHpPanel();
+		
 		pnlTabs.addTab("Character", pnlCharacterDetails);
 		pnlTabs.addTab("Equipment", pnlEquipmentDetails);
 		pnlTabs.addTab("Spells", pnlSpellDetails);
+		pnlTabs.addTab("Hit Points", pnlHpDetails);
 
 		add(pnlTabs, BorderLayout.CENTER);
 
@@ -338,6 +341,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 		pnlEquipmentDetails.initialiseCharacter(cid, txtCharacterName.getText());
 		if (pc != null) {
 			pnlSpellDetails.initialiseCharacter(pc);
+			pnlHpDetails.initialiseCharacter(pc);
 		} else {
 			PlayerCharacter c = new PlayerCharacter();
 			c.setPcId(cid);
@@ -345,6 +349,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 			c.setFirstClass(threeClasses.getClasses()[0].getClassId());// could be nasty
 
 			pnlSpellDetails.initialiseCharacter(pc);
+			pnlHpDetails.initialiseCharacter(pc);
 		}
 
 	}
@@ -358,6 +363,10 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 		}
 
 		for (PDataComponent c : pnlSpellDetails.getButtonComponents()) {
+			bs.add(c);
+		}
+
+		for (PDataComponent c : pnlHpDetails.getButtonComponents()) {
 			bs.add(c);
 		}
 		return bs.toArray(new PDataComponent[bs.size()]);

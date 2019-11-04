@@ -123,13 +123,18 @@ public abstract class AbstractDataPanel<T extends DataDTOInterface<? extends K>,
 		if (mode != null) {
 			return new ReturnValue(true, "Cannot initialise panel twice!");
 		}
-		populateCombos();
-		dto = value;
-		mode = MODE.UPDATE;
-		getLblInstructions().setText(instructions);
-		enableData(true);
-		enableKeys(false);
-		populateScreen(value);
+		try {
+			populateCombos();
+			dto = value;
+			mode = MODE.UPDATE;
+			getLblInstructions().setText(instructions);
+			enableData(true);
+			enableKeys(false);
+			populateScreen(value);
+		} catch (Exception ex) {
+			LOGGER.error("Error initialising screen",ex);
+			return new ReturnValue(ReturnValue.IS_ERROR.TRUE,""+ex);
+		}
 		return new ReturnValue("");
 	}
 

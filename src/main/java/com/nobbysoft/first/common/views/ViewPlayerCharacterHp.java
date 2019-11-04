@@ -12,9 +12,11 @@ implements Serializable,DataDTOInterface<PlayerCharacterHpKey>{
 
 	
 	private PlayerCharacterHp playerCharacterHp; 
+	private String className;
 
-	public ViewPlayerCharacterHp(PlayerCharacterHp playerCharacterHp ) {
+	public ViewPlayerCharacterHp(PlayerCharacterHp playerCharacterHp ,String className) {
 		this.playerCharacterHp=playerCharacterHp; 
+		this.className=className;
 		
 	}
 	
@@ -34,17 +36,17 @@ implements Serializable,DataDTOInterface<PlayerCharacterHpKey>{
 
 	@Override
 	public Object[] getAsRow() {
-		return playerCharacterHp.getAsRow();
+		return new Object[] {this, className,playerCharacterHp.getLevel(),playerCharacterHp.getHpIncrement()};
 	}
 
 	@Override
 	public String[] getRowHeadings() {
-		return playerCharacterHp.getRowHeadings();
+		return new String[] {"","Class","Level","+hp"};
 	}
 
 	@Override
 	public Integer[] getColumnWidths() {
-		return playerCharacterHp.getColumnWidths();
+		return new Integer[] {0,200,100,100};
 	}
 
 	@Override
@@ -58,6 +60,14 @@ implements Serializable,DataDTOInterface<PlayerCharacterHpKey>{
 
 	public void setPlayerCharacterHp(PlayerCharacterHp playerCharacterHp) {
 		this.playerCharacterHp = playerCharacterHp;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
 	}
  
 
