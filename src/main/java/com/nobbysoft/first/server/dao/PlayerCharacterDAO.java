@@ -317,6 +317,21 @@ public class PlayerCharacterDAO extends AbstractDAO<PlayerCharacter,Integer> imp
 		dto.setDescription(rs.getString(col++));
 	}
 
+	
+
+	public void delete(Connection con,PlayerCharacter pc) throws SQLException {
+		// need to delete from the child tables
+		for( PlayerCharacterDetailI<?> pcd:new PlayerCharacterDetailI[] {
+				new PlayerCharacterEquipmentDAO(),
+				new PlayerCharacterHpDAO(),
+				new PlayerCharacterSpellDAO(),
+				}) {
+			pcd.deleteForPC(con, pc.getPcId());
+		}
+		super.delete(con, pc);
+		
+	}
+	
  
 	public void update(Connection con,PlayerCharacter pc) throws SQLException {		
 		PlayerCharacterLevel[] classDetailsBefore=get(con,pc.getPcId()).getClassDetails(); // get prior details
