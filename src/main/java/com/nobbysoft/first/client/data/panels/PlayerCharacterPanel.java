@@ -328,7 +328,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 				LOGGER.error("Error getting sequence", e);
 			}
 		}
-		btnAddXp.setReadOnly(newPlayer);
+		//btnAddXp.setReadOnly(newPlayer);
 		txtPcId.setIntegerValue(cid);
 		txtCharacterName.setText(value.getCharacterName());
 		txtPlayerName.setText(value.getPlayerName());

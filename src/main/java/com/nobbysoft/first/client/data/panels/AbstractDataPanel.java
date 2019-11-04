@@ -90,6 +90,7 @@ public abstract class AbstractDataPanel<T extends DataDTOInterface<? extends K>,
 		getLblInstructions().setText(instructions);
 		enableData(true);
 		enableKeys(true);
+		enableButtons(false);
 		return new ReturnValue("");
 	}
 	public ReturnValue<?> initCopy(T value,String instructions) {
@@ -101,6 +102,7 @@ public abstract class AbstractDataPanel<T extends DataDTOInterface<? extends K>,
 		getLblInstructions().setText(instructions);
 		enableData(true);
 		enableKeys(true);
+		enableButtons(false);
 		populateScreen(value);
 		blankKeys();
 		return new ReturnValue("");
@@ -116,6 +118,7 @@ public abstract class AbstractDataPanel<T extends DataDTOInterface<? extends K>,
 	getLblInstructions().setText(instructions);
 	enableData(false);
 	enableKeys(false);
+	enableButtons(false);
 	populateScreen(value);
 	return new ReturnValue("");
 }
@@ -130,6 +133,7 @@ public abstract class AbstractDataPanel<T extends DataDTOInterface<? extends K>,
 			getLblInstructions().setText(instructions);
 			enableData(true);
 			enableKeys(false);
+			enableButtons(true);
 			populateScreen(value);
 		} catch (Exception ex) {
 			LOGGER.error("Error initialising screen",ex);
