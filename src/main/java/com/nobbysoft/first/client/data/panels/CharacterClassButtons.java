@@ -12,12 +12,14 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 	private static final String ROLL_HP = "Roll HP";
 	private static final String LEVELS = "Levels";
 	private static final String SPELLS = "Spells By Level";
+	private static final String TO_HIT = "To-Hit Values";
 
 	public CharacterClassButtons() {
 
 		rowButtons.add(ROLL_HP);
 		rowButtons.add(LEVELS);
 		rowButtons.add(SPELLS);
+		rowButtons.add(TO_HIT);
 		tableButtons.add("Everybody dance now");
 	}
 
@@ -54,6 +56,13 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 			return false;
 		}else if (SPELLS.equals(name)) {			
 			ClassSpellsDialog dialog = new ClassSpellsDialog(window,"Spells for "+object.getName());
+			dialog.initialise(object);
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);			
+			dialog.setVisible(true);
+			return false;
+		}else if (TO_HIT.equals(name)) {			
+			ClassToHitDialog dialog = new ClassToHitDialog(window,"To-Hit values for "+object.getName());
 			dialog.initialise(object);
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);			
