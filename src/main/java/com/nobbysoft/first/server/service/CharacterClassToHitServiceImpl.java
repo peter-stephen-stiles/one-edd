@@ -8,6 +8,7 @@ import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHitKey;
 import com.nobbysoft.first.common.servicei.CharacterClassToHitService;
 import com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.server.dao.CharacterClassToHitDAO;
 import com.nobbysoft.first.server.utils.ConnectionManager;
 
@@ -117,7 +118,33 @@ public class CharacterClassToHitServiceImpl implements CharacterClassToHitServic
 			}
 	}
 
-
+	public ReturnValue<Integer> copyFrom(String fromClassId, String toClassId) throws SQLException{
+		
+		int created = 0;
+		try(Connection con = cm.getConnection()){
+			try {
+				if(fromClassId.equals(toClassId)) {
+					return new ReturnValue<Integer>(ReturnValue.IS_ERROR.TRUE,"You can't copy something to itself!");
+				}
+				List<CharacterClassToHit> listTo = dao.getFilteredList(con,toClassId);
+				if(listTo.size()>0) {
+					return new ReturnValue<Integer>(ReturnValue.IS_ERROR.TRUE,"You can't copy if you've already got some");
+				}
+				List<CharacterClassToHit> listFrom = dao.getFilteredList(con,fromClassId);
+				if(listFrom.size()==0) {
+					return new ReturnValue<Integer>(ReturnValue.IS_ERROR.TRUE,"There's nothing to copy :(");
+				}
+				for(CharacterClassToHit th: listFrom) {
+					th.setClassId(toClassId);
+					dao.insert(con, th);
+				}
+				con.commit();
+			} finally {
+			con.rollback();
+			}
+			}
+		return new ReturnValue<Integer>(created);
+	}
  
  
 	

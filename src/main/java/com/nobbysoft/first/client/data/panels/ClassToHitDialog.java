@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -24,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.client.components.PButton;
 import com.nobbysoft.first.client.components.PButtonPanel;
 import com.nobbysoft.first.client.components.PCodedListCellRenderer;
+import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PTable;
 import com.nobbysoft.first.client.components.PTableCellRenderer;
 import com.nobbysoft.first.client.data.MaintenanceDialog;
@@ -31,7 +33,10 @@ import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
+import com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.first.common.servicei.CharacterClassToHitService;
+import com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
@@ -90,14 +95,18 @@ public class ClassToHitDialog extends JDialog {
 		PButton btnCopy = new PButton("Copy");
 		PButton btnEdit = new PButton("Edit");
 		PButton btnDelete = new PButton("Delete");
+
+		PButton btnCopyAll = new PButton("Copy all from another class");
 		pnlTop.add(btnAdd);
 		pnlTop.add(btnCopy);
 		pnlTop.add(btnEdit);
 		pnlTop.add(btnDelete);
+		pnlTop.add(btnCopyAll);
 		btnAdd.addActionListener(ae -> add());
 		btnCopy.addActionListener(ae -> copy());
 		btnEdit.addActionListener(ae -> edit());
-		btnDelete.addActionListener(ae -> delete());	
+		btnDelete.addActionListener(ae -> delete());
+		btnCopyAll.addActionListener(ae -> copyAllFromAnotherClass());	
 		
 		PButton btnExit = new PButton("Exit");
 		btnExit.addActionListener(ae->dispose());
@@ -212,6 +221,8 @@ CharacterClassToHitService getDataService() {
 		}
 		
 		
+		
+		
 	}
 
 
@@ -317,22 +328,55 @@ CharacterClassToHitService getDataService() {
 		return GuiUtils.getParent(this);
 	}
 
-//	private CharacterClassToHit getMaxLevel(String classId) {
-//		CharacterClassToHitService service = getDataService();
-//		
-//		try{
-//			int ml= service.getMaxLevelLevelInTable(classId)	;
-//			if(ml>0) {
-//				CharacterClassToHitKey key = new CharacterClassToHitKey();
-//				key.setClassId(classId);
-//				key.setFromLevel(ml);
-//				key.setToLevel(toLevel);
-//				return service.get(key);
-//			} 
-//		} catch (SQLException e) {
-//			Popper.popError(this,e);
-//		}
-//		return null;
-//	}
+
+	private void copyAllFromAnotherClass() {
+		// need to pick another class!
+		CharacterClassService ccsDao = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
+
+		List<CodedListItem<String>> classes;
+		try {
+			classes = ccsDao.getAsCodedList();
+		} catch (SQLException e) {
+			Popper.popError(this, e);
+			return;
+		}
+		CodedListItem<String> thisCharacterClass = new CodedListItem<String>();
+		thisCharacterClass.setItem(characterClass.getClassId());
+		thisCharacterClass.setDescription(characterClass.getDescription());
+		
+		classes.remove(thisCharacterClass);
+		CodedListItem<String>[] ccia = new CodedListItem[classes.size()];
+		CodedListItem<String>[] possibilities = classes.toArray(ccia);
+		@SuppressWarnings("unchecked")
+		CodedListItem<String> s = (CodedListItem<String>)JOptionPane.showInputDialog(
+		                    GuiUtils.getParent(this),
+		                    "Select class to copy from ",
+		                    "Copy to-hit from another class",
+		                    JOptionPane.PLAIN_MESSAGE,
+		                    null,
+		                    possibilities,
+		                    possibilities[0]);
+
+		//If a string was returned, say so.
+		if ((s != null) ) {
+			CharacterClassToHitService thDao = getDataService();
+			try {
+				ReturnValue<Integer> ret = thDao.copyFrom(s.getItem(),characterClass.getClassId());
+				if(ret.isError()) {
+					Popper.popError(this, "Error copying", ret);
+				}
+			} catch (SQLException e) {
+				Popper.popError(this, e);
+				return;
+			}
+			// all good!
+			populateTable();
+		}
+
+		
+	
+	}
+	
+	
 	
 }
