@@ -2,7 +2,7 @@ package com.nobbysoft.first.common.entities.staticdto;
 
 import com.nobbysoft.first.common.utils.SU;
 
-public enum SavingThrow {
+public enum SavingThrowType {
 PARALYSATION_POISON_OR_DEATH_MAGIC(false),
 PETRIFICATION_OR_POLYMORPH(false),
 ROD_STAFF_OR_WAND(true),
@@ -16,7 +16,7 @@ SPELL(true);
 	
 	
 	private final boolean racialBonusApplies;
-	private SavingThrow(boolean racialBonusApplies){
+	private SavingThrowType(boolean racialBonusApplies){
 		this.racialBonusApplies=racialBonusApplies;
 		description = name().replace("_", " ");	
 		description=SU.proper(description);
