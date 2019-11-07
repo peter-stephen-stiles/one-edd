@@ -13,6 +13,7 @@ import com.nobbysoft.first.common.entities.equipment.EquipmentWhere;
 import com.nobbysoft.first.common.entities.staticdto.Alignment;
 import com.nobbysoft.first.common.entities.staticdto.Attribute;
 import com.nobbysoft.first.common.entities.staticdto.Gender;
+import com.nobbysoft.first.common.entities.staticdto.SavingThrowType;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.DICE;
 
@@ -87,12 +88,13 @@ public class CodedListDAO {
 				map.put(cli.getItem(), cli.getDescription());
 			}
 			return map;
-//		}else if (Constants.CLI_ATT_BONUS.equals(type)) {
-//			Map<Comparable,String> map = new HashMap<>();
-//			for(CodedListItem cli:getAttBonus()) {
-//				map.put(cli.getItem(), cli.getDescription());
-//			}
-//			return map;
+		}else if (Constants.CLI_SAVING_THROW.equals(type)) {
+			Map<Comparable,String> map = new HashMap<>();
+			for(CodedListItem cli:getSavingThrow()) {
+				map.put(cli.getItem(), cli.getDescription());
+			}
+			return map;
+
 		}
 		String sql = "";
 		
@@ -135,6 +137,8 @@ public class CodedListDAO {
 			return getAlignment();
 		} else if(Constants.CLI_GENDER.equals(type)) {
 			return getGender();
+		} else if (Constants.CLI_SAVING_THROW.equals(type)) {
+			return getSavingThrow();
 		}
 		
 		String sql = "";
@@ -178,6 +182,14 @@ public class CodedListDAO {
 	public List<CodedListItem<?>> getGender(){
 		List<CodedListItem<?>> list = new ArrayList<>();
 		for(Gender g:Gender.values()) {			
+			list.add(new CodedListItem(g.name(),g.name()));
+		}
+		return list;
+	}
+	
+	public List<CodedListItem<?>> getSavingThrow(){
+		List<CodedListItem<?>> list = new ArrayList<>();
+		for(SavingThrowType g:SavingThrowType.values()) {			
 			list.add(new CodedListItem(g.name(),g.name()));
 		}
 		return list;
