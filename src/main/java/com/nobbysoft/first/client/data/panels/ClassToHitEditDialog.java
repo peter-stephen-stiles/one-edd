@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
@@ -44,7 +45,13 @@ public class ClassToHitEditDialog
 		}
 	};
 	
+
+	private PDialog parentd;
+	public void setParentDialog(PDialog parentd) {
+		this.parentd=parentd;
+	}
  
+
 	
 	private final class IC extends PIntegerCombo{
 		public IC() {

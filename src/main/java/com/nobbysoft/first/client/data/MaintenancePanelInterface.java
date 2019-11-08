@@ -1,5 +1,6 @@
 package com.nobbysoft.first.client.data;
 
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.server.utils.ConnectionManager;
@@ -16,5 +17,7 @@ public interface MaintenancePanelInterface<T extends DataDTOInterface<?>> {
 	public ReturnValue<?> initDelete(T value,String instructions);
 	public ReturnValue<?> initCopy(T value,String instructions);
 	public ReturnValue<?> initAdd(String instructions);
+	
+	public void setParentDialog(PDialog parent);
 	
 }

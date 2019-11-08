@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
@@ -56,7 +57,13 @@ public class DexterityPanel extends AbstractDataPanel<Dexterity,Integer> impleme
 				txtReactionAttackAdjustment ,
 				txtDefensiveAdjustment};
 		
-		
+
+		private PDialog parentd;
+		public void setParentDialog(PDialog parentd) {
+			this.parentd=parentd;
+		}
+	 
+
 	public DexterityPanel() {
 
 		setLayout(new GridBagLayout());

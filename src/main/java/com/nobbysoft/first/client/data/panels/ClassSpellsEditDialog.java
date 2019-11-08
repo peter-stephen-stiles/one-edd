@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
@@ -74,7 +75,13 @@ public class ClassSpellsEditDialog
 			txtCharacterClass.setSelectedCode(parent.getClassId());
 		}
 	}
-	
+
+	private PDialog parentd;
+	public void setParentDialog(PDialog parentd) {
+		this.parentd=parentd;
+	}
+ 
+
 	public ClassSpellsEditDialog() {
 		setLayout(new GridBagLayout());
 		jbInit();

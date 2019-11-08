@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -73,6 +74,9 @@ public class ClassSavingThrowsDialog extends JDialog {
 	
 	private void jbInit() {
 		setLayout(new BorderLayout(5,5));
+		
+		tblData.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		
 		PButtonPanel pnlTop = new PButtonPanel();
 		PButtonPanel pnlBottom = new PButtonPanel();
 		JScrollPane sclData = new JScrollPane(tblData) {
@@ -208,6 +212,8 @@ SavingThrowService getDataService() {
 
 	private void populateTable() {
 
+		int r = tblData.getSelectedRow();
+		
 		SavingThrowService service = getDataService();
 		String filter = characterClass.getClassId();
 		tblData.clearData();
@@ -219,7 +225,9 @@ SavingThrowService getDataService() {
 		} catch (SQLException e) {
 			Popper.popError(this,e);
 		}
-		
+		if(r<tblData.getRowCount() && r >=0) {
+			tblData.getSelectionModel().addSelectionInterval(r, r);
+		}
 		
 	}
 
@@ -267,8 +275,10 @@ SavingThrowService getDataService() {
 	}
 
 	private void delete() {
-		int r = tblData.getSelectedRow();
-		if (r >= 0 && r < tblData.getRowCount()) {
+		int[] rs = tblData.getSelectedRows();
+		int i=0;
+		for(int r:rs) {
+			i++;
 			//
 			SavingThrow dto = (SavingThrow) tmData.getValueAt(r, 0);
 			if (dto != null) {
@@ -276,16 +286,17 @@ SavingThrowService getDataService() {
 				 {
 					ClassSavingThrowEditDialog mpi = new ClassSavingThrowEditDialog();
 					((ClassSavingThrowEditDialog)mpi).setParent(characterClass);
-					mpi.initDelete(dto, "Delete Saving Throw for "+characterClass.getName() );
+					mpi.initDelete(dto, "Delete Saving Throw for "+characterClass.getName() + "( #"+i+" of "+rs.length+")");
 					MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Delete", mpi);
 					md.pack();
 					md.setLocationRelativeTo(null);
 					md.setVisible(true);
-					populateTable();
 
 				}
 			}
 		}
+
+		populateTable();
 	}
 
 	private void copy() {

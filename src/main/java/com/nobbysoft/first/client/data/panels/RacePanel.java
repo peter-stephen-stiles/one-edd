@@ -7,6 +7,7 @@ import com.nobbysoft.first.client.components.PCheckBox;
 import com.nobbysoft.first.client.components.PCodeField;
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTextField;
@@ -32,6 +33,12 @@ public class RacePanel extends AbstractDataPanel<Race,String> implements Mainten
 		setLayout(new GridBagLayout());
 		jbInit();
 	}
+
+	private PDialog parentd;
+	public void setParentDialog(PDialog parentd) {
+		this.parentd=parentd;
+	}
+ 
 
 	private final PCodeField txtRaceId = new PCodeField();  
 	private final PTextField txtName = new PTextField(128);

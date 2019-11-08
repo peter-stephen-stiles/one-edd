@@ -15,6 +15,7 @@ import com.nobbysoft.first.client.components.PCheckBox;
 import com.nobbysoft.first.client.components.PCodeField;
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
@@ -47,6 +48,11 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		setLayout(new GridBagLayout());
 		jbInit();
 	}
+	private PDialog parent;
+	public void setParentDialog(PDialog parent) {
+		this.parent=parent;
+	}
+ 
 
 	private final PCodeField txtCharacterClassId = new PCodeField();  
 	private final PTextField txtName = new PTextField(128); 

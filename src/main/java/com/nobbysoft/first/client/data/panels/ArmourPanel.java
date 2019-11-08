@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PCodeField;
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
@@ -44,7 +45,11 @@ public class ArmourPanel extends AbstractDataPanel<Armour, String> implements Ma
 		return dao;
 		
 	}
-
+	
+	private PDialog parent;
+	public void setParentDialog(PDialog parent) {
+		this.parent=parent;
+	}
  
  
 	private final PCodeField txtCode = new PCodeField(); 

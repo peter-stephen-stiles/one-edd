@@ -19,7 +19,7 @@ public class MaintenanceDialog extends PDialog {
 
 	public MaintenanceDialog(Window owner, String title, MaintenancePanelInterface<?> panel) {
 		super(owner, title, ModalityType.DOCUMENT_MODAL);
-
+		panel.setParentDialog(this);
 		JButton btnOk = new JButton("OK");
 		JButton btnCancel = new JButton("Cancel");
 		BorderLayout layThis = new BorderLayout(5, 5);

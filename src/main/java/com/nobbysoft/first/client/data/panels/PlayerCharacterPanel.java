@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.client.components.PButton;
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
@@ -98,6 +99,12 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 			return d;
 		}
 	};
+
+	private PDialog parentd;
+	public void setParentDialog(PDialog parentd) {
+		this.parentd=parentd;
+	}
+ 
 
 	private final PIntegerCombo[] attCombos = new PIntegerCombo[] { txtAttrStr, txtAttrInt, txtAttrWis, txtAttrDex,
 			txtAttrCon, txtAttrChr };

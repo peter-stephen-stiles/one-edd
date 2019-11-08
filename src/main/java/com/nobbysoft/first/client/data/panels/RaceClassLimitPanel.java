@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.client.components.PCheckBox;
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PTextArea;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
@@ -41,6 +42,12 @@ public class RaceClassLimitPanel extends AbstractDataPanel<RaceClassLimit,RaceCl
 		jbInit();
 	}
 
+
+	private PDialog parentd;
+	public void setParentDialog(PDialog parentd) {
+		this.parentd=parentd;
+	}
+ 
 
 	private final PComboBox<CodedListItem<String>> txtRaceId = new PComboBox<>();
 	private final PComboBox<CodedListItem<String>> txtClassId = new PComboBox<>();

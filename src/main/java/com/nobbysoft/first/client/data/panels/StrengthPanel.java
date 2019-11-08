@@ -34,9 +34,13 @@ public class StrengthPanel extends AbstractDataPanel<Strength,StrengthKey> imple
 		private final PIntegerCombo txtOpenMagicalDoors = new PIntegerCombo(0,2);
 		private final PIntegerCombo txtBendBarsLiftGates = new PIntegerCombo(0,40);
 		
-//			c.getHitProbability();
-//			c.getDamageAdjustment();
-//			c.getResurrectionSurvival()
+
+		private PDialog parentd;
+		public void setParentDialog(PDialog parentd) {
+			this.parentd=parentd;
+		}
+	 
+
 		
 		private PDataComponent[] dataComponents = new PDataComponent[] {				
 				txtExceptionalStrengthTo,txtHitProbability,txtDamageAdjustment ,

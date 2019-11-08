@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
@@ -132,7 +133,11 @@ public class ClassSavingThrowEditDialog
 		add(new PLabel(txtCharacterClass.getName()),GBU.label(0, row));
 		add(txtCharacterClass,GBU.text(1, row));		
  
+		row++;
 		
+		add(new PLabel(cbxSavingThrow.getName()),GBU.label(0, row));
+		add(cbxSavingThrow,GBU.text(1, row,3));		 
+				
 		row++;
 		
 		add(new PLabel(txtFromLevel.getName()),GBU.label(0, row));
@@ -141,11 +146,7 @@ public class ClassSavingThrowEditDialog
 		add(new PLabel(txtToLevel.getName()),GBU.label(2, row));
 		add(txtToLevel,GBU.text(3,row));
 		
-		row++;
-		
-		add(new PLabel(cbxSavingThrow.getName()),GBU.label(0, row));
-		add(cbxSavingThrow,GBU.text(1, row,2));		 
-		
+
 		row++;
 		//txtRollRequired
 		add(new PLabel(txtRollRequired.getName()),GBU.label(0, row));
@@ -154,9 +155,24 @@ public class ClassSavingThrowEditDialog
 		
 		// spacer
 		add(new PLabel(""),GBU.label(99, 99));	
+		
+		
+		txtRollRequired.addActionListener(ae->{
+			ReturnValue<?> rv = ok();
+			if(rv.isError()) {
+				Popper.popError(this, "Error saving", rv);
+			} else {
+				parentd.dispose();
+			}
+		});
 	}
 
-	
+	private PDialog parentd;
+	public void setParentDialog(PDialog parentd) {
+		this.parentd=parentd;
+	}
+ 
+
 	@Override
 	void populateCombos() {
 

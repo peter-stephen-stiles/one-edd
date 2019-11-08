@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.client.components.PCheckBox;
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
@@ -36,7 +37,15 @@ public class ClassLevelEditDialog
   extends AbstractDataPanel<CharacterClassLevel, CharacterClassLevelKey>
   implements MaintenancePanelInterface<CharacterClassLevel> {
 
+
+	private PDialog parentd;
+	public void setParentDialog(PDialog parentd) {
+		this.parentd=parentd;
+	}
  
+
+ 
+
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 

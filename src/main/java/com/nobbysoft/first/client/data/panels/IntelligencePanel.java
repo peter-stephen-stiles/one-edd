@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
@@ -50,7 +51,13 @@ public class IntelligencePanel extends AbstractDataPanel<Intelligence,Integer> i
 				txtMinSpellsPerLevel ,
 				txtMaxSpellsPerLevel};
 		
-		
+
+		private PDialog parentd;
+		public void setParentDialog(PDialog parentd) {
+			this.parentd=parentd;
+		}
+	 
+
 	public IntelligencePanel() {
 
 		setLayout(new GridBagLayout());
