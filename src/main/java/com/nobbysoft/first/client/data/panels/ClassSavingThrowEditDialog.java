@@ -222,9 +222,9 @@ public class ClassSavingThrowEditDialog
 		if(Level1<Level0){
 			return new ReturnValue(ReturnValue.IS_ERROR.TRUE,"'To' Level cannot be less than 'From' Level");
 		}
-		if(Level0==0 && Level1==0) {
-			return new ReturnValue(ReturnValue.IS_ERROR.TRUE,"'To' Level cannot be less than 'From' Level");
-		}
+//		if(Level0==0 && Level1==0) {
+//			return new ReturnValue(ReturnValue.IS_ERROR.TRUE,"level bigger than zero please"); NO NORMAL HUMANS!!!
+//		}
 		
 		return new ReturnValue(""); //no error
 	}
