@@ -41,7 +41,7 @@ public class PTableCellRenderer extends DefaultTableCellRenderer {
 		// is it divisible by 2?
 		int d = row / 3;
 		if(d%2==0) {
-			return text;
+			return isSelected?oppositeText:text;//isSelected?text:oppositeText;
 		} else {
 			return isSelected?oppositeText:text;
 		}
