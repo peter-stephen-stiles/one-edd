@@ -27,13 +27,37 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 	public CharacterClassDAO() {
 	}
 
+	private final String tableName = "Character_Class";
+	@Override
+	public void createConstraints(Connection con) throws SQLException{
+		String sql;
+		{
+			// add some columns
+			String column = "parent_class_id";
+			String dataType = "varchar(20)";
+
+			//
+			try{
+				 
+				sql = "ALTER TABLE " + tableName + " add foreign key " + column
+						+ " references Character_Class(class_id) ";
+				try (PreparedStatement ps = con.prepareStatement(sql);) {
+					ps.execute();
+				}
+			} catch (SQLException ex) {
+				LOGGER.info("Error trying to add FK "+column);
+			}
+		}
+		
+		
+	};
+	
 	@Override
 	public void createTable(Connection con) throws SQLException {
 		/**
 		 * private String classId; private String name; private boolean
 		 * hasMagicDefenceBonus;
 		 */
-		String tableName = "Character_Class";
 		String sql = "CREATE TABLE " + tableName +
 				 "(class_id varchar(20), "+
 				" name varchar(256) , "+
