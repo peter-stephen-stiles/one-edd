@@ -97,17 +97,20 @@ public class ClassSavingThrowsDialog extends JDialog {
 		
 		PButton btnAdd = new PButton("Add");
 		PButton btnCopy = new PButton("Copy");
+		PButton btnNext = new PButton("Next");
 		PButton btnEdit = new PButton("Edit");
 		PButton btnDelete = new PButton("Delete");
 
 		PButton btnCopyAll = new PButton("Copy all from another class");
 		pnlTop.add(btnAdd);
 		pnlTop.add(btnCopy);
+		pnlTop.add(btnNext);
 		pnlTop.add(btnEdit);
 		pnlTop.add(btnDelete);
 		pnlTop.add(btnCopyAll);
 		btnAdd.addActionListener(ae -> add());
 		btnCopy.addActionListener(ae -> copy());
+		btnNext.addActionListener(ae -> next());
 		btnEdit.addActionListener(ae -> edit());
 		btnDelete.addActionListener(ae -> delete());
 		btnCopyAll.addActionListener(ae -> copyAllFromAnotherClass());
@@ -299,6 +302,41 @@ SavingThrowService getDataService() {
 		populateTable();
 	}
 
+	private void next() {
+		if(tblData.getRowCount()==0) {
+			return;
+		}
+		int r = tblData.getSelectedRow();
+		if (r < 0 && tblData.getRowCount() > 0) {
+			r = 0;
+			tblData.selectRow(r);
+		}
+		if (r >= 0 && r < tblData.getRowCount()) {
+			//
+			SavingThrow dto = (SavingThrow) tmData.getValueAt(r, 0);
+			if (dto != null) {
+				// get panel for current class and instantiate one
+				 {
+					ClassSavingThrowEditDialog mpi = new ClassSavingThrowEditDialog();
+					mpi.setParent(characterClass);
+					int diff = dto.getToLevel() - dto.getFromLevel();
+					dto.setFromLevel(dto.getToLevel()+1);
+					dto.setToLevel(dto.getFromLevel()+diff);
+					
+					mpi.initCopy(dto, "Add Saving Throw for "+characterClass.getName());
+					MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Add", mpi);
+					md.pack();
+					md.setLocationRelativeTo(null);
+					md.setVisible(true);					
+					populateTable();
+					int sr=tblData.getSelectedRow();
+					tblData.clearSelection();
+					tblData.addRowSelectionInterval(sr+1, sr+1);
+				}
+			}
+		}
+	}
+	
 	private void copy() {
 		if(tblData.getRowCount()==0) {
 			return;
@@ -320,7 +358,7 @@ SavingThrowService getDataService() {
 					MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Add", mpi);
 					md.pack();
 					md.setLocationRelativeTo(null);
-					md.setVisible(true);
+					md.setVisible(true);					
 					populateTable();
 
 				}
