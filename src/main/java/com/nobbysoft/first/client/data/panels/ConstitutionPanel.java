@@ -36,25 +36,11 @@ public class ConstitutionPanel extends AbstractDataPanel<Constitution,Integer> i
 					return d;				
 			}
 		};
-		
-		private final PIntegerCombo txtDivineSpellBonusSpellLevel = new PIntegerCombo(0,4);
-		private final PIntegerCombo txtDivineMaxSpellLevel = new PIntegerCombo(0,7);
-		private final PIntegerCombo txtDivineSpellChanceFailure = new PIntegerCombo(0,99);
-		{
-			
-		}
-
-		// "divine_Spell_Chance_Failure", "divine_Spell_Bonus_Spell_Level","divine_Max_Spell_Level"
-		
-//			c.getHitPointAdjustmentHigh();
-//			c.getSystemShockSurvival();
-//			c.getResurrectionSurvival()
+		 
 		
 		private PDataComponent[] dataComponents = new PDataComponent[] {  				txtHitPointAdjustment ,
 				txtHitPointAdjustmentHigh,txtSystemShockSurvival ,
-				txtResurrectionSurvival,txtDivineSpellBonusSpellLevel,
-				txtDivineMaxSpellLevel,
-				txtDivineSpellChanceFailure
+				txtResurrectionSurvival 
 				 };
 		private PDataComponent[] keyComponents = new PDataComponent[] { txtAbilityScore 
 				};
@@ -124,10 +110,7 @@ public class ConstitutionPanel extends AbstractDataPanel<Constitution,Integer> i
 		value.setHitPointAdjustment(txtHitPointAdjustment.getIntegerValue());
 		value.setHitPointAdjustmentHigh(txtHitPointAdjustmentHigh.getIntegerValue());
 		value.setSystemShockSurvival(txtSystemShockSurvival.getIntegerValue());
-		value.setResurrectionSurvival(txtResurrectionSurvival.getIntegerValue());
-		value.setDivineSpellBonusSpellLevel(txtDivineSpellBonusSpellLevel.getIntegerValue());
-		value.setDivineMaxSpellLevel(txtDivineMaxSpellLevel.getIntegerValue());
-		value.setDivineSpellChanceFailure(txtDivineSpellChanceFailure.getIntegerValue());
+		value.setResurrectionSurvival(txtResurrectionSurvival.getIntegerValue()); 
 		
 	}
 
@@ -138,10 +121,7 @@ public class ConstitutionPanel extends AbstractDataPanel<Constitution,Integer> i
 		txtHitPointAdjustmentHigh .setIntegerValue(value.getHitPointAdjustmentHigh());
 		txtSystemShockSurvival .setIntegerValue(value.getSystemShockSurvival());
 		txtResurrectionSurvival.setIntegerValue(value.getResurrectionSurvival());
-
-		txtDivineSpellBonusSpellLevel.setIntegerValue(value.getDivineSpellBonusSpellLevel());
-		txtDivineMaxSpellLevel.setIntegerValue(value.getDivineMaxSpellLevel());
-		txtDivineSpellChanceFailure.setIntegerValue(value.getDivineSpellChanceFailure());
+ 
 		
 	}
 
@@ -164,26 +144,14 @@ public class ConstitutionPanel extends AbstractDataPanel<Constitution,Integer> i
 		txtHitPointAdjustmentHigh.setName("Hit point adjustment (high)");
 		txtSystemShockSurvival .setName("System shock survival");
 		txtResurrectionSurvival.setName("Resurrection survival");
-
-		//txtDivineSpellBonusSpellLevel, txtDivineMaxSpellLevel,		txtDivineSpellChanceFailure
-/*
- "Spell Bonus (lvl)",
-				"Spell Failure %",
-				"Max Spell Lvl" 
- */
-		txtDivineSpellBonusSpellLevel.setName("Divine bonus spell (lvl)");
-		txtDivineMaxSpellLevel.setName("Divine max spell Lvl");
-		txtDivineSpellChanceFailure.setName("Divine spell failure %");
+ 
 		
 		PLabel lblAbilityScore            = new PLabel(txtAbilityScore.getName());  
 		PLabel lblHitPointAdjustment      = new PLabel(txtHitPointAdjustment.getName()); 
 		PLabel lblHitPointAdjustmentHigh   = new PLabel(txtHitPointAdjustmentHigh.getName()); 
 		PLabel lblSystemShockSurvival     = new PLabel(txtSystemShockSurvival.getName()); 
 		PLabel lblResurrectionSurvival    = new PLabel(txtResurrectionSurvival.getName()); 
-		
-		PLabel lblDivineSpellBonusSpellLevel   = new PLabel(txtDivineSpellBonusSpellLevel.getName()); 
-		PLabel lblDivineMaxSpellLevel          = new PLabel(txtDivineMaxSpellLevel       .getName()); 
-		PLabel lblDivineSpellChanceFailure     = new PLabel(txtDivineSpellChanceFailure  .getName()); 
+		 
 		
 		
 		int row = 0;
@@ -213,17 +181,7 @@ public class ConstitutionPanel extends AbstractDataPanel<Constitution,Integer> i
 		row++;
 
 		
-		add(lblDivineSpellBonusSpellLevel, GBU.label(0, row));
-		add(txtDivineSpellBonusSpellLevel, GBU.text(1, row));
-		row++;		
-		
-		add(lblDivineMaxSpellLevel, GBU.label(0, row));
-		add(txtDivineMaxSpellLevel, GBU.text(1, row));
-		row++;
-
-		add(lblDivineSpellChanceFailure, GBU.label(0, row));
-		add(txtDivineSpellChanceFailure, GBU.text(1, row));
-		row++;		
+	 		
 		
 		add(new PLabel(""),GBU.label(99,99));
 		

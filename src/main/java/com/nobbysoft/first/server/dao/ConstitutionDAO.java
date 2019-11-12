@@ -46,7 +46,7 @@ public class ConstitutionDAO extends AbstractDAO<Constitution, Integer> implemen
 
 	private String[] keys = new String[] { "ability_score" };
 	private String[] data = new String[] { "hit_Point_Adjustment", "hit_Point_Adjustment_High", "system_Shock_Survival",
-			"resurrection_Survival","divine_Spell_Chance_Failure", "divine_Spell_Bonus_Spell_Level","divine_Max_Spell_Level" };
+			"resurrection_Survival"  };
 
 	String[] getKeys() {
 		return keys;
@@ -68,10 +68,7 @@ public class ConstitutionDAO extends AbstractDAO<Constitution, Integer> implemen
 		dto.setHitPointAdjustment(rs.getInt(col++));
 		dto.setHitPointAdjustmentHigh(rs.getInt(col++));
 		dto.setSystemShockSurvival(rs.getInt(col++));
-		dto.setResurrectionSurvival(rs.getInt(col++));
-		dto.setDivineSpellChanceFailure(rs.getInt(col++));
-		dto.setDivineSpellBonusSpellLevel(rs.getInt(col++));
-		dto.setDivineMaxSpellLevel(rs.getInt(col++));
+		dto.setResurrectionSurvival(rs.getInt(col++)); 
 		return dto;
 	}
 
@@ -92,10 +89,7 @@ public class ConstitutionDAO extends AbstractDAO<Constitution, Integer> implemen
 		ps.setInt(col++, value.getHitPointAdjustment());
 		ps.setInt(col++, value.getHitPointAdjustmentHigh());
 		ps.setInt(col++, value.getSystemShockSurvival());
-		ps.setInt(col++, value.getResurrectionSurvival());
-		ps.setInt(col++, value.getDivineSpellChanceFailure());
-		ps.setInt(col++, value.getDivineSpellBonusSpellLevel());
-		ps.setInt(col++, value.getDivineMaxSpellLevel());
+		ps.setInt(col++, value.getResurrectionSurvival()); 
 		
 		return col;
 	}
@@ -124,28 +118,7 @@ public class ConstitutionDAO extends AbstractDAO<Constitution, Integer> implemen
 		}
 	}
 	
-	public Map<Integer,Integer> getBonusSpells(Connection con, int constitution) throws SQLException {
-		int[] bonuses = new int[10];
-		for(int i=0,n=bonuses.length;i<n;i++) {
-			bonuses[i]=0;
-		}
-		Map<Integer,Integer> bonus = new HashMap<>();
-		for(int i=3,n = constitution;i<=n;i++) {
-			Constitution c= get(con,i);
-			int lvl=c.getDivineSpellBonusSpellLevel();
-			if(lvl>=0) {
-				bonuses[lvl] = bonuses[lvl]+1;
-			}
-			
-		}
-		for(int i=1,n=10;i<n;i++) {
-			int bon = bonuses[i];
-			if(bon>0) {
-				bonus.put(i, bon);
-			}
-		}
-		return bonus;	
-	}
+
 	
 	
 

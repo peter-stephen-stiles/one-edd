@@ -224,11 +224,13 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 		PlayerCharacterDAO pcDAO = new PlayerCharacterDAO();
 		PlayerCharacter pc = pcDAO.get(con, pcId);
 		CharacterClassDAO ccDAO = new CharacterClassDAO();
-		
+
 		
 		ConstitutionDAO conDAO = new ConstitutionDAO();
 		
-		Map<Integer,Integer> bonusSpells = conDAO.getBonusSpells(con, pc.getAttrCon());
+		WisdomDAO wisDAO = new WisdomDAO();
+		
+		Map<Integer,Integer> bonusSpells = wisDAO.getBonusSpells(con, pc.getAttrWis());
 		
 		Map<String,Integer> classAndLevel = new HashMap<>();
 		classAndLevel.put(pc.getFirstClass(),pc.getFirstClassLevel());

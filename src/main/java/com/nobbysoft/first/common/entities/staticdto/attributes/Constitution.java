@@ -9,12 +9,7 @@ import com.nobbysoft.first.common.utils.SU;
 public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Serializable, DataDTOInterface<Integer>{
 
 	private int abilityScore;
-	
-	private int divineSpellChanceFailure;
-	private int divineSpellBonusSpellLevel;
-	private int divineMaxSpellLevel;
-	
-	// divineSpellChanceFailure, divineSpellBonusSpellLevel,divineMaxSpellLevel
+	 
 	public int getHitPointAdjustment() {
 		return hitPointAdjustment;
 	}
@@ -27,10 +22,7 @@ public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Se
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + abilityScore;
-		result = prime * result + divineMaxSpellLevel;
-		result = prime * result + divineSpellBonusSpellLevel;
-		result = prime * result + divineSpellChanceFailure;
+		result = prime * result + abilityScore; 
 		result = prime * result + hitPointAdjustment;
 		result = prime * result + hitPointAdjustmentHigh;
 		result = prime * result + resurrectionSurvival;
@@ -49,12 +41,7 @@ public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Se
 		Constitution other = (Constitution) obj;
 		if (abilityScore != other.abilityScore)
 			return false;
-		if (divineMaxSpellLevel != other.divineMaxSpellLevel)
-			return false;
-		if (divineSpellBonusSpellLevel != other.divineSpellBonusSpellLevel)
-			return false;
-		if (divineSpellChanceFailure != other.divineSpellChanceFailure)
-			return false;
+ 
 		if (hitPointAdjustment != other.hitPointAdjustment)
 			return false;
 		if (hitPointAdjustmentHigh != other.hitPointAdjustmentHigh)
@@ -115,48 +102,27 @@ public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Se
 				SU.a(hitPointAdjustment),
 				SU.a(hitPointAdjustmentHigh),
 				SU.p(systemShockSurvival),
-				SU.p(resurrectionSurvival),
-				getSpellBonusString(),
-				SU.p(divineSpellChanceFailure), 
-				getSpellMaxSpellLevelString()};
+				SU.p(resurrectionSurvival)};
 	}
 
 	@Override
 	public String[] getRowHeadings() {
-		return new String[] {"CON","Hp Adj","(fighters)","System Shock Survival","Resurrection Survival",
-				"Spell Bonus (lvl)",
-				"Spell Failure %",
-				"Max Spell Lvl"};
+		return new String[] {"CON","Hp Adj","(fighters)","System Shock Survival","Resurrection Survival"};
 	}
 
-	public String getSpellMaxSpellLevelString() {
-		if(divineMaxSpellLevel==0) {
-			return "";
-		} else {
-			return ""+divineMaxSpellLevel;
-		}
-	}
-	
  
-	
-	public String getSpellBonusString() {
-		if (divineSpellBonusSpellLevel<1) {
-			return "";
-		}else {
-			return "+1 lvl "+divineSpellBonusSpellLevel+" spell";
-		}
-	}
+ 
 	
 	@Override
 	public Integer[] getColumnWidths() {
 		// TODO Auto-generated method stub
-		return new Integer[] {50,70,70,100,100,100,100,100};
+		return new Integer[] {50,70,70,100,100};
 	}
 
 	@Override
 	public String[] getColumnCodedListTypes() {
 		// TODO Auto-generated method stub
-		return new String[] {null,null,null,null,null,null,null,null,};
+		return new String[] {null,null,null,null,null};
 	}
 
 	@Override
@@ -180,28 +146,5 @@ public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Se
 		this.abilityScore=abilityScore;		
 	}
 
-	public int getDivineSpellChanceFailure() {
-		return divineSpellChanceFailure;
-	}
-
-	public void setDivineSpellChanceFailure(int divineSpellChanceFailure) {
-		this.divineSpellChanceFailure = divineSpellChanceFailure;
-	}
-
-	public int getDivineSpellBonusSpellLevel() {
-		return divineSpellBonusSpellLevel;
-	}
-
-	public void setDivineSpellBonusSpellLevel(int divineSpellBonusSpellLevel) {
-		this.divineSpellBonusSpellLevel = divineSpellBonusSpellLevel;
-	}
-
-	public int getDivineMaxSpellLevel() {
-		return divineMaxSpellLevel;
-	}
-
-	public void setDivineMaxSpellLevel(int divineMaxSpellLevel) {
-		this.divineMaxSpellLevel = divineMaxSpellLevel;
-	}
 
 }
