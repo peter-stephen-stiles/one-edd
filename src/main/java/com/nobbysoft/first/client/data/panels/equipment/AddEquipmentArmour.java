@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.equipment;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

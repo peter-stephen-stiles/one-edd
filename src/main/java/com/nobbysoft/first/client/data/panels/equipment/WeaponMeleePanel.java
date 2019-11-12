@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.equipment;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -25,6 +25,7 @@ import com.nobbysoft.first.client.components.special.PComboEquipmentHands;
 import com.nobbysoft.first.client.components.special.PWeaponMagic;
 import com.nobbysoft.first.client.components.special.PWeaponVsAc;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
@@ -45,7 +46,7 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {   
+	protected DataServiceI<?, ?> getDataService() {   
 		DataServiceI dao  = DataMapper.INSTANCE.getDataService(WeaponMelee.class);
 		return dao;
 		
@@ -215,7 +216,7 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 
 	}
 
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		{
  
 		}
@@ -223,11 +224,11 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 		return new ReturnValue("");
 	}
 
-	WeaponMelee newT() {
+	protected WeaponMelee newT() {
 		return new WeaponMelee();
 	}
 
-	void populateFromScreen(WeaponMelee value, boolean includingKeys) {
+	protected void populateFromScreen(WeaponMelee value, boolean includingKeys) {
 		if (includingKeys) {
 			value.setCode(txtCode.getText());
 		}
@@ -260,7 +261,7 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
  
 	}
 
-	void populateScreen(WeaponMelee value) {
+	protected void populateScreen(WeaponMelee value) {
 		txtCode.setText(value.getCode());
  
 		
@@ -289,7 +290,7 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 
 	}
 
-	void populateCombos() {
+	protected void populateCombos() {
 
 		try {
  
@@ -300,22 +301,22 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 	}
 
 	@Override
-	PDataComponent[] getDataComponents() {
+	protected PDataComponent[] getDataComponents() {
 		return dataComponents;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() {
+	protected PDataComponent[] getKeyComponents() {
 		return keyComponents;
 	}
 
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return buttonComponents;
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() {
+	protected PDataComponent[] getMandatoryComponents() {
 		return mandatoryComponents;
 	}
 

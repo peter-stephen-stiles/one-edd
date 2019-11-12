@@ -46,7 +46,7 @@ import com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.first.client.data.panels.ButtonActioner;
 import com.nobbysoft.first.client.data.panels.CharacterRoller;
 import com.nobbysoft.first.client.data.panels.CharacterSheet;
-import com.nobbysoft.first.client.data.panels.PlayerCharacterPanel;
+import com.nobbysoft.first.client.data.panels.pc.PlayerCharacterPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;

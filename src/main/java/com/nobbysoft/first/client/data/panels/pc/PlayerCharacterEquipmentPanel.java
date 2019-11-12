@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.pc;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -28,6 +28,13 @@ import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
+import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentAmmunition;
+import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentArmour;
+import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentI;
+import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMelee;
+import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentRanged;
+import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentShield;
+import com.nobbysoft.first.client.data.panels.equipment.EquipEquipment;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.equipment.EquipmentI;

@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.pc;
 
 import java.awt.BorderLayout;
 import java.awt.Window;
@@ -14,18 +14,18 @@ import com.nobbysoft.first.client.components.PButtonPanel;
 import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 
-public class PlayerCharacterSpellDialog extends PDialog {
+public class PlayerCharacterEquipmentDialog extends PDialog {
 
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 	
 		private Window parent;
-		public PlayerCharacterSpellDialog(Window owner,String title) {
+		public PlayerCharacterEquipmentDialog(Window owner,String title) {
 			super(owner,title,ModalityType.APPLICATION_MODAL); 
 			parent=owner;
 			jbInit();
 		}
-		private PlayerCharacterSpellPanel panel=null;
+		private PlayerCharacterEquipmentPanel panel=null;
 		private void jbInit() {
 			JPanel contentPane = (JPanel)getContentPane();
 			contentPane.setLayout(new BorderLayout());
@@ -34,7 +34,7 @@ public class PlayerCharacterSpellDialog extends PDialog {
 			btnClose.addActionListener(ae->dispose());
 			pnlButtons.add(btnClose);
 			
-			panel = new PlayerCharacterSpellPanel();
+			panel = new PlayerCharacterEquipmentPanel();
 
 			contentPane.add(panel, BorderLayout.CENTER);
 			contentPane.add(pnlButtons, BorderLayout.SOUTH);
@@ -43,7 +43,7 @@ public class PlayerCharacterSpellDialog extends PDialog {
 		}
 		
 		public void initialiseCharacter(PlayerCharacter pc) {
-			panel.initialiseCharacter(pc);
+			panel.initialiseCharacter(pc.getPcId(),pc.getCharacterName());
 		}
 		
 }

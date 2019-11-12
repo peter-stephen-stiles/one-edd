@@ -13,17 +13,11 @@ import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.first.client.utils.GBU;
-import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.Race;
-import com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
-import com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.first.common.servicei.CodedListService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.ReturnValue;
-import com.nobbysoft.first.server.dao.CodedListDAO;
-import com.nobbysoft.first.server.dao.DAOI;
-import com.nobbysoft.first.server.dao.RaceDAO;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
@@ -272,12 +266,12 @@ public class RacePanel extends AbstractDataPanel<Race,String> implements Mainten
  
 	// 	minimums must be less or equal to maximums
 	//
-	  ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 
 		return new ReturnValue<Object>("");
 	}
 
-	  void populateFromScreen(Race value, boolean includingKeys) {
+	  protected  void populateFromScreen(Race value, boolean includingKeys) {
 		if (includingKeys) {
 			value.setRaceId(txtRaceId.getText());
 		} 
@@ -320,7 +314,7 @@ public class RacePanel extends AbstractDataPanel<Race,String> implements Mainten
 		
 	}
 
-	  void populateScreen(Race value){
+	  protected   void populateScreen(Race value){
 		txtRaceId.setText(value.getRaceId());  
 		cbxHasMagicDefenceBonus.setSelected(value.isHasMagicDefenceBonus()); 
 		cbxMultiClassable.setSelected(value.isMultiClassable());
@@ -362,13 +356,13 @@ public class RacePanel extends AbstractDataPanel<Race,String> implements Mainten
 
 
 	@Override
-	PDataComponent[] getButtonComponents() { 
+	protected PDataComponent[] getButtonComponents() { 
 		return buttonComponents;
 	}
 
 
 	@Override
-	DataServiceI<?, ?> getDataService() {   
+	protected DataServiceI<?, ?> getDataService() {   
 		DataServiceI dao;
 		try {
 		Class d = DataMapper.INSTANCE.getServiceForEntity(Race.class); 
@@ -383,25 +377,25 @@ public class RacePanel extends AbstractDataPanel<Race,String> implements Mainten
 
 
 	@Override
-	PDataComponent[] getDataComponents() { 
+	protected PDataComponent[] getDataComponents() { 
 		return dataComponents;
 	}
 
 
 	@Override
-	PDataComponent[] getKeyComponents() { 
+	protected PDataComponent[] getKeyComponents() { 
 		return keyComponents;
 	}
 
 
 	@Override
-	PDataComponent[] getMandatoryComponents() { 
+	protected PDataComponent[] getMandatoryComponents() { 
 		return mandatoryComponents;
 	}
 
 
 	@Override
-	void populateCombos() { 
+	protected void populateCombos() { 
 
 		CodedListService cliDao = (CodedListService)DataMapper.INSTANCE.getNonDataService(CodedListService.class);
 		for(PComboBox<CodedListItem<Integer>> c: attCombos) {		
@@ -414,7 +408,7 @@ public class RacePanel extends AbstractDataPanel<Race,String> implements Mainten
 
 
 	@Override
-	Race newT() { 
+	protected Race newT() { 
 		return new Race();
 	}
 	

@@ -87,12 +87,12 @@ public class ClassToHitEditDialog
 	}
 	
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return new PDataComponent[] {};
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao  = DataMapper.INSTANCE.getDataService(CharacterClassToHit.class);
 		return dao;
 	}
@@ -102,17 +102,17 @@ public class ClassToHitEditDialog
 			};
 	
 	@Override
-	PDataComponent[] getDataComponents() { 
+	protected PDataComponent[] getDataComponents() { 
 		return dataComp;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() { 
+	protected PDataComponent[] getKeyComponents() { 
 		return new PDataComponent[] {txtFromLevel,txtToLevel};
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() { 
+	protected PDataComponent[] getMandatoryComponents() { 
 		return new PDataComponent[] {};
 	}
 
@@ -120,7 +120,7 @@ public class ClassToHitEditDialog
 
 	
 	@Override
-	void jbInit() {
+	protected void jbInit() {
 		txtCharacterClass.setReadOnly(true);
 		
 		txtCharacterClass.setName("Character Class");
@@ -160,7 +160,7 @@ public class ClassToHitEditDialog
 //	}
 	
 	@Override
-	void populateCombos() {
+	protected void populateCombos() {
 
 		try {
 			CharacterClassService dao = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
@@ -197,7 +197,7 @@ public class ClassToHitEditDialog
 	}
 
 	@Override
-	void populateFromScreen(CharacterClassToHit value, boolean includingKeys) {
+	protected void populateFromScreen(CharacterClassToHit value, boolean includingKeys) {
 		value.setFromLevel(txtFromLevel.getIntegerValue());
 		value.setToLevel(txtToLevel.getIntegerValue());
 		value.setBiggestACHitBy20(txtBiggestACHitBy20.getIntegerValue());
@@ -206,7 +206,7 @@ public class ClassToHitEditDialog
 	}
 
 	@Override
-	void populateScreen(CharacterClassToHit value) {
+	protected void populateScreen(CharacterClassToHit value) {
 		txtFromLevel.setIntegerValue(value.getFromLevel());
 		txtToLevel.setIntegerValue(value.getToLevel());
 		txtBiggestACHitBy20.setIntegerValue(value.getBiggestACHitBy20());
@@ -215,7 +215,7 @@ public class ClassToHitEditDialog
 	}
 
 	@Override
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		
  
 		
@@ -223,7 +223,7 @@ public class ClassToHitEditDialog
 	}
 
 	@Override
-	CharacterClassToHit newT() { 
+	protected CharacterClassToHit newT() { 
 		CharacterClassToHit ccs = new CharacterClassToHit();
 		ccs.setClassId(parent.getClassId());
 		return ccs;

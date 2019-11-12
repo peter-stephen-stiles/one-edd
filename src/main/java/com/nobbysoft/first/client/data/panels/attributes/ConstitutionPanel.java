@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.attributes;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -13,6 +13,7 @@ import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
 import com.nobbysoft.first.common.servicei.DataServiceI;
@@ -66,12 +67,12 @@ public class ConstitutionPanel extends AbstractDataPanel<Constitution,Integer> i
  
 
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return new PDataComponent[0];
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao;
 		try {
 		Class d = DataMapper.INSTANCE.getServiceForEntity(Constitution.class); 
@@ -84,28 +85,28 @@ public class ConstitutionPanel extends AbstractDataPanel<Constitution,Integer> i
 	}
 
 	@Override
-	PDataComponent[] getDataComponents() {
+	protected PDataComponent[] getDataComponents() {
 		return dataComponents;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() {
+	protected PDataComponent[] getKeyComponents() {
 		return keyComponents;
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() {
+	protected PDataComponent[] getMandatoryComponents() {
 		return mandatoryComponents;
 	}
 
 	@Override
-	void populateCombos() {
+	protected void populateCombos() {
 		// n/a
 		
 	}
 
 	@Override
-	void populateFromScreen(Constitution value, boolean includingKeys) {
+	protected void populateFromScreen(Constitution value, boolean includingKeys) {
 		value.setAbilityScore(txtAbilityScore.getIntegerValue());
 		value.setHitPointAdjustment(txtHitPointAdjustment.getIntegerValue());
 		value.setHitPointAdjustmentHigh(txtHitPointAdjustmentHigh.getIntegerValue());
@@ -115,7 +116,7 @@ public class ConstitutionPanel extends AbstractDataPanel<Constitution,Integer> i
 	}
 
 	@Override
-	void populateScreen(Constitution value) {
+	protected void populateScreen(Constitution value) {
 		txtAbilityScore.setIntegerValue(value.getAbilityScore()); 
 		txtHitPointAdjustment .setIntegerValue(value.getHitPointAdjustment());
 		txtHitPointAdjustmentHigh .setIntegerValue(value.getHitPointAdjustmentHigh());
@@ -126,13 +127,13 @@ public class ConstitutionPanel extends AbstractDataPanel<Constitution,Integer> i
 	}
 
 	@Override
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		// TODO Auto-generated method stub
 		return new ReturnValue<>("");
 	}
 
 	@Override
-	Constitution newT() {
+	protected Constitution newT() {
 		// TODO Auto-generated method stub
 		return new Constitution ();
 	}

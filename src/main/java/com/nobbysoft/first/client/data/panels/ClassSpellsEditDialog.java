@@ -88,13 +88,13 @@ public class ClassSpellsEditDialog
 	}
 	
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		// TODO Auto-generated method stub
 		return new PDataComponent[] {};
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao  = DataMapper.INSTANCE.getDataService(CharacterClassSpell.class);
 		return dao;
 	}
@@ -110,17 +110,17 @@ public class ClassSpellsEditDialog
 			txtLevel9};
 	
 	@Override
-	PDataComponent[] getDataComponents() { 
+	protected PDataComponent[] getDataComponents() { 
 		return spells;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() { 
+	protected PDataComponent[] getKeyComponents() { 
 		return new PDataComponent[] {txtSpellClass,txtClassLevel};
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() { 
+	protected PDataComponent[] getMandatoryComponents() { 
 		return new PDataComponent[] {};
 	}
 
@@ -128,7 +128,7 @@ public class ClassSpellsEditDialog
 
 	
 	@Override
-	void jbInit() {
+	protected void jbInit() {
 		txtCharacterClass.setReadOnly(true);
 		
 		txtCharacterClass.setName("Character Class");
@@ -180,7 +180,7 @@ public class ClassSpellsEditDialog
 	}
 	
 	@Override
-	void populateCombos() {
+	protected void populateCombos() {
 
 		try {
 			CharacterClassService dao = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
@@ -217,7 +217,7 @@ public class ClassSpellsEditDialog
 	}
 
 	@Override
-	void populateFromScreen(CharacterClassSpell value, boolean includingKeys) {
+	protected void populateFromScreen(CharacterClassSpell value, boolean includingKeys) {
 		value.setLevel(txtClassLevel.getIntegerValue());
 		value.setSpellClassId((String)txtSpellClass.getSelectedCode());
 		
@@ -234,7 +234,7 @@ public class ClassSpellsEditDialog
 	}
 
 	@Override
-	void populateScreen(CharacterClassSpell value) {
+	protected void populateScreen(CharacterClassSpell value) {
 		txtClassLevel.setIntegerValue(value.getLevel());
 		txtSpellClass.setSelectedCode(value.getSpellClassId());
 		
@@ -252,12 +252,12 @@ public class ClassSpellsEditDialog
 	}
 
 	@Override
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		return new ReturnValue(""); //no error
 	}
 
 	@Override
-	CharacterClassSpell newT() { 
+	protected CharacterClassSpell newT() { 
 		CharacterClassSpell ccs = new CharacterClassSpell();
 		ccs.setClassId(parent.getClassId());
 		return ccs;

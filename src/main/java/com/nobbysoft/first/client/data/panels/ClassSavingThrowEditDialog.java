@@ -86,32 +86,32 @@ public class ClassSavingThrowEditDialog
 	}
 	
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return new PDataComponent[] {};
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao  = DataMapper.INSTANCE.getDataService(SavingThrow.class);
 		return dao;
 	}
 
-	PDataComponent[] dataComp = new PDataComponent[] {
+	protected PDataComponent[] dataComp = new PDataComponent[] {
 			txtRollRequired
 			};
 	
 	@Override
-	PDataComponent[] getDataComponents() { 
+	protected PDataComponent[] getDataComponents() { 
 		return dataComp;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() { 
+	protected PDataComponent[] getKeyComponents() { 
 		return new PDataComponent[] {txtFromLevel,txtToLevel,cbxSavingThrow};
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() { 
+	protected PDataComponent[] getMandatoryComponents() { 
 		return new PDataComponent[] {};
 	}
 
@@ -119,7 +119,7 @@ public class ClassSavingThrowEditDialog
 
 	
 	@Override
-	void jbInit() {
+	protected void jbInit() {
 		txtCharacterClass.setReadOnly(true);
 		
 		txtCharacterClass.setName("Character Class");
@@ -174,7 +174,7 @@ public class ClassSavingThrowEditDialog
  
 
 	@Override
-	void populateCombos() {
+	protected 	void populateCombos() {
 
 		try {
 			CharacterClassService dao = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
@@ -211,7 +211,7 @@ public class ClassSavingThrowEditDialog
 	}
 
 	@Override
-	void populateFromScreen(SavingThrow value, boolean includingKeys) {
+	protected void populateFromScreen(SavingThrow value, boolean includingKeys) {
 		
 		value.setFromLevel(txtFromLevel.getIntegerValue());
 		value.setToLevel(txtToLevel.getIntegerValue());
@@ -222,7 +222,7 @@ public class ClassSavingThrowEditDialog
 	}
 
 	@Override
-	void populateScreen(SavingThrow value) { 
+	protected void populateScreen(SavingThrow value) { 
 		txtFromLevel.setIntegerValue(value.getFromLevel());
 		txtToLevel.setIntegerValue(value.getToLevel());
 		txtRollRequired.setIntegerValue(value.getRollRequired());
@@ -231,7 +231,7 @@ public class ClassSavingThrowEditDialog
 	}
 
 	@Override
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		
 		long Level0 = txtFromLevel.getIntegerValue();
 		long Level1 = txtToLevel.getIntegerValue();
@@ -246,7 +246,7 @@ public class ClassSavingThrowEditDialog
 	}
 
 	@Override
-	SavingThrow newT() { 
+	protected SavingThrow newT() { 
 		SavingThrow ccs = new SavingThrow();
 		ccs.setClassId(parent.getClassId());
 		return ccs;

@@ -269,7 +269,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 	}
  
 
-	  ReturnValue<?> validateScreen() {
+	protected  ReturnValue<?> validateScreen() {
 
 
 		  
@@ -342,7 +342,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		return new ReturnValue<Object>("");
 	}
 
-	  void populateFromScreen(CharacterClass value, boolean includingKeys) {
+	protected  void populateFromScreen(CharacterClass value, boolean includingKeys) {
 		if (includingKeys) {
 			value.setClassId(txtCharacterClassId.getText());
 		} 
@@ -379,7 +379,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		
 	}
 
-	  void populateScreen(CharacterClass value){
+	protected   void populateScreen(CharacterClass value){
 		txtCharacterClassId.setText(value.getClassId());  
 		txtName.setText(value.getName()); 
 		txtHitDice.setSelectedCode(value.getHitDice());
@@ -412,13 +412,13 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 
 
 	@Override
-	PDataComponent[] getButtonComponents() { 
+	protected PDataComponent[] getButtonComponents() { 
 		return buttonComponents;
 	}
 
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao;
 		try {
 		Class d = DataMapper.INSTANCE.getServiceForEntity(CharacterClass.class); 
@@ -432,25 +432,25 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 
 
 	@Override
-	PDataComponent[] getDataComponents() { 
+	protected PDataComponent[] getDataComponents() { 
 		return dataComponents;
 	}
 
 
 	@Override
-	PDataComponent[] getKeyComponents() { 
+	protected PDataComponent[] getKeyComponents() { 
 		return keyComponents;
 	}
 
 
 	@Override
-	PDataComponent[] getMandatoryComponents() { 
+	protected PDataComponent[] getMandatoryComponents() { 
 		return mandatoryComponents;
 	}
 
 
 	@Override
-	void populateCombos() { 
+	protected void populateCombos() { 
 
 		CodedListService cliDao = (CodedListService)DataMapper.INSTANCE.getNonDataService(CodedListService.class);
 		txtHitDice.setList(cliDao.getDice());
@@ -495,7 +495,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 
 
 	@Override
-	CharacterClass newT() { 
+	protected CharacterClass newT() { 
 		return new CharacterClass();
 	}
 	

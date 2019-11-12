@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.equipment;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -22,39 +22,32 @@ import com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.equipment.EquipmentType;
-import com.nobbysoft.first.common.entities.equipment.Shield;
+import com.nobbysoft.first.common.entities.equipment.WeaponAmmunition;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.servicei.PlayerCharacterEquipmentService;
-import com.nobbysoft.first.common.servicei.ShieldService;
+import com.nobbysoft.first.common.servicei.WeaponAmmunitionService;
 import com.nobbysoft.first.utils.DataMapper;
 
-public class AddEquipmentShield extends PDialog implements AddEquipmentI {
+public class AddEquipmentAmmunition extends PDialog implements AddEquipmentI {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-	public AddEquipmentShield(Window owner) {
+	public AddEquipmentAmmunition(Window owner) {
 		super(owner);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		jbInit();
 	}
 
-	private EquipmentType type = EquipmentType.SHIELD;
+	private EquipmentType type = EquipmentType.AMMUNITION;
 	private boolean cancelled = true;
 	private String characterName;
 	private int pcId;
 	private PTextField txtFilter = new PTextField();
 
-	/*
-wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getMagicBonus()
-	 */
-	
 	private final ColumnConfig[] equipmentConfigs = new ColumnConfig[] { new ColumnConfig("", 0, 0, 0),
 			new ColumnConfig("Name", 20, 200, 5000), 
-			new ColumnConfig("#Att/Rnd", 20, 50, 5000), 
-			new ColumnConfig("Enc. (GP)", 20, 50, 5000),
-			new ColumnConfig("Magic?", 20, 50, 5000),
-			};
+			new ColumnConfig("Dmg SM", 20, 100, 5000), new ColumnConfig("Dmg L", 20, 100, 5000), };
 
 	private PBasicTableWithModel tblEquipment = new PBasicTableWithModel(equipmentConfigs);
 
@@ -71,7 +64,8 @@ wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getM
 		PButtonPanel pnlButtons = new PButtonPanel();
 		PButton btnCancel = new PButton("Cancel");
 		PButton btnSelect = new PButton("Select");
- 
+
+		// list of available melee weapons
 		// select one
 		// whoosh
 		pnlButtons.add(btnCancel);
@@ -130,17 +124,17 @@ wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getM
 
 	private void populateTable() {
 		//
-		ShieldService wms = (ShieldService) getDataService(Shield.class);
+		WeaponAmmunitionService wms = (WeaponAmmunitionService) getDataService(WeaponAmmunition.class);
 
-		List<Shield> list;
+		List<WeaponAmmunition> list;
 		try {
 			list = wms.getList();
 		} catch (SQLException e) {
 			Popper.popError(this, e);
 			return;
 		}
-		for (Shield wm : list) {
-			Object[] row = new Object[] { wm, wm.getName(),wm.getAttacksPerRound(),wm.getEncumberanceGP(),wm.getMagicBonus() };
+		for (WeaponAmmunition wm : list) {
+			Object[] row = new Object[] { wm, wm.getName(), wm.getSMDamage(), wm.getLDamage() };
 			tableData.add(row);
 		}
 
@@ -156,7 +150,7 @@ wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getM
 				}
 			} else {
 				for (Object[] oa : tableData) {
-					String s = ((Shield) oa[0]).getName();
+					String s = ((WeaponAmmunition) oa[0]).getName();
 					for (int i = 1, n = oa.length; i < n; i++) {
 						s = s + "|" + oa[i];
 					}
@@ -178,7 +172,7 @@ wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getM
 				return;
 			}
 			int rowIndex = tblEquipment.convertRowIndexToModel(rownumber);
-			Shield wm = (Shield) tblEquipment.getModel().getValueAt(rowIndex, 0);
+			WeaponAmmunition wm = (WeaponAmmunition) tblEquipment.getModel().getValueAt(rowIndex, 0);
 			//Popper.popInfo(this, "Selected " + wm, "You selected " + wm.getName());
 			/// now then
 

@@ -21,6 +21,7 @@ import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.utils.DICE;
 import com.nobbysoft.first.common.utils.Roller;
 
+@SuppressWarnings("serial")
 public class RollHPDialog extends JDialog {
 
 	private Window parent;

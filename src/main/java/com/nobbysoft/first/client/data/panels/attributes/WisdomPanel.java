@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.attributes;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -13,6 +13,7 @@ import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
 import com.nobbysoft.first.common.servicei.DataServiceI;
@@ -70,12 +71,12 @@ public class WisdomPanel extends AbstractDataPanel<Wisdom,Integer> implements Ma
  
 
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return new PDataComponent[0];
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao;
 		try {
 		Class d = DataMapper.INSTANCE.getServiceForEntity(Wisdom.class); 
@@ -88,28 +89,28 @@ public class WisdomPanel extends AbstractDataPanel<Wisdom,Integer> implements Ma
 	}
 
 	@Override
-	PDataComponent[] getDataComponents() {
+	protected PDataComponent[] getDataComponents() {
 		return dataComponents;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() {
+	protected PDataComponent[] getKeyComponents() {
 		return keyComponents;
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() {
+	protected PDataComponent[] getMandatoryComponents() {
 		return mandatoryComponents;
 	}
 
 	@Override
-	void populateCombos() {
+	protected void populateCombos() {
 		// n/a
 		
 	}
 
 	@Override
-	void populateFromScreen(Wisdom value, boolean includingKeys) {
+	protected void populateFromScreen(Wisdom value, boolean includingKeys) {
 		value.setAbilityScore(txtAbilityScore.getIntegerValue());
 		value.setMagicalAttackAdjustment(txtMagicalAttackAdjustment.getIntegerValue());
 		value.setDivineSpellBonusSpellLevel(txtDivineSpellBonusSpellLevel.getIntegerValue());
@@ -119,7 +120,7 @@ public class WisdomPanel extends AbstractDataPanel<Wisdom,Integer> implements Ma
 	}
 
 	@Override
-	void populateScreen(Wisdom value) {
+	protected void populateScreen(Wisdom value) {
 		txtAbilityScore.setIntegerValue(value.getAbilityScore()); 
 
 		txtMagicalAttackAdjustment.setIntegerValue(value.getMagicalAttackAdjustment());
@@ -131,13 +132,13 @@ public class WisdomPanel extends AbstractDataPanel<Wisdom,Integer> implements Ma
 	}
 
 	@Override
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		// TODO Auto-generated method stub
 		return new ReturnValue<>("");
 	}
 
 	@Override
-	Wisdom newT() {
+	protected Wisdom newT() {
 		// TODO Auto-generated method stub
 		return new Wisdom ();
 	}

@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.attributes;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -13,6 +13,7 @@ import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Intelligence;
 import com.nobbysoft.first.common.servicei.DataServiceI;
@@ -65,12 +66,12 @@ public class IntelligencePanel extends AbstractDataPanel<Intelligence,Integer> i
 	}
 
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return new PDataComponent[0];
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao;
 		try {
 		Class d = DataMapper.INSTANCE.getServiceForEntity(Intelligence.class); 
@@ -83,28 +84,28 @@ public class IntelligencePanel extends AbstractDataPanel<Intelligence,Integer> i
 	}
 
 	@Override
-	PDataComponent[] getDataComponents() {
+	protected PDataComponent[] getDataComponents() {
 		return dataComponents;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() {
+	protected PDataComponent[] getKeyComponents() {
 		return keyComponents;
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() {
+	protected PDataComponent[] getMandatoryComponents() {
 		return mandatoryComponents;
 	}
 
 	@Override
-	void populateCombos() {
+	protected void populateCombos() {
 		// n/a
 		
 	}
 
 	@Override
-	void populateFromScreen(Intelligence value, boolean includingKeys) {
+	protected void populateFromScreen(Intelligence value, boolean includingKeys) {
 		value.setAbilityScore(txtAbilityScore.getIntegerValue());
 		value.setPossibleAdditionalLanguages(txtPossibleAdditionalLanguages.getIntegerValue());
 		value.setChanceToKnowSpell(txtChanceToKnowSpell.getIntegerValue());
@@ -114,7 +115,7 @@ public class IntelligencePanel extends AbstractDataPanel<Intelligence,Integer> i
 	}
 
 	@Override
-	void populateScreen(Intelligence value) {
+	protected void populateScreen(Intelligence value) {
 		txtAbilityScore.setIntegerValue(value.getAbilityScore()); 
 		txtPossibleAdditionalLanguages .setIntegerValue(value.getPossibleAdditionalLanguages());
 		txtChanceToKnowSpell .setIntegerValue(value.getChanceToKnowSpell());
@@ -124,7 +125,7 @@ public class IntelligencePanel extends AbstractDataPanel<Intelligence,Integer> i
 	}
 
 	@Override
-	ReturnValue<?> validateScreen() { 
+	protected ReturnValue<?> validateScreen() { 
 		int min = txtMinSpellsPerLevel.getIntegerValue();
 		int max = txtMaxSpellsPerLevel.getIntegerValue();
 		if(max<min) {
@@ -135,7 +136,7 @@ public class IntelligencePanel extends AbstractDataPanel<Intelligence,Integer> i
 	}
 
 	@Override
-	Intelligence newT() {
+	protected Intelligence newT() {
 		// TODO Auto-generated method stub
 		return new Intelligence ();
 	}

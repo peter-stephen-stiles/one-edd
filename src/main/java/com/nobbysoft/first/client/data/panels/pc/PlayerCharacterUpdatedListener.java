@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.pc;
 
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 

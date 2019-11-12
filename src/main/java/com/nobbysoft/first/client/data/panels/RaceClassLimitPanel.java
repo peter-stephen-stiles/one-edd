@@ -73,12 +73,12 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 
 	
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return buttonComponents;
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {   
+	protected DataServiceI<?, ?> getDataService() {   
 		DataServiceI dao;
 		try {
 		Class d = DataMapper.INSTANCE.getServiceForEntity(RaceClassLimit.class); 
@@ -92,22 +92,22 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 	}
 
 	@Override
-	PDataComponent[] getDataComponents() { 
+	protected PDataComponent[] getDataComponents() { 
 		return dataComponents;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() { 
+	protected PDataComponent[] getKeyComponents() { 
 		return keyComponents;
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() { 
+	protected PDataComponent[] getMandatoryComponents() { 
 		return mandatoryComponents;
 	}
 
 	@Override
-	void jbInit() { 
+	protected void jbInit() { 
 
 		txtRaceId.setName("Race id");  
 		txtClassId.setName("Character class id"); 
@@ -167,7 +167,7 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 	}
 
 	@Override
-	void populateCombos() { 
+	protected void populateCombos() { 
 
 		CodedListService cliDao = (CodedListService)DataMapper.INSTANCE.getNonDataService(CodedListService.class);
 		for(CodedListItem cli: cliDao.getRaceClassLimitMaxLevelList()) {
@@ -222,7 +222,7 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 	}
 
 	@Override
-	void populateFromScreen(RaceClassLimit value, boolean includingKeys) { 
+	protected void populateFromScreen(RaceClassLimit value, boolean includingKeys) { 
 		if (includingKeys) {
 			value.setClassId((String)txtClassId.getSelectedCode());
 			value.setRaceId((String)txtRaceId.getSelectedCode());
@@ -236,7 +236,7 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 	}
 
 	@Override
-	void populateScreen(RaceClassLimit value) { 
+	protected void populateScreen(RaceClassLimit value) { 
 		
 
 		txtClassId.setSelectedCode(value.getClassId());
@@ -250,7 +250,7 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 	}
 
 	@Override
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		int ml=((Integer)txtMaxLevel.getSelectedCode());
 		int mlPrEq17=((Integer)txtMaxLevelPrEq17.getSelectedCode());
 		int mlPrLt17=((Integer)txtMaxLevelPrLt17.getSelectedCode());
@@ -271,7 +271,7 @@ private PDataComponent[] mandatoryComponents = new PDataComponent[] { txtRaceId,
 	}
 
 	@Override
-	RaceClassLimit newT() {
+	protected RaceClassLimit newT() {
 		return new RaceClassLimit();
 	}
 

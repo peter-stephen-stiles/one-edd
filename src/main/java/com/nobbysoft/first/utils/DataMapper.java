@@ -15,6 +15,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.data.panels.*;
+import com.nobbysoft.first.client.data.panels.attributes.ConstitutionPanel;
+import com.nobbysoft.first.client.data.panels.attributes.DexterityPanel;
+import com.nobbysoft.first.client.data.panels.attributes.IntelligencePanel;
+import com.nobbysoft.first.client.data.panels.attributes.StrengthPanel;
+import com.nobbysoft.first.client.data.panels.attributes.WisdomPanel;
+import com.nobbysoft.first.client.data.panels.equipment.ArmourPanel;
+import com.nobbysoft.first.client.data.panels.equipment.ShieldPanel;
+import com.nobbysoft.first.client.data.panels.equipment.WeaponAmmunitionPanel;
+import com.nobbysoft.first.client.data.panels.equipment.WeaponMeleePanel;
+import com.nobbysoft.first.client.data.panels.equipment.WeaponRangedPanel;
+import com.nobbysoft.first.client.data.panels.pc.PlayerCharacterButtons;
+import com.nobbysoft.first.client.data.panels.pc.PlayerCharacterPanel;
 import com.nobbysoft.first.common.entities.equipment.*;
 import com.nobbysoft.first.common.entities.pc.*;
 import com.nobbysoft.first.common.entities.staticdto.*;

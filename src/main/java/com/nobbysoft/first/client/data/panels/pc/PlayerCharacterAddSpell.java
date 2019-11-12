@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.pc;
 
 import java.awt.GraphicsConfiguration;
 import java.awt.GridBagLayout;

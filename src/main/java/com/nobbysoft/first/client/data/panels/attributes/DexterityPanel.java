@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.attributes;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -14,6 +14,7 @@ import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Dexterity;
 import com.nobbysoft.first.common.servicei.DataServiceI;
@@ -71,12 +72,12 @@ public class DexterityPanel extends AbstractDataPanel<Dexterity,Integer> impleme
 	}
 
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return new PDataComponent[0];
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao;
 		try {
 		Class d = DataMapper.INSTANCE.getServiceForEntity(Dexterity.class); 
@@ -89,28 +90,28 @@ public class DexterityPanel extends AbstractDataPanel<Dexterity,Integer> impleme
 	}
 
 	@Override
-	PDataComponent[] getDataComponents() {
+	protected PDataComponent[] getDataComponents() {
 		return dataComponents;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() {
+	protected 	PDataComponent[] getKeyComponents() {
 		return keyComponents;
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() {
+	protected PDataComponent[] getMandatoryComponents() {
 		return mandatoryComponents;
 	}
 
 	@Override
-	void populateCombos() {
+	protected void populateCombos() {
 		// n/a
 		
 	}
 
 	@Override
-	void populateFromScreen(Dexterity value, boolean includingKeys) {
+	protected void populateFromScreen(Dexterity value, boolean includingKeys) {
 		value.setAbilityScore(txtAbilityScore.getIntegerValue());
 		value.setReactionAttackAdjustment(txtReactionAttackAdjustment.getIntegerValue());
 		value.setDefensiveAdjustment(txtDefensiveAdjustment.getIntegerValue());
@@ -122,7 +123,7 @@ public class DexterityPanel extends AbstractDataPanel<Dexterity,Integer> impleme
 	}
 
 	@Override
-	void populateScreen(Dexterity value) {
+	protected void populateScreen(Dexterity value) {
 		txtAbilityScore.setIntegerValue(value.getAbilityScore()); 
 		txtReactionAttackAdjustment .setIntegerValue(value.getReactionAttackAdjustment());
 		txtDefensiveAdjustment .setIntegerValue(value.getDefensiveAdjustment());
@@ -135,13 +136,13 @@ public class DexterityPanel extends AbstractDataPanel<Dexterity,Integer> impleme
 	}
 
 	@Override
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		// TODO Auto-generated method stub
 		return new ReturnValue<>("");
 	}
 
 	@Override
-	Dexterity newT() {
+	protected Dexterity newT() {
 		// TODO Auto-generated method stub
 		return new Dexterity ();
 	}

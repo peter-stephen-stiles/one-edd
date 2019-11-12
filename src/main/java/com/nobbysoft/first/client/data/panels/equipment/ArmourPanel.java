@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.equipment;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -20,6 +20,7 @@ import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.first.client.components.special.PComboBulk;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
@@ -40,6 +41,7 @@ public class ArmourPanel extends AbstractDataPanel<Armour, String> implements Ma
 	}
 
 	@Override
+	protected
 	DataServiceI<?, ?> getDataService() {   
 		DataServiceI dao  = DataMapper.INSTANCE.getDataService(Armour.class);
 		return dao;
@@ -168,7 +170,7 @@ public class ArmourPanel extends AbstractDataPanel<Armour, String> implements Ma
 
 	}
 
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		{
  
 		}
@@ -176,11 +178,11 @@ public class ArmourPanel extends AbstractDataPanel<Armour, String> implements Ma
 		return new ReturnValue("");
 	}
 
-	Armour newT() {
+	protected Armour newT() {
 		return new Armour();
 	}
 
-	void populateFromScreen(Armour value, boolean includingKeys) {
+	protected void populateFromScreen(Armour value, boolean includingKeys) {
 		if (includingKeys) {
 			value.setCode(txtCode.getText());
 		}
@@ -200,7 +202,7 @@ public class ArmourPanel extends AbstractDataPanel<Armour, String> implements Ma
 		value.setBulk(txtBulk.getBULK());
 	}
 
-	void populateScreen(Armour value) {
+	protected void populateScreen(Armour value) {
 		txtCode.setText(value.getCode());  
 		txtWeightGP	.setIntegerValue(	value.getEncumberanceGP());
 		txtName	.setText(	value.getName()); 
@@ -211,7 +213,7 @@ public class ArmourPanel extends AbstractDataPanel<Armour, String> implements Ma
 
 	}
 
-	void populateCombos() {
+	protected void populateCombos() {
 
 		try {
  
@@ -222,22 +224,22 @@ public class ArmourPanel extends AbstractDataPanel<Armour, String> implements Ma
 	}
 
 	@Override
-	PDataComponent[] getDataComponents() {
+	protected PDataComponent[] getDataComponents() {
 		return dataComponents;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() {
+	protected PDataComponent[] getKeyComponents() {
 		return keyComponents;
 	}
 
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return buttonComponents;
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() {
+	protected PDataComponent[] getMandatoryComponents() {
 		return mandatoryComponents;
 	}
 	

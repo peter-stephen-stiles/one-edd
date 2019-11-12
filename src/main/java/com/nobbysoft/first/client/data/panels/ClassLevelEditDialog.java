@@ -104,12 +104,12 @@ public class ClassLevelEditDialog
 	}
 	
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return new PDataComponent[] {};
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao  = DataMapper.INSTANCE.getDataService(CharacterClassLevel.class);
 		return dao;
 	}
@@ -123,17 +123,17 @@ public class ClassLevelEditDialog
 			};
 	
 	@Override
-	PDataComponent[] getDataComponents() { 
+	protected PDataComponent[] getDataComponents() { 
 		return dataComp;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() { 
+	protected PDataComponent[] getKeyComponents() { 
 		return new PDataComponent[] {txtClassLevel};
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() { 
+	protected PDataComponent[] getMandatoryComponents() { 
 		return new PDataComponent[] {};
 	}
 
@@ -141,7 +141,7 @@ public class ClassLevelEditDialog
 
 	
 	@Override
-	void jbInit() {
+	protected void jbInit() {
 		txtCharacterClass.setReadOnly(true);
 		
 		txtCharacterClass.setName("Character Class");
@@ -197,7 +197,7 @@ public class ClassLevelEditDialog
 	}
 	
 	@Override
-	void populateCombos() {
+	protected void populateCombos() {
 
 		try {
 			CharacterClassService dao = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
@@ -234,7 +234,7 @@ public class ClassLevelEditDialog
 	}
 
 	@Override
-	void populateFromScreen(CharacterClassLevel value, boolean includingKeys) {
+	protected void populateFromScreen(CharacterClassLevel value, boolean includingKeys) {
 		value.setLevel(txtClassLevel.getIntegerValue());
 		value.setFromXp(txtFromXp.getIntegerValue());
 		value.setToXp(txtToXp.getIntegerValue());
@@ -246,7 +246,7 @@ public class ClassLevelEditDialog
 	}
 
 	@Override
-	void populateScreen(CharacterClassLevel value) {
+	protected void populateScreen(CharacterClassLevel value) {
 		txtClassLevel.setIntegerValue(value.getLevel());
 		txtFromXp.setIntegerValue(value.getFromXp());
 		txtToXp.setIntegerValue(value.getToXp());
@@ -259,7 +259,7 @@ public class ClassLevelEditDialog
 	}
 
 	@Override
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		
 		long xp0 = txtFromXp.getIntegerValue();
 		long xp1 = txtToXp.getIntegerValue();
@@ -274,7 +274,7 @@ public class ClassLevelEditDialog
 	}
 
 	@Override
-	CharacterClassLevel newT() { 
+	protected CharacterClassLevel newT() { 
 		CharacterClassLevel ccs = new CharacterClassLevel();
 		ccs.setClassId(parent.getClassId());
 		return ccs;

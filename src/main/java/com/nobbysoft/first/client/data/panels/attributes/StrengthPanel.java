@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.attributes;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.client.components.*;
 import com.nobbysoft.first.client.components.special.PExceptionalStrength;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.common.entities.staticdto.attributes.*;
 import com.nobbysoft.first.common.servicei.DataServiceI;
@@ -72,12 +73,12 @@ txtBendBarsLiftGates
 	}
 
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return new PDataComponent[0];
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao;
 		try {
 		Class d = DataMapper.INSTANCE.getServiceForEntity(Strength.class); 
@@ -90,28 +91,28 @@ txtBendBarsLiftGates
 	}
 
 	@Override
-	PDataComponent[] getDataComponents() {
+	protected PDataComponent[] getDataComponents() {
 		return dataComponents;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() {
+	protected PDataComponent[] getKeyComponents() {
 		return keyComponents;
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() {
+	protected PDataComponent[] getMandatoryComponents() {
 		return mandatoryComponents;
 	}
 
 	@Override
-	void populateCombos() {
+	protected void populateCombos() {
 		// n/a
 		
 	}
 
 	@Override
-	void populateFromScreen(Strength value, boolean includingKeys) {
+	protected void populateFromScreen(Strength value, boolean includingKeys) {
 		value.setExceptionalStrengthTo(txtExceptionalStrengthTo.getExceptionalStrength());
 		value.setAbilityScore(txtAbilityScore.getIntegerValue());
 		value.setExceptionalStrength(txtExceptionalStrength.getExceptionalStrength());
@@ -125,7 +126,7 @@ txtBendBarsLiftGates
 	}
 
 	@Override
-	void populateScreen(Strength value) {
+	protected void populateScreen(Strength value) {
 		txtAbilityScore.setIntegerValue(value.getAbilityScore()); 
 		txtExceptionalStrength.setExceptionalStrength(value.getExceptionalStrength());
 		txtExceptionalStrengthTo.setExceptionalStrength(value.getExceptionalStrengthTo());
@@ -142,13 +143,13 @@ txtBendBarsLiftGates
 	}
 
 	@Override
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		// TODO Auto-generated method stub
 		return new ReturnValue<>("");
 	}
 
 	@Override
-	Strength newT() {
+	protected Strength newT() {
 		// TODO Auto-generated method stub
 		return new Strength ();
 	}

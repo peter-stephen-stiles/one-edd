@@ -44,7 +44,7 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {   
+	protected DataServiceI<?, ?> getDataService() {   
 		DataServiceI dao  = DataMapper.INSTANCE.getDataService(Spell.class);
 		return dao;
 		
@@ -294,7 +294,7 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 
 	}
 
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 		{
 
 			String s = txtMaterialComponents.getText();
@@ -308,11 +308,11 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		return new ReturnValue("");
 	}
 
-	Spell newT() {
+	protected Spell newT() {
 		return new Spell();
 	}
 
-	void populateFromScreen(Spell value, boolean includingKeys) {
+	protected void populateFromScreen(Spell value, boolean includingKeys) {
 		if (includingKeys) {
 			value.setSpellId(txtSpellId.getText());
 		}
@@ -347,7 +347,7 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 
 	}
 
-	void populateScreen(Spell value) {
+	protected void populateScreen(Spell value) {
 		txtSpellId.setText(value.getSpellId());
 		txtDescription.setText(value.getDescription());
 		txtLevel.setIntegerValue(value.getLevel());
@@ -380,7 +380,7 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 		
 	}
 
-	void populateCombos() {
+	protected void populateCombos() {
 
 		try {
 			CharacterClassService dao = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
@@ -397,22 +397,22 @@ public class SpellPanel extends AbstractDataPanel<Spell, String> implements Main
 	}
 
 	@Override
-	PDataComponent[] getDataComponents() {
+	protected PDataComponent[] getDataComponents() {
 		return dataComponents;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() {
+	protected PDataComponent[] getKeyComponents() {
 		return keyComponents;
 	}
 
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		return buttonComponents;
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() {
+	protected PDataComponent[] getMandatoryComponents() {
 		return mandatoryComponents;
 	}
 

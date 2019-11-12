@@ -1,9 +1,10 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.pc;
 
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nobbysoft.first.client.data.panels.DataButtonsInterface;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;

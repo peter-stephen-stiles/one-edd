@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.pc;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -29,6 +29,8 @@ import com.nobbysoft.first.client.components.special.PComboGender;
 import com.nobbysoft.first.client.components.special.PExceptionalStrength;
 import com.nobbysoft.first.client.components.special.ThreeClasses;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
+import com.nobbysoft.first.client.data.panels.CharacterRoller;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
@@ -239,7 +241,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 
 	}
 
-	ReturnValue<?> validateScreen() {
+	protected ReturnValue<?> validateScreen() {
 
 		if (!threeClasses.hasCharacterClass()) {
 			new ReturnValue<Object>(true, "You must roll and select a character class!");
@@ -248,7 +250,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 		return new ReturnValue<Object>("");
 	}
 
-	void populateFromScreen(PlayerCharacter value, boolean includingKeys) {
+	protected void populateFromScreen(PlayerCharacter value, boolean includingKeys) {
 		if (includingKeys) {
 			value.setPcId(txtPcId.getIntegerValue());
 		}
@@ -316,7 +318,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 	private PlayerCharacter pc;
 	private boolean newPlayer = true;
 
-	void populateScreen(PlayerCharacter value) {
+	protected void populateScreen(PlayerCharacter value) {
 		PlayerCharacterService ccs = (PlayerCharacterService) getDataService();		
 		
 		int cid = value.getPcId();
@@ -371,7 +373,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 	}
 
 	@Override
-	PDataComponent[] getButtonComponents() {
+	protected PDataComponent[] getButtonComponents() {
 		List<PDataComponent> bs = new ArrayList<>();
 		bs.add(btnAddXp);//
 		for (PDataComponent c : pnlEquipmentDetails.getButtonComponents()) {
@@ -389,7 +391,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 	}
 
 	@Override
-	DataServiceI<?, ?> getDataService() {
+	protected DataServiceI<?, ?> getDataService() {
 		DataServiceI dao;
 		try {
 			Class d = DataMapper.INSTANCE.getServiceForEntity(PlayerCharacter.class);
@@ -407,22 +409,22 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 	}
 
 	@Override
-	PDataComponent[] getDataComponents() {
+	protected PDataComponent[] getDataComponents() {
 		return dataComponents;
 	}
 
 	@Override
-	PDataComponent[] getKeyComponents() {
+	protected PDataComponent[] getKeyComponents() {
 		return keyComponents;
 	}
 
 	@Override
-	PDataComponent[] getMandatoryComponents() {
+	protected PDataComponent[] getMandatoryComponents() {
 		return mandatoryComponents;
 	}
 
 	@Override
-	void populateCombos() {
+	protected void populateCombos() {
 
 		// CodedListService cliDao =
 		// (CodedListService)DataMapper.INSTANCE.getDataService(CodedListService.class);
@@ -438,16 +440,16 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 	}
 
 	@Override
-	PlayerCharacter newT() {
+	protected PlayerCharacter newT() {
 		return new PlayerCharacter();
 	}
 
-	public ReturnValue<?> initCopy(PlayerCharacter pc, String instructions) {
+	 public ReturnValue<?> initCopy(PlayerCharacter pc, String instructions) {
 		ReturnValue<?> rv = super.initCopy(pc, instructions);
 		return addOrCopy(rv);
 	}
 
-	public ReturnValue<?> initAdd(String instructions) {
+	 public ReturnValue<?> initAdd(String instructions) {
 		ReturnValue<?> rv = super.initAdd(instructions);
 		return addOrCopy(rv);
 	}
