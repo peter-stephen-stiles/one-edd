@@ -1,9 +1,11 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.staticdata;
 
 import java.awt.Window;
 import java.util.*;
 
 import com.nobbysoft.first.client.components.PButton;
+import com.nobbysoft.first.client.data.panels.DataButtonsInterface;
+import com.nobbysoft.first.client.data.panels.RollHPDialog;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 

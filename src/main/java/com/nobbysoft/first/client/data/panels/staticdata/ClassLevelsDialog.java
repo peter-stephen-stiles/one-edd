@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.staticdata;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -12,9 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -31,23 +29,19 @@ import com.nobbysoft.first.client.data.MaintenanceDialog;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
-import com.nobbysoft.first.common.entities.staticdto.SavingThrow;
-import com.nobbysoft.first.common.entities.staticdto.SavingThrowKey;
-import com.nobbysoft.first.common.servicei.CharacterClassService;
-import com.nobbysoft.first.common.servicei.CharacterClassToHitService;
-import com.nobbysoft.first.common.servicei.SavingThrowService;
-import com.nobbysoft.first.common.utils.CodedListItem;
-import com.nobbysoft.first.common.utils.ReturnValue;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassLevel;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassLevelKey;
+import com.nobbysoft.first.common.servicei.CharacterClassLevelService;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
-public class ClassSavingThrowsDialog extends JDialog {
+public class ClassLevelsDialog extends JDialog {
 
  
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
 	private Window parent;
-	public ClassSavingThrowsDialog(Window owner,String title) {
+	public ClassLevelsDialog(Window owner,String title) {
 		super(owner,title,ModalityType.APPLICATION_MODAL); 
 		parent=owner;
 		jbInit();
@@ -74,9 +68,6 @@ public class ClassSavingThrowsDialog extends JDialog {
 	
 	private void jbInit() {
 		setLayout(new BorderLayout(5,5));
-		
-		tblData.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		
 		PButtonPanel pnlTop = new PButtonPanel();
 		PButtonPanel pnlBottom = new PButtonPanel();
 		JScrollPane sclData = new JScrollPane(tblData) {
@@ -97,23 +88,16 @@ public class ClassSavingThrowsDialog extends JDialog {
 		
 		PButton btnAdd = new PButton("Add");
 		PButton btnCopy = new PButton("Copy");
-		PButton btnNext = new PButton("Next");
 		PButton btnEdit = new PButton("Edit");
 		PButton btnDelete = new PButton("Delete");
-
-		PButton btnCopyAll = new PButton("Copy all from another class");
 		pnlTop.add(btnAdd);
 		pnlTop.add(btnCopy);
-		pnlTop.add(btnNext);
 		pnlTop.add(btnEdit);
 		pnlTop.add(btnDelete);
-		pnlTop.add(btnCopyAll);
 		btnAdd.addActionListener(ae -> add());
 		btnCopy.addActionListener(ae -> copy());
-		btnNext.addActionListener(ae -> next());
 		btnEdit.addActionListener(ae -> edit());
-		btnDelete.addActionListener(ae -> delete());
-		btnCopyAll.addActionListener(ae -> copyAllFromAnotherClass());
+		btnDelete.addActionListener(ae -> delete());	
 		
 		PButton btnExit = new PButton("Exit");
 		btnExit.addActionListener(ae->dispose());
@@ -149,7 +133,7 @@ public class ClassSavingThrowsDialog extends JDialog {
 	private Map<String, TableCellRenderer> renderers = new HashMap<>();
 	
 private void setupTable() {
-	SavingThrow c = new SavingThrow(); // just need a DTO to get the basics.
+	CharacterClassLevel c = new CharacterClassLevel(); // just need a DTO to get the basics.
 	String[] rh = c.getRowHeadings();
 	Integer[] rw = c.getColumnWidths();
 	String[] cci = c.getColumnCodedListTypes();
@@ -208,29 +192,25 @@ private void setupTable() {
 	
 	}
 
-SavingThrowService getDataService() {
-	SavingThrowService dao  = (SavingThrowService)DataMapper.INSTANCE.getDataService(SavingThrow.class);
+CharacterClassLevelService getDataService() {
+	CharacterClassLevelService dao  = (CharacterClassLevelService)DataMapper.INSTANCE.getDataService(CharacterClassLevel.class);
 	return dao;
 }
 
 	private void populateTable() {
 
-		int r = tblData.getSelectedRow();
-		
-		SavingThrowService service = getDataService();
+		CharacterClassLevelService service = getDataService();
 		String filter = characterClass.getClassId();
 		tblData.clearData();
 		try {
-			List<SavingThrow> list = service.getFilteredList(filter);
-			for(SavingThrow savingThrow:list) {
-				tmData.addRow(savingThrow.getAsRow());
+			List<CharacterClassLevel> list = service.getFilteredList(filter);
+			for(CharacterClassLevel Level:list) {
+				tmData.addRow(Level.getAsRow());
 			}
 		} catch (SQLException e) {
 			Popper.popError(this,e);
 		}
-		if(r<tblData.getRowCount() && r >=0) {
-			tblData.getSelectionModel().addSelectionInterval(r, r);
-		}
+		
 		
 	}
 
@@ -238,10 +218,15 @@ SavingThrowService getDataService() {
 	private void add() {
 		// get panel for current class and instantiate one
 		 {
-			ClassSavingThrowEditDialog mpi = new ClassSavingThrowEditDialog();
+			ClassLevelEditDialog mpi = new ClassLevelEditDialog();
 			mpi.setParent(characterClass);
-			mpi.initAdd("Add Saving Throw for "+characterClass.getName() );
-
+			mpi.initAdd("Add Level for "+characterClass.getName() );
+			try {
+				CharacterClassLevel m =getMaxLevel(characterClass.getClassId()); 
+				mpi.defaultAdd(1+m.getLevel(),1+m.getToXp());
+			} catch (Exception ex) {
+				mpi.defaultAdd(1,0);
+			}
 			MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Add", mpi);
 			md.pack();
 			md.setLocationRelativeTo(null);
@@ -260,12 +245,12 @@ SavingThrowService getDataService() {
 		}
 		if (r >= 0 && r < tblData.getRowCount()) {
 			//
-			SavingThrow dto = (SavingThrow) tmData.getValueAt(r, 0);
+			CharacterClassLevel dto = (CharacterClassLevel) tmData.getValueAt(r, 0);
 			if (dto != null) { 
 				{
-					ClassSavingThrowEditDialog mpi = new ClassSavingThrowEditDialog();
+					ClassLevelEditDialog mpi = new ClassLevelEditDialog();
 					mpi.setParent(characterClass);
-					mpi.initUpdate(dto, "Edit Saving Throw for "+characterClass.getName() );
+					mpi.initUpdate(dto, "Edit Level for "+characterClass.getName() );
 					MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Edit", mpi);
 					md.pack();
 					md.setLocationRelativeTo(null);
@@ -278,65 +263,27 @@ SavingThrowService getDataService() {
 	}
 
 	private void delete() {
-		int[] rs = tblData.getSelectedRows();
-		int i=0;
-		for(int r:rs) {
-			i++;
+		int r = tblData.getSelectedRow();
+		if (r >= 0 && r < tblData.getRowCount()) {
 			//
-			SavingThrow dto = (SavingThrow) tmData.getValueAt(r, 0);
+			CharacterClassLevel dto = (CharacterClassLevel) tmData.getValueAt(r, 0);
 			if (dto != null) {
 				// get panel for current class and instantiate one
 				 {
-					ClassSavingThrowEditDialog mpi = new ClassSavingThrowEditDialog();
-					((ClassSavingThrowEditDialog)mpi).setParent(characterClass);
-					mpi.initDelete(dto, "Delete Saving Throw for "+characterClass.getName() + "( #"+i+" of "+rs.length+")");
+					ClassLevelEditDialog mpi = new ClassLevelEditDialog();
+					((ClassLevelEditDialog)mpi).setParent(characterClass);
+					mpi.initDelete(dto, "Delete Level for "+characterClass.getName() );
 					MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Delete", mpi);
 					md.pack();
 					md.setLocationRelativeTo(null);
 					md.setVisible(true);
-
-				}
-			}
-		}
-
-		populateTable();
-	}
-
-	private void next() {
-		if(tblData.getRowCount()==0) {
-			return;
-		}
-		int r = tblData.getSelectedRow();
-		if (r < 0 && tblData.getRowCount() > 0) {
-			r = 0;
-			tblData.selectRow(r);
-		}
-		if (r >= 0 && r < tblData.getRowCount()) {
-			//
-			SavingThrow dto = (SavingThrow) tmData.getValueAt(r, 0);
-			if (dto != null) {
-				// get panel for current class and instantiate one
-				 {
-					ClassSavingThrowEditDialog mpi = new ClassSavingThrowEditDialog();
-					mpi.setParent(characterClass);
-					int diff = dto.getToLevel() - dto.getFromLevel();
-					dto.setFromLevel(dto.getToLevel()+1);
-					dto.setToLevel(dto.getFromLevel()+diff);
-					
-					mpi.initCopy(dto, "Add Saving Throw for "+characterClass.getName());
-					MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Add", mpi);
-					md.pack();
-					md.setLocationRelativeTo(null);
-					md.setVisible(true);					
 					populateTable();
-					int sr=tblData.getSelectedRow();
-					tblData.clearSelection();
-					tblData.addRowSelectionInterval(sr+1, sr+1);
+
 				}
 			}
 		}
 	}
-	
+
 	private void copy() {
 		if(tblData.getRowCount()==0) {
 			return;
@@ -348,17 +295,17 @@ SavingThrowService getDataService() {
 		}
 		if (r >= 0 && r < tblData.getRowCount()) {
 			//
-			SavingThrow dto = (SavingThrow) tmData.getValueAt(r, 0);
+			CharacterClassLevel dto = (CharacterClassLevel) tmData.getValueAt(r, 0);
 			if (dto != null) {
 				// get panel for current class and instantiate one
 				 {
-					ClassSavingThrowEditDialog mpi = new ClassSavingThrowEditDialog();
+					ClassLevelEditDialog mpi = new ClassLevelEditDialog();
 					mpi.setParent(characterClass);
-					mpi.initCopy(dto, "Add Saving Throw for "+characterClass.getName());
+					mpi.initCopy(dto, "Add Level for "+characterClass.getName());
 					MaintenanceDialog md = new MaintenanceDialog(getWindow(), "Add", mpi);
 					md.pack();
 					md.setLocationRelativeTo(null);
-					md.setVisible(true);					
+					md.setVisible(true);
 					populateTable();
 
 				}
@@ -370,54 +317,21 @@ SavingThrowService getDataService() {
 		return GuiUtils.getParent(this);
 	}
 
-	
-	private void copyAllFromAnotherClass() {
-		// need to pick another class!
-		CharacterClassService ccsDao = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
-
-		List<CodedListItem<String>> classes;
-		try {
-			classes = ccsDao.getAsCodedList();
+	private CharacterClassLevel getMaxLevel(String classId) {
+		CharacterClassLevelService service = getDataService();
+		
+		try{
+			int ml= service.getMaxLevelLevelInTable(classId)	;
+			if(ml>0) {
+				CharacterClassLevelKey key = new CharacterClassLevelKey();
+				key.setClassId(classId);
+				key.setLevel(ml);
+				return service.get(key);
+			} 
 		} catch (SQLException e) {
-			Popper.popError(this, e);
-			return;
+			Popper.popError(this,e);
 		}
-		CodedListItem<String> thisCharacterClass = new CodedListItem<String>();
-		thisCharacterClass.setItem(characterClass.getClassId());
-		thisCharacterClass.setDescription(characterClass.getDescription());
-		
-		classes.remove(thisCharacterClass);
-		CodedListItem<String>[] ccia = new CodedListItem[classes.size()];
-		CodedListItem<String>[] possibilities = classes.toArray(ccia);
-		@SuppressWarnings("unchecked")
-		CodedListItem<String> s = (CodedListItem<String>)JOptionPane.showInputDialog(
-		                    GuiUtils.getParent(this),
-		                    "Select class to copy from ",
-		                    "Copy to-hit from another class",
-		                    JOptionPane.PLAIN_MESSAGE,
-		                    null,
-		                    possibilities,
-		                    possibilities[0]);
-
-		//If a string was returned, say so.
-		if ((s != null) ) {
-			SavingThrowService thDao = getDataService();
-			try {
-				ReturnValue<Integer> ret = thDao.copyFrom(s.getItem(),characterClass.getClassId());
-				if(ret.isError()) {
-					Popper.popError(this, "Error copying", ret);
-				}
-			} catch (SQLException e) {
-				Popper.popError(this, e);
-				return;
-			}
-			// all good!
-			populateTable();
-		}
-
-		
-	
+		return null;
 	}
- 
 	
 }

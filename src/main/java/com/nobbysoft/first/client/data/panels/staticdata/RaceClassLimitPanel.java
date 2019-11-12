@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.staticdata;
 
 import java.awt.GridBagLayout;
 import java.lang.invoke.MethodHandles;
@@ -17,6 +17,7 @@ import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PTextArea;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;

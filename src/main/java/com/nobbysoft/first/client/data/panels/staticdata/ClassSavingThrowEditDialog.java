@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels;
+package com.nobbysoft.first.client.data.panels.staticdata;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -12,14 +12,17 @@ import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
 import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerCombo;
+import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
+import com.nobbysoft.first.client.components.special.PComboSavingThrowType;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
+import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
-import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
-import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHitKey;
+import com.nobbysoft.first.common.entities.staticdto.SavingThrow;
+import com.nobbysoft.first.common.entities.staticdto.SavingThrowKey;
 import com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.utils.CodedListItem;
@@ -27,9 +30,9 @@ import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
-public class ClassToHitEditDialog 
-  extends AbstractDataPanel<CharacterClassToHit, CharacterClassToHitKey>
-  implements MaintenancePanelInterface<CharacterClassToHit> {
+public class ClassSavingThrowEditDialog 
+  extends AbstractDataPanel<SavingThrow, SavingThrowKey>
+  implements MaintenancePanelInterface<SavingThrow> {
 
  
 
@@ -45,13 +48,7 @@ public class ClassToHitEditDialog
 		}
 	};
 	
-
-	private PDialog parentd;
-	public void setParentDialog(PDialog parentd) {
-		this.parentd=parentd;
-	}
  
-
 	
 	private final class IC extends PIntegerCombo{
 		public IC() {
@@ -66,9 +63,12 @@ public class ClassToHitEditDialog
 		}
 	}
 	
-	private final PIntegerCombo txtFromLevel = new IC();
-	private final PIntegerCombo txtToLevel = new IC();
-	private final PIntegerCombo txtBiggestACHitBy20 = new PIntegerCombo(-40,10);
+	private final PComboSavingThrowType cbxSavingThrow = new PComboSavingThrowType();
+	
+	private final IC txtFromLevel = new IC();
+	private final IC txtToLevel = new IC();
+	
+	private final PIntegerField txtRollRequired = new PIntegerField();
 	
  
 
@@ -81,7 +81,7 @@ public class ClassToHitEditDialog
 		}
 	}
 	
-	public ClassToHitEditDialog() {
+	public ClassSavingThrowEditDialog() {
 		setLayout(new GridBagLayout());
 		jbInit();
 	}
@@ -93,12 +93,12 @@ public class ClassToHitEditDialog
 
 	@Override
 	protected DataServiceI<?, ?> getDataService() {
-		DataServiceI dao  = DataMapper.INSTANCE.getDataService(CharacterClassToHit.class);
+		DataServiceI dao  = DataMapper.INSTANCE.getDataService(SavingThrow.class);
 		return dao;
 	}
 
-	PDataComponent[] dataComp = new PDataComponent[] {
-			txtBiggestACHitBy20 ,
+	protected PDataComponent[] dataComp = new PDataComponent[] {
+			txtRollRequired
 			};
 	
 	@Override
@@ -108,7 +108,7 @@ public class ClassToHitEditDialog
 
 	@Override
 	protected PDataComponent[] getKeyComponents() { 
-		return new PDataComponent[] {txtFromLevel,txtToLevel};
+		return new PDataComponent[] {txtFromLevel,txtToLevel,cbxSavingThrow};
 	}
 
 	@Override
@@ -125,15 +125,20 @@ public class ClassToHitEditDialog
 		
 		txtCharacterClass.setName("Character Class");
 		 
-		txtFromLevel.setName("From-Level");
-		txtToLevel.setName("To-Level");
-		txtBiggestACHitBy20.setName("Biggest AC hit by a 20");
+		txtFromLevel.setName("From Level");
+		txtToLevel.setName("To Level");
+		cbxSavingThrow.setName("Saving Throw Type");
+		txtRollRequired.setName("Roll required");
 
 		int row=0;
 		add(new PLabel(txtCharacterClass.getName()),GBU.label(0, row));
 		add(txtCharacterClass,GBU.text(1, row));		
-
- 	
+ 
+		row++;
+		
+		add(new PLabel(cbxSavingThrow.getName()),GBU.label(0, row));
+		add(cbxSavingThrow,GBU.text(1, row,3));		 
+				
 		row++;
 		
 		add(new PLabel(txtFromLevel.getName()),GBU.label(0, row));
@@ -142,25 +147,35 @@ public class ClassToHitEditDialog
 		add(new PLabel(txtToLevel.getName()),GBU.label(2, row));
 		add(txtToLevel,GBU.text(3,row));
 		
+
 		row++;
+		//txtRollRequired
+		add(new PLabel(txtRollRequired.getName()),GBU.label(0, row));
+		add(txtRollRequired,GBU.text(1, row,2));		 
 		
-		add(new PLabel(txtBiggestACHitBy20.getName()),GBU.label(0, row));
-		add(txtBiggestACHitBy20,GBU.text(1, row,2));	 
-		
-		row++;
- 
 		
 		// spacer
 		add(new PLabel(""),GBU.label(99, 99));	
+		
+		
+		txtRollRequired.addActionListener(ae->{
+			ReturnValue<?> rv = ok();
+			if(rv.isError()) {
+				Popper.popError(this, "Error saving", rv);
+			} else {
+				parentd.dispose();
+			}
+		});
 	}
 
-//	public void defaultAdd(int level, int xp){
-//		txtClassLevel.setIntegerValue(level);
-//		txtFromXp.setIntegerValue(xp);
-//	}
-	
+	private PDialog parentd;
+	public void setParentDialog(PDialog parentd) {
+		this.parentd=parentd;
+	}
+ 
+
 	@Override
-	protected void populateCombos() {
+	protected 	void populateCombos() {
 
 		try {
 			CharacterClassService dao = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
@@ -197,34 +212,43 @@ public class ClassToHitEditDialog
 	}
 
 	@Override
-	protected void populateFromScreen(CharacterClassToHit value, boolean includingKeys) {
+	protected void populateFromScreen(SavingThrow value, boolean includingKeys) {
+		
 		value.setFromLevel(txtFromLevel.getIntegerValue());
 		value.setToLevel(txtToLevel.getIntegerValue());
-		value.setBiggestACHitBy20(txtBiggestACHitBy20.getIntegerValue());
+		value.setRollRequired(txtRollRequired.getIntegerValue());
+		value.setSavingThrowType(cbxSavingThrow.getSavingThrowType());
 
 
 	}
 
 	@Override
-	protected void populateScreen(CharacterClassToHit value) {
+	protected void populateScreen(SavingThrow value) { 
 		txtFromLevel.setIntegerValue(value.getFromLevel());
 		txtToLevel.setIntegerValue(value.getToLevel());
-		txtBiggestACHitBy20.setIntegerValue(value.getBiggestACHitBy20());
-		
+		txtRollRequired.setIntegerValue(value.getRollRequired());
+		cbxSavingThrow.setSavingThrowType(value.getSavingThrowType());
 		
 	}
 
 	@Override
 	protected ReturnValue<?> validateScreen() {
 		
- 
+		long Level0 = txtFromLevel.getIntegerValue();
+		long Level1 = txtToLevel.getIntegerValue();
+		if(Level1<Level0){
+			return new ReturnValue(ReturnValue.IS_ERROR.TRUE,"'To' Level cannot be less than 'From' Level");
+		}
+//		if(Level0==0 && Level1==0) {
+//			return new ReturnValue(ReturnValue.IS_ERROR.TRUE,"level bigger than zero please"); NO NORMAL HUMANS!!!
+//		}
 		
 		return new ReturnValue(""); //no error
 	}
 
 	@Override
-	protected CharacterClassToHit newT() { 
-		CharacterClassToHit ccs = new CharacterClassToHit();
+	protected SavingThrow newT() { 
+		SavingThrow ccs = new SavingThrow();
 		ccs.setClassId(parent.getClassId());
 		return ccs;
 	}
