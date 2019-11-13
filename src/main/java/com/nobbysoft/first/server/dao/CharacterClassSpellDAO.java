@@ -54,37 +54,9 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 				throw ex;
 			}
 		}
-		{
+	 
 			
-			
-//	CONSTRAINT FLTS_FK FOREIGN KEY (FLIGHT_ID, SEGMENT_NUMBER)  			REFERENCES Flights (FLIGHT_ID, SEGMENT_NUMBER)			
-			// add some constraints
-			String column = "class_id";
-			String constraintName = "CCS_class_to_class";
-			if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {
-				sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
-						+ ") references Character_Class(class_id) ";
-				try (PreparedStatement ps = con.prepareStatement(sql);) {
-					ps.execute();
-				} catch (Exception ex) {
-					LOGGER.error("Error running SQL\n"+sql,ex);
-					throw ex;
-				}
-			}
-			
-			column = "spell_class_id";			
-		 constraintName = "CCS_spell_class_to_class";
-			if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {
-				sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
-						+ ") references Character_Class(class_id) ";
-				try (PreparedStatement ps = con.prepareStatement(sql);) {
-					ps.execute();
-				} catch (Exception ex) {
-					LOGGER.error("Error running SQL\n"+sql,ex);
-					throw ex;
-				}
-			}
-		}
+
 
 		{
 			String[] newInts = new String[] {
@@ -102,6 +74,42 @@ public class CharacterClassSpellDAO extends AbstractDAO<CharacterClassSpell, Cha
 		}
 	}
 
+
+	public void createConstraints(Connection con) throws SQLException{
+		{
+//CONSTRAINT FLTS_FK FOREIGN KEY (FLIGHT_ID, SEGMENT_NUMBER)  			REFERENCES Flights (FLIGHT_ID, SEGMENT_NUMBER)			
+		// add some constraints
+			String sql;
+		String column = "class_id";
+		String constraintName = "CCS_class_to_class";
+		if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {
+			sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
+					+ ") references Character_Class(class_id) ";
+			try (PreparedStatement ps = con.prepareStatement(sql);) {
+				ps.execute();
+			} catch (Exception ex) {
+				LOGGER.error("Error running SQL\n"+sql,ex);
+				throw ex;
+			}
+		}
+		
+		column = "spell_class_id";			
+	 constraintName = "CCS_spell_class_to_class";
+		if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {
+			sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
+					+ ") references Character_Class(class_id) ";
+			try (PreparedStatement ps = con.prepareStatement(sql);) {
+				ps.execute();
+			} catch (Exception ex) {
+				LOGGER.error("Error running SQL\n"+sql,ex);
+				throw ex;
+			}
+		}
+	}
+		
+	}
+	
+	
 	@Override
 	CharacterClassSpell dtoFromRS(ResultSet rs) throws SQLException {
 		CharacterClassSpell dto = new CharacterClassSpell();

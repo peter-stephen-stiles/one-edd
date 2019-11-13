@@ -75,7 +75,7 @@ INSTANCE;
 				if(tableName.equalsIgnoreCase(fkt) &&
 					columnName.equalsIgnoreCase(fkc) &&
 					otherTable.equalsIgnoreCase(pkt) ){
-						LOGGER.info("table.column "+tableName+"."+columnName+" is a FK");
+						//LOGGER.info("table.column "+tableName+"."+columnName+" is a FK");
 						return true;
 					}					
 				} 

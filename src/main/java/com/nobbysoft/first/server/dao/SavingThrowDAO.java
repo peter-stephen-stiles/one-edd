@@ -54,26 +54,7 @@ public class SavingThrowDAO extends AbstractDAO<SavingThrow, SavingThrowKey> imp
 				throw ex;
 			}
 		}
-		{
-			
-			
-//	CONSTRAINT FLTS_FK FOREIGN KEY (FLIGHT_ID, SEGMENT_NUMBER)  			REFERENCES Flights (FLIGHT_ID, SEGMENT_NUMBER)			
-			// add some constraints
-			String column = "class_id";
-			String constraintName = "CCL_save_to_class";
-			if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {
-				sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
-						+ ") references Character_Class(class_id) ";
-				try (PreparedStatement ps = con.prepareStatement(sql);) {
-					ps.execute();
-				} catch (Exception ex) {
-					LOGGER.error("Error running SQL\n"+sql,ex);
-					throw ex;
-				}
-			}
-			
- 
-		}
+
  
 //		{
 //			VC[] newStrings = new VC[] {
@@ -96,6 +77,35 @@ public class SavingThrowDAO extends AbstractDAO<SavingThrow, SavingThrowKey> imp
 //			DAOUtils.createBooleans(con, tableName, newBooleans);
 //		}
 	}
+	
+	
+	
+	
+	public void createConstraints(Connection con) throws SQLException{
+		String sql; 
+		
+		{
+			
+			
+//			CONSTRAINT FLTS_FK FOREIGN KEY (FLIGHT_ID, SEGMENT_NUMBER)  			REFERENCES Flights (FLIGHT_ID, SEGMENT_NUMBER)			
+					// add some constraints
+					String column = "class_id";
+					String constraintName = "CCL_save_to_class";
+					if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {					
+						sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
+								+ ") references Character_Class(class_id) ";
+						try (PreparedStatement ps = con.prepareStatement(sql);) {
+							ps.execute();
+						} catch (Exception ex) {
+							LOGGER.error("Error running SQL\n"+sql,ex);
+							throw ex;
+						}
+					}
+					
+		 
+				}
+	}
+	
 
 	@Override
 	String[] getKeys() {

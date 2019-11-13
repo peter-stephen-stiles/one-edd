@@ -68,6 +68,13 @@ public class PlayerCharacterSpellDAO
 
 	}
 
+	
+	public void createConstraints(Connection con) throws SQLException{
+		String sql; 
+	}
+	
+	
+	
 	PlayerCharacterSpell dtoFromRS(ResultSet rs) throws SQLException {
 		PlayerCharacterSpell dto = new PlayerCharacterSpell();
 		int col = 1;

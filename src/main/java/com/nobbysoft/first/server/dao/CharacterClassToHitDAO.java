@@ -53,26 +53,7 @@ public class CharacterClassToHitDAO extends AbstractDAO<CharacterClassToHit, Cha
 				throw ex;
 			}
 		}
-		{
-			
-			
-//	CONSTRAINT FLTS_FK FOREIGN KEY (FLIGHT_ID, SEGMENT_NUMBER)  			REFERENCES Flights (FLIGHT_ID, SEGMENT_NUMBER)			
-			// add some constraints
-			String column = "class_id";
-			String constraintName = "CCL_classtohot_to_class";
-			if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {
-				sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
-						+ ") references Character_Class(class_id) ";
-				try (PreparedStatement ps = con.prepareStatement(sql);) {
-					ps.execute();
-				} catch (Exception ex) {
-					LOGGER.error("Error running SQL\n"+sql,ex);
-					throw ex;
-				}
-			}
-			
- 
-		}
+	
 		{
 			String[] newInts = new String[] {"biggest_AC_Hit_By_20"};
 			DAOUtils.createInts(con, tableName, newInts);
@@ -80,6 +61,32 @@ public class CharacterClassToHitDAO extends AbstractDAO<CharacterClassToHit, Cha
 
 	}
 
+	public void createConstraints(Connection con) throws SQLException{
+			String sql; 
+			{
+				
+//				CONSTRAINT FLTS_FK FOREIGN KEY (FLIGHT_ID, SEGMENT_NUMBER)  			REFERENCES Flights (FLIGHT_ID, SEGMENT_NUMBER)			
+						// add some constraints
+						String column = "class_id";
+						String constraintName = "CCL_classtohot_to_class";
+						if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {
+							sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
+									+ ") references Character_Class(class_id) ";
+							try (PreparedStatement ps = con.prepareStatement(sql);) {
+								ps.execute();
+							} catch (Exception ex) {
+								LOGGER.error("Error running SQL\n"+sql,ex);
+								throw ex;
+							}
+						}
+						
+			 
+					}
+			
+		}
+		
+	
+	
 	@Override
 	String[] getKeys() {
 		return new String[] {"class_id","from_level","to_level"};

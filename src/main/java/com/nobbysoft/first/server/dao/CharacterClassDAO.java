@@ -31,26 +31,30 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 	@Override
 	public void createConstraints(Connection con) throws SQLException{
 		String sql;
-		{
-			// add some columns
-			String column = "parent_class_id";
-			String dataType = "varchar(20)";
-
-			//
-			try{
-				 
-				sql = "ALTER TABLE " + tableName + " add foreign key " + column
-						+ " references Character_Class(class_id) ";
-				try (PreparedStatement ps = con.prepareStatement(sql);) {
-					ps.execute();
+		
+//		CONSTRAINT FLTS_FK FOREIGN KEY (FLIGHT_ID, SEGMENT_NUMBER)  			REFERENCES Flights (FLIGHT_ID, SEGMENT_NUMBER)			
+				// add some constraints
+				String column = "parent_class_id";
+				String constraintName = "CCL_class_to_parent";
+				if (!DbUtils.isTableColumnFK(con, tableName, column, "character_class")) {					
+					sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
+							+ ") references Character_Class(class_id) ";
+					try (PreparedStatement ps = con.prepareStatement(sql);) {
+						ps.execute();
+					} catch (Exception ex) {
+						LOGGER.error("Error running SQL\n"+sql,ex);
+						throw ex;
+					}
 				}
-			} catch (SQLException ex) {
-				LOGGER.info("Error trying to add FK "+column);
-			}
-		}
+				
+	 
+			
 		
 		
 	};
+	
+	
+	 
 	
 	@Override
 	public void createTable(Connection con) throws SQLException {
@@ -88,11 +92,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 				try (PreparedStatement ps = con.prepareStatement(sql);) {
 					ps.execute();
 				}
-				sql = "ALTER TABLE " + tableName + " add foreign key " + column
-						+ " references Character_Class(class_id) ";
-				try (PreparedStatement ps = con.prepareStatement(sql);) {
-					ps.execute();
-				}
+
 			}
 		}
 		{
