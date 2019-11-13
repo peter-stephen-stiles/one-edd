@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -36,11 +37,11 @@ import com.nobbysoft.first.common.servicei.SqlService;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
-public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
+public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-	public SqlDBMDPanel() {
+	public SqlExportPanel() {
 		super();
 		jbInit();
 	}
@@ -69,20 +70,11 @@ public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
 		}
 	};
 
-	private DefaultTableModel tmColumns = new DefaultTableModel();
-	private PTable tblColumns = new PTable(tmColumns);
-
-	private DefaultTableModel tmIndexes = new DefaultTableModel();
-	private PTable tblIndexes = new PTable(tmIndexes);
-
-	private DefaultTableModel tmConstraints = new DefaultTableModel();
-	private PTable tblConstraints = new PTable(tmConstraints);
+ 
 	private void jbInit() {
 
 		tblTables.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblColumns.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblIndexes.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblConstraints.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblTables.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		PButton btnRefresh = new PButton("Refresh");
 
@@ -104,14 +96,8 @@ public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
 		});
 
 		JScrollPane sclTables = new JScrollPane(tblTables);
-
-		JScrollPane sclColumns = new JScrollPane(tblColumns);
-		JScrollPane sclIndexes = new JScrollPane(tblIndexes);
-		JScrollPane sclConstraints = new JScrollPane(tblConstraints);
-		JTabbedPane pnlData = new JTabbedPane();
-		pnlData.addTab("Columns", sclColumns);
-		pnlData.addTab("Indexes", sclIndexes);
-		pnlData.addTab("Constraints", sclConstraints);
+ 
+		JTabbedPane pnlData = new JTabbedPane(); 
 
 		JSplitPane splPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, sclTables, pnlData);
 		splPane.setDividerLocation(0.5d);
@@ -121,17 +107,10 @@ public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
 			splPane.setDividerLocation(150);
 		});
 
-		tblTables.getSelectionModel().addListSelectionListener(e -> {
-			if (!e.getValueIsAdjusting()) {
-				selectTable();
-			}
-		});
+ 
 	}
 
-	private boolean tableTableSetUp = false;
-	private boolean columnTableSetUp = false;
-	private boolean indexTableSetUp = false;
-	private boolean constraintTableSetUp = false;
+	private boolean tableTableSetUp = false; 
 
 	private void populateTables() {
 
@@ -174,67 +153,6 @@ public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
 		return sqlService;
 	}
 
-	private void selectTable() {
-		if (tblTables.getSelectedRowCount() > 0) {
-			try {
-				DTOTable dtot = (DTOTable) tblTables.getValueAt(tblTables.getSelectedRow(), 0);
-				if (dtot != null) {
-					SqlService sqlService = getSqlService();
-					LOGGER.info("table selected " + dtot.getKey());
-					///
-					{
-						tblColumns.clearData();
-						List<DTOColumn> list = sqlService.metaDataColumns(dtot.getTableCat(), dtot.getTableSchem(),
-								dtot.getTableName());
-
-						for (DTOColumn dto : list) {
-							if (!columnTableSetUp) {
-								tmColumns.setColumnCount(0);
-								tableUtils.columns(dto, tmColumns, tblColumns);
-								columnTableSetUp = true;
-							}
-							tmColumns.addRow(dto.getAsRow());
-						}
-						//
-					}
-					{
-						tblIndexes.clearData();
-						List<DTOIndex> list = sqlService.metaDataIndexes(dtot.getTableCat(), dtot.getTableSchem(),
-								dtot.getTableName());
-
-						for (DTOIndex dto : list) {
-							if (!indexTableSetUp) {
-								tmIndexes.setColumnCount(0);
-								tableUtils.columns(dto, tmIndexes, tblIndexes);
-								indexTableSetUp = true;
-							}
-							tmIndexes.addRow(dto.getAsRow());
-						}
-						//
-					}
-
-					{
-						tblConstraints.clearData();
-						List<DTOConstraint> list = sqlService.metaDataConstraints(dtot.getTableCat(), dtot.getTableSchem(),
-								dtot.getTableName());
-
-						for (DTOConstraint dto : list) {
-							if (!constraintTableSetUp) {
-								tmConstraints.setColumnCount(0);
-								tableUtils.columns(dto, tmConstraints, tblConstraints);
-								constraintTableSetUp = true;
-							}
-							tmConstraints.addRow(dto.getAsRow());
-						}
-						//
-					}
-				}
-			} catch (Exception ex) {
-				LOGGER.error(ex, ex);
-			} finally {
-			}
-
-		}
-	}
+ 
 
 }
