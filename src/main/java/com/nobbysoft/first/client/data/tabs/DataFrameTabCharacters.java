@@ -113,21 +113,20 @@ public class DataFrameTabCharacters extends PPanel {
 		JButton btnCopy = new JButton("Copy");
 		JButton btnEdit = new JButton("Edit");
 		JButton btnDelete = new JButton("Delete");
-		JButton btnSheet = new JButton("Character sheet");
+		 
 
 		pnlTopButtons.add(btnAdd);
 		pnlTopButtons.add(btnCopy);
 		pnlTopButtons.add(btnEdit);
 		pnlTopButtons.add(btnDelete);
-		pnlTopButtons.add(btnSheet);
+		
 		GridBagLayout layTop = new GridBagLayout();
 
 		btnRefresh.addActionListener(ae -> refresh());
 		btnAdd.addActionListener(ae -> add());
 		btnCopy.addActionListener(ae -> copy());
 		btnEdit.addActionListener(ae -> edit());
-		btnDelete.addActionListener(ae -> delete());	
-		btnSheet.addActionListener(ae ->sheet());
+		btnDelete.addActionListener(ae -> delete());	 
 		
 		JPanel pnlTop = new JPanel(layTop); 
 		pnlTop.add(pnlTopButtons, GBU.label(1, 0));
@@ -177,7 +176,8 @@ public class DataFrameTabCharacters extends PPanel {
 		
 
 	}
-ButtonActioner buttonActioner=null;
+	private ButtonActioner buttonActioner=null;
+
 	private void doButtons() {
 		Class bd = DataMapper.INSTANCE.getButtonClass(PlayerCharacter.class);
 		 {
@@ -372,22 +372,7 @@ ButtonActioner buttonActioner=null;
 		}
 	}
 
-	private void sheet() {
-		int r = tblData.getSelectedRow();
-		if (r >= 0 && r < tblData.getRowCount()) {
-			//
-			PlayerCharacter dto = ((ViewPlayerCharacter) tmData.getValueAt(r, 0)).getPlayerCharacter();
-			
-			if (dto != null) {
-				// now to make character sheet up
-				CharacterSheet sheet = new CharacterSheet(GuiUtils.getParent(this));
-				sheet.setPlayerCharacter(dto);
-				sheet.pack();
-				sheet.setLocationRelativeTo(null);
-				sheet.setVisible(true);
-			}
-		}
-	}
+ 
 	private void delete() {
 		int r = tblData.getSelectedRow();
 		if (r >= 0 && r < tblData.getRowCount()) {
@@ -508,5 +493,7 @@ ButtonActioner buttonActioner=null;
 		}
 
 	};
+
+ 
 	
 }

@@ -1,11 +1,15 @@
 package com.nobbysoft.first.client.data.panels.pc;
 
 import java.awt.Window;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.nobbysoft.first.client.data.panels.CharacterSheet;
 import com.nobbysoft.first.client.data.panels.DataButtonsInterface;
-import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.staticdto.Race;
@@ -17,11 +21,15 @@ import com.nobbysoft.first.utils.DataMapper;
 
 public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCharacter> {
 
+	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 	private static final String EQUIPMENT = "Equipment";
 
 	private static final String SPELLS = "Spells";
 
 	private static final String ADD_XP = "Add XP";
+	
+	private static final String DUAL_CLASS = "Dual class";
+	private static final String SHEET=	"Character sheet";
 
 	private List<String> rowButtonNames = new ArrayList<>();
 
@@ -31,6 +39,8 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 		rowButtonNames.add(ADD_XP);
 		rowButtonNames.add(SPELLS);
 		rowButtonNames.add(EQUIPMENT);
+		rowButtonNames.add(DUAL_CLASS);
+		rowButtonNames.add(SHEET);
 	}
 
 
@@ -53,6 +63,7 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 	
 	@Override
 	public boolean doRowButton(Window window, String name, ViewPlayerCharacter object) {
+		LOGGER.info("Button "+name);
 		if(ADD_XP.equals(name)) {	
 			try {
 				PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);
@@ -109,7 +120,29 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 				Popper.popError(window, ex);
 				return false;
 			} 
+			//
+		} else if(DUAL_CLASS.equals(name)) {
 			
+		} else if(SHEET.equals(name)) {
+			try {
+			PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);			
+			PlayerCharacter dto = ccs.get(object.getPlayerCharacter().getPcId());
+			
+			if (dto != null) {
+				// now to make character sheet up
+				CharacterSheet sheet = new CharacterSheet(window);
+				sheet.setPlayerCharacter(dto);
+				sheet.pack();
+				sheet.setLocationRelativeTo(null);
+				sheet.setVisible(true);
+				// no refresh just for character sheet!
+				}
+			} catch (Exception ex) {
+					Popper.popError(window, ex);			
+			}
+			return false;
+			
+			//
 		} else {
 			
 		}

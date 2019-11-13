@@ -570,11 +570,11 @@ public class CharacterRoller extends PDialog {
 
 	
 	DataServiceI<?, ?> getDataService() {
-		DataServiceI dao;
+		DataServiceI<?, ?> dao;
 		try {
-		Class d = DataMapper.INSTANCE.getServiceForEntity(Constitution.class); 
+		Class<DataServiceI> d =  DataMapper.INSTANCE.getServiceForEntity(Constitution.class); 
 			Constructor<DataServiceI> cc = d.getConstructor();
-				dao = (DataServiceI) cc.newInstance();
+				dao = (DataServiceI<?, ?>) cc.newInstance();
 			} catch (Exception e) {
 				throw new IllegalStateException("Can't get Service for "+Constitution.class);
 			}
@@ -613,7 +613,7 @@ public class CharacterRoller extends PDialog {
 				List<Race> list = dao.getList();
 
 				for (Race race : list) {
-					cbxRace.addItem(new CodedListItem(race, race.getName()));
+					cbxRace.addItem(new CodedListItem<Race>(race, race.getName()));
 				}
 
 			}
@@ -746,165 +746,38 @@ public class CharacterRoller extends PDialog {
 		savePrefs();
 		
 		METHOD method = (METHOD) (cbxMethod.getSelectedItem());
-		enableUpsAndDowns(method.isAllowSwaps());
-		if (METHOD.METHOD_3D6.equals(method)) {
-			for (int i = 0, n = 6; i < n; i++) {
-				int roll = Roller.roll(DICE.D6, 3, 0, 0);
-				attValues[i].setText("" + roll);
-			}
-		} else if (METHOD.METHOD_I.equals(method)) {
-			List<Integer> finalRolls = new ArrayList<>();
-			for (int i = 0, n = 6; i < n; i++) {
-				List<Integer> rolls = new ArrayList<>(4);
-				for (int j = 0, m = 4; j < m; j++) {
-					int roll = Roller.roll(DICE.D6, 1, 0, 0);
-					rolls.add(roll);
-				}
-				Collections.sort(rolls);
-				int roll = 0;
-				for (int j = 1, m = 4; j < m; j++) {
-					int r = rolls.get(j);
-					roll += r;
-				}
-				finalRolls.add(roll);
-			}
-			for (int i = 0, n = 6; i < n; i++) {
-				attValues[i].setText("" + finalRolls.get(i));
-			}
-
-		} else if (METHOD.METHOD_II.equals(method)) {
-			List<Integer> rolls = new ArrayList<>(12);
-			for (int i = 0, n = 12; i < n; i++) {
-				int roll = Roller.roll(DICE.D6, 3, 0, 0);
-				rolls.add(roll);
-			}
-			Collections.sort(rolls);
-			for (int i = 0, n = 6; i < n; i++) {
-				attValues[i].setText("" + rolls.get(i + 6));
-			}
-		} else if (METHOD.METHOD_III.equals(method)) {
-			// roll 3d6 6 times for each attribute
-			List<Integer> finalRolls = new ArrayList<>();
-			for (int j = 0, m = 6; j < m; j++) {
-
-				List<Integer> rolls = new ArrayList<>();
-				for (int i = 0, n = 6; i < n; i++) {
-					int roll = Roller.roll(DICE.D6, 3, 0, 0);
-					rolls.add(roll);
-				}
-				Collections.sort(rolls);
-				finalRolls.add(rolls.get(5));// biggest
-			}
-			for (int i = 0, n = 6; i < n; i++) {
-				attValues[i].setText("" + finalRolls.get(i));
-			}
-		}
+		enableUpsAndDowns(ru.rolling(method, attValues));
 
 	}
 
 	private void checkLimits() {
+		
+		// MOVED TO ROLLING UTILS
+		//
 		Race race = (Race) cbxRace.getSelectedCode();
+		String gender = (String) cbxGender.getSelectedCode();
 		if (race != null) {
-			PLabel l = new PLabel();
-			Color normal = l.getForeground();
-			Color bad = Color.RED;
-			for (JComponent c : attTotals) {
-				c.setForeground(normal);
+			boolean ok=ru.checkLimits(race, attTotals, gender, lblInvalid, lblTotalValue, attValues, bonuses);
+			if(ok) {
+				checkClasses();
+				determineAccept();
 			}
-			String gender = (String) cbxGender.getSelectedCode();
-			int[] mins;
-			int[] maxs;
-			if ("Male".equalsIgnoreCase(gender)) {
-				mins = race.getMaleMinimums();
-				maxs = race.getMaleMaximums();
-			} else {
-				mins = race.getFemaleMinimums();
-				maxs = race.getFemaleMaximums();
-			}
-			boolean valid = true;
-			int tot = 0;
-			for (int i = 0, n = attTotals.length; i < n; i++) {
-
-				Color colour = normal;
-				int value = calculateTotal(i);
-				PIntegerField attributeTotal = attTotals[i];
-				attributeTotal.setIntegerValue(value);
-				if (value < mins[i]) {
-					colour = bad;
-					valid = false;
-				} else if (value > maxs[i]) {
-					attributeTotal.setIntegerValue(maxs[i]);
-				}
-				attributeTotal.setForeground(colour);
-				tot = tot + attributeTotal.getIntegerValue();
-			}
-			lblInvalid.setText("Invalid");
-			lblInvalid.setForeground(valid ? lblInvalid.getBackground() : Color.RED);
-			lblTotalValue.setText("" + tot);
-			checkClasses();
-			determineAccept();
 		}
+
 	}
 
+	private RollingUtils ru = new RollingUtils();
+	
 	private void checkClasses() {
 
 		String raceId = ((Race) cbxRace.getSelectedCode()).getRaceId();
 
-		if (raceLimits.size() == 0) {
-			RaceClassLimitService dao = (RaceClassLimitService) DataMapper.INSTANCE
-					.getDataService(RaceClassLimit.class);
-			try {
-				for (RaceClassLimit dto : dao.getList()) {
-					raceLimits.put(dto.getKey(), dto);
-				}
-			} catch (SQLException e) {
-				LOGGER.error("Error getting class limits", e);
-				return;
-			}
-		}
-
-		if (classes.size() == 0) {
-			CharacterClassService dao = (CharacterClassService) DataMapper.INSTANCE
-					.getDataService(CharacterClass.class);
-
-			try {
-				for (CharacterClass cclass : dao.getList()) {
-					classes.put(cclass.getName(), cclass);
-				}
-			} catch (SQLException e) {
-				LOGGER.error("Error getting classes", e);
-				return;
-			}
-		}
-
-		{
-
-			List<CharacterClass> validClasses = new ArrayList<>();
-			lblXPBonus.setText("");
-
-			for (CharacterClass cclass : classes.values()) {
-				LOGGER.info("Class " + cclass.getClassId());
-				RaceClassLimitKey rclKey = new RaceClassLimitKey();
-				rclKey.setRaceId(raceId);
-				rclKey.setClassId(cclass.getClassId());
-				RaceClassLimit rcl = raceLimits.get(rclKey);
-				if (rcl != null && !rcl.isNpcClassOnly() && !(rcl.getMaxLevel() < 1)) {
-					int[] mins = cclass.getMinimums();
-					boolean valid = true;
-					for (int i = 0, n = 6; i < n; i++) {
-						if (attValues[i].getIntegerValue() < mins[i]) {
-							valid = false;
-						}
-					}
-					if (valid) {
-						validClasses.add(cclass);
-					}
-				} else {
-					LOGGER.info(" RCL FAILURE " + rcl);
-				}
-			}
-			txtClasses.setListData(validClasses.toArray(new CharacterClass[validClasses.size()]));
-		}
+		RollingUtils ru = new RollingUtils();
+		
+		ru.checkClasses(raceId, raceLimits, classes, lblXPBonus, attValues, txtClasses);
+		
+		
+		
 
 	}
 

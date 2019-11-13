@@ -203,7 +203,7 @@ public enum DataMapper {
 		return servicemap.get(clazz);
 	}
 	
-	public Class<?> getServiceForEntity(Class<?> clazz){
+	public Class<DataServiceI> getServiceForEntity(Class<?> clazz){
 		return servicemap.get(entityservicemap.get(clazz));
 	}
 	
