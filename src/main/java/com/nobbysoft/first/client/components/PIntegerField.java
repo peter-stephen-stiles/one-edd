@@ -7,9 +7,10 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.text.Document;
 
+import com.nobbysoft.first.client.components.special.IIntegerField;
 import com.nobbysoft.first.client.utils.GuiUtils;
 
-public class PIntegerField extends JTextField  implements PDataComponent {
+public class PIntegerField extends JTextField  implements PDataComponent ,IIntegerField{
 
 	public PIntegerField() {
 		setDocument (new IntegerLimitingDocument());

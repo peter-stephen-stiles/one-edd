@@ -48,6 +48,7 @@ import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PList;
 import com.nobbysoft.first.client.components.PPanel;
+import com.nobbysoft.first.client.components.special.CharacterClassListCellRenderer;
 import com.nobbysoft.first.client.components.special.PExceptionalStrength;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
@@ -439,28 +440,7 @@ public class CharacterRoller extends PDialog {
 
 		// lblInvalid lblTotal lblTotalValue
 
-		txtClasses.setCellRenderer(new ListCellRenderer<CharacterClass>() {
-			PLabel lbl = new PLabel();
-
-			@Override
-			public Component getListCellRendererComponent(JList<? extends CharacterClass> list, CharacterClass value,
-					int index, boolean isSelected, boolean cellHasFocus) {
-				String s = "";
-				if (value != null) {
-					s = value.getName();
-				}
-				lbl.setText(s);
-
-				if (isSelected || cellHasFocus) {
-					lbl.setBackground(Color.GRAY);
-					lbl.setOpaque(true);
-				} else {
-					lbl.setOpaque(false);
-				}
-				return lbl;
-			}
-
-		});
+		txtClasses.setCellRenderer(new CharacterClassListCellRenderer());
 
 		txtHp1.setReadOnly(true);
 		txtHp2.setReadOnly(true);
@@ -773,8 +753,8 @@ public class CharacterRoller extends PDialog {
 		String raceId = ((Race) cbxRace.getSelectedCode()).getRaceId();
 
 		RollingUtils ru = new RollingUtils();
-		
-		ru.checkClasses(raceId, raceLimits, classes, lblXPBonus, attValues, txtClasses);
+		List<CharacterClass> exceptTheseClasses = new ArrayList<>();// all classes allowed
+		ru.checkClasses(raceId, raceLimits, classes, lblXPBonus, attValues, txtClasses,exceptTheseClasses);
 		
 		
 		

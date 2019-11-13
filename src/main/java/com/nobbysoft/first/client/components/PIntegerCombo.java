@@ -7,8 +7,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nobbysoft.first.client.components.special.IIntegerField;
+
 @SuppressWarnings("serial")
-public class PIntegerCombo extends PComboBox<Integer> {
+public class PIntegerCombo extends PComboBox<Integer> implements IIntegerField{
 
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());

@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PList;
+import com.nobbysoft.first.client.components.special.IIntegerField;
 import com.nobbysoft.first.client.data.panels.CharacterRoller.METHOD;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.Race;
@@ -93,8 +94,9 @@ public class RollingUtils {
 			Map<RaceClassLimitKey, RaceClassLimit> raceLimits,
 			Map<String, CharacterClass> classes,
 			PLabel lblXPBonus,
-			PIntegerField[] attValues,
-			PList<CharacterClass> txtClasses) {
+			IIntegerField[] attValues,
+			PList<CharacterClass> txtClasses,
+			List<CharacterClass> exceptTheseClasses) {
 
 		
 		if (raceLimits.size() == 0) {
@@ -131,23 +133,31 @@ public class RollingUtils {
 
 			for (CharacterClass cclass : classes.values()) {
 				LOGGER.info("Class " + cclass.getClassId());
-				RaceClassLimitKey rclKey = new RaceClassLimitKey();
-				rclKey.setRaceId(raceId);
-				rclKey.setClassId(cclass.getClassId());
-				RaceClassLimit rcl = raceLimits.get(rclKey);
-				if (rcl != null && !rcl.isNpcClassOnly() && !(rcl.getMaxLevel() < 1)) {
-					int[] mins = cclass.getMinimums();
-					boolean valid = true;
-					for (int i = 0, n = 6; i < n; i++) {
-						if (attValues[i].getIntegerValue() < mins[i]) {
-							valid = false;
+
+				// only include
+				if (!exceptTheseClasses.contains(cclass)) {
+
+					RaceClassLimitKey rclKey = new RaceClassLimitKey();
+					rclKey.setRaceId(raceId);
+					rclKey.setClassId(cclass.getClassId());
+					RaceClassLimit rcl = raceLimits.get(rclKey);
+					if (rcl != null && !rcl.isNpcClassOnly() && !(rcl.getMaxLevel() < 1)) {
+						int[] mins = cclass.getMinimums();
+						boolean valid = true;
+						for (int i = 0, n = 6; i < n; i++) {
+							if (attValues[i].getIntegerValue() < mins[i]) {
+								valid = false;
+							}
 						}
-					}
-					if (valid) {
-						validClasses.add(cclass);
+						if (valid) {
+							validClasses.add(cclass);
+						}
+
+					} else {
+						LOGGER.info(" RCL FAILURE " + rcl);
 					}
 				} else {
-					LOGGER.info(" RCL FAILURE " + rcl);
+					LOGGER.info("Class is excluded:" + cclass.getClassId());
 				}
 			}
 			txtClasses.setListData(validClasses.toArray(new CharacterClass[validClasses.size()]));

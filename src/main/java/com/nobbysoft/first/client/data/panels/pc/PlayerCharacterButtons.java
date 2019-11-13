@@ -106,7 +106,7 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 		}else if(EQUIPMENT.equals(name)) {	
 			try {
 			PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);
-			RaceService rs = (RaceService) getDataService(Race.class);
+			
 			PlayerCharacter pc = ccs.get(object.getPlayerCharacter().getPcId());
 			
 			PlayerCharacterEquipmentDialog dialog = new PlayerCharacterEquipmentDialog(window,"Equipment for "+object.getDescription());
@@ -122,6 +122,34 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 			} 
 			//
 		} else if(DUAL_CLASS.equals(name)) {
+			try {
+				PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);			
+				PlayerCharacter pc = ccs.get(object.getPlayerCharacter().getPcId());
+				if(pc.getThirdClass()!=null) {
+					Popper.popError(window, "Greedy bugger ", 
+							"Your character has already dual classed. Twice. That should be enough for anyone. Sorry.");
+					return false;
+				}
+				RaceService rs = (RaceService) getDataService(Race.class);
+				Race race = rs.get(pc.getRaceId());
+				if(race.isMultiClassable()) {
+					Popper.popError(window, "Can't dual class a "+race.getName(), 
+							"Your character is a "+race.getName()+" and they are not allowed to dual class. Sorry.");
+					return false;
+				}
+				PlayerCharacterDualClassDialog dialog = new PlayerCharacterDualClassDialog(window);
+				dialog.initialiseCharacter(pc);
+				dialog.pack();
+				dialog.setLocationRelativeTo(null);
+				dialog.setVisible(true);
+				if(dialog.isCancelled()){
+					return false;
+				}				
+				return true;
+			} catch (Exception ex) {
+				Popper.popError(window, ex);
+				return false;
+			} 
 			
 		} else if(SHEET.equals(name)) {
 			try {
@@ -130,11 +158,11 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 			
 			if (dto != null) {
 				// now to make character sheet up
-				CharacterSheet sheet = new CharacterSheet(window);
-				sheet.setPlayerCharacter(dto);
-				sheet.pack();
-				sheet.setLocationRelativeTo(null);
-				sheet.setVisible(true);
+				CharacterSheet dialog = new CharacterSheet(window);
+				dialog.setPlayerCharacter(dto);
+				dialog.pack();
+				dialog.setLocationRelativeTo(null);
+				dialog.setVisible(true);
 				// no refresh just for character sheet!
 				}
 			} catch (Exception ex) {

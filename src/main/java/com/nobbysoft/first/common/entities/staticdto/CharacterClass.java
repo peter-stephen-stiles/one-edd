@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.nobbysoft.first.common.constants.Constants;
 import com.nobbysoft.first.common.entities.DataDTOInterface;
 
+@SuppressWarnings("serial")
 public class CharacterClass implements Serializable, DataDTOInterface<String> {
 	private String classId; 
 	private String name; 
