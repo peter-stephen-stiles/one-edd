@@ -1,30 +1,19 @@
 package com.nobbysoft.first.client.components;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.common.utils.CodedListItem;
-import com.nobbysoft.first.utils.DataMapper;
 
+@SuppressWarnings("serial")
 public class PComboBox<E> extends JComboBox<E> implements PDataComponent {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass()); 

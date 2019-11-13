@@ -25,8 +25,8 @@ import com.nobbysoft.first.client.components.PButtonPanel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTable;
 import com.nobbysoft.first.client.components.PTextArea;
-import com.nobbysoft.first.client.data.panels.SqlDBMDPanel;
-import com.nobbysoft.first.client.data.panels.SqlQueryPanel;
+import com.nobbysoft.first.client.data.panels.sql.SqlDBMDPanel;
+import com.nobbysoft.first.client.data.panels.sql.SqlQueryPanel;
 import com.nobbysoft.first.client.utils.GuiUtils; 
 
 @SuppressWarnings("serial")

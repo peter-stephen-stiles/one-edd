@@ -1,29 +1,15 @@
 package com.nobbysoft.first.client.components;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
-
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.common.servicei.CodedListService;
-import com.nobbysoft.first.common.utils.CodedListItem;
-import com.nobbysoft.first.server.dao.CodedListDAO;
-import com.nobbysoft.first.server.utils.ConnectionManager;
 import com.nobbysoft.first.utils.DataMapper;
 
+@SuppressWarnings("serial")
 public class PCodedListCellRenderer extends PTableCellRenderer {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
@@ -31,6 +17,7 @@ public class PCodedListCellRenderer extends PTableCellRenderer {
 	
  
 	
+	@SuppressWarnings("rawtypes")
 	private Map<Comparable,String> itemMap = null; 
 	
 	public PCodedListCellRenderer(String codedListType) {

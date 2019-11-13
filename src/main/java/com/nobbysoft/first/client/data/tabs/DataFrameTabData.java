@@ -138,7 +138,7 @@ public class DataFrameTabData extends PPanel{
 
 	private void populateComboBox() {
 		
-	for(Class clazz:	DataMapper.INSTANCE.getDTOs()){
+	for(Class clazz:	DataMapper.INSTANCE.getDTOsForStaticMaintenance()){
 		cbxData.addItem(clazz);
 	}
 		

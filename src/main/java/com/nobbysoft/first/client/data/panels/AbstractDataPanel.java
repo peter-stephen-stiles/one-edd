@@ -40,42 +40,42 @@ public abstract class AbstractDataPanel<T extends DataDTOInterface<? extends K>,
 		return new ReturnValue("");
 	}
 
-	void enableButtons(boolean enable) {
+	protected void enableButtons(boolean enable) {
 		for (PDataComponent c : getButtonComponents()) {
 			c.setReadOnly(!enable);
 		}
 	}
 
-	void enableData(boolean enable) {
+	protected void enableData(boolean enable) {
 		for (PDataComponent c : getDataComponents()) {
 			c.setReadOnly(!enable);
 		}
 	}
 
-	void enableKeys(boolean enable) {
+	protected void enableKeys(boolean enable) {
 		for (PDataComponent c : getKeyComponents()) {
 			c.setReadOnly(!enable);
 		}
 	}
 
-	abstract PDataComponent[] getButtonComponents();
+	abstract protected PDataComponent[] getButtonComponents();
 
  
 
-	abstract DataServiceI<?,?> getDataService();
+	abstract protected DataServiceI<?,?> getDataService();
 	
-	abstract PDataComponent[] getDataComponents();
+	abstract protected PDataComponent[] getDataComponents();
 
-	abstract PDataComponent[] getKeyComponents();
+	abstract protected PDataComponent[] getKeyComponents();
 
 	
-	PLabel getLblInstructions() {			
+	protected PLabel getLblInstructions() {			
 		Font pm24 = GuiUtils.getHeaderFont();
 		lblInstructions.setFont(pm24);
 		return lblInstructions;
 	}
 
-	abstract PDataComponent[] getMandatoryComponents();
+	abstract protected PDataComponent[] getMandatoryComponents();
 
 	public MODE getMode(){
 		return mode;
@@ -142,18 +142,18 @@ public abstract class AbstractDataPanel<T extends DataDTOInterface<? extends K>,
 		return new ReturnValue("");
 	}
 
-	abstract void jbInit();
+	abstract protected void jbInit();
 	
  
-	abstract void populateCombos() ;
+	abstract protected void populateCombos() ;
  
-	abstract void populateFromScreen(T value, boolean includingKeys);
+	abstract protected void populateFromScreen(T value, boolean includingKeys);
  
-	abstract void populateScreen(T value);
+	abstract protected void populateScreen(T value);
  
  
 	
- ReturnValue<?> validateMandatory() {
+	protected ReturnValue<?> validateMandatory() {
 		{
 			for (PDataComponent c : getMandatoryComponents()) {
 				Object s = c.getTheValue();
@@ -167,9 +167,9 @@ public abstract class AbstractDataPanel<T extends DataDTOInterface<? extends K>,
 
 		return new ReturnValue("");
 	}
- abstract ReturnValue<?> validateScreen();
+ abstract protected ReturnValue<?> validateScreen();
  
- abstract T newT();
+ abstract protected T newT();
  
 	public ReturnValue<?> ok() {
 		/// try to do wotsit

@@ -15,6 +15,23 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.data.panels.*;
+import com.nobbysoft.first.client.data.panels.attributes.ConstitutionPanel;
+import com.nobbysoft.first.client.data.panels.attributes.DexterityPanel;
+import com.nobbysoft.first.client.data.panels.attributes.IntelligencePanel;
+import com.nobbysoft.first.client.data.panels.attributes.StrengthPanel;
+import com.nobbysoft.first.client.data.panels.attributes.WisdomPanel;
+import com.nobbysoft.first.client.data.panels.equipment.ArmourPanel;
+import com.nobbysoft.first.client.data.panels.equipment.ShieldPanel;
+import com.nobbysoft.first.client.data.panels.equipment.WeaponAmmunitionPanel;
+import com.nobbysoft.first.client.data.panels.equipment.WeaponMeleePanel;
+import com.nobbysoft.first.client.data.panels.equipment.WeaponRangedPanel;
+import com.nobbysoft.first.client.data.panels.pc.PlayerCharacterButtons;
+import com.nobbysoft.first.client.data.panels.pc.PlayerCharacterPanel;
+import com.nobbysoft.first.client.data.panels.staticdata.CharacterClassButtons;
+import com.nobbysoft.first.client.data.panels.staticdata.CharacterClassPanel;
+import com.nobbysoft.first.client.data.panels.staticdata.RaceClassLimitPanel;
+import com.nobbysoft.first.client.data.panels.staticdata.RacePanel;
+import com.nobbysoft.first.client.data.panels.staticdata.SpellPanel;
 import com.nobbysoft.first.common.entities.equipment.*;
 import com.nobbysoft.first.common.entities.pc.*;
 import com.nobbysoft.first.common.entities.staticdto.*;
@@ -57,12 +74,12 @@ public enum DataMapper {
 
 	private Map<Class,Class> servicemap =new HashMap<>();
 
-
+ 
 	private Map<Class,Class> entityservicemap =new HashMap<>();
 	private Map<Class,Class> daoimap =new LinkedHashMap<>(); // so that the tables are ordered as added to the map...
 	private Map<Class,Class> buttonmap =new HashMap<>();
 	private Map<Class<?>, String> names = new HashMap<>();
-	private Map<Class<?>, Class<?>> panels = new HashMap<>();
+	private Map<Class<?>, Class<?>> staticDataPanels = new HashMap<>();
 	
 	private Map<EquipmentType,Class<?>> equipmentDAO = new HashMap<>();
 	
@@ -94,6 +111,7 @@ public enum DataMapper {
 		daoimap.put(Intelligence.class,IntelligenceDAO.class);
 		daoimap.put(Strength.class,StrengthDAO.class);
 		daoimap.put(Dexterity.class,DexterityDAO.class);
+		daoimap.put(Wisdom.class,WisdomDAO.class);
 		daoimap.put(WeaponMelee.class,WeaponMeleeDAO.class);
 		daoimap.put(WeaponRanged.class,WeaponRangedDAO.class);
 		daoimap.put(WeaponAmmunition.class,WeaponAmmunitionDAO.class);
@@ -109,20 +127,21 @@ public enum DataMapper {
 		 
 		
 		
-		panels.put(PlayerCharacter.class,PlayerCharacterPanel.class);
-		panels.put(Spell.class,SpellPanel.class);
-		panels.put(Race.class,RacePanel.class);
-		panels.put(CharacterClass.class,CharacterClassPanel.class);
-		panels.put(RaceClassLimit.class, RaceClassLimitPanel.class); 
-		panels.put(Constitution.class, ConstitutionPanel.class);
-		panels.put(Intelligence.class, IntelligencePanel.class);
-		panels.put(Strength.class, StrengthPanel.class);
-		panels.put(Dexterity.class, DexterityPanel.class);
-		panels.put(WeaponMelee.class, WeaponMeleePanel.class);
-		panels.put(WeaponRanged.class, WeaponRangedPanel.class);
-		panels.put(WeaponAmmunition.class, WeaponAmmunitionPanel.class);
-		panels.put(Armour.class, ArmourPanel.class);
-		panels.put(Shield.class, ShieldPanel.class);
+		staticDataPanels.put(PlayerCharacter.class,PlayerCharacterPanel.class);
+		staticDataPanels.put(Spell.class,SpellPanel.class);
+		staticDataPanels.put(Race.class,RacePanel.class);
+		staticDataPanels.put(CharacterClass.class,CharacterClassPanel.class);
+		staticDataPanels.put(RaceClassLimit.class, RaceClassLimitPanel.class); 
+		staticDataPanels.put(Constitution.class, ConstitutionPanel.class);
+		staticDataPanels.put(Intelligence.class, IntelligencePanel.class);
+		staticDataPanels.put(Strength.class, StrengthPanel.class);
+		staticDataPanels.put(Dexterity.class, DexterityPanel.class);
+		staticDataPanels.put(Wisdom.class, WisdomPanel.class);
+		staticDataPanels.put(WeaponMelee.class, WeaponMeleePanel.class);
+		staticDataPanels.put(WeaponRanged.class, WeaponRangedPanel.class);
+		staticDataPanels.put(WeaponAmmunition.class, WeaponAmmunitionPanel.class);
+		staticDataPanels.put(Armour.class, ArmourPanel.class);
+		staticDataPanels.put(Shield.class, ShieldPanel.class);
 		
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
@@ -141,6 +160,7 @@ public enum DataMapper {
 		entityservicemap.put(Intelligence.class, IntelligenceService.class);//
 		entityservicemap.put(Strength.class, StrengthService.class);
 		entityservicemap.put(Dexterity.class,DexterityService.class);
+		entityservicemap.put(Wisdom.class, WisdomService.class);//
 		entityservicemap.put(WeaponMelee.class,WeaponMeleeService.class);
 		entityservicemap.put(WeaponRanged.class,WeaponRangedService.class);
 		entityservicemap.put(WeaponAmmunition.class,WeaponAmmunitionService.class);
@@ -163,9 +183,10 @@ public enum DataMapper {
 		servicemap.put(RaceClassLimitService.class, RaceClassLimitServiceImpl.class);
 		servicemap.put(CodedListService.class, CodedListServiceImpl.class);
 		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);//
-		servicemap.put(IntelligenceService.class, IntelligenceServiceImpl.class);//Intelligence
+		servicemap.put(IntelligenceService.class, IntelligenceServiceImpl.class);//
 		servicemap.put(StrengthService.class, StrengthServiceImpl.class);
 		servicemap.put(DexterityService.class, DexterityServiceImpl.class);
+		servicemap.put(WisdomService.class, WisdomServiceImpl.class);//
 		servicemap.put(WeaponMeleeService.class, WeaponMeleeServiceImpl.class);
 		servicemap.put(WeaponRangedService.class, WeaponRangedThrownImpl.class);
 		servicemap.put(WeaponAmmunitionService.class, WeaponAmmunitionServiceImpl.class);
@@ -182,14 +203,16 @@ public enum DataMapper {
 		return servicemap.get(clazz);
 	}
 	
-	public Class<?> getServiceForEntity(Class<?> clazz){
+	public Class<DataServiceI> getServiceForEntity(Class<?> clazz){
 		return servicemap.get(entityservicemap.get(clazz));
 	}
 	
-	public List<Class> getDTOs(){
+	public List<Class> getDTOsForStaticMaintenance(){
 		List<Class>  d =new ArrayList<>();
-		d.addAll(entityservicemap.keySet());
-		d.remove(PlayerCharacter.class);
+		for(Class clazz:staticDataPanels.keySet()) {
+			d.add(clazz);	
+		}
+		
 		Collections.sort(d,new Comparator<Class>() {
 
 			@Override
@@ -211,7 +234,7 @@ public enum DataMapper {
 	}
 	
 	public Class<?> getMaintenancePanel(Class<?> clazz){
-		return panels.get(clazz);
+		return staticDataPanels.get(clazz);
 	}
 	
 	

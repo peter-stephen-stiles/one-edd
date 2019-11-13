@@ -2,6 +2,8 @@ package com.nobbysoft.first.client.utils;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,6 +23,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.first.common.entities.staticdto.Race;
+import com.nobbysoft.first.common.entities.staticdto.SavingThrow;
 
 public class MakeHTML {
 
@@ -51,7 +57,10 @@ public class MakeHTML {
 		return sb.toString();
 	}
 
-	public String makeDocument(PlayerCharacter pc) {
+	public String makeDocument(PlayerCharacter pc,
+			Map<String,CharacterClass> characterClasses,
+			Race race,
+			List<SavingThrow> savingThrows) {
 
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
@@ -62,6 +71,8 @@ public class MakeHTML {
 			Element body = doc.createElement("body");
 			doc.appendChild(body);
 
+			
+			Element mainRow;
 			XmlUtilities.addElement(body, "h1", "Character Sheet");
 			{
 				Element table = XmlUtilities.addElement(body, "table");
@@ -73,8 +84,38 @@ public class MakeHTML {
 				XmlUtilities.addElement(row, "th", "Gender");
 				XmlUtilities.addElement(row, "td", pc.getGender().name());
 				XmlUtilities.addElement(row, "th", "Race");
-				XmlUtilities.addElement(row, "td", pc.getRaceId());
+				XmlUtilities.addElement(row, "td", race.getName());
+				mainRow=row;
 			}
+			int hp=0;
+			{
+				Element table = XmlUtilities.addElement(body, "table");
+				XmlUtilities.addAttribute(table, "border", "1");
+				{
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "Class");
+					XmlUtilities.addElement(row, "th", "Level");
+					XmlUtilities.addElement(row, "th", "XP"); //need to ","ise these
+					XmlUtilities.addElement(row, "th", "HP");
+				}
+				for(PlayerCharacterLevel pcl:pc.getClassDetails()) {
+					if(pcl!=null && pcl.getThisClass()!=null) {
+						CharacterClass cc = characterClasses.get(pcl.getThisClass());
+						Element row = XmlUtilities.addElement(table, "tr");
+						XmlUtilities.addElement(row, "td", cc.getName());
+						XmlUtilities.addElement(row, "td", pcl.getThisClassLevel());
+						XmlUtilities.addElement(row, "td", pcl.getThisClassExperience());
+						hp+=pcl.getThisClassHp();
+						XmlUtilities.addElement(row, "td", pcl.getThisClassHp());
+						
+					}
+					
+				}
+			}
+			
+			XmlUtilities.addElement(mainRow, "th", "HP");
+			XmlUtilities.addElement(mainRow, "td", ""+hp);
+			
 			{
 				Element table = XmlUtilities.addElement(body, "table");
 
@@ -108,6 +149,18 @@ public class MakeHTML {
 					Element row = XmlUtilities.addElement(table, "tr");
 					XmlUtilities.addElement(row, "th", "chr");
 					XmlUtilities.addElement(row, "td",pc.getAttrChr());
+				}
+			}
+			
+			{ // saving throws
+				// if we have multiples, we pick the lowest one of each!
+				Element table = XmlUtilities.addElement(body, "table");
+
+				XmlUtilities.addAttribute(table, "border", "1");
+				{
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "str");
+					XmlUtilities.addElement(row, "td", pc.getAttrStr());
 				}
 			}
 			String xmlString = XmlUtilities.xmlToHtmlString(doc);

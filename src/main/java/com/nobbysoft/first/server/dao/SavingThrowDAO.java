@@ -242,6 +242,7 @@ public class SavingThrowDAO extends AbstractDAO<SavingThrow, SavingThrowKey> imp
 					 ps1.setInt(col++, useThisFromLevel);
 					 try(ResultSet rs1 = ps1.executeQuery()){
 						 if(rs1.next()) {
+							 col=1;
 							 int useThisToLevel = rs1.getInt(col++);
 							 SavingThrowKey key = new SavingThrowKey(classId,useThisFromLevel,useThisToLevel,save);
 							 SavingThrow value = get(con,key);
