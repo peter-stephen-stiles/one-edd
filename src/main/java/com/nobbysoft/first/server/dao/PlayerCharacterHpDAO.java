@@ -63,6 +63,13 @@ public class PlayerCharacterHpDAO
 
 	}
 
+	
+	public void createConstraints(Connection con) throws SQLException{
+		String sql; 
+	}
+	
+	
+	
 	PlayerCharacterHp dtoFromRS(ResultSet rs) throws SQLException {
 		PlayerCharacterHp dto = new PlayerCharacterHp();
 		int col = 1;

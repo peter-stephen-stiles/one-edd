@@ -7,5 +7,8 @@ public interface CreateInterface {
 	
 
 	public void createTable(Connection con) throws SQLException;
+	public default void createConstraints(Connection con) throws SQLException{
+		
+	};
 
 }

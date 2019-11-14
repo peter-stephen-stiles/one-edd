@@ -99,6 +99,12 @@ public class PlayerCharacterEquipmentDAO
 //		DAOUtils.createInts(con, tableName, newInts);
 
 	}
+	
+	public void createConstraints(Connection con) throws SQLException{
+		String sql; 
+	}
+	
+	
 
 	PlayerCharacterEquipment dtoFromRS(ResultSet rs) throws SQLException {
 		PlayerCharacterEquipment dto = new PlayerCharacterEquipment();

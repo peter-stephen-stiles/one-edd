@@ -10,6 +10,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -26,6 +27,8 @@ import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTable;
 import com.nobbysoft.first.client.components.PTextArea;
 import com.nobbysoft.first.client.data.panels.sql.SqlDBMDPanel;
+import com.nobbysoft.first.client.data.panels.sql.SqlExportPanel;
+import com.nobbysoft.first.client.data.panels.sql.SqlPanelInterface;
 import com.nobbysoft.first.client.data.panels.sql.SqlQueryPanel;
 import com.nobbysoft.first.client.utils.GuiUtils; 
 
@@ -44,8 +47,10 @@ public class DataFrameTabSql extends PPanel {
 		PButtonPanel pnlTopButtons = new PButtonPanel();
 		PButton btnNewSqlTab = new PButton("New sql tab");
 		PButton btnNewMetaTab = new PButton("New meta tab");
+		PButton btnNewExportTab = new PButton("New export tab");
 		pnlTopButtons.add(btnNewSqlTab);
 		pnlTopButtons.add(btnNewMetaTab);
+		pnlTopButtons.add(btnNewExportTab);
 		add(pnlTopButtons,BorderLayout.NORTH);
 		add(pnlSqlTabs,BorderLayout.CENTER);
 		SqlQueryPanel sqlPanel = new SqlQueryPanel();
@@ -53,17 +58,24 @@ public class DataFrameTabSql extends PPanel {
 		sqlPanel.setName("Sql#1");
 		pnlSqlTabs.addTab(sqlPanel.getName(), sqlPanel);
 		btnNewSqlTab.addActionListener(ae->{
-			SqlQueryPanel sqlPanelX = new SqlQueryPanel();
+			SqlPanelInterface sqlPanelX = new SqlQueryPanel();
 			sqlPanelX.setName("Sql#"+panelCount++);
-			pnlSqlTabs.addTab(sqlPanelX.getName(), sqlPanelX);
-			pnlSqlTabs.setSelectedComponent(sqlPanelX);
+			pnlSqlTabs.addTab(sqlPanelX.getName(), (JComponent)sqlPanelX);
+			pnlSqlTabs.setSelectedComponent((JComponent)sqlPanelX);
 			sqlPanelX.addActionListener(a2e->{removeSqlTab(a2e);});
 		});
 		btnNewMetaTab.addActionListener(ae->{
-			SqlDBMDPanel sqlPanelX = new SqlDBMDPanel();
+			SqlPanelInterface sqlPanelX = new SqlDBMDPanel();
 			sqlPanelX.setName("Meta#"+panelCount++);
-			pnlSqlTabs.addTab(sqlPanelX.getName(), sqlPanelX);
-			pnlSqlTabs.setSelectedComponent(sqlPanelX);
+			pnlSqlTabs.addTab(sqlPanelX.getName(), (JComponent)sqlPanelX);
+			pnlSqlTabs.setSelectedComponent((JComponent)sqlPanelX);
+			sqlPanelX.addActionListener(a2e->{removeSqlTab(a2e);});
+		});
+		btnNewExportTab.addActionListener(ae->{
+			SqlPanelInterface sqlPanelX = new SqlExportPanel();
+			sqlPanelX.setName("Export#"+panelCount++);
+			pnlSqlTabs.addTab(sqlPanelX.getName(), (JComponent)sqlPanelX);
+			pnlSqlTabs.setSelectedComponent((JComponent)sqlPanelX);
 			sqlPanelX.addActionListener(a2e->{removeSqlTab(a2e);});
 		});
 		pnlSqlTabs.addMouseListener(new MouseListener() {

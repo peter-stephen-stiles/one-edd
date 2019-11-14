@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -85,16 +87,25 @@ public class DBMain {
 				runQuery(conn, "SELECT * FROM SYS.SYSTABLES");
 				
 				//runQuery(conn, "SELECT * FROM Race");
-				
+				Map<Class<CreateInterface>  ,CreateInterface> daos = new HashMap<>();
+				LOGGER.info("Tables and columns and indexes");
 				for(Class<CreateInterface> daoClass:DataMapper.INSTANCE.getDaos()){
-				
+					LOGGER.info("Checking "+daoClass.getSimpleName());
 					CreateInterface dao = daoClass.newInstance(); 
+					daos.put(daoClass, dao);
 					dao.createTable(conn);
 				}
+				LOGGER.info("Constraints");
+				for(Class<CreateInterface> daoClass:DataMapper.INSTANCE.getDaos()){
+					LOGGER.info("Checking "+daoClass.getSimpleName());
+					CreateInterface dao = daos.get(daoClass); 
+					dao.createConstraints(conn);
+				}
+				LOGGER.info("Constraints done");
 				
 			}
 		} finally {
-cm.shutdown();
+				cm.shutdown();
 		}
 	}
 

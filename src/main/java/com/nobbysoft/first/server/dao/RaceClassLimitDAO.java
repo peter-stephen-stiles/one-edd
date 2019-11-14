@@ -66,6 +66,16 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 	}
 
 	
+	public void createConstraints(Connection con) throws SQLException{
+		String sql; 
+		
+		
+		
+	}
+	
+	
+	
+	
 	// Race_Class_Limit // class_id , race_id , max_level , limiting_factors
 	
 	@Override
