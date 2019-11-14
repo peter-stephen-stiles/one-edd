@@ -7,9 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.nobbysoft.first.common.utils.ReturnValue;
  
@@ -29,30 +35,26 @@ public class Popper {
 			return s;
 		}
 		//
-		String x="";
-		int dotSpace = s.indexOf(". ",1);
-		int space = s.indexOf(" ",1);
-		int dot = s.indexOf(".",1);
-		if(dotSpace>0) {
-			x = "<p>"+s.replace(". ", "</p><p>")+"</p>";
-		} else if(space>0) {
-				x = "<p>"+s.replace(" ", "</p><p>")+"</p>";	
-		} else if(dot>0) {
-			x = "<p>"+s.replace(".", "</p><p>")+"</p>";
-		} else {
-			StringBuilder sb = new StringBuilder("<p>");
-			x = s;
-			while(x.length()>50) {
-				sb.append(x.substring(0,50));
-				sb.append("</p><p>");
-				x = x.substring(50);
-			}
-			sb.append(x.substring(50));
-			sb.append("</p>");
-			
+		String[] s1=s.split("\\R");
+		Document doc = XmlUtilities.convertStringToXML("<html></html>");
+		Node docEle = doc.getDocumentElement();
+		Node table=XmlUtilities.addElement(docEle, "table");
+		XmlUtilities.addAttribute((Element)table, "width", "500");
+		Node row= XmlUtilities.addElement(table, "tr");
+		Node td= XmlUtilities.addElement(row, "td");
+		for(String s2:s1) {
+			XmlUtilities.addElement(td, "p", s2);
 		}
-		x = "<html>"+x+"</html>";
-		
+		String x;
+		try {
+			x = XmlUtilities.xmlToHtmlString(doc);
+			LOGGER.info("xml:\n"+x);
+		} catch (Exception e) {
+			LOGGER.error("Error splitting and formatting:\n"+s,e);
+			return s;
+		}
+
+
 		return x;
 	}
 	

@@ -26,6 +26,7 @@ import com.nobbysoft.first.common.utils.DICE;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.common.utils.Roller;
 import com.nobbysoft.first.utils.DataMapper;
+import com.sun.javafx.webkit.theme.Renderer;
 
 @SuppressWarnings("serial")
 public class PlayerCharacterAddXpDialog extends JDialog {
@@ -165,6 +166,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 			if(ret.isError()) {
 				return ret;
 			} else {
+				Popper.popInfo(this, "What happened?", ret.getValue());
 				playerCharacterService.update(playerCharacter);
 			}
 			
@@ -177,14 +179,18 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 				if(perClassXp==0) {
 					return new ReturnValue<>(ReturnValue.IS_ERROR.TRUE,"Its not worth adding the number of XP :(");
 				}
+				String retValue="";
 				for (int i=0,n=classCount;i<n;i++) {
 					CharacterClass characterClass = characterClasses[i];
 					PlayerCharacterLevel playerCharacterLevel = playerCharacterLevels[i];
 					ReturnValue<String> ret =  addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,perClassXp,0);
 					if(ret.isError()) {
 						return ret;
+					} else {
+						retValue = retValue  + characterClass.getName()+ "-  "+ ret.getValue()+"\n";
 					}
 				}
+				Popper.popInfo(this, "What happened?", retValue);
 				playerCharacterService.update(playerCharacter);
 			} else {
 				
@@ -208,6 +214,8 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 				if(ret.isError()) {
 					return ret;
 				} else {
+
+					Popper.popInfo(this, "What happened?", ret.getValue());
 					playerCharacterService.update(playerCharacter);
 				}
 				
@@ -223,6 +231,8 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 			int xpAdd,
 			int maxOtherLevel) throws SQLException {
 
+		String retVal="";
+		
 		CharacterClassLevelService cclService = getDataService();
 		
 		int level = playerCharacterLevel.getThisClassLevel();
@@ -250,21 +260,30 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		
 		int newXp = xp +  xpAdd;
 		// maxOtherLevel is used by DualClass character.
-		if(newXp>thisLevel.getToXp() && level>=maxOtherLevel) {
-			// level up!
+		boolean canHaveMoreHP= (level>=maxOtherLevel);
+		if(newXp>thisLevel.getToXp() ) {
+			int lostXp = newXp -thisLevel.getToXp();  
+			// level up!			
 			int newLevel = level+1;
+			retVal=retVal+"Leveled up to level "+newLevel + " ";
 			int newHp=0;
-			if(nameLevel==null || newLevel<=nameLevel.getLevel()) {
-				// add one dice HP plus CON bonus
-				DICE dice = Roller.getDICE(characterClass.getHitDice());
-				int cb = getConBonus(characterClass, constitution);
-				newHp = Roller.roll(dice, 1, 0, cb);
-				if(newHp<1) {
-					newHp=1;
+			if(canHaveMoreHP) {
+				if(nameLevel==null || newLevel<=nameLevel.getLevel()) {
+					// add one dice HP plus CON bonus
+					DICE dice = Roller.getDICE(characterClass.getHitDice());
+					int cb = getConBonus(characterClass, constitution);
+					newHp = Roller.roll(dice, 1, 0, cb);
+					if(newHp<1) {
+						newHp=1;
+					}
+				} else {
+					// just add spome points
+					newHp = characterClass.getHpAfterNameLevel();
 				}
-			} else {
-				// just add spome points
-				newHp = characterClass.getHpAfterNameLevel();
+				retVal=retVal+"Extra hitpoints "+newHp + " making total "+(hp+newHp)+ " ";
+				if(lostXp>0) {
+					retVal=retVal+"You wasted "+lostXp+" XP :( ";
+				}
 			}
 			
 			CharacterClassLevel newLevelDetails = cclService.getThisLevel(characterClass.getClassId(),newLevel);
@@ -274,6 +293,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 			//						
 		} else {
 			// just increment the XP and return
+			retVal=retVal+"New xp total is "+newXp + " ";
 			playerCharacterLevel.setThisClassExperience(newXp);			
 		}
 		
@@ -281,7 +301,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		playerCharacter.updateClassDetails(playerCharacterLevel);
 		
 		
-		return  new ReturnValue<String>("");
+		return  new ReturnValue<String>(retVal);
 	}
 
 	private int getConBonus(CharacterClass characterClass, Constitution constitution) {
