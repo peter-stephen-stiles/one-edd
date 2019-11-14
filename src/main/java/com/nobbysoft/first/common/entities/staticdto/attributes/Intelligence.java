@@ -84,7 +84,7 @@ public class Intelligence implements AbilityScoreI,Comparable<Intelligence>, Ser
 	@Override
 	public Object[] getAsRow() {
 		return new Object[] {this,abilityScore, 
-			SU.a(possibleAdditionalLanguages),
+			SU.a(possibleAdditionalLanguages,"0"),
 			SU.p(chanceToKnowSpell),
 			minSpellsPerLevel,
 			maxSpellsPerLevel

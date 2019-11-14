@@ -35,10 +35,11 @@ public class Wisdom  implements AbilityScoreI,Comparable<Wisdom>, Serializable, 
 	public Object[] getAsRow() {
 		return new Object[] {this,
 				abilityScore, 
-				getMagicalAttackAdjustmentString(),
+				SU.a(magicalAttackAdjustment,"none"),
 				getSpellBonusString(),
-				SU.p(divineSpellChanceFailure), 
-				getSpellMaxSpellLevelString()};
+				SU.p(divineSpellChanceFailure,"0%"), 
+				SU.a(divineMaxSpellLevel,"")
+				};
 	}
 
 	@Override
@@ -50,22 +51,9 @@ public class Wisdom  implements AbilityScoreI,Comparable<Wisdom>, Serializable, 
 				"Max Spell Lvl"};
 	}
 
-	public String getMagicalAttackAdjustmentString() {
-		if(magicalAttackAdjustment==0) {
-			return "none";
-		} else {
-			return ""+magicalAttackAdjustment;
-		}
-	}
+ 
 	
-	
-	public String getSpellMaxSpellLevelString() {
-		if(divineMaxSpellLevel==0) {
-			return "";
-		} else {
-			return ""+divineMaxSpellLevel;
-		}
-	}
+	 
 	
  
 	

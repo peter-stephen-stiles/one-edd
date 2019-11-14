@@ -96,12 +96,12 @@ public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializab
 		return new Object[] {this,abilityScore,
 				SU.p(exceptionalStrength),
 				SU.p(exceptionalStrengthTo),
-				SU.a(hitProbability),
-				SU.a(damageAdjustment),
-				weightAllowance,
+				SU.a(hitProbability,"normal"),
+				SU.a(damageAdjustment,"none"),
+				SU.a(weightAllowance,"normal"),
 				SU.i6(openDoors),
 				SU.i6(openMagicalDoors),
-				SU.p(bendBarsLiftGates)
+				SU.p(bendBarsLiftGates,"0%")
 						};
 	}
 	@Override

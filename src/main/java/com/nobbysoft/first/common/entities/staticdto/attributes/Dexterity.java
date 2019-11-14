@@ -37,8 +37,8 @@ public class Dexterity  implements AbilityScoreI,Comparable<Dexterity>, Serializ
 	@Override
 	public Object[] getAsRow() {
 		return new Object[] {this,abilityScore, 
-				SU.a(reactionAttackAdjustment),
-				SU.a(defensiveAdjustment),
+				SU.a(reactionAttackAdjustment,"0"),
+				SU.a(defensiveAdjustment,"0"),
 				SU.ap(pickPockets),
 				SU.ap(openLocks),
 				SU.ap(locateRemoveTraps),

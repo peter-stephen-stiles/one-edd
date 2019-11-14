@@ -40,6 +40,17 @@ public class SU {
 		}
 	}	
 	
+	public static String p(int value, String zeroValue) {
+		if(value>0) {
+			return ""+value+"%";
+		} else if (value<0) {
+			return ""+value+"%";
+		} else {
+			return zeroValue;
+		}
+	}	
+	
+	
 	/**
 	 * string form of a percentage "adjustment" i.e. +35% or -16%; zero not displayed
 	 * @param value
@@ -54,6 +65,17 @@ public class SU {
 			return "";
 		}
 	}
+	
+	public static String ap(int value, String zeroValue) {
+		if(value>0) {
+			return "+"+value+"%";
+		} else if (value<0) {
+			return ""+value+"%";
+		} else {
+			return zeroValue;
+		}
+	}
+	
 	/**
 	 * string form of an "adjustment" i.e. +32 or -4; zero not displayed
 	 * @param value
@@ -66,6 +88,16 @@ public class SU {
 			return ""+value;
 		} else {
 			return "";
+		}
+	}
+
+	public static String a(int value,String zeroValue) {
+		if(value>0) {
+			return "+"+value;
+		} else if (value<0) {
+			return ""+value;
+		} else {
+			return zeroValue;
 		}
 	}
 	

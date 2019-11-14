@@ -99,7 +99,7 @@ public class Constitution  implements AbilityScoreI,Comparable<Constitution>, Se
 	public Object[] getAsRow() {
 		return new Object[] {this,
 				abilityScore, 
-				SU.a(hitPointAdjustment),
+				SU.a(hitPointAdjustment,"0"),
 				SU.a(hitPointAdjustmentHigh),
 				SU.p(systemShockSurvival),
 				SU.p(resurrectionSurvival)};
