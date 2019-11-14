@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.Window;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
 import com.nobbysoft.first.common.entities.staticdto.RaceClassLimitKey;
 import com.nobbysoft.first.common.servicei.CharacterClassService;
+import com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.first.common.servicei.RaceService;
 import com.nobbysoft.first.utils.DataMapper;
 
@@ -204,8 +206,31 @@ public class PlayerCharacterDualClassDialog extends PDialog {
 
 	private void save() {
 
-		cancelled = false;
-		dispose();
+		CharacterClass newClass = txtClasses.getSelectedValue();
+		if(newClass==null) {
+			Popper.popError(this, "Nothing selected", "You've not selected a new class :(");
+ 			return;
+		}
+		// update the PC
+		int cc=pc.classCount();
+		if(cc<3) {
+			pc.dualClassTo(newClass.getClassId());
+			PlayerCharacterService ccs = (PlayerCharacterService) DataMapper.INSTANCE.getDataService(PlayerCharacter.class);
+			try {
+				ccs.update(pc);
+			} catch (SQLException e) {
+				Popper.popError(this, e);
+				dispose();
+	 			return;
+			}
+		
+			cancelled = false;
+			dispose();
+		} else {
+
+			Popper.popError(this, "Greedy", "You've already got three classes, stop being so fickle!");
+ 			return;
+		}
 	}
 
 	private void close() {

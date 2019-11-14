@@ -107,6 +107,24 @@ public class PlayerCharacter implements Serializable, DataDTOInterface<Integer> 
 		level.setThisClassLevel(thirdClassLevel);
 		return level;
 	}
+	
+	public void dualClassTo(String classId) {
+		if(firstClass==null) {
+			firstClass=classId;
+			firstClassLevel=1;
+			return;
+		} else if(secondClass==null) {
+			secondClass=classId;
+			secondClassLevel=1;
+			return;
+		} else   if(thirdClass==null) {
+			thirdClass=classId;
+			thirdClassLevel=1;
+			return;
+		} else {
+			throw new IllegalStateException("Error - Already triple classed! What more do you want?");
+		}
+	}
 
 	public void updateClassDetails(PlayerCharacterLevel details) {
 		if(details.getThisClass().contentEquals(firstClass)) {
