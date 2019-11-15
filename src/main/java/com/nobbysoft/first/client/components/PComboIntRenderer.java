@@ -24,14 +24,15 @@ public class PComboIntRenderer  extends PListCellRenderer   {
 
 	private boolean showPlus=false; 
 	private boolean showZero = true;
-	 
+	 private String zeroValue="0";
 
 	public PComboIntRenderer(boolean showPlus) {
 		this.showPlus=showPlus;
 	}
-	public PComboIntRenderer(boolean showPlus,boolean showZero) {
+	public PComboIntRenderer(boolean showPlus,boolean showZero,String zeroValue) {
 		this.showPlus=showPlus;
 		this.showZero=showZero;
+		this.zeroValue=zeroValue;
 	}
  
 	private String getString(Object value) {
@@ -47,14 +48,17 @@ public class PComboIntRenderer  extends PListCellRenderer   {
 					}
 				} else {
 					tv=(value.toString());
-				}
-				if(!showZero) {
-					if( n.intValue()==0) {
-						// nearly zero, 						
-						double d=Math.abs(n.doubleValue());
-						if(d < 0.00001) {
-							tv="  ";// near enough for me!
-						}
+				}				
+				if( n.intValue()==0) {
+					// nearly zero, 						
+					double d=Math.abs(n.doubleValue());
+					if(d < 0.00001) {
+						// near enuff
+						if(!showZero) {
+							tv= "  ";
+						} else {
+							tv = zeroValue;
+						} 
 					}
 				}
 			} else {

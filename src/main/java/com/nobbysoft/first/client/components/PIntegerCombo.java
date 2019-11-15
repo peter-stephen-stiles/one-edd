@@ -20,6 +20,7 @@ public class PIntegerCombo extends PComboBox<Integer> implements IIntegerField{
 	private int max=100;
 	private boolean showPlus = false;
 	private boolean showZero = true;
+	private String zeroValue = "0";
 	
 	public PIntegerCombo() {
 		this(0,100);
@@ -53,8 +54,15 @@ public class PIntegerCombo extends PComboBox<Integer> implements IIntegerField{
 		addRenderer();
 	}
 	
+	public PIntegerCombo(int min, int max, String zeroValue) {
+		super();
+		this.zeroValue=zeroValue;
+		setRange(min,max,1);
+		addRenderer();
+	}
+	
 	private void addRenderer() {
-		super.setRenderer(new PComboIntRenderer(showPlus,showZero));
+		super.setRenderer(new PComboIntRenderer(showPlus,showZero,zeroValue));
 	}
 	
 	
