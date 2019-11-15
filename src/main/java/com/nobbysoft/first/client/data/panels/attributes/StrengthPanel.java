@@ -1,6 +1,5 @@
 package com.nobbysoft.first.client.data.panels.attributes;
 
-import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -8,16 +7,22 @@ import java.lang.reflect.Constructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.first.client.components.*;
+import com.nobbysoft.first.client.components.PDataComponent;
+import com.nobbysoft.first.client.components.PDialog;
+import com.nobbysoft.first.client.components.PIntegerCombo;
+import com.nobbysoft.first.client.components.PIntegerField;
+import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.special.PExceptionalStrength;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
 import com.nobbysoft.first.client.utils.GBU;
-import com.nobbysoft.first.common.entities.staticdto.attributes.*;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
+import com.nobbysoft.first.common.entities.staticdto.attributes.StrengthKey;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
 
+@SuppressWarnings("serial")
 public class StrengthPanel extends AbstractDataPanel<Strength,StrengthKey> implements MaintenancePanelInterface<Strength> {
 	 
 
@@ -28,8 +33,8 @@ public class StrengthPanel extends AbstractDataPanel<Strength,StrengthKey> imple
 		private final PExceptionalStrength txtExceptionalStrength = new PExceptionalStrength();
 		private final PExceptionalStrength txtExceptionalStrengthTo = new PExceptionalStrength();
 		
-		private final PIntegerCombo txtHitProbability = new PIntegerCombo(-3,+3);
-		private final PIntegerCombo txtDamageAdjustment = new PIntegerCombo(-1,+6);
+		private final PIntegerCombo txtHitProbability = new PIntegerCombo(-3,+3,"normal");
+		private final PIntegerCombo txtDamageAdjustment = new PIntegerCombo(-1,+6,"none");
 		private final PIntegerField txtWeightAllowance = new PIntegerField(true);
 		private final PIntegerCombo txtOpenDoors = new PIntegerCombo(1,5);
 		private final PIntegerCombo txtOpenMagicalDoors = new PIntegerCombo(0,2);

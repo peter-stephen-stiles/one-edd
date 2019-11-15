@@ -21,6 +21,7 @@ import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
 
+@SuppressWarnings("serial")
 public class DexterityPanel extends AbstractDataPanel<Dexterity,Integer> implements MaintenancePanelInterface<Dexterity> {
 	 
 

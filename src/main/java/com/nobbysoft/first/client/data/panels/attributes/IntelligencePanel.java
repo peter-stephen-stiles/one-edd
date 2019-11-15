@@ -29,8 +29,8 @@ public class IntelligencePanel extends AbstractDataPanel<Intelligence,Integer> i
 		private final PIntegerCombo txtAbilityScore = new PIntegerCombo(3,19);
 		private final PIntegerCombo txtPossibleAdditionalLanguages = new PIntegerCombo(0,7);
 		private final PIntegerCombo txtChanceToKnowSpell = new PIntegerCombo(0,95,5);
-		private final PIntegerCombo txtMinSpellsPerLevel = new PIntegerCombo(0,99);
-		private final PIntegerCombo txtMaxSpellsPerLevel = new PIntegerCombo(0,99) {
+		private final PIntegerCombo txtMinSpellsPerLevel = new PIntegerCombo(0,99,"");
+		private final PIntegerCombo txtMaxSpellsPerLevel = new PIntegerCombo(0,99,"") {
 			public Dimension getPreferredSize() {
 				Dimension d = super.getPreferredSize();
 					d.width = d.width+20;

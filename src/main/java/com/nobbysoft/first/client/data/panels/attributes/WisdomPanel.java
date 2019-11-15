@@ -29,7 +29,7 @@ public class WisdomPanel extends AbstractDataPanel<Wisdom,Integer> implements Ma
 
 		private final PIntegerCombo txtAbilityScore = new PIntegerCombo(3,18);
 
-		private final PIntegerCombo txtMagicalAttackAdjustment = new PIntegerCombo(-3,+4) {
+		private final PIntegerCombo txtMagicalAttackAdjustment = new PIntegerCombo(-3,+4,"none") {
 			public Dimension getPreferredSize() {
 				Dimension d = super.getPreferredSize();
 					d.width = d.width+20;
@@ -37,8 +37,8 @@ public class WisdomPanel extends AbstractDataPanel<Wisdom,Integer> implements Ma
 			}
 		};
 		
-		private final PIntegerCombo txtDivineSpellBonusSpellLevel = new PIntegerCombo(0,4);
-		private final PIntegerCombo txtDivineMaxSpellLevel = new PIntegerCombo(0,7);
+		private final PIntegerCombo txtDivineSpellBonusSpellLevel = new PIntegerCombo(0,4,"");
+		private final PIntegerCombo txtDivineMaxSpellLevel = new PIntegerCombo(0,7,"");
 		private final PIntegerCombo txtDivineSpellChanceFailure = new PIntegerCombo(0,99);
 		{
 			

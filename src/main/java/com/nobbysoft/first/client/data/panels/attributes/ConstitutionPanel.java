@@ -20,6 +20,7 @@ import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
 
+@SuppressWarnings("serial")
 public class ConstitutionPanel extends AbstractDataPanel<Constitution,Integer> implements MaintenancePanelInterface<Constitution> {
 	 
 
