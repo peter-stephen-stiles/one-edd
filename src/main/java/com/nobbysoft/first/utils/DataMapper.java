@@ -13,124 +13,17 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.first.client.data.panels.attributes.CharismaPanel;
-import com.nobbysoft.first.client.data.panels.attributes.ConstitutionPanel;
-import com.nobbysoft.first.client.data.panels.attributes.DexterityPanel;
-import com.nobbysoft.first.client.data.panels.attributes.IntelligencePanel;
-import com.nobbysoft.first.client.data.panels.attributes.StrengthPanel;
-import com.nobbysoft.first.client.data.panels.attributes.WisdomPanel;
-import com.nobbysoft.first.client.data.panels.equipment.ArmourPanel;
-import com.nobbysoft.first.client.data.panels.equipment.ShieldPanel;
-import com.nobbysoft.first.client.data.panels.equipment.WeaponAmmunitionPanel;
-import com.nobbysoft.first.client.data.panels.equipment.WeaponMeleePanel;
-import com.nobbysoft.first.client.data.panels.equipment.WeaponRangedPanel;
-import com.nobbysoft.first.client.data.panels.pc.PlayerCharacterButtons;
-import com.nobbysoft.first.client.data.panels.pc.PlayerCharacterPanel;
-import com.nobbysoft.first.client.data.panels.staticdata.CharacterClassButtons;
-import com.nobbysoft.first.client.data.panels.staticdata.CharacterClassPanel;
-import com.nobbysoft.first.client.data.panels.staticdata.RaceClassLimitPanel;
-import com.nobbysoft.first.client.data.panels.staticdata.RacePanel;
-import com.nobbysoft.first.client.data.panels.staticdata.SpellPanel;
-import com.nobbysoft.first.common.entities.equipment.Armour;
-import com.nobbysoft.first.common.entities.equipment.EquipmentType;
-import com.nobbysoft.first.common.entities.equipment.Shield;
-import com.nobbysoft.first.common.entities.equipment.WeaponAmmunition;
-import com.nobbysoft.first.common.entities.equipment.WeaponMelee;
-import com.nobbysoft.first.common.entities.equipment.WeaponRanged;
-import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
-import com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
-import com.nobbysoft.first.common.entities.pc.PlayerCharacterHp;
-import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
-import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
-import com.nobbysoft.first.common.entities.staticdto.CharacterClassLevel;
-import com.nobbysoft.first.common.entities.staticdto.CharacterClassSpell;
-import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
-import com.nobbysoft.first.common.entities.staticdto.Race;
-import com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
-import com.nobbysoft.first.common.entities.staticdto.SavingThrow;
-import com.nobbysoft.first.common.entities.staticdto.Spell;
-import com.nobbysoft.first.common.entities.staticdto.attributes.Charisma;
-import com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
-import com.nobbysoft.first.common.entities.staticdto.attributes.Dexterity;
-import com.nobbysoft.first.common.entities.staticdto.attributes.Intelligence;
-import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
-import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
-import com.nobbysoft.first.common.servicei.ArmourService;
-import com.nobbysoft.first.common.servicei.CharacterClassLevelService;
-import com.nobbysoft.first.common.servicei.CharacterClassService;
-import com.nobbysoft.first.common.servicei.CharacterClassSpellService;
-import com.nobbysoft.first.common.servicei.CharacterClassToHitService;
-import com.nobbysoft.first.common.servicei.CharismaService;
-import com.nobbysoft.first.common.servicei.CodedListService;
-import com.nobbysoft.first.common.servicei.ConstitutionService;
-import com.nobbysoft.first.common.servicei.DataServiceI;
-import com.nobbysoft.first.common.servicei.DexterityService;
-import com.nobbysoft.first.common.servicei.IntelligenceService;
-import com.nobbysoft.first.common.servicei.PlayerCharacterEquipmentService;
-import com.nobbysoft.first.common.servicei.PlayerCharacterHpService;
-import com.nobbysoft.first.common.servicei.PlayerCharacterService;
-import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
-import com.nobbysoft.first.common.servicei.RaceClassLimitService;
-import com.nobbysoft.first.common.servicei.RaceService;
-import com.nobbysoft.first.common.servicei.SavingThrowService;
-import com.nobbysoft.first.common.servicei.ShieldService;
-import com.nobbysoft.first.common.servicei.SpellService;
-import com.nobbysoft.first.common.servicei.SqlService;
-import com.nobbysoft.first.common.servicei.StrengthService;
-import com.nobbysoft.first.common.servicei.WeaponAmmunitionService;
-import com.nobbysoft.first.common.servicei.WeaponMeleeService;
-import com.nobbysoft.first.common.servicei.WeaponRangedService;
-import com.nobbysoft.first.common.servicei.WisdomService;
-import com.nobbysoft.first.server.dao.ArmourDAO;
-import com.nobbysoft.first.server.dao.CharacterClassDAO;
-import com.nobbysoft.first.server.dao.CharacterClassLevelDAO;
-import com.nobbysoft.first.server.dao.CharacterClassSpellDAO;
-import com.nobbysoft.first.server.dao.CharacterClassToHitDAO;
-import com.nobbysoft.first.server.dao.CharismaDAO;
-import com.nobbysoft.first.server.dao.ConstitutionDAO;
-import com.nobbysoft.first.server.dao.CreateInterface;
-import com.nobbysoft.first.server.dao.DexterityDAO;
-import com.nobbysoft.first.server.dao.IntelligenceDAO;
-import com.nobbysoft.first.server.dao.PlayerCharacterDAO;
-import com.nobbysoft.first.server.dao.PlayerCharacterEquipmentDAO;
-import com.nobbysoft.first.server.dao.PlayerCharacterHpDAO;
-import com.nobbysoft.first.server.dao.PlayerCharacterSpellDAO;
-import com.nobbysoft.first.server.dao.RaceClassLimitDAO;
-import com.nobbysoft.first.server.dao.RaceDAO;
-import com.nobbysoft.first.server.dao.SavingThrowDAO;
-import com.nobbysoft.first.server.dao.ShieldDAO;
-import com.nobbysoft.first.server.dao.SpellDAO;
-import com.nobbysoft.first.server.dao.StrengthDAO;
-import com.nobbysoft.first.server.dao.ViewsDAO;
-import com.nobbysoft.first.server.dao.WeaponAmmunitionDAO;
-import com.nobbysoft.first.server.dao.WeaponMeleeDAO;
-import com.nobbysoft.first.server.dao.WeaponRangedDAO;
-import com.nobbysoft.first.server.dao.WisdomDAO;
-import com.nobbysoft.first.server.service.ArmourServiceImpl;
-import com.nobbysoft.first.server.service.CharacterClassLevelServiceImpl;
-import com.nobbysoft.first.server.service.CharacterClassServiceImpl;
-import com.nobbysoft.first.server.service.CharacterClassSpellServiceImpl;
-import com.nobbysoft.first.server.service.CharacterClassToHitServiceImpl;
-import com.nobbysoft.first.server.service.CharismaServiceImpl;
-import com.nobbysoft.first.server.service.CodedListServiceImpl;
-import com.nobbysoft.first.server.service.ConstitutionServiceImpl;
-import com.nobbysoft.first.server.service.DexterityServiceImpl;
-import com.nobbysoft.first.server.service.IntelligenceServiceImpl;
-import com.nobbysoft.first.server.service.PlayerCharacterEquipmentServiceImpl;
-import com.nobbysoft.first.server.service.PlayerCharacterHpServiceImpl;
-import com.nobbysoft.first.server.service.PlayerCharacterServiceImpl;
-import com.nobbysoft.first.server.service.PlayerCharacterSpellServiceImpl;
-import com.nobbysoft.first.server.service.RaceClassLimitServiceImpl;
-import com.nobbysoft.first.server.service.RaceServiceImpl;
-import com.nobbysoft.first.server.service.SavingThrowServiceImpl;
-import com.nobbysoft.first.server.service.ShieldServiceImpl;
-import com.nobbysoft.first.server.service.SpellServiceImpl;
-import com.nobbysoft.first.server.service.SqlServiceImpl;
-import com.nobbysoft.first.server.service.StrengthServiceImpl;
-import com.nobbysoft.first.server.service.WeaponAmmunitionServiceImpl;
-import com.nobbysoft.first.server.service.WeaponMeleeServiceImpl;
-import com.nobbysoft.first.server.service.WeaponRangedThrownImpl;
-import com.nobbysoft.first.server.service.WisdomServiceImpl;
+import com.nobbysoft.first.client.data.panels.attributes.*;
+import com.nobbysoft.first.client.data.panels.equipment.*;
+import com.nobbysoft.first.client.data.panels.pc.*;
+import com.nobbysoft.first.client.data.panels.staticdata.*;
+import com.nobbysoft.first.common.entities.equipment.*;
+import com.nobbysoft.first.common.entities.pc.*;
+import com.nobbysoft.first.common.entities.staticdto.*;
+import com.nobbysoft.first.common.entities.staticdto.attributes.*;
+import com.nobbysoft.first.common.servicei.*;
+import com.nobbysoft.first.server.dao.*;
+import com.nobbysoft.first.server.service.*;
 
 public enum DataMapper {
 	INSTANCE;
@@ -210,6 +103,7 @@ public enum DataMapper {
 		daoimap.put(WeaponAmmunition.class,WeaponAmmunitionDAO.class);
 		daoimap.put(Armour.class,ArmourDAO.class);
 		daoimap.put(Shield.class,ShieldDAO.class);
+		daoimap.put(UndeadType.class, UndeadTypeDAO.class);
 
 		
 		equipmentDAO.put(EquipmentType.MELEE_WEAPON,WeaponMeleeDAO.class);
@@ -222,7 +116,7 @@ public enum DataMapper {
 		
 		staticDataPanels.put(PlayerCharacter.class,PlayerCharacterPanel.class);
 		staticDataPanels.put(Spell.class,SpellPanel.class);
-		staticDataPanels.put(Race.class,RacePanel.class);
+		staticDataPanels.put(Race.class,RacePanel.class);//UndeadType
 		staticDataPanels.put(CharacterClass.class,CharacterClassPanel.class);
 		staticDataPanels.put(RaceClassLimit.class, RaceClassLimitPanel.class); 
 		staticDataPanels.put(Constitution.class, ConstitutionPanel.class);
@@ -236,7 +130,7 @@ public enum DataMapper {
 		staticDataPanels.put(WeaponAmmunition.class, WeaponAmmunitionPanel.class);
 		staticDataPanels.put(Armour.class, ArmourPanel.class);
 		staticDataPanels.put(Shield.class, ShieldPanel.class);
-		
+		staticDataPanels.put(UndeadType.class,UndeadTypePanel.class);
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
 		entityservicemap.put(PlayerCharacterHp.class, PlayerCharacterHpService.class);
@@ -245,10 +139,10 @@ public enum DataMapper {
 		entityservicemap.put(CharacterClass.class, CharacterClassService.class);
 		entityservicemap.put(CharacterClassSpell.class, CharacterClassSpellService.class);
 		entityservicemap.put(CharacterClassLevel.class, CharacterClassLevelService.class);
-		entityservicemap.put(CharacterClassToHit.class, CharacterClassToHitService.class);//SavingThrow
+		entityservicemap.put(CharacterClassToHit.class, CharacterClassToHitService.class);//
 		entityservicemap.put(SavingThrow.class, SavingThrowService.class);//
 		entityservicemap.put(Spell.class, SpellService.class);
-		entityservicemap.put(Race.class, RaceService.class);
+		entityservicemap.put(Race.class, RaceService.class);//
 		entityservicemap.put(RaceClassLimit.class, RaceClassLimitService.class);
 		entityservicemap.put(Constitution.class, ConstitutionService.class);//
 		entityservicemap.put(Intelligence.class, IntelligenceService.class);//
@@ -261,7 +155,7 @@ public enum DataMapper {
 		entityservicemap.put(WeaponAmmunition.class,WeaponAmmunitionService.class);
 		entityservicemap.put(Armour.class,ArmourService.class);
 		entityservicemap.put(Shield.class,ShieldService.class);
-		
+		entityservicemap.put(UndeadType.class, UndeadTypeService.class);//
 		
 
 		servicemap.put(PlayerCharacterService.class, PlayerCharacterServiceImpl.class);
@@ -272,15 +166,15 @@ public enum DataMapper {
 		servicemap.put(CharacterClassSpellService.class, CharacterClassSpellServiceImpl.class);
 		servicemap.put(CharacterClassLevelService.class, CharacterClassLevelServiceImpl.class);
 		servicemap.put(CharacterClassToHitService.class, CharacterClassToHitServiceImpl.class);//
-		servicemap.put(SavingThrowService.class, SavingThrowServiceImpl.class);//SavingThrow
+		servicemap.put(SavingThrowService.class, SavingThrowServiceImpl.class);//
 		servicemap.put(SpellService.class, SpellServiceImpl.class);
-		servicemap.put(RaceService.class, RaceServiceImpl.class);
+		servicemap.put(RaceService.class, RaceServiceImpl.class);//
 		servicemap.put(RaceClassLimitService.class, RaceClassLimitServiceImpl.class);
 		servicemap.put(CodedListService.class, CodedListServiceImpl.class);
 		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);//
 		servicemap.put(IntelligenceService.class, IntelligenceServiceImpl.class);//
 		servicemap.put(StrengthService.class, StrengthServiceImpl.class);
-		servicemap.put(DexterityService.class, DexterityServiceImpl.class);//Charisma
+		servicemap.put(DexterityService.class, DexterityServiceImpl.class);//
 		servicemap.put(CharismaService.class, CharismaServiceImpl.class);//
 		servicemap.put(WisdomService.class, WisdomServiceImpl.class);//
 		servicemap.put(WeaponMeleeService.class, WeaponMeleeServiceImpl.class);
@@ -288,6 +182,7 @@ public enum DataMapper {
 		servicemap.put(WeaponAmmunitionService.class, WeaponAmmunitionServiceImpl.class);
 		servicemap.put(ArmourService.class, ArmourServiceImpl.class);
 		servicemap.put(ShieldService.class, ShieldServiceImpl.class);
+		servicemap.put(UndeadTypeService.class, UndeadTypeServiceImpl.class);//
 		
 
 		servicemap.put(SqlService.class, SqlServiceImpl.class);
