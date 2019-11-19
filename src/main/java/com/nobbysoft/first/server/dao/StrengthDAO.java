@@ -128,7 +128,7 @@ public class StrengthDAO extends AbstractDAO<Strength, StrengthKey> implements D
 	 */ 
 	
 	String getSELECTForCodedList() {
-		return "SELECT ability_score, exceptional_strength ability_score FROM " + getTableName() + " ORDER BY ability_score, exceptional_strength";
+		return "SELECT ability_score, exceptional_strength, ability_score FROM " + getTableName() + " ORDER BY ability_score, exceptional_strength";
 	}
 
 	void setCodedListItemFromRS(CodedListItem<StrengthKey> dto, ResultSet rs) throws SQLException {

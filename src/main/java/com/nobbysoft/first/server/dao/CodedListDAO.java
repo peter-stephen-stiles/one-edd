@@ -95,7 +95,7 @@ public class CodedListDAO {
 			}
 			return map;
 
-		}
+		} 
 		String sql = "";
 		
 		sql = getSql(type, sql);
@@ -139,7 +139,7 @@ public class CodedListDAO {
 			return getGender();
 		} else if (Constants.CLI_SAVING_THROW.equals(type)) {
 			return getSavingThrow();
-		}
+		} 
 		
 		String sql = "";
 		
@@ -175,6 +175,8 @@ public class CodedListDAO {
 			sql = "SELECT spell_id, name FROM Spell ORDER BY name";
 		}else if(Constants.CLI_PLAYER_CHARACTER.equals(type)) {
 			sql = "SELECT pc_id, character_name FROM Player_Character ORDER BY character_name";
+		} else if(Constants.CLI_UNDEAD.equals(type)) {
+			sql = "SELECT undead_Type, undead_Type_example FROM Undead_type ORDER BY undead_Type";
 		}
 		return sql;
 	}

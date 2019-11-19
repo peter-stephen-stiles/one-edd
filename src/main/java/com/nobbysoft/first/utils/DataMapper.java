@@ -103,6 +103,7 @@ public enum DataMapper {
 		daoimap.put(WeaponAmmunition.class,WeaponAmmunitionDAO.class);
 		daoimap.put(Armour.class,ArmourDAO.class);
 		daoimap.put(Shield.class,ShieldDAO.class);
+		daoimap.put(TurnUndead.class, TurnUndeadDAO.class);
 		daoimap.put(UndeadType.class, UndeadTypeDAO.class);
 
 		
@@ -116,7 +117,7 @@ public enum DataMapper {
 		
 		staticDataPanels.put(PlayerCharacter.class,PlayerCharacterPanel.class);
 		staticDataPanels.put(Spell.class,SpellPanel.class);
-		staticDataPanels.put(Race.class,RacePanel.class);//UndeadType
+		staticDataPanels.put(Race.class,RacePanel.class);//
 		staticDataPanels.put(CharacterClass.class,CharacterClassPanel.class);
 		staticDataPanels.put(RaceClassLimit.class, RaceClassLimitPanel.class); 
 		staticDataPanels.put(Constitution.class, ConstitutionPanel.class);
@@ -130,7 +131,8 @@ public enum DataMapper {
 		staticDataPanels.put(WeaponAmmunition.class, WeaponAmmunitionPanel.class);
 		staticDataPanels.put(Armour.class, ArmourPanel.class);
 		staticDataPanels.put(Shield.class, ShieldPanel.class);
-		staticDataPanels.put(UndeadType.class,UndeadTypePanel.class);
+		staticDataPanels.put(UndeadType.class,UndeadTypePanel.class);//
+		staticDataPanels.put(TurnUndead.class,TurnUndeadPanel.class);//
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
 		entityservicemap.put(PlayerCharacterHp.class, PlayerCharacterHpService.class);
@@ -156,6 +158,7 @@ public enum DataMapper {
 		entityservicemap.put(Armour.class,ArmourService.class);
 		entityservicemap.put(Shield.class,ShieldService.class);
 		entityservicemap.put(UndeadType.class, UndeadTypeService.class);//
+		entityservicemap.put(TurnUndead.class, TurnUndeadService.class);//
 		
 
 		servicemap.put(PlayerCharacterService.class, PlayerCharacterServiceImpl.class);
@@ -183,6 +186,7 @@ public enum DataMapper {
 		servicemap.put(ArmourService.class, ArmourServiceImpl.class);
 		servicemap.put(ShieldService.class, ShieldServiceImpl.class);
 		servicemap.put(UndeadTypeService.class, UndeadTypeServiceImpl.class);//
+		servicemap.put(TurnUndeadService.class, TurnUndeadServiceImpl.class);//
 		
 
 		servicemap.put(SqlService.class, SqlServiceImpl.class);

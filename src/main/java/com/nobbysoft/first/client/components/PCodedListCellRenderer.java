@@ -40,7 +40,7 @@ public class PCodedListCellRenderer extends PTableCellRenderer {
 				return "SQL PROBLEM!";
 			}
 		} 
-			String v = itemMap.get(value);
+			String v = itemMap.get(""+value); // always strings in a renderererer
 			if(v==null) {
 				return null;//"Unknown:"+value;
 			}
