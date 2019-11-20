@@ -1,5 +1,6 @@
 package com.nobbysoft.first.client.data.panels.staticdata;
 
+import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -43,18 +44,35 @@ public class TurnUndeadPanel extends AbstractDataPanel<TurnUndead,TurnUndeadKey>
 		this.parentd=parentd;
 	}
  
-//	private int effectiveClericLevelFrom;	
-//	private int undeadType; //FK
-//	private int effectiveClericLevelTo;
-//	private int rollRequired; //-1=D, 0=T, 1-20=RR,21=IMPO
-//	private int numberAffectedFrom;
-//	private int numberAffectedTo;	
-	
+ 
 
-
-	private final PIntegerCombo txtEffectiveClericLevelFrom = new PIntegerCombo(1,99);
-	private final PComboBox<CodedListItem<Integer>> txtUndeadType = new PComboBox<>();
-	private final PIntegerCombo txtEffectiveClericLevelTo = new PIntegerCombo(1,99);
+	private final PIntegerCombo txtEffectiveClericLevelFrom = new PIntegerCombo(1,99) {
+		public Dimension getPreferredSize() {
+			Dimension d = super.getPreferredSize();
+			if(d.getWidth()<100){
+				d.width=100;
+			}
+			return d;
+		}
+	};;
+	private final PComboBox<CodedListItem<Integer>> txtUndeadType = new PComboBox<CodedListItem<Integer>>() {
+		public Dimension getPreferredSize() {
+			Dimension d = super.getPreferredSize();
+			if(d.getWidth()<150){
+				d.width=150;
+			}
+			return d;
+		}
+	};
+	private final PIntegerCombo txtEffectiveClericLevelTo = new PIntegerCombo(1,99) {
+		public Dimension getPreferredSize() {
+			Dimension d = super.getPreferredSize();
+			if(d.getWidth()<100){
+				d.width=100;
+			}
+			return d;
+		}
+	};
 	private final PTurnUndeadRollRequired cbxRollRequired = new PTurnUndeadRollRequired();
 	
 	private final PIntegerCombo txtNumberAffectedFrom = new PIntegerCombo(1,99);
@@ -100,19 +118,20 @@ public class TurnUndeadPanel extends AbstractDataPanel<TurnUndead,TurnUndeadKey>
 		int row=1;
 		add(getLblInstructions(), GBU.text(0, row, 2));
 		
-		row++;		
-		add(new PLabel(txtEffectiveClericLevelFrom.getName()), GBU.label(0, row));
-		add(txtEffectiveClericLevelFrom, GBU.text(1, row)); 
-
+		
 
 		row++;		
 		add(new PLabel(txtUndeadType.getName()), GBU.label(0, row));
 		add(txtUndeadType, GBU.text(1, row)); 
 
-
+		
 		row++;		
-		add(new PLabel(txtEffectiveClericLevelTo.getName()), GBU.label(0, row));
-		add(txtEffectiveClericLevelTo, GBU.text(1, row)); 
+		add(new PLabel(txtEffectiveClericLevelFrom.getName()), GBU.label(0, row));
+		add(txtEffectiveClericLevelFrom, GBU.text(1, row)); 
+
+ 	
+		add(new PLabel(txtEffectiveClericLevelTo.getName()), GBU.label(2, row));
+		add(txtEffectiveClericLevelTo, GBU.text(3, row)); 
 
 		row++;		
 		add(new PLabel(cbxRollRequired.getName()), GBU.label(0, row));

@@ -165,7 +165,7 @@ public class TurnUndeadDAO extends AbstractDAO<TurnUndead, TurnUndeadKey> implem
 	}
 
 	String getFilterWhere() {
-		return " Effective_Cleric_Level_from >= ? and Effective_Cleric_Level_to <= ?";
+		return " ? >= Effective_Cleric_Level_from and ? <= Effective_Cleric_Level_to ";
 	};
 
 	void setFilterParameters(PreparedStatement ps, String filter) throws SQLException {
