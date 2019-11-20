@@ -105,6 +105,7 @@ public enum DataMapper {
 		daoimap.put(Shield.class,ShieldDAO.class);
 		daoimap.put(TurnUndead.class, TurnUndeadDAO.class);
 		daoimap.put(UndeadType.class, UndeadTypeDAO.class);
+		daoimap.put(Assassination.class, AssassinationDAO.class);
 
 		
 		equipmentDAO.put(EquipmentType.MELEE_WEAPON,WeaponMeleeDAO.class);
@@ -132,7 +133,8 @@ public enum DataMapper {
 		staticDataPanels.put(Armour.class, ArmourPanel.class);
 		staticDataPanels.put(Shield.class, ShieldPanel.class);
 		staticDataPanels.put(UndeadType.class,UndeadTypePanel.class);//
-		staticDataPanels.put(TurnUndead.class,TurnUndeadPanel.class);//
+		staticDataPanels.put(TurnUndead.class,TurnUndeadPanel.class);// 
+		staticDataPanels.put(Assassination.class,AssassinationPanel.class);// 
 
 		entityservicemap.put(PlayerCharacter.class, PlayerCharacterService.class);
 		entityservicemap.put(PlayerCharacterHp.class, PlayerCharacterHpService.class);
@@ -158,6 +160,7 @@ public enum DataMapper {
 		entityservicemap.put(Armour.class,ArmourService.class);
 		entityservicemap.put(Shield.class,ShieldService.class);
 		entityservicemap.put(UndeadType.class, UndeadTypeService.class);//
+		entityservicemap.put(Assassination.class, AssassinationService.class);//
 		entityservicemap.put(TurnUndead.class, TurnUndeadService.class);//
 		
 
@@ -186,6 +189,7 @@ public enum DataMapper {
 		servicemap.put(ArmourService.class, ArmourServiceImpl.class);
 		servicemap.put(ShieldService.class, ShieldServiceImpl.class);
 		servicemap.put(UndeadTypeService.class, UndeadTypeServiceImpl.class);//
+		servicemap.put(AssassinationService.class, AssassinationImpl.class);//
 		servicemap.put(TurnUndeadService.class, TurnUndeadServiceImpl.class);//
 		
 
