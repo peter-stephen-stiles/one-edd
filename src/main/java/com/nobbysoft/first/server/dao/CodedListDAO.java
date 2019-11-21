@@ -177,6 +177,8 @@ public class CodedListDAO {
 			sql = "SELECT pc_id, character_name FROM Player_Character ORDER BY character_name";
 		} else if(Constants.CLI_UNDEAD.equals(type)) {
 			sql = "SELECT undead_Type, undead_Type_example FROM Undead_type ORDER BY undead_Type";
+		}else if(Constants.CLI_THIEF_ABILITY.equals(type)) {
+			sql ="SELECT Thief_Ability_Type , OR Thief_Ability_name from Thief_Ability_Type order by Thief_Ability_Type";
 		}
 		return sql;
 	}

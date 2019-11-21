@@ -12,6 +12,7 @@ public class Constants {
 	public static final String CLI_CLASS = "class";
 	public static final String CLI_RACE = "races";
 	public static final String CLI_SPELL = "spell";
+	public static final String CLI_THIEF_ABILITY = "thief-ability";
 	public static final String CLI_DICE = "dice";
 	public static final String CLI_UNDEAD = "undead";
 	public static final String CLI_ATT_ROLLS = "att-rolls";
