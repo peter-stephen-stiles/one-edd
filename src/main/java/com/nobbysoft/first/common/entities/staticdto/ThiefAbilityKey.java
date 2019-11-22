@@ -4,8 +4,7 @@ public class ThiefAbilityKey  implements Comparable<ThiefAbilityKey>{
 
 	
 	private int thiefLevel;
-	private String thiefAbilityType;// FK to TheifAbilityType
-	
+	private String thiefAbilityType;// FK to TheifAbilityType	 
 	
 	public ThiefAbilityKey() {
 
