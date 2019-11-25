@@ -1,32 +1,25 @@
 package com.nobbysoft.first.client.utils;
 
-import java.io.File;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.entities.staticdto.SavingThrow;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Charisma;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Dexterity;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Intelligence;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
 
 public class MakeHTML {
 
@@ -60,7 +53,8 @@ public class MakeHTML {
 	public String makeDocument(PlayerCharacter pc,
 			Map<String,CharacterClass> characterClasses,
 			Race race,
-			List<SavingThrow> savingThrows) {
+			List<SavingThrow> savingThrows,
+			DataAccessThingy data) {
 
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
@@ -112,6 +106,16 @@ public class MakeHTML {
 					
 				}
 			}
+			
+			
+			Strength strength=data.getStrength(pc.getAttrStr(),pc.getExceptionalStrength()); 
+			Intelligence intelligence = data.getIntelligence(pc.getAttrInt());
+			Wisdom wisdom= data.getWisdom(pc.getAttrWis());
+			Dexterity dexterity = data.getDexterity(pc.getAttrDex());
+			Constitution constitution= data.getConstitution(pc.getAttrCon());
+			Charisma charisma = data.getCharisma(pc.getAttrChr());
+			
+			
 			
 			XmlUtilities.addElement(mainRow, "th", "HP");
 			XmlUtilities.addElement(mainRow, "td", ""+hp);
@@ -172,5 +176,8 @@ public class MakeHTML {
 		}
 	}
 
+	
+	
+ 
 
 }

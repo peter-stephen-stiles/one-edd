@@ -26,6 +26,7 @@ import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.first.client.components.special.PComboGender;
+import com.nobbysoft.first.client.utils.DataAccessThingy;
 import com.nobbysoft.first.client.utils.MakeHTML;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
@@ -62,7 +63,7 @@ public class CharacterSheet extends PDialog {
 		jbInit();
 	}
 
-	private JEditorPane edtHtml = new JEditorPane("text/html", "<h1>Hello</h1>");
+	private JEditorPane edtHtml = new JEditorPane("text/html", "<h1>No character sheet :(</h1>");
 	private PTextField txtName = new PTextField();
 	private PTextField txtRace = new PTextField();
 	private PComboGender txtGender = new PComboGender();
@@ -71,7 +72,7 @@ public class CharacterSheet extends PDialog {
 	private PDataComponent[] disable = new PDataComponent[] {
 			txtName,txtRace,txtGender,txtClass
 	};
-	//private HTMLEditorKit kit = new HTMLEditorKit();
+
 	private void jbInit() {
 		setLayout(new BorderLayout());
         
@@ -206,7 +207,8 @@ public class CharacterSheet extends PDialog {
 		List<SavingThrow> saves = new ArrayList<>();
 		saves.addAll(bestSaves.values());
 		MakeHTML make = new MakeHTML();
-		String html=make.makeDocument(character, characterClasses, race, saves);
+		DataAccessThingy data = new DataAccessThingy();
+		String html=make.makeDocument(character, characterClasses, race, saves,data);
 		edtHtml.setText(html);
         //edtHtml.setContentType("text/html");
 		LOGGER.info("html\n"+html);

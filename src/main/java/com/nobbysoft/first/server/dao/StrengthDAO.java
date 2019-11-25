@@ -151,5 +151,33 @@ public class StrengthDAO extends AbstractDAO<Strength, StrengthKey> implements D
 		}
 	}
 
+	
+	public Strength getStrengthFor(Connection con,int strength, int exceptional) throws SQLException{
+		//
+		if(strength!=18) {
+			StrengthKey key = new  StrengthKey (strength,0);
+			return get(con,key);
+		} else  {
+			int ex = 0;
+			String sql = "SELECT max(exceptional_strength) FROM strength WHERE ability_score = ? and exceptional_strength <= ? ";
+			try(PreparedStatement ps = con.prepareStatement(sql)){
+				ps.setInt(1, strength);
+				ps.setInt(2, exceptional);
+				try(ResultSet rs = ps.executeQuery()){
+					if(rs.next()) {
+						ex = rs.getInt(1);
+					}
+					
+				}
+				
+			}
+			
+			StrengthKey key = new  StrengthKey (strength,ex);
+			return get(con,key);
+			
+		}
+		
+	}
+	
 
 }

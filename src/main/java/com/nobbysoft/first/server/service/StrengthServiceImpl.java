@@ -115,4 +115,16 @@ public class StrengthServiceImpl implements StrengthService {
 			}
 	}
 
+
+	public Strength getStrengthFor(int strength, int exceptional) throws SQLException{
+		
+		try(Connection con = cm.getConnection()){
+			try {
+			return dao.getStrengthFor(con, strength,  exceptional);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
+	
 }
