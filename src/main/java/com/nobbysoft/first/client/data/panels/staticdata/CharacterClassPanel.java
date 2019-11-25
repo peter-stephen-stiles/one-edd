@@ -21,6 +21,7 @@ import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTextField;
+import com.nobbysoft.first.client.components.special.PComboAbilitiesAsClass;
 import com.nobbysoft.first.client.components.special.PComboArcaneOrDivine;
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
@@ -83,12 +84,12 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 	private final PComboBox<CodedListItem<Integer>> txtPrimeRequisite2 = new PComboBox<>();
 	private final PComboBox<CodedListItem<Integer>> txtPrimeRequisite3 = new PComboBox<>();
 	
-	/*
-	 * 	private int proficienciesAtFirstLevel;
-	private int newProficiencyEveryXLevels;
-	private int nonProficiencyPenalty;
-	 */
-// txtProficienciesAtFirstLevel txtNonProficiencyPenalty txtNewProficiencyEveryXLevels
+	private final PComboAbilitiesAsClass txtTurnUndead = new PComboAbilitiesAsClass("Cleric");
+	private final PComboAbilitiesAsClass txtThiefAbilities = new PComboAbilitiesAsClass("Thief");
+	
+	
+
+
 	private final PIntegerCombo txtProficienciesAtFirstLevel = new PIntegerCombo(1,5);
 	private final PIntegerCombo txtNonProficiencyPenalty = new PIntegerCombo(-5,-1);
 	private final PIntegerCombo txtNewProficiencyEveryXLevels = new PIntegerCombo(1,6);
@@ -109,7 +110,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 			txtMinStr,txtMinInt,txtMinWis,txtMinDex,txtMinCon,txtMinChr,txtPrimeRequisite1,
 			txtPrimeRequisite2,txtPrimeRequisite3,
 			txtXpBonusPercent, txtProficienciesAtFirstLevel, txtNonProficiencyPenalty, txtNewProficiencyEveryXLevels,cbxHighConBonus,cbxArcaneOrDivine,
-			txtXpPerLevelAfterNameLevel
+			txtXpPerLevelAfterNameLevel, txtTurnUndead, txtThiefAbilities
 			 };
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtCharacterClassId };
 	private PDataComponent[] buttonComponents = new PDataComponent[] {  };
@@ -141,10 +142,12 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		txtPrimeRequisite2.setName("Prime requisite#2");
 		txtPrimeRequisite3.setName("Prime requisite#3");
 		txtXpBonusPercent.setName("XP Bonus %age");
-		 txtProficienciesAtFirstLevel.setName("Initial number of weapons"); 
-		 txtNonProficiencyPenalty.setName("Non-proficiency penalty");
-		 txtNewProficiencyEveryXLevels.setName("Added prof/level");
-		 cbxHighConBonus.setName("Has high con bonus");
+		txtProficienciesAtFirstLevel.setName("Initial number of weapons"); 
+		txtNonProficiencyPenalty.setName("Non-proficiency penalty");
+		txtNewProficiencyEveryXLevels.setName("Added prof/level");
+		cbxHighConBonus.setName("Has high con bonus");
+		txtTurnUndead.setName("Turn undead as"); 
+		txtThiefAbilities.setName("Thief Abilities as");
 		 
 		PLabel lblCharacterClassId = new PLabel(txtCharacterClassId.getName()); 
 		PLabel lblCharacterClassName = new PLabel(txtName.getName()); 
@@ -229,11 +232,21 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		row++;
 		pnlLeft.add(lblHpAfterNameLevel, GBU.label(0,row));
 		pnlLeft.add(txtHpAfterNameLevel, GBU.text(1, row));
-		
+
 		row++;
 		pnlLeft.add(lblXpPerLevelAfterNameLevel, GBU.label(0,row));
 		pnlLeft.add(txtXpPerLevelAfterNameLevel, GBU.text(1, row));
-		
+
+		row++;
+		pnlLeft.add(new PLabel(txtTurnUndead.getName()), GBU.label(0,row));
+		pnlLeft.add(txtTurnUndead, GBU.text(1, row));
+
+
+		row++;
+		pnlLeft.add(new PLabel(txtThiefAbilities.getName()), GBU.label(0,row));
+		pnlLeft.add(txtThiefAbilities, GBU.text(1, row));
+
+ 
 		
 		
 		
@@ -377,6 +390,8 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		value.setNewProficiencyEveryXLevels(txtNewProficiencyEveryXLevels.getIntegerValue());
 		
 		value.setHighConBonus(cbxHighConBonus.isSelected());
+		value.setTurnUndead(txtTurnUndead.getIntegerValue());
+		value.setThiefAbilities(txtThiefAbilities.getIntegerValue());
 		
 	}
 
@@ -409,6 +424,8 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		txtNewProficiencyEveryXLevels.setIntegerValue(value.getNewProficiencyEveryXLevels());
 		
 		cbxHighConBonus.setSelected(value.isHighConBonus());
+		txtTurnUndead.setIntegerValue(value.getTurnUndead());
+		txtThiefAbilities.setIntegerValue(value.getThiefAbilities());
 	}
 
 
