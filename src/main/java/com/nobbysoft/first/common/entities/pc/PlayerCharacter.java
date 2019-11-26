@@ -251,6 +251,14 @@ public class PlayerCharacter implements Serializable, DataDTOInterface<Integer> 
 
 	}
 
+	public String getStrengthString() {
+		String s = ""+attrStr;
+		if(attrStr==18 && exceptionalStrength>0) {
+			s =s + "/"+exceptionalStrength+"%";
+		}
+		return s;
+	}
+	
 	public int getAttrStr() {
 		return attrStr;
 	}

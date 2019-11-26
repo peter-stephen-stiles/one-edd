@@ -58,6 +58,23 @@ public class Strength  implements AbilityScoreI,Comparable<Strength>, Serializab
 	public int getOpenDoors() {
 		return openDoors;
 	}
+	
+	public String getOpenDoorsString() {
+		if( openDoors==1) {
+			return "1/6";
+		} else {
+			String od = "1-"+openDoors+"/6";
+			if(openMagicalDoors>0) {
+				if(openMagicalDoors==1) {
+					od = od + "(1/6)*";
+				} else {
+					od = od + "("+openMagicalDoors+"/6)*";
+				}
+			}
+			return od;
+		}
+	}
+	
 	public void setOpenDoors(int openDoors) {
 		this.openDoors = openDoors;
 	}

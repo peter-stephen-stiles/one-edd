@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
@@ -20,6 +21,7 @@ import com.nobbysoft.first.common.entities.staticdto.attributes.Dexterity;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Intelligence;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
+import com.nobbysoft.first.common.utils.SU;
 
 public class MakeHTML {
 
@@ -115,7 +117,16 @@ public class MakeHTML {
 			Constitution constitution= data.getConstitution(pc.getAttrCon());
 			Charisma charisma = data.getCharisma(pc.getAttrChr());
 			
+			List<String> divSpellBonuses = data.getDivineSpellBonus(pc.getAttrWis());			
 			
+			boolean extraHitPointBonus=false;
+			for(CharacterClass c:characterClasses.values()) {
+				if(c!=null) {
+					if(c.isHighConBonus()) {
+						extraHitPointBonus=true;
+					}				
+				}
+			}
 			
 			XmlUtilities.addElement(mainRow, "th", "HP");
 			XmlUtilities.addElement(mainRow, "td", ""+hp);
@@ -126,33 +137,86 @@ public class MakeHTML {
 				XmlUtilities.addAttribute(table, "border", "1");
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElement(row, "th", "str");
-					XmlUtilities.addElement(row, "td", pc.getAttrStr());
+					XmlUtilities.addElementWithAttribute(row, "th", "str","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "td", pc.getStrengthString(),"class","strength");
+					XmlUtilities.addElement(row, "td", "To-hit");
+					XmlUtilities.addElement(row, "td", SU.a(strength.getHitProbability(),"normal"));
+					XmlUtilities.addElement(row, "td", "Dmg adj");
+					XmlUtilities.addElement(row, "td", SU.a(strength.getDamageAdjustment(),"normal"));
+					XmlUtilities.addElement(row, "td", "Weight all.");
+					XmlUtilities.addElement(row, "td", SU.a(strength.getWeightAllowance(),"normal"));
+					XmlUtilities.addElement(row, "td", "Open doors");
+					XmlUtilities.addElement(row, "td", strength.getOpenDoorsString());
+					XmlUtilities.addElement(row, "td", "Bend bars/Lift gates");
+					XmlUtilities.addElement(row, "td", SU.p(strength.getBendBarsLiftGates(),"0%"));					
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElement(row, "th", "int");
-					XmlUtilities.addElement(row, "td", pc.getAttrInt());
+					XmlUtilities.addElementWithAttribute(row, "th", "int","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "td", pc.getAttrInt(),"class","intelligence");
+					XmlUtilities.addElement(row, "td", "Add. lang");
+					XmlUtilities.addElement(row, "td", intelligence.getPossibleAdditionalLanguages());
+					XmlUtilities.addElement(row, "td", "Chance to know spell");
+					XmlUtilities.addElement(row, "td", SU.p(intelligence.getChanceToKnowSpell(),""));
+					XmlUtilities.addElement(row, "td", "Min spells/lvl");					
+					XmlUtilities.addElement(row, "td", intelligence.getMinSpellsPerLevel());
+					XmlUtilities.addElement(row, "td", "Max spells/lvl");
+					XmlUtilities.addElement(row, "td", intelligence.getMaxSpellsPerLevel());
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElement(row, "th", "wis");
-					XmlUtilities.addElement(row, "td", pc.getAttrWis());
+					XmlUtilities.addElementWithAttribute(row, "th", "wis","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "td", pc.getAttrWis(),"class","wisdom");
+					XmlUtilities.addElement(row, "td", "MAA");
+					XmlUtilities.addElement(row, "td", SU.a(wisdom.getMagicalAttackAdjustment(),"none"));
+					XmlUtilities.addElement(row, "td", "Spell bonus");					
+					Node bs = XmlUtilities.addElement(row, "td");
+					for(String s:divSpellBonuses) {
+						XmlUtilities.addElement(bs, "p", s);			
+					}
+
+					XmlUtilities.addElement(row, "td", "Chance of spell failure");
+					XmlUtilities.addElement(row, "td", SU.p(wisdom.getDivineSpellChanceFailure(),"0%"));
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElement(row, "th", "dex");
-					XmlUtilities.addElement(row, "td", pc.getAttrDex());
+					XmlUtilities.addElementWithAttribute(row, "th", "dex","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "td", pc.getAttrDex(),"class","dexterity");
+					XmlUtilities.addElement(row, "td", "Reaction/attack adj");
+					XmlUtilities.addElement(row, "td", SU.a(dexterity.getReactionAttackAdjustment(),"0"));
+					XmlUtilities.addElement(row, "td", "Def adj");
+					XmlUtilities.addElement(row, "td", SU.a(dexterity.getDefensiveAdjustment(),"0"));					
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElement(row, "th", "con");
-					XmlUtilities.addElement(row, "td", pc.getAttrCon());
+					XmlUtilities.addElementWithAttribute(row, "th", "con","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "td", pc.getAttrCon(),"class","constitution");
+					XmlUtilities.addElement(row, "td", "HP adj");
+					
+					if(extraHitPointBonus && constitution.getHitPointAdjustmentHigh()>0) {
+						XmlUtilities.addElement(row, "td", 
+								SU.a(constitution.getHitPointAdjustment(),"0")+"("+
+								
+								SU.a(constitution.getHitPointAdjustmentHigh(),"0")+")*");
+					} else {
+						XmlUtilities.addElement(row, "td", SU.a(constitution.getHitPointAdjustment(),"0"));
+					}
+					XmlUtilities.addElement(row, "td", "Sys shk surv");
+					XmlUtilities.addElement(row, "td", SU.p(constitution.getSystemShockSurvival()));
+					XmlUtilities.addElement(row, "td", "Ress. surv.");
+					XmlUtilities.addElement(row, "td", SU.p(constitution.getResurrectionSurvival()));
+					
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElement(row, "th", "chr");
-					XmlUtilities.addElement(row, "td",pc.getAttrChr());
+					XmlUtilities.addElementWithAttribute(row, "th", "chr","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "td",pc.getAttrChr(),"class","charisma");
+					XmlUtilities.addElement(row, "td", "Max hench.");
+					XmlUtilities.addElement(row, "td", (charisma.getMaxHenchmen()));
+					XmlUtilities.addElement(row, "td", "Loyalty base");
+					XmlUtilities.addElement(row, "td", SU.p(charisma.getLoyaltyBase(),"normal"));
+					XmlUtilities.addElement(row, "td", "Reaction adj");
+					XmlUtilities.addElement(row, "td", SU.p(charisma.getReactionAdjustment(),"normal"));
 				}
 			}
 			

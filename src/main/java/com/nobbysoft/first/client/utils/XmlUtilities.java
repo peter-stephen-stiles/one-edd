@@ -94,6 +94,12 @@ public class XmlUtilities {
 		return newEl;
 	}
 
+	public static Element addElementWithAttribute(Node n, String name, String attribute, String attributeValue) {
+		Element newEl = addElement(n,name);
+		addAttribute(newEl,attribute,attributeValue);		 
+		return newEl;
+	}
+	
 	public static Element addElement(Node n, String name, int value) {
 		Document od = n.getOwnerDocument();
 		Element newEl = od.createElement(name);
@@ -103,6 +109,12 @@ public class XmlUtilities {
 		return newEl;
 	}
 
+	public static Element addElementWithAttribute(Node n, String name, int value, String attribute, String attributeValue) {
+		Element newEl = addElement(n,name,value);
+		addAttribute(newEl,attribute,attributeValue);		 
+		return newEl;
+	}
+	
 	public static Element addElement(Node n, String name, String value) {
 		Document od = n.getOwnerDocument();
 		Element newEl = od.createElement(name);
@@ -112,6 +124,12 @@ public class XmlUtilities {
 		return newEl;
 	}
 
+	public static Element addElementWithAttribute(Node n, String name, String value, String attribute, String attributeValue) {
+		Element newEl = addElement(n,name,value);
+		addAttribute(newEl,attribute,attributeValue);		 
+		return newEl;
+	}
+	
 	public static Element getElement(Node n, String name) {
 		if (n instanceof Element) {
 			Element e = (Element) n;
