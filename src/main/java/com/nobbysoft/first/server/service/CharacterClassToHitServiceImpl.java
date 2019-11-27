@@ -146,6 +146,17 @@ public class CharacterClassToHitServiceImpl implements CharacterClassToHitServic
 		return new ReturnValue<Integer>(created);
 	}
  
- 
+	public ReturnValue<CharacterClassToHit> getToHitForClassLevel(String classId,int level)throws SQLException{
+		try(Connection con = cm.getConnection()){
+			try {
+			 return dao.getToHitForClassLevel(con,classId,level);
+			} finally {
+			con.rollback();
+			}
+			}
+		
+		
+		
+	}
 	
 }

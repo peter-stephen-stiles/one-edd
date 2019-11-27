@@ -2,6 +2,8 @@ package com.nobbysoft.first.client.utils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,6 +15,7 @@ import org.w3c.dom.Node;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
 import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.entities.staticdto.SavingThrow;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Charisma;
@@ -22,6 +25,7 @@ import com.nobbysoft.first.common.entities.staticdto.attributes.Intelligence;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
 import com.nobbysoft.first.common.utils.SU;
+import com.nobbysoft.first.common.utils.ToHitUtils;
 
 public class MakeHTML {
 
@@ -121,6 +125,8 @@ public class MakeHTML {
 			
 			 Map<Comparable,String> stNames= data.getSavingThrowNameMap();
 			
+			 List<CharacterClassToHit> toHits = data.getToHit(pc,race);
+			 
 			
 			boolean extraHitPointBonus=false;
 			for(CharacterClass c:characterClasses.values()) {
@@ -231,8 +237,7 @@ public class MakeHTML {
 				}
 			}
 			
-			{ // 
-				// if we have multiples, we pick the lowest one of each!
+			{ // Saving throws
 				Element table = XmlUtilities.addElement(body, "table");
 
 				XmlUtilities.addAttribute(table, "border", "1");
@@ -248,6 +253,38 @@ public class MakeHTML {
 					XmlUtilities.addElement(row, "td",st.getRollRequired());
 					
 				}
+			}
+			{
+				// to-hit values
+				Element table = XmlUtilities.addElement(body, "table");
+				XmlUtilities.addAttribute(table, "border", "1");
+				// 
+				
+				
+				
+				for(CharacterClassToHit toHit:toHits) {
+					
+					Map<Integer,Integer>ma= ToHitUtils.getACToHitMap(toHit.getBiggestACHitBy20());
+					Set<Integer> ints = new TreeSet<>();
+					ints.addAll(ma.keySet());
+					{
+						Element row = XmlUtilities.addElement(table, "tr"); // headings first
+						for(int i:ints) {
+							XmlUtilities.addElement(row, "th", ""+i);
+						}
+					}
+					{
+						Element row = XmlUtilities.addElement(table, "tr"); // headings first
+						for(int i:ints) {
+							XmlUtilities.addElement(row, "td", ""+ma.get(i));
+						}
+					}
+					
+					
+					
+					
+				}
+				
 			}
 			String xmlString = XmlUtilities.xmlToHtmlString(doc);
 

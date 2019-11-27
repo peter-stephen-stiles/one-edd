@@ -376,7 +376,7 @@ CharacterClassToHitService getDataService() {
 		
 	
 	}
-	
+
 	
 	
 }

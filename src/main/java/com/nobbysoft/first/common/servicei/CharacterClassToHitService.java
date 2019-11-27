@@ -11,4 +11,6 @@ public interface CharacterClassToHitService extends DataServiceI<CharacterClassT
  
 	public ReturnValue<Integer>  copyFrom(String fromClassId, String toClassId) throws SQLException;
 	
+	public ReturnValue<CharacterClassToHit> getToHitForClassLevel(String classId,int level)throws SQLException;
+	
 }

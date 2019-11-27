@@ -19,6 +19,7 @@ import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.staticdto.*;
 import com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.server.utils.DbUtils;
 
 public class CharacterClassToHitDAO extends AbstractDAO<CharacterClassToHit, CharacterClassToHitKey> implements DAOI<CharacterClassToHit, CharacterClassToHitKey> {
@@ -177,7 +178,50 @@ public class CharacterClassToHitDAO extends AbstractDAO<CharacterClassToHit, Cha
 		
 	}
 
- 
+	
+	public ReturnValue<CharacterClassToHit> getToHitForClassLevel(Connection con,String classId,int level)throws SQLException{
+		ReturnValue<CharacterClassToHit> rv=null;
+		//select max(from_level) from character_class_to_hit where class_id = 'CL' and from_level <= 5
+		String sql0 = "SELECT MAX(from_level) FROM character_class_to_hit WHERE class_id = ? AND from_level <= ? ";
+		try(PreparedStatement ps0 = con.prepareStatement(sql0)){
+			ps0.setString(1, classId);
+			ps0.setInt(2, level);
+			try(ResultSet rss0= ps0.executeQuery()){
+				if(rss0.next()) {
+					int fromLevel = rss0.getInt(1);
+					String sql1 = "SELECT to_level FROM character_class_to_hit WHERE class_id = ? AND from_level = ? ";
+					try(PreparedStatement ps1 = con.prepareStatement(sql1)){
+						ps1.setString(1, classId);
+						ps1.setInt(2, fromLevel);
+						CharacterClassToHitKey key = new CharacterClassToHitKey();
+						key.setClassId(classId);
+						key.setFromLevel(fromLevel);
+						try(ResultSet rss1= ps1.executeQuery()){
+							if(rss1.next()) {								
+								int toLevel = rss1.getInt(1);								
+
+								key.setToLevel(toLevel);
+								CharacterClassToHit x = get(con,key);
+								rv = new ReturnValue<>(x);
+							} else {
+								rv= new ReturnValue<>(ReturnValue.IS_ERROR.TRUE,"Can't find that class/level combo (2)!" + key);
+							}
+						}
+					}
+					
+				} else {
+					// blow up
+					rv= new ReturnValue<>(ReturnValue.IS_ERROR.TRUE,"Can't find that class/level combo!");
+				}
+			}
+			
+		}
+		
+		
+		return rv;
+		
+	}
+	 
   
  
 	

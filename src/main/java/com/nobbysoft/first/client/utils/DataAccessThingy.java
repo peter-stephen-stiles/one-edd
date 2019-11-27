@@ -14,6 +14,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.common.constants.Constants;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHitKey;
+import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.entities.staticdto.attributes.*;
 import com.nobbysoft.first.common.servicei.*;
 import com.nobbysoft.first.common.utils.ReturnValue;
@@ -153,6 +158,91 @@ public class DataAccessThingy {
 			LOGGER.error("error getting data",e);	
 			throw new IllegalStateException("Unable to get charisma "+charisma,e);
 		}
+	}
+	
+	
+	public List<CharacterClassToHit> getToHit(PlayerCharacter playerCharacter, Race race) {
+		
+		List<CharacterClassToHit> list = new ArrayList<>();
+		try {
+		
+		CharacterClassToHitService cc2hs = (CharacterClassToHitService)getDataService(CharacterClassToHit.class);
+		//
+		
+		// if SINGLE CLASS pick numbers
+		
+		ReturnValue<CharacterClassToHit> rv = cc2hs.getToHitForClassLevel(playerCharacter.getFirstClass(), playerCharacter.getFirstClassLevel());
+		if(rv.isError()) {
+			LOGGER.error("error getting data" +rv.getErrorMessage());	
+			throw new IllegalStateException("Unable to get to hit "+rv.getErrorMessage());
+		}
+		
+		CharacterClassToHit toHit1 = rv.getValue();
+		
+		if(playerCharacter.getSecondClass()==null||playerCharacter.getSecondClass().isEmpty()){
+			// no 2			
+		} else {
+			rv = cc2hs.getToHitForClassLevel(playerCharacter.getSecondClass(), playerCharacter.getSecondClassLevel());
+			if(rv.isError()) {
+				LOGGER.error("error getting data 2" +rv.getErrorMessage());	
+				throw new IllegalStateException("Unable to get to hit 2 "+rv.getErrorMessage());
+			} 
+			CharacterClassToHit toHit2=rv.getValue();
+			
+			if(race.isMultiClassable()) {
+		// if MULTI CLASS pick _best_ numbers
+				
+				CharacterClassToHit toHit3 = toHit2;//cheat
+				if(playerCharacter.getThirdClass()==null||playerCharacter.getThirdClass().isEmpty()){
+					// no 3
+				} else {
+					rv= cc2hs.getToHitForClassLevel(playerCharacter.getThirdClass(), playerCharacter.getThirdClassLevel());
+					if(rv.isError()) {
+						LOGGER.error("error getting data 3" +rv.getErrorMessage());	
+						throw new IllegalStateException("Unable to get to hit 3 "+rv.getErrorMessage());
+					} 
+					toHit3 =rv.getValue();					
+				}
+				// smallest is best
+				if (toHit2.getBiggestACHitBy20()<toHit1.getBiggestACHitBy20()) {
+					// prefer th2 to th1
+					if (toHit3.getBiggestACHitBy20()<toHit2.getBiggestACHitBy20()) {
+						// prefer th3 to either
+						list.add(toHit3);
+					} else {
+						list.add(toHit2);
+					}
+				} else {
+					// prefer th2 to th1
+					if (toHit3.getBiggestACHitBy20()<toHit1.getBiggestACHitBy20()) {
+						// prefer th3 to either
+						list.add(toHit3);
+					} else {
+						list.add(toHit1);
+					}
+				}
+				
+			} else {
+		// if DUAL CLASS return all				
+				for(PlayerCharacterLevel pcl:playerCharacter.getClassDetails()) {
+					String cls =pcl.getThisClass();
+					if(cls!=null&&!cls.trim().isEmpty()) {
+						int lvl = pcl.getThisClassLevel();
+						rv = cc2hs.getToHitForClassLevel(cls, lvl);
+						if(rv.isError()) {
+							LOGGER.error("error getting data X" +rv.getErrorMessage());	
+							throw new IllegalStateException("Unable to get to hit X "+rv.getErrorMessage());
+						} 
+						list.add(rv.getValue());
+					}
+				}
+			}
+		}
+		} catch (Exception ex) {
+			LOGGER.error("error getting data",ex);	
+			throw new IllegalStateException("Unable to get to hit ",ex);
+		}
+		return list;
 	}
 	
 	public Map<Comparable,String> getSavingThrowNameMap(){
