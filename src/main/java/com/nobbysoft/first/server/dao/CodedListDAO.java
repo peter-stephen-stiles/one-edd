@@ -194,7 +194,7 @@ public class CodedListDAO {
 	public List<CodedListItem<?>> getSavingThrow(){
 		List<CodedListItem<?>> list = new ArrayList<>();
 		for(SavingThrowType g:SavingThrowType.values()) {			
-			list.add(new CodedListItem(g.name(),g.name()));
+			list.add(new CodedListItem(g.name(),g.getDescription()));
 		}
 		return list;
 	}

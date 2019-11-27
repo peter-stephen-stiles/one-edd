@@ -13,8 +13,8 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nobbysoft.first.common.constants.Constants;
 import com.nobbysoft.first.common.entities.staticdto.attributes.*;
-import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.servicei.*;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
@@ -154,5 +154,22 @@ public class DataAccessThingy {
 			throw new IllegalStateException("Unable to get charisma "+charisma,e);
 		}
 	}
+	
+	public Map<Comparable,String> getSavingThrowNameMap(){
+		return getCodedListMap(Constants.CLI_SAVING_THROW);
+	}
 
+	public  Map<Comparable,String> getCodedListMap(String type){
+		CodedListService cliDao = (CodedListService)DataMapper.INSTANCE.getNonDataService(CodedListService.class);
+		try {
+			return cliDao.getCodedListMap(type);
+		} catch (SQLException e) {
+			LOGGER.error("error getting data",e);	
+			throw new IllegalStateException("Unable to get code list "+type,e);
+		}
+		
+	}
+	
+	
+	
 }

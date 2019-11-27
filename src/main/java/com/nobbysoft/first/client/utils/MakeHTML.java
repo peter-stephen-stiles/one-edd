@@ -119,6 +119,9 @@ public class MakeHTML {
 			
 			List<String> divSpellBonuses = data.getDivineSpellBonus(pc.getAttrWis());			
 			
+			 Map<Comparable,String> stNames= data.getSavingThrowNameMap();
+			
+			
 			boolean extraHitPointBonus=false;
 			for(CharacterClass c:characterClasses.values()) {
 				if(c!=null) {
@@ -127,6 +130,14 @@ public class MakeHTML {
 					}				
 				}
 			}
+			String magicDefenceBonus = "";
+			if(race.isHasMagicDefenceBonus()) {
+				int mdb = (int) (((1.0f * pc.getAttrCon()) / 3.5f));
+				if(mdb>0) {
+					magicDefenceBonus ="Magic defence bonus:"+mdb;
+				}
+			}
+
 			
 			XmlUtilities.addElement(mainRow, "th", "HP");
 			XmlUtilities.addElement(mainRow, "td", ""+hp);
@@ -137,7 +148,7 @@ public class MakeHTML {
 				XmlUtilities.addAttribute(table, "border", "1");
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElementWithAttribute(row, "th", "str","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "th", "STR","class","attribute");
 					XmlUtilities.addElementWithAttribute(row, "td", pc.getStrengthString(),"class","strength");
 					XmlUtilities.addElement(row, "td", "To-hit");
 					XmlUtilities.addElement(row, "td", SU.a(strength.getHitProbability(),"normal"));
@@ -152,7 +163,7 @@ public class MakeHTML {
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElementWithAttribute(row, "th", "int","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "th", "INT","class","attribute");
 					XmlUtilities.addElementWithAttribute(row, "td", pc.getAttrInt(),"class","intelligence");
 					XmlUtilities.addElement(row, "td", "Add. lang");
 					XmlUtilities.addElement(row, "td", intelligence.getPossibleAdditionalLanguages());
@@ -165,7 +176,7 @@ public class MakeHTML {
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElementWithAttribute(row, "th", "wis","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "th", "WIS","class","attribute");
 					XmlUtilities.addElementWithAttribute(row, "td", pc.getAttrWis(),"class","wisdom");
 					XmlUtilities.addElement(row, "td", "MAA");
 					XmlUtilities.addElement(row, "td", SU.a(wisdom.getMagicalAttackAdjustment(),"none"));
@@ -180,7 +191,7 @@ public class MakeHTML {
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElementWithAttribute(row, "th", "dex","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "th", "DEX","class","attribute");
 					XmlUtilities.addElementWithAttribute(row, "td", pc.getAttrDex(),"class","dexterity");
 					XmlUtilities.addElement(row, "td", "Reaction/attack adj");
 					XmlUtilities.addElement(row, "td", SU.a(dexterity.getReactionAttackAdjustment(),"0"));
@@ -189,7 +200,7 @@ public class MakeHTML {
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElementWithAttribute(row, "th", "con","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "th", "CON","class","attribute");
 					XmlUtilities.addElementWithAttribute(row, "td", pc.getAttrCon(),"class","constitution");
 					XmlUtilities.addElement(row, "td", "HP adj");
 					
@@ -201,7 +212,7 @@ public class MakeHTML {
 					} else {
 						XmlUtilities.addElement(row, "td", SU.a(constitution.getHitPointAdjustment(),"0"));
 					}
-					XmlUtilities.addElement(row, "td", "Sys shk surv");
+					XmlUtilities.addElement(row, "td", "Sys shk surv.");
 					XmlUtilities.addElement(row, "td", SU.p(constitution.getSystemShockSurvival()));
 					XmlUtilities.addElement(row, "td", "Ress. surv.");
 					XmlUtilities.addElement(row, "td", SU.p(constitution.getResurrectionSurvival()));
@@ -209,7 +220,7 @@ public class MakeHTML {
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElementWithAttribute(row, "th", "chr","class","attribute");
+					XmlUtilities.addElementWithAttribute(row, "th", "CHR","class","attribute");
 					XmlUtilities.addElementWithAttribute(row, "td",pc.getAttrChr(),"class","charisma");
 					XmlUtilities.addElement(row, "td", "Max hench.");
 					XmlUtilities.addElement(row, "td", (charisma.getMaxHenchmen()));
@@ -220,15 +231,22 @@ public class MakeHTML {
 				}
 			}
 			
-			{ // saving throws
+			{ // 
 				// if we have multiples, we pick the lowest one of each!
 				Element table = XmlUtilities.addElement(body, "table");
 
 				XmlUtilities.addAttribute(table, "border", "1");
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElement(row, "th", "str");
-					XmlUtilities.addElement(row, "td", pc.getAttrStr());
+					XmlUtilities.addElement(row, "th", "Saving Throws");
+					XmlUtilities.addElement(row, "td",magicDefenceBonus);
+				}
+				for(SavingThrow st: savingThrows) {
+					Element row = XmlUtilities.addElement(table, "tr");
+					String name =stNames.get(st.getSavingThrowTypeString());
+					XmlUtilities.addElement(row, "th", name);
+					XmlUtilities.addElement(row, "td",st.getRollRequired());
+					
 				}
 			}
 			String xmlString = XmlUtilities.xmlToHtmlString(doc);
