@@ -1,5 +1,7 @@
 package com.nobbysoft.first.client.utils;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +20,7 @@ import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
 import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.entities.staticdto.SavingThrow;
+import com.nobbysoft.first.common.entities.staticdto.ThiefAbility;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Charisma;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Dexterity;
@@ -68,8 +71,24 @@ public class MakeHTML {
 			docBuilder = docFactory.newDocumentBuilder();
 
 			Document doc = docBuilder.newDocument();
-			Element body = doc.createElement("body");
-			doc.appendChild(body);
+			Element html = doc.createElement("html");
+			doc.appendChild(html);
+			
+//			Element head = XmlUtilities.addElement(html, "head");
+						
+//			Element head = XmlUtilities.addElement(html, "head");
+
+/*			
+			Element link = XmlUtilities.addElement(head, "link");
+			XmlUtilities.addAttribute(link, "href", "http://nobby.co.uk/cola.css");
+			XmlUtilities.addAttribute(link, "rel", "stylesheet");
+			XmlUtilities.addAttribute(link, "type", "text/css");
+			//<link href="cola.css" rel="stylesheet" type="text/css" />
+	*/		
+			Element body = XmlUtilities.addElement(html, "body");
+			
+			
+			List<PlayerCharacterLevel> classLevels= new ArrayList<>();
 
 			
 			Element mainRow;
@@ -87,7 +106,7 @@ public class MakeHTML {
 				XmlUtilities.addElement(row, "td", race.getName());
 				mainRow=row;
 			}
-			int hp=0;
+			int hp=0; 
 			{
 				Element table = XmlUtilities.addElement(body, "table");
 				XmlUtilities.addAttribute(table, "border", "1");
@@ -100,6 +119,7 @@ public class MakeHTML {
 				}
 				for(PlayerCharacterLevel pcl:pc.getClassDetails()) {
 					if(pcl!=null && pcl.getThisClass()!=null) {
+						classLevels.add(pcl);
 						CharacterClass cc = characterClasses.get(pcl.getThisClass());
 						Element row = XmlUtilities.addElement(table, "tr");
 						XmlUtilities.addElement(row, "td", cc.getName());
@@ -261,20 +281,32 @@ public class MakeHTML {
 				// 
 				
 				
-				
+				boolean first=true;
 				for(CharacterClassToHit toHit:toHits) {
 					
 					Map<Integer,Integer>ma= ToHitUtils.getACToHitMap(toHit.getBiggestACHitBy20());
-					Set<Integer> ints = new TreeSet<>();
+					List<Integer> ints = new ArrayList<>();
 					ints.addAll(ma.keySet());
-					{
-						Element row = XmlUtilities.addElement(table, "tr"); // headings first
+					ints.sort(new Comparator<Integer>(){
+
+						@Override
+						public int compare(Integer o1, Integer o2) {
+							return o2.compareTo(o1);
+						}
+						
+					});
+					if(first){
+						Element row = XmlUtilities.addElement(table, "tr");
+						XmlUtilities.addElement(row, "th", "");
 						for(int i:ints) {
 							XmlUtilities.addElement(row, "th", ""+i);
 						}
 					}
+					first=false;
 					{
-						Element row = XmlUtilities.addElement(table, "tr"); // headings first
+						Element row = XmlUtilities.addElement(table, "tr"); 
+						String cnam = characterClasses.get(toHit.getClassId()).getName();
+						XmlUtilities.addElement(row, "th", "To hit as "+cnam);
 						for(int i:ints) {
 							XmlUtilities.addElement(row, "td", ""+ma.get(i));
 						}
@@ -284,6 +316,25 @@ public class MakeHTML {
 					
 					
 				}
+				
+			}
+			
+			{
+				// do we have any thief skills?
+				for(PlayerCharacterLevel cpl:classLevels) {
+					CharacterClass cc = characterClasses.get(cpl.getThisClass());
+					// 0 : as thief ;  < 0 no abilities; 1 one level worse than thief; 2 two levels worse than thief et
+					if(cc.getThiefAbilities()>=0) {
+						int effTL = cpl.getThisClassLevel() - cc.getThiefAbilities();
+						if(effTL>0) {
+							List<ThiefAbility> abilities = data.getThiefAbilities(effTL,race);
+							
+							
+						}
+					}
+				}
+				//
+				
 				
 			}
 			String xmlString = XmlUtilities.xmlToHtmlString(doc);

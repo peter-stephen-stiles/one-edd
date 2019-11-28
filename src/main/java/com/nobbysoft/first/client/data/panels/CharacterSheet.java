@@ -2,7 +2,6 @@ package com.nobbysoft.first.client.data.panels;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GraphicsConfiguration;
 import java.awt.Window;
 import java.lang.invoke.MethodHandles;
 import java.sql.SQLException;
@@ -14,7 +13,6 @@ import java.util.Map;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.text.html.HTMLEditorKit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

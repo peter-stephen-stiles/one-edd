@@ -19,6 +19,7 @@ import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHitKey;
 import com.nobbysoft.first.common.entities.staticdto.Race;
+import com.nobbysoft.first.common.entities.staticdto.ThiefAbility;
 import com.nobbysoft.first.common.entities.staticdto.attributes.*;
 import com.nobbysoft.first.common.servicei.*;
 import com.nobbysoft.first.common.utils.ReturnValue;
@@ -160,6 +161,13 @@ public class DataAccessThingy {
 		}
 	}
 	
+	public List<ThiefAbility> getThiefAbilities(int level, Race race) {
+		
+		List<ThiefAbility> ta = new ArrayList<>();
+		
+		return ta;
+		
+	}
 	
 	public List<CharacterClassToHit> getToHit(PlayerCharacter playerCharacter, Race race) {
 		
@@ -180,7 +188,8 @@ public class DataAccessThingy {
 		CharacterClassToHit toHit1 = rv.getValue();
 		
 		if(playerCharacter.getSecondClass()==null||playerCharacter.getSecondClass().isEmpty()){
-			// no 2			
+			// no 2		
+			list.add(toHit1);
 		} else {
 			rv = cc2hs.getToHitForClassLevel(playerCharacter.getSecondClass(), playerCharacter.getSecondClassLevel());
 			if(rv.isError()) {
@@ -190,8 +199,8 @@ public class DataAccessThingy {
 			CharacterClassToHit toHit2=rv.getValue();
 			
 			if(race.isMultiClassable()) {
-		// if MULTI CLASS pick _best_ numbers
 				
+		// if MULTI CLASS pick _best_ numbers				
 				CharacterClassToHit toHit3 = toHit2;//cheat
 				if(playerCharacter.getThirdClass()==null||playerCharacter.getThirdClass().isEmpty()){
 					// no 3
@@ -223,7 +232,8 @@ public class DataAccessThingy {
 				}
 				
 			} else {
-		// if DUAL CLASS return all				
+				CharacterClassToHit toHit = null;
+				
 				for(PlayerCharacterLevel pcl:playerCharacter.getClassDetails()) {
 					String cls =pcl.getThisClass();
 					if(cls!=null&&!cls.trim().isEmpty()) {
@@ -233,9 +243,10 @@ public class DataAccessThingy {
 							LOGGER.error("error getting data X" +rv.getErrorMessage());	
 							throw new IllegalStateException("Unable to get to hit X "+rv.getErrorMessage());
 						} 
-						list.add(rv.getValue());
+						toHit = rv.getValue();						
 					}
 				}
+				list.add(toHit);
 			}
 		}
 		} catch (Exception ex) {
