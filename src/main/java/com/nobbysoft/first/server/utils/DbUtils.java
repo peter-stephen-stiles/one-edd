@@ -83,6 +83,28 @@ INSTANCE;
 		LOGGER.info("table.column "+tableName+"."+columnName+" is NOT a FK");
 		return false;
 	}	
-	
+	public static final boolean isConstraint(Connection con, String tableName, String constraintName)
+			throws SQLException {
+		DatabaseMetaData dbmd = con.getMetaData();
+		
+		
+		
+		try (ResultSet rs = dbmd.getImportedKeys( null, null, tableName.toUpperCase());) {
+			while(rs.next()){
+				String fkc = rs.getString("FKCOLUMN_NAME");
+				String fkt = rs.getString("FKTABLE_NAME");
+				String pkc = rs.getString("PKCOLUMN_NAME"); // not used..
+				String pkt = rs.getString("PKTABLE_NAME");
+				String fkn = rs.getString("FK_NAME");
+				if(tableName.equalsIgnoreCase(fkt) &&
+						constraintName.equalsIgnoreCase(fkn) ){
+						//LOGGER.info("table.column "+tableName+"."+columnName+" is a FK");
+						return true;
+					}					
+				} 
+			}
+		LOGGER.info("table.column "+tableName+"."+constraintName+" is NOT a constraint");
+		return false;
+	}	
 	
 }

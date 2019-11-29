@@ -105,7 +105,7 @@ public class ThiefAbilityTypeDAO extends AbstractDAO<ThiefAbilityType, String>  
 
 	@Override
 	String getSELECTForCodedList() {		
-		return "SELECT Thief_Ability_Type , OR Thief_Ability_name from Thief_Ability_Type order by Thief_Ability_Type";
+		return "SELECT Thief_Ability_Type , Thief_Ability_name from Thief_Ability_Type order by Thief_Ability_Type";
 	}
 
 	@Override

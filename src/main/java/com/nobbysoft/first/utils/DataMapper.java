@@ -91,8 +91,9 @@ public enum DataMapper {
 		daoimap.put(CharacterClassSpell.class, CharacterClassSpellDAO.class);
 		daoimap.put(CharacterClassLevel.class, CharacterClassLevelDAO.class);
 		daoimap.put(CharacterClassToHit.class, CharacterClassToHitDAO.class);//
-		daoimap.put(SavingThrow.class, SavingThrowDAO.class);//SavingThrow
-		daoimap.put(RaceClassLimit.class, RaceClassLimitDAO.class);
+		daoimap.put(SavingThrow.class, SavingThrowDAO.class);//
+		daoimap.put(RaceClassLimit.class, RaceClassLimitDAO.class);//
+		daoimap.put(RaceThiefAbilityBonus.class, RaceThiefAbilityBonusDAO.class);//
 		daoimap.put(Constitution.class,ConstitutionDAO.class);
 		daoimap.put(Intelligence.class,IntelligenceDAO.class);
 		daoimap.put(Strength.class,StrengthDAO.class);
@@ -123,7 +124,8 @@ public enum DataMapper {
 		staticDataPanels.put(Race.class,RacePanel.class);//
 		staticDataPanels.put(ThiefAbilityType.class,ThiefAbilityTypePanel.class);//
 		staticDataPanels.put(CharacterClass.class,CharacterClassPanel.class);
-		staticDataPanels.put(RaceClassLimit.class, RaceClassLimitPanel.class); 
+		staticDataPanels.put(RaceClassLimit.class, RaceClassLimitPanel.class); //
+		staticDataPanels.put(RaceThiefAbilityBonus.class, RaceThiefAbilityBonusPanel.class); //
 		staticDataPanels.put(Constitution.class, ConstitutionPanel.class);
 		staticDataPanels.put(Intelligence.class, IntelligencePanel.class);
 		staticDataPanels.put(Strength.class, StrengthPanel.class);
@@ -152,7 +154,8 @@ public enum DataMapper {
 		entityservicemap.put(Spell.class, SpellService.class);
 		entityservicemap.put(Race.class, RaceService.class);//
 		entityservicemap.put(ThiefAbilityType.class, ThiefAbilityTypeService.class);//
-		entityservicemap.put(RaceClassLimit.class, RaceClassLimitService.class);
+		entityservicemap.put(RaceClassLimit.class, RaceClassLimitService.class);//
+		entityservicemap.put(RaceThiefAbilityBonus.class, RaceThiefAbilityBonusService.class);//
 		entityservicemap.put(Constitution.class, ConstitutionService.class);//
 		entityservicemap.put(Intelligence.class, IntelligenceService.class);//
 		entityservicemap.put(Strength.class, StrengthService.class);
@@ -182,7 +185,8 @@ public enum DataMapper {
 		servicemap.put(SpellService.class, SpellServiceImpl.class);
 		servicemap.put(RaceService.class, RaceServiceImpl.class);//
 		servicemap.put(ThiefAbilityTypeService.class, ThiefAbilityTypeServiceImpl.class);//
-		servicemap.put(RaceClassLimitService.class, RaceClassLimitServiceImpl.class);
+		servicemap.put(RaceClassLimitService.class, RaceClassLimitServiceImpl.class);//
+		servicemap.put(RaceThiefAbilityBonus.class, RaceThiefAbilityBonusServiceImpl.class);//
 		servicemap.put(CodedListService.class, CodedListServiceImpl.class);
 		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);//
 		servicemap.put(IntelligenceService.class, IntelligenceServiceImpl.class);//

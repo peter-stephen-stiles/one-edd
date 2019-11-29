@@ -1,5 +1,6 @@
 package com.nobbysoft.first.server.dao;
 
+import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,29 +8,29 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
 import com.nobbysoft.first.common.entities.staticdto.RaceClassLimitKey;
 import com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.server.utils.DbUtils;
-import com.nobbysoft.first.utils.DataMapper;
 
 public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey> {
 
+
+	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+	
 	public RaceClassLimitDAO() { 
 	}
-/**
- 	private String raceId;
-	private String classId;
-	private int maxLevel;
-	// for now, just text :}
-	private String limitingFactors;
- */
+
+	private String tableName = "Race_Class_Limit";
 
 	@Override
 	public void createTable(Connection con) throws SQLException {
-		String tableName = "Race_Class_Limit";
+		
 		String sql = "CREATE TABLE " + tableName
 				+ "(class_id varchar(20), race_id varchar(20), max_level INTEGER, limiting_factors varchar(256), "
 				+ "PRIMARY KEY (class_id,race_id)  )";
@@ -66,13 +67,51 @@ public class RaceClassLimitDAO implements DAOI<RaceClassLimit, RaceClassLimitKey
 	}
 
 	
+	@Override 
 	public void createConstraints(Connection con) throws SQLException{
-		String sql; 
+		String sql;
+		{
+				String column = "race_id";
+				String constraintName = "RCL_race_to_race";
+				String otherTable = "Race";
+				String otherColumn ="race_id";
+				if (!DbUtils.isTableColumnFK(con, tableName, column, otherTable)) {
+					if(!DbUtils.isConstraint(con, tableName, constraintName)) {
+					sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
+							+ ") references "+otherTable+"("+otherColumn+") ";
+					try (PreparedStatement ps = con.prepareStatement(sql);) {
+						ps.execute();
+					} catch (Exception ex) {
+						LOGGER.error("Error running SQL 1\n"+sql,ex);
+						throw ex;
+					}
+				}
+				
+				}	
+			}
 		
-		
+		{
+			String column = "class_id";
+			String constraintName = "RCL_class_to_class";
+			String otherTable = "Character_class";
+			String otherColumn ="class_id";
+			if (!DbUtils.isTableColumnFK(con, tableName, column, otherColumn)) {
+				
+				if(!DbUtils.isConstraint(con, tableName, constraintName)) {				
+					sql = "ALTER TABLE " + tableName + " add constraint "+ constraintName +" foreign key (" + column
+							+ ") references "+otherTable+"("+otherColumn+") ";
+					try (PreparedStatement ps = con.prepareStatement(sql);) {
+						ps.execute();
+					} catch (Exception ex) {
+						LOGGER.error("Error running SQL 1\n"+sql,ex);
+						throw ex;
+					}
+				}
+			}
+ 
+		}
 		
 	}
-	
 	
 	
 	
