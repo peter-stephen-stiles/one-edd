@@ -186,7 +186,7 @@ public enum DataMapper {
 		servicemap.put(RaceService.class, RaceServiceImpl.class);//
 		servicemap.put(ThiefAbilityTypeService.class, ThiefAbilityTypeServiceImpl.class);//
 		servicemap.put(RaceClassLimitService.class, RaceClassLimitServiceImpl.class);//
-		servicemap.put(RaceThiefAbilityBonus.class, RaceThiefAbilityBonusServiceImpl.class);//
+		servicemap.put(RaceThiefAbilityBonusService.class, RaceThiefAbilityBonusServiceImpl.class);//
 		servicemap.put(CodedListService.class, CodedListServiceImpl.class);
 		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);//
 		servicemap.put(IntelligenceService.class, IntelligenceServiceImpl.class);//

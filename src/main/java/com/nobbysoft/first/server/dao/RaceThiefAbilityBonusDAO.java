@@ -160,15 +160,19 @@ public class RaceThiefAbilityBonusDAO extends AbstractDAO<RaceThiefAbilityBonus,
 		dto.setDescription(rs.getString(3));
 	}
 
+	public void setJustRace(boolean justRace) {
+		this.justRace=justRace;
+	}
+	
 	private boolean justRace = false; 
 	
 	String getFilterWhere() {
 		if(justRace) {
-			return " race_id like ? ";
+			return " race_id = ? ";
 		} else {
 			return " race_id like ? OR thief_Ability_Type like ? ";
 		}
-	};
+	}
 
 	void setFilterParameters(PreparedStatement ps, String filter) throws SQLException {
 
@@ -195,10 +199,10 @@ public class RaceThiefAbilityBonusDAO extends AbstractDAO<RaceThiefAbilityBonus,
 	public List<RaceThiefAbilityBonus> getBonusesForRace(Connection con, String raceId) throws SQLException {
 		List<RaceThiefAbilityBonus> bones = new ArrayList<>();
 		try{
-			justRace = true;		
+			setJustRace(true);		
 			bones=getFilteredList(con, raceId);
 		} finally {
-			justRace = false;
+			setJustRace(false);
 		}
 		return bones;
 		
