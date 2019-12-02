@@ -131,7 +131,7 @@ public class DataFrameTabData extends PPanel{
 		});
 		
 
-		cbxData.setMaximumRowCount(20);
+		cbxData.setMaximumRowCount(30);
 		
 	}
 
