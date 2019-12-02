@@ -115,4 +115,15 @@ public class ThiefAbilityServiceImpl implements ThiefAbilityService {
 			}
 	}
 
+	public List<ThiefAbility> getListForThiefLevel(int level) throws SQLException {
+		try(Connection con = cm.getConnection()){
+			try {
+				return dao.getListForThiefLevel(con, level);
+			} finally {
+				con.rollback();
+				}
+		}
+		
+	}
+	
 }

@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -125,5 +127,29 @@ public class ThiefAbilityDAO extends AbstractDAO<ThiefAbility, ThiefAbilityKey> 
 		}
 	}
 
+	
+	public List<ThiefAbility> getListForThiefLevel(Connection con,int level) throws SQLException {
+		List<ThiefAbility> list = null;
+		
+		String sql = "SELECT MAX(thief_level) FROM "+tableName+" WHERE thief_level <= ?";
+		try(PreparedStatement ps =con.prepareStatement(sql)){
+			ps.setInt(1, level);
+			try(ResultSet rs = ps.executeQuery()){
+				if(rs.next()) {
+					int levelToUse = rs.getInt(1);
+					String filter= ""+levelToUse;
+					list =  getFilteredList(con,filter);
+				} else {
+					list = new ArrayList<>();
+				}
+			}
+			
+		}
+		
+		
+		return list;
+		
+	}
+	
 
 }

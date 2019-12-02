@@ -14,6 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.nobbysoft.first.common.constants.Constants;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
@@ -73,6 +74,9 @@ public class MakeHTML {
 			Document doc = docBuilder.newDocument();
 			Element html = doc.createElement("html");
 			doc.appendChild(html);
+
+			
+			// CANT DO THIS
 			
 //			Element head = XmlUtilities.addElement(html, "head");
 						
@@ -319,7 +323,15 @@ public class MakeHTML {
 				
 			}
 			
+			
+			
+			
 			{
+				
+				Map<Comparable,String> abilitiesMap = data.getCodedListMap(Constants.CLI_THIEF_ABILITY);
+				
+				boolean header = false;
+				Element table=null;
 				// do we have any thief skills?
 				for(PlayerCharacterLevel cpl:classLevels) {
 					CharacterClass cc = characterClasses.get(cpl.getThisClass());
@@ -328,7 +340,21 @@ public class MakeHTML {
 						int effTL = cpl.getThisClassLevel() - cc.getThiefAbilities();
 						if(effTL>0) {
 							List<ThiefAbility> abilities = data.getThiefAbilities(effTL,race);
-							
+							if(header==false) {
+								table = XmlUtilities.addElement(body, "table");
+								XmlUtilities.addAttribute(table, "border", "1");
+								Element row = XmlUtilities.addElement(table, "tr"); 
+								for(ThiefAbility tab:abilities) {
+									String ab=abilitiesMap.getOrDefault(tab.getThiefAbilityType(), tab.getThiefAbilityType());
+									XmlUtilities.addElement(row, "th", ab);
+								}
+								
+								header = true;
+							}
+							Element row = XmlUtilities.addElement(table, "tr"); 
+							for(ThiefAbility tab:abilities) {
+								XmlUtilities.addElement(row, "td", tab.getPercentageChanceString());
+							}
 							
 						}
 					}

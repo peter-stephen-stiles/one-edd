@@ -17,11 +17,27 @@ import com.nobbysoft.first.common.constants.Constants;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
-import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHitKey;
 import com.nobbysoft.first.common.entities.staticdto.Race;
+import com.nobbysoft.first.common.entities.staticdto.RaceThiefAbilityBonus;
 import com.nobbysoft.first.common.entities.staticdto.ThiefAbility;
-import com.nobbysoft.first.common.entities.staticdto.attributes.*;
-import com.nobbysoft.first.common.servicei.*;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Charisma;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Dexterity;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Intelligence;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
+import com.nobbysoft.first.common.entities.staticdto.attributes.StrengthKey;
+import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
+import com.nobbysoft.first.common.servicei.CharacterClassToHitService;
+import com.nobbysoft.first.common.servicei.CharismaService;
+import com.nobbysoft.first.common.servicei.CodedListService;
+import com.nobbysoft.first.common.servicei.ConstitutionService;
+import com.nobbysoft.first.common.servicei.DataServiceI;
+import com.nobbysoft.first.common.servicei.DexterityService;
+import com.nobbysoft.first.common.servicei.IntelligenceService;
+import com.nobbysoft.first.common.servicei.RaceThiefAbilityBonusService;
+import com.nobbysoft.first.common.servicei.StrengthService;
+import com.nobbysoft.first.common.servicei.ThiefAbilityService;
+import com.nobbysoft.first.common.servicei.WisdomService;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
 
@@ -142,7 +158,7 @@ public class DataAccessThingy {
 				bonuses.put(lvl,count);
 			}
 		}
-		Set<Integer> levels = new TreeSet();
+		Set<Integer> levels = new TreeSet<>();
 		levels.addAll(bonuses.keySet());
 		for(Integer i:levels) {
 			int count = bonuses.get(i);
@@ -164,6 +180,32 @@ public class DataAccessThingy {
 	public List<ThiefAbility> getThiefAbilities(int level, Race race) {
 		
 		List<ThiefAbility> ta = new ArrayList<>();
+		
+		RaceThiefAbilityBonusService rtab = (RaceThiefAbilityBonusService)getDataService(RaceThiefAbilityBonus.class);
+		ThiefAbilityService tas = (ThiefAbilityService)getDataService(ThiefAbility.class);
+		
+		
+		try {
+			List<RaceThiefAbilityBonus> rb = rtab.getBonusesForRace(race.getRaceId());
+			Map<String,Integer> bons = new HashMap<>();
+			for(RaceThiefAbilityBonus bon: rb ) {
+				bons.put(bon.getThiefAbilityType(), new Integer(bon.getPercentageBonus()));
+			}
+			List<ThiefAbility> tabs = tas.getListForThiefLevel(level);
+			for(ThiefAbility tab: tabs ) {
+				double pcd = tab.getPercentageChance();
+				if(bons.containsKey(tab.getThiefAbilityType())) {
+					int bon = bons.get(tab.getThiefAbilityType());
+					LOGGER.info("Race "+race+" tab "+tab.getThiefAbilityType()+" bonus:"+bon);
+					pcd = pcd +bon;
+					tab.setPercentageChance(pcd);
+				}
+				ta.add(tab);
+			}
+			
+		} catch (SQLException e) {			
+			throw new IllegalStateException("Unable to get tea-leaf abilities "+e,e);			
+		}
 		
 		return ta;
 		

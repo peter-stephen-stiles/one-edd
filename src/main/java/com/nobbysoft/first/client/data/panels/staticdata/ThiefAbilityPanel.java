@@ -188,7 +188,7 @@ public class ThiefAbilityPanel extends AbstractDataPanel<ThiefAbility,ThiefAbili
 
 	  protected   void populateScreen(ThiefAbility value){
 		  txtThiefLevel.setIntegerValue(value.getThiefLevel());
-		  txtPercentageChance.setText(value.getPercentageChangeString());
+		  txtPercentageChance.setText(value.getPercentageChanceString());
 		  txtThiefAbilityType.setSelectedCode(value.getThiefAbilityType());
 		
 	}

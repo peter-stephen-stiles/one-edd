@@ -81,13 +81,13 @@ public class ThiefAbility implements Serializable, DataDTOInterface<ThiefAbility
 	}
 
 	
-	public String getPercentageChangeString() {
+	public String getPercentageChanceString() {
 		String ret1 = String.format("%.1f", percentageChance);		
 		if(ret1.endsWith(".0")) {
 			String ret0 = String.format("%.0f", percentageChance);
-			return ret0;
+			return ret0 + "%";
 		} else {		
-			return ret1;
+			return ret1 + "%";
 		}
 	}
 	
@@ -98,12 +98,12 @@ public class ThiefAbility implements Serializable, DataDTOInterface<ThiefAbility
 
 	@Override
 	public String getDescription() { 
-		return ""+thiefLevel+":"+thiefAbilityType+"="+getPercentageChangeString();
+		return ""+thiefLevel+":"+thiefAbilityType+"="+getPercentageChanceString();
 	}
 
 	@Override
 	public Object[] getAsRow() {
-		return new Object[] {this,thiefLevel,thiefAbilityType,getPercentageChangeString()};
+		return new Object[] {this,thiefLevel,thiefAbilityType,getPercentageChanceString()};
 	}
 
 	@Override
