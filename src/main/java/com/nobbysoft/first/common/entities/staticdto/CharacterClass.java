@@ -39,6 +39,44 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 	private int newProficiencyEveryXLevels;
 	private int nonProficiencyPenalty;
 	
+	private boolean alignmentAllowedLG;
+	private boolean alignmentAllowedLN;
+	private boolean alignmentAllowedLE;
+	private boolean alignmentAllowedNG;
+	private boolean alignmentAllowedN;
+	private boolean alignmentAllowedNE;
+	private boolean alignmentAllowedCG;
+	private boolean alignmentAllowedCN;
+	private boolean alignmentAllowedCE;
+
+	public boolean[] getAlignmentsAllowed() {
+		return new boolean[] {	alignmentAllowedLG,
+				alignmentAllowedLN,
+				alignmentAllowedLE,
+				alignmentAllowedNG,
+				alignmentAllowedN,
+				alignmentAllowedNE,
+				alignmentAllowedCG,
+				alignmentAllowedCN,
+				alignmentAllowedCE};
+	}
+	
+	public void setAlignmentsAllowed(boolean[] alAll) {
+		if(alAll.length!=9) {
+			throw new IllegalStateException("There are NINE alignments not "+alAll.length);
+		}
+		int i=0;
+		alignmentAllowedLG=alAll[i++];
+		alignmentAllowedLN=alAll[i++];
+		alignmentAllowedLE=alAll[i++];
+		alignmentAllowedNG=alAll[i++];
+		alignmentAllowedN=alAll[i++];
+		alignmentAllowedNE=alAll[i++];
+		alignmentAllowedCG=alAll[i++];
+		alignmentAllowedCN=alAll[i++];
+		alignmentAllowedCE=alAll[i++];
+	}
+	
 	
 	public int getProficienciesAtFirstLevel() {
 		return proficienciesAtFirstLevel;
@@ -305,10 +343,93 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 		this.thiefAbilities = thiefAbilities;
 	}
 
+ 
+
+	public boolean isAlignmentAllowedLG() {
+		return alignmentAllowedLG;
+	}
+
+	public void setAlignmentAllowedLG(boolean alignmentAllowedLG) {
+		this.alignmentAllowedLG = alignmentAllowedLG;
+	}
+
+	public boolean isAlignmentAllowedLN() {
+		return alignmentAllowedLN;
+	}
+
+	public void setAlignmentAllowedLN(boolean alignmentAllowedLN) {
+		this.alignmentAllowedLN = alignmentAllowedLN;
+	}
+
+	public boolean isAlignmentAllowedLE() {
+		return alignmentAllowedLE;
+	}
+
+	public void setAlignmentAllowedLE(boolean alignmentAllowedLE) {
+		this.alignmentAllowedLE = alignmentAllowedLE;
+	}
+
+	public boolean isAlignmentAllowedNG() {
+		return alignmentAllowedNG;
+	}
+
+	public void setAlignmentAllowedNG(boolean alignmentAllowedNG) {
+		this.alignmentAllowedNG = alignmentAllowedNG;
+	}
+
+	public boolean isAlignmentAllowedN() {
+		return alignmentAllowedN;
+	}
+
+	public void setAlignmentAllowedN(boolean alignmentAllowedN) {
+		this.alignmentAllowedN = alignmentAllowedN;
+	}
+
+	public boolean isAlignmentAllowedNE() {
+		return alignmentAllowedNE;
+	}
+
+	public void setAlignmentAllowedNE(boolean alignmentAllowedNE) {
+		this.alignmentAllowedNE = alignmentAllowedNE;
+	}
+
+	public boolean isAlignmentAllowedCG() {
+		return alignmentAllowedCG;
+	}
+
+	public void setAlignmentAllowedCG(boolean alignmentAllowedCG) {
+		this.alignmentAllowedCG = alignmentAllowedCG;
+	}
+
+	public boolean isAlignmentAllowedCN() {
+		return alignmentAllowedCN;
+	}
+
+	public void setAlignmentAllowedCN(boolean alignmentAllowedCN) {
+		this.alignmentAllowedCN = alignmentAllowedCN;
+	}
+
+	public boolean isAlignmentAllowedCE() {
+		return alignmentAllowedCE;
+	}
+
+	public void setAlignmentAllowedCE(boolean alignmentAllowedCE) {
+		this.alignmentAllowedCE = alignmentAllowedCE;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (alignmentAllowedCE ? 1231 : 1237);
+		result = prime * result + (alignmentAllowedCG ? 1231 : 1237);
+		result = prime * result + (alignmentAllowedCN ? 1231 : 1237);
+		result = prime * result + (alignmentAllowedLE ? 1231 : 1237);
+		result = prime * result + (alignmentAllowedLG ? 1231 : 1237);
+		result = prime * result + (alignmentAllowedLN ? 1231 : 1237);
+		result = prime * result + (alignmentAllowedN ? 1231 : 1237);
+		result = prime * result + (alignmentAllowedNE ? 1231 : 1237);
+		result = prime * result + (alignmentAllowedNG ? 1231 : 1237);
 		result = prime * result
 				+ ((arcaneOrDivineMasterSpellClass == null) ? 0 : arcaneOrDivineMasterSpellClass.hashCode());
 		result = prime * result + ((classId == null) ? 0 : classId.hashCode());
@@ -349,6 +470,24 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 		if (getClass() != obj.getClass())
 			return false;
 		CharacterClass other = (CharacterClass) obj;
+		if (alignmentAllowedCE != other.alignmentAllowedCE)
+			return false;
+		if (alignmentAllowedCG != other.alignmentAllowedCG)
+			return false;
+		if (alignmentAllowedCN != other.alignmentAllowedCN)
+			return false;
+		if (alignmentAllowedLE != other.alignmentAllowedLE)
+			return false;
+		if (alignmentAllowedLG != other.alignmentAllowedLG)
+			return false;
+		if (alignmentAllowedLN != other.alignmentAllowedLN)
+			return false;
+		if (alignmentAllowedN != other.alignmentAllowedN)
+			return false;
+		if (alignmentAllowedNE != other.alignmentAllowedNE)
+			return false;
+		if (alignmentAllowedNG != other.alignmentAllowedNG)
+			return false;
 		if (arcaneOrDivineMasterSpellClass == null) {
 			if (other.arcaneOrDivineMasterSpellClass != null)
 				return false;
@@ -428,8 +567,13 @@ public class CharacterClass implements Serializable, DataDTOInterface<String> {
 				+ ", proficienciesAtFirstLevel=" + proficienciesAtFirstLevel + ", turnUndead=" + turnUndead
 				+ ", thiefAbilities=" + thiefAbilities + ", highConBonus=" + highConBonus
 				+ ", arcaneOrDivineMasterSpellClass=" + arcaneOrDivineMasterSpellClass + ", newProficiencyEveryXLevels="
-				+ newProficiencyEveryXLevels + ", nonProficiencyPenalty=" + nonProficiencyPenalty + ", primeRequisite1="
-				+ primeRequisite1 + ", primeRequisite2=" + primeRequisite2 + ", primeRequisite3=" + primeRequisite3
-				+ ", xpBonusPercent=" + xpBonusPercent + ", prValueForXpBonus=" + prValueForXpBonus + "]";
+				+ newProficiencyEveryXLevels + ", nonProficiencyPenalty=" + nonProficiencyPenalty
+				+ ", alignmentAllowedLG=" + alignmentAllowedLG + ", alignmentAllowedLN=" + alignmentAllowedLN
+				+ ", alignmentAllowedLE=" + alignmentAllowedLE + ", alignmentAllowedNG=" + alignmentAllowedNG
+				+ ", alignmentAllowedN=" + alignmentAllowedN + ", alignmentAllowedNE=" + alignmentAllowedNE
+				+ ", alignmentAllowedCG=" + alignmentAllowedCG + ", alignmentAllowedCN=" + alignmentAllowedCN
+				+ ", alignmentAllowedCE=" + alignmentAllowedCE + ", primeRequisite1=" + primeRequisite1
+				+ ", primeRequisite2=" + primeRequisite2 + ", primeRequisite3=" + primeRequisite3 + ", xpBonusPercent="
+				+ xpBonusPercent + ", prValueForXpBonus=" + prValueForXpBonus + "]";
 	}
 }

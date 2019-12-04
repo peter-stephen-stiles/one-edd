@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nobbysoft.first.client.components.AlignmentPicker;
 import com.nobbysoft.first.client.components.PCheckBox;
 import com.nobbysoft.first.client.components.PCodeField;
 import com.nobbysoft.first.client.components.PComboBox;
@@ -87,7 +88,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 	private final PComboAbilitiesAsClass txtTurnUndead = new PComboAbilitiesAsClass("Cleric");
 	private final PComboAbilitiesAsClass txtThiefAbilities = new PComboAbilitiesAsClass("Thief");
 	
-	
+	private final AlignmentPicker alignmentPicker = new AlignmentPicker(false);
 
 
 	private final PIntegerCombo txtProficienciesAtFirstLevel = new PIntegerCombo(1,5);
@@ -110,7 +111,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 			txtMinStr,txtMinInt,txtMinWis,txtMinDex,txtMinCon,txtMinChr,txtPrimeRequisite1,
 			txtPrimeRequisite2,txtPrimeRequisite3,
 			txtXpBonusPercent, txtProficienciesAtFirstLevel, txtNonProficiencyPenalty, txtNewProficiencyEveryXLevels,cbxHighConBonus,cbxArcaneOrDivine,
-			txtXpPerLevelAfterNameLevel, txtTurnUndead, txtThiefAbilities
+			txtXpPerLevelAfterNameLevel, txtTurnUndead, txtThiefAbilities,alignmentPicker
 			 };
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtCharacterClassId };
 	private PDataComponent[] buttonComponents = new PDataComponent[] {  };
@@ -148,6 +149,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		cbxHighConBonus.setName("Has high con bonus");
 		txtTurnUndead.setName("Turn undead as"); 
 		txtThiefAbilities.setName("Thief Abilities as");
+		alignmentPicker.setName("Allowed alignments");
 		 
 		PLabel lblCharacterClassId = new PLabel(txtCharacterClassId.getName()); 
 		PLabel lblCharacterClassName = new PLabel(txtName.getName()); 
@@ -203,7 +205,8 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		pnlRight.add(lblXpBonusPercent, GBU.label(0, 11));
 		pnlRight.add(txtXpBonusPercent, GBU.text(1, 11)); 
 		
-		
+		pnlRight.add(new PLabel(alignmentPicker.getName()), GBU.label(0, 12,2));
+		pnlRight.add(alignmentPicker, GBU.text(0, 13,2));
 
 		
 		int row=0;
@@ -353,6 +356,12 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 			}
 		}
 		
+		
+		if(alignmentPicker.getSelected().length==0) {
+			alignmentPicker.requestFocusInWindow();
+			return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE, "You have to pick some alignments!");
+		}
+		
 		return new ReturnValue<Object>("");
 	}
 
@@ -392,6 +401,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		value.setHighConBonus(cbxHighConBonus.isSelected());
 		value.setTurnUndead(txtTurnUndead.getIntegerValue());
 		value.setThiefAbilities(txtThiefAbilities.getIntegerValue());
+		value.setAlignmentsAllowed(alignmentPicker.getIsSelecteds());
 		
 	}
 
@@ -426,6 +436,7 @@ public class CharacterClassPanel extends AbstractDataPanel<CharacterClass,String
 		cbxHighConBonus.setSelected(value.isHighConBonus());
 		txtTurnUndead.setIntegerValue(value.getTurnUndead());
 		txtThiefAbilities.setIntegerValue(value.getThiefAbilities());
+		alignmentPicker.setIsSelecteds(value.getAlignmentsAllowed());
 	}
 
 

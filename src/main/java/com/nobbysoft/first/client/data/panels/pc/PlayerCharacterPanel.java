@@ -15,6 +15,7 @@ import javax.swing.JTabbedPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nobbysoft.first.client.components.AlignmentPicker;
 import com.nobbysoft.first.client.components.PButton;
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PDataComponent;
@@ -69,7 +70,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 	private final PIntegerField txtPcId = new PIntegerField(true);
 	private final PTextField txtCharacterName = new PTextField(128);
 	private final PTextField txtPlayerName = new PTextField(128);
-	private final PComboAlignment txtAlignment = new PComboAlignment();
+	private final AlignmentPicker txtAlignment = new AlignmentPicker(true);
 
 	private final PButton btnAddXp = new PButton("Add XP");
 	private final CharacterClass noClass = new CharacterClass();
@@ -125,6 +126,8 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 
 	public void jbInit() {
 
+		
+		
 		final JTabbedPane pnlTabs = new JTabbedPane();
 
 		final PPanel pnlCharacterDetails = new PPanel(new GridBagLayout());

@@ -3,23 +3,29 @@ package com.nobbysoft.first.common.entities.staticdto;
 import com.nobbysoft.first.common.utils.SU;
 
 public enum Alignment {
- LAWFUL_GOOD,
- LAWFUL_NEUTRAL,
- LAWFUL_EVIL,
- NEUTRAL_GOOD,
- NEUTRAL,
- NEUTRAL_EVIL,
- CHAOTIC_GOOD,
- CHAOTIC_NEUTRAL,
- CHAOTIC_EVIL;
+ LAWFUL_GOOD(0),
+ LAWFUL_NEUTRAL(1),
+ LAWFUL_EVIL(2),
+ NEUTRAL_GOOD(3),
+ NEUTRAL(4),
+ NEUTRAL_EVIL(5),
+ CHAOTIC_GOOD(6),
+ CHAOTIC_NEUTRAL(7),
+ CHAOTIC_EVIL(8);
 
-	private String description;
+	
+	public int getIndex() {
+		return index;
+	}
+	
+	final private int index;
+	final private String description;
 	public String getDescription() {
 		return description;
 	}
-	Alignment(){
-		description = name().replace("_", " ");	
-		description=SU.proper(description);		
+	Alignment(int index){
+		this.index=index;		
+		description=SU.proper(name().replace("_", " "));		
 	}
 	
 	public boolean isGood() {

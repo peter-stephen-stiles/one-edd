@@ -19,7 +19,7 @@ import com.nobbysoft.first.common.exceptions.RecordNotFoundException;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.server.utils.DbUtils;
 
-public class CharacterClassDAO implements DAOI<CharacterClass, String> {
+public class CharacterClassDAO extends AbstractDAO<CharacterClass,String> implements DAOI<CharacterClass, String> {
 
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
@@ -51,7 +51,7 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 	};
 	
 	
-	 
+//	 
 	
 	@Override
 	public void createTable(Connection con) throws SQLException {
@@ -126,7 +126,16 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		
 		
 		{
-			String[] newBoos = new String[] {"high_con_bonus"};
+			String[] newBoos = new String[] {"high_con_bonus",
+					"alignment_Allowed_LG",
+					"alignment_Allowed_LN",
+					"alignment_Allowed_LE",
+					"alignment_Allowed_NG",
+					"alignment_Allowed_N",
+					"alignment_Allowed_NE",
+					"alignment_Allowed_CG",
+					"alignment_Allowed_CN",
+					"alignment_Allowed_CE"};
 			DAOUtils.createBooleans(con, tableName, newBoos);
 		}
 		
@@ -137,36 +146,36 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		
 
 	}
+//
+//	@Override
+//	public CharacterClass get(Connection con, String key) throws SQLException {
+//		String sql = "SELECT ";
+//		sql = addKeyFields(sql);
+//		sql = sql
+//				+ "name ,hit_dice, hit_dice_at_first_level,max_hd_level, master_spell_class, parent_class_id,hp_after_name_level, "
+//				+ "min_str,min_int,min_wis,min_dex,min_con,min_chr, prime_requisite_1,prime_requisite_2,prime_requisite_3,xp_bonus_percent,"+
+//				"pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, new_proficiency_every_x_levels,high_con_bonus,"+
+//				"arcane_Or_Divine_Master_Spell_Class,xp_Per_Level_After_Name_Level, turn_undead,thief_abilities";
+//		sql = sql + " FROM Character_Class  WHERE ";
+//		sql = addKeyColumnsForUpdate(sql);
+//		//sql = sql + " class_id = ? ";
+//		try (PreparedStatement ps = con.prepareStatement(sql)) {
+//			ps.setString(1, key);
+//			try (ResultSet rs = ps.executeQuery()) {
+//				if (rs.next()) {
+//					CharacterClass dto = dtoFromRS(rs);
+//					return (dto);
+//
+//				} else {
+//					throw new RecordNotFoundException("Cannot find class " + key);
+//				}
+//
+//			}
+//		}
+//
+//	}
 
-	@Override
-	public CharacterClass get(Connection con, String key) throws SQLException {
-		String sql = "SELECT ";
-		sql = addKeyFields(sql);
-		sql = sql
-				+ "name ,hit_dice, hit_dice_at_first_level,max_hd_level, master_spell_class, parent_class_id,hp_after_name_level, "
-				+ "min_str,min_int,min_wis,min_dex,min_con,min_chr, prime_requisite_1,prime_requisite_2,prime_requisite_3,xp_bonus_percent,"+
-				"pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, new_proficiency_every_x_levels,high_con_bonus,"+
-				"arcane_Or_Divine_Master_Spell_Class,xp_Per_Level_After_Name_Level, turn_undead,thief_abilities";
-		sql = sql + " FROM Character_Class  WHERE ";
-		sql = addKeyColumnsForUpdate(sql);
-		//sql = sql + " class_id = ? ";
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setString(1, key);
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
-					CharacterClass dto = dtoFromRS(rs);
-					return (dto);
-
-				} else {
-					throw new RecordNotFoundException("Cannot find class " + key);
-				}
-
-			}
-		}
-
-	}
-
-	private CharacterClass dtoFromRS(ResultSet rs) throws SQLException {
+	public CharacterClass dtoFromRS(ResultSet rs) throws SQLException {
 		CharacterClass dto = new CharacterClass();
 		int col = 1;
 		dto.setClassId(rs.getString(col++));
@@ -196,42 +205,51 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		dto.setXpPerLevelAfterNameLevel(rs.getInt(col++));
 		dto.setTurnUndead(rs.getInt(col++));
 		dto.setThiefAbilities(rs.getInt(col++));
+		dto.setAlignmentAllowedLG(rs.getBoolean(col++));
+		dto.setAlignmentAllowedLN(rs.getBoolean(col++));
+		dto.setAlignmentAllowedLE(rs.getBoolean(col++));
+		dto.setAlignmentAllowedNG(rs.getBoolean(col++));
+		dto.setAlignmentAllowedN(rs.getBoolean(col++));
+		dto.setAlignmentAllowedNE(rs.getBoolean(col++));
+		dto.setAlignmentAllowedCG(rs.getBoolean(col++));
+		dto.setAlignmentAllowedCN(rs.getBoolean(col++));
+		dto.setAlignmentAllowedCE(rs.getBoolean(col++));
 		return dto;
 	}
 
-	@Override
-	public void insert(Connection con, CharacterClass value) throws SQLException {
-		String sql = "INSERT INTO Character_Class ( ";
-		sql = addKeyFields(sql);
-		sql = addDataFIelds(sql);
-		sql = sql + ") values ( ";
-		sql = sql + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ";
-		sql = sql + ")";
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			int col = 1;
-			col = setPSFromKeys(value, ps, col);
-			col = setPSFromData(value, ps, col);
-			ps.executeUpdate();
-		}
+//	@Override
+//	public void insert(Connection con, CharacterClass value) throws SQLException {
+//		String sql = "INSERT INTO Character_Class ( ";
+//		sql = addKeyFields(sql);
+//		sql = addDataFIelds(sql);
+//		sql = sql + ") values ( ";
+//		sql = sql + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ";
+//		sql = sql + ")";
+//		try (PreparedStatement ps = con.prepareStatement(sql)) {
+//			int col = 1;
+//			col = setPSFromKeys(value, ps, col);
+//			col = setPSFromData(value, ps, col);
+//			ps.executeUpdate();
+//		}
+//
+//	}
+//
+//	private String addDataFIelds(String sql) {
+//		sql = sql
+//				+ "name ,hit_dice, hit_dice_at_first_level,max_hd_level, master_spell_class,parent_class_id,hp_after_name_level , "
+//				+ "min_str,min_int,min_wis,min_dex,min_con,min_chr, prime_requisite_1,prime_requisite_2,prime_requisite_3,"
+//				+ "xp_bonus_percent,pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, "+
+//				"new_proficiency_every_x_levels,high_con_bonus,arcane_Or_Divine_Master_Spell_Class,xp_Per_Level_After_Name_Level,"
+//				+ "turn_undead , thief_abilities";
+//		return sql;
+//	}
 
-	}
-
-	private String addDataFIelds(String sql) {
-		sql = sql
-				+ "name ,hit_dice, hit_dice_at_first_level,max_hd_level, master_spell_class,parent_class_id,hp_after_name_level , "
-				+ "min_str,min_int,min_wis,min_dex,min_con,min_chr, prime_requisite_1,prime_requisite_2,prime_requisite_3,"
-				+ "xp_bonus_percent,pr_value_for_xp_bonus,proficiencies_at_first_level, non_proficiency_penalty, "+
-				"new_proficiency_every_x_levels,high_con_bonus,arcane_Or_Divine_Master_Spell_Class,xp_Per_Level_After_Name_Level,"
-				+ "turn_undead , thief_abilities";
-		return sql;
-	}
-
-	private int setPSFromKeys(CharacterClass value, PreparedStatement ps, int col) throws SQLException {
+	public int setPSFromKeys(CharacterClass value, PreparedStatement ps, int col) throws SQLException {
 		ps.setString(col++, value.getClassId());
 		return col;
 	}
 
-	private int setPSFromData(CharacterClass value, PreparedStatement ps, int col) throws SQLException {
+	public int setPSFromData(CharacterClass value, PreparedStatement ps, int col) throws SQLException {
 		ps.setString(col++, value.getName());
 		ps.setInt(col++, value.getHitDice());
 		ps.setInt(col++, value.getHitDiceAtFirstLevel());
@@ -258,10 +276,21 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		ps.setInt(col++, value.getXpPerLevelAfterNameLevel());
 		ps.setInt(col++, value.getTurnUndead());
 		ps.setInt(col++, value.getThiefAbilities());
+		//
+
+		ps.setBoolean(col++, value.isAlignmentAllowedLG());
+		ps.setBoolean(col++, value.isAlignmentAllowedLN());
+		ps.setBoolean(col++, value.isAlignmentAllowedLE());
+		ps.setBoolean(col++, value.isAlignmentAllowedNG());
+		ps.setBoolean(col++, value.isAlignmentAllowedN());
+		ps.setBoolean(col++, value.isAlignmentAllowedNE());
+		ps.setBoolean(col++, value.isAlignmentAllowedCG());
+		ps.setBoolean(col++, value.isAlignmentAllowedCN());
+		ps.setBoolean(col++, value.isAlignmentAllowedCE());
 		return col;
 	}
 
- 
+// 
 	public Map<String,CharacterClass> getMap(Connection con) throws SQLException {
 		 Map<String,CharacterClass> map = new HashMap<>();
 		 getList(con,new DTORowListener<CharacterClass>() {
@@ -272,164 +301,164 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		 });
 		 return map;
 	}
-	
-
-	@Override
-	public List<CharacterClass> getList(Connection con) throws SQLException {
-	return getList(con,null);
-	}
-	
-	@Override
-	public List<CharacterClass> getList(Connection con,DTORowListener<CharacterClass> listener) throws SQLException {
-		String sql = "SELECT ";
-		sql = addKeyFields(sql);
-		sql = addDataFIelds(sql);
-		sql = sql + " FROM Character_Class  ";
-		sql = addOrderByClause(sql);
-		List<CharacterClass> data = new ArrayList<>();
-		boolean first = true;
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			try (ResultSet rs = ps.executeQuery()) {
-				while (rs.next()) {
-					CharacterClass dto = dtoFromRS(rs);
-					if(listener!=null) {
-						listener.hereHaveADTO(dto,first);
-					} else {
-						data.add(dto);
-					}
-					first = false;
-
-				}
-
-			}
-		}
-
-		return data;
-	}
-//,DTORowListener<CharacterClass> listener
-	@Override
-	public List<CharacterClass> getFilteredList(Connection con, String filter) throws SQLException {
-		
-		return getFilteredList(con,filter,null);
-	}
-	
-	
-	@Override
-	public List<CharacterClass> getFilteredList(Connection con, String filter
-			,DTORowListener<CharacterClass> listener) throws SQLException {
-		if (filter == null || filter.isEmpty()) {
-			return getList(con);
-		}
-		String sql = "SELECT ";
-		sql = addKeyFields(sql);
-		sql = addDataFIelds(sql);
-		sql = sql + " FROM Character_Class  WHERE ";
-		sql = sql + "class_id like ? " + " OR name like ? ";
-		sql = addOrderByClause(sql);
-		List<CharacterClass> data = new ArrayList<>();
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			String f = "%" + filter + "%";
-			ps.setString(1, f.toUpperCase());
-			ps.setString(2, f);
-			try (ResultSet rs = ps.executeQuery()) {
-				boolean first=true;
-				while (rs.next()) {
-					CharacterClass dto = dtoFromRS(rs);
-					if(listener!=null) {
-					listener.hereHaveADTO(dto,first);
-					} else {
-						data.add(dto);
-					}
-						first=false;
-				}
-
-			}
-		}
-
-		return data;
-	}
-
-	private String addOrderByClause(String sql) {
+//	
+//
+//	@Override
+//	public List<CharacterClass> getList(Connection con) throws SQLException {
+//	return getList(con,null);
+//	}
+//	
+//	@Override
+//	public List<CharacterClass> getList(Connection con,DTORowListener<CharacterClass> listener) throws SQLException {
+//		String sql = "SELECT ";
+//		sql = addKeyFields(sql);
+//		sql = addDataFIelds(sql);
+//		sql = sql + " FROM Character_Class  ";
+//		sql = addOrderByClause(sql);
+//		List<CharacterClass> data = new ArrayList<>();
+//		boolean first = true;
+//		try (PreparedStatement ps = con.prepareStatement(sql)) {
+//			try (ResultSet rs = ps.executeQuery()) {
+//				while (rs.next()) {
+//					CharacterClass dto = dtoFromRS(rs);
+//					if(listener!=null) {
+//						listener.hereHaveADTO(dto,first);
+//					} else {
+//						data.add(dto);
+//					}
+//					first = false;
+//
+//				}
+//
+//			}
+//		}
+//
+//		return data;
+//	}
+////,DTORowListener<CharacterClass> listener
+//	@Override
+//	public List<CharacterClass> getFilteredList(Connection con, String filter) throws SQLException {
+//		
+//		return getFilteredList(con,filter,null);
+//	}
+//	
+//	
+//	@Override
+//	public List<CharacterClass> getFilteredList(Connection con, String filter
+//			,DTORowListener<CharacterClass> listener) throws SQLException {
+//		if (filter == null || filter.isEmpty()) {
+//			return getList(con);
+//		}
+//		String sql = "SELECT ";
+//		sql = addKeyFields(sql);
+//		sql = addDataFIelds(sql);
+//		sql = sql + " FROM Character_Class  WHERE ";
+//		sql = sql + "class_id like ? " + " OR name like ? ";
+//		sql = addOrderByClause(sql);
+//		List<CharacterClass> data = new ArrayList<>();
+//		try (PreparedStatement ps = con.prepareStatement(sql)) {
+//			String f = "%" + filter + "%";
+//			ps.setString(1, f.toUpperCase());
+//			ps.setString(2, f);
+//			try (ResultSet rs = ps.executeQuery()) {
+//				boolean first=true;
+//				while (rs.next()) {
+//					CharacterClass dto = dtoFromRS(rs);
+//					if(listener!=null) {
+//					listener.hereHaveADTO(dto,first);
+//					} else {
+//						data.add(dto);
+//					}
+//						first=false;
+//				}
+//
+//			}
+//		}
+//
+//		return data;
+//	}
+//
+	public String addOrderByClause(String sql) {
 		sql = sql + "ORDER BY name ";
 		return sql;
 	}
 
-	private String addKeyFields(String sql) {
-		sql = sql + " class_id, ";
-		return sql;
-	}
+//	private String addKeyFields(String sql) {
+//		sql = sql + " class_id, ";
+//		return sql;
+//	}
 
-	@Override
-	public void delete(Connection con, CharacterClass value) throws SQLException {
-		String sql = "DELETE FROM Character_Class WHERE class_id =?";
+//	@Override
+//	public void delete(Connection con, CharacterClass value) throws SQLException {
+//		String sql = "DELETE FROM Character_Class WHERE class_id =?";
+//
+//		try (PreparedStatement ps = con.prepareStatement(sql)) {
+//			int col = 1;
+//			col = setPSFromKeys(value, ps, col);
+//			int rows = ps.executeUpdate();
+//			if (rows == 0) {
+//				throw new RecordNotFoundException("Can't find class to delete it id=" + value.getClassId());
+//			}
+//		}
+//
+//	}
+//
+//	@Override
+//	public void update(Connection con, CharacterClass value) throws SQLException {
+//		String sql = " UPDATE Character_Class  SET ";
+//		sql = addDataColumnsForUpdate(sql);
+//		sql = sql + " WHERE ";
+//		sql = addKeyColumnsForUpdate(sql);
+//
+//		try (PreparedStatement ps = con.prepareStatement(sql)) {
+//			int col = 1;
+//			col = setPSFromData(value, ps, col);
+//
+//			col = setPSFromKeys(value, ps, col);
+//
+//			int rows = ps.executeUpdate();
+//			if (rows == 0) {
+//				throw new RecordNotFoundException("Can't find class to update it id=" + value.getClassId());
+//			}
+//		}
+//	}
 
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			int col = 1;
-			col = setPSFromKeys(value, ps, col);
-			int rows = ps.executeUpdate();
-			if (rows == 0) {
-				throw new RecordNotFoundException("Can't find class to delete it id=" + value.getClassId());
-			}
-		}
+//	public String addKeyColumnsForUpdate(String sql) {
+//		sql = sql + "class_id = ?";
+//		return sql;
+//	}
+//
+//	public String addDataColumnsForUpdate(String sql) {
+//		sql = sql + "  name  = ?, " + " hit_dice = ?, " + " hit_dice_at_first_level = ?," + " max_hd_level = ?,"
+//				+ " master_spell_class = ?," + " parent_class_id = ?," + " hp_after_name_level = ?," + " min_str = ?,"
+//				+ " min_int = ?," + " min_wis = ?," + " min_dex = ?," + " min_con = ?," + " min_chr = ?,"
+//				+ " prime_requisite_1 = ?," + " prime_requisite_2 = ?," + " prime_requisite_3 = ?,"
+//				+ " xp_bonus_percent = ?," + " pr_value_for_xp_bonus = ?,"+
+//				"proficiencies_at_first_level = ?," + "non_proficiency_penalty = ?,"+ "new_proficiency_every_x_levels = ?,"
+//				+"high_con_bonus = ?, arcane_Or_Divine_Master_Spell_Class = ?,xp_Per_Level_After_Name_Level=?,"+
+//				"turn_undead=? , thief_abilities=?";
+//		return sql;
+//	}
 
-	}
-
-	@Override
-	public void update(Connection con, CharacterClass value) throws SQLException {
-		String sql = " UPDATE Character_Class  SET ";
-		sql = addDataColumnsForUpdate(sql);
-		sql = sql + " WHERE ";
-		sql = addKeyColumnsForUpdate(sql);
-
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			int col = 1;
-			col = setPSFromData(value, ps, col);
-
-			col = setPSFromKeys(value, ps, col);
-
-			int rows = ps.executeUpdate();
-			if (rows == 0) {
-				throw new RecordNotFoundException("Can't find class to update it id=" + value.getClassId());
-			}
-		}
-	}
-
-	private String addKeyColumnsForUpdate(String sql) {
-		sql = sql + "class_id = ?";
-		return sql;
-	}
-
-	private String addDataColumnsForUpdate(String sql) {
-		sql = sql + "  name  = ?, " + " hit_dice = ?, " + " hit_dice_at_first_level = ?," + " max_hd_level = ?,"
-				+ " master_spell_class = ?," + " parent_class_id = ?," + " hp_after_name_level = ?," + " min_str = ?,"
-				+ " min_int = ?," + " min_wis = ?," + " min_dex = ?," + " min_con = ?," + " min_chr = ?,"
-				+ " prime_requisite_1 = ?," + " prime_requisite_2 = ?," + " prime_requisite_3 = ?,"
-				+ " xp_bonus_percent = ?," + " pr_value_for_xp_bonus = ?,"+
-				"proficiencies_at_first_level = ?," + "non_proficiency_penalty = ?,"+ "new_proficiency_every_x_levels = ?,"
-				+"high_con_bonus = ?, arcane_Or_Divine_Master_Spell_Class = ?,xp_Per_Level_After_Name_Level=?,"+
-				"turn_undead=? , thief_abilities=?";
-		return sql;
-	}
-
-	@Override
-	public List<CodedListItem<String>> getAsCodedList(Connection con) throws SQLException {
-		String sql = "SELECT   class_id, name   FROM Character_Class ORDER BY name ";
-		List<CodedListItem<String>> data = new ArrayList<>();
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			try (ResultSet rs = ps.executeQuery()) {
-				while (rs.next()) {
-					CodedListItem<String> dto = new CodedListItem<String>();
-					int col = 1;
-					dto.setItem(rs.getString(col++));
-					dto.setDescription(rs.getString(col++));
-					data.add(dto);
-				}
-
-			}
-		}
-
-		return data;
-	}
+//	@Override
+//	public List<CodedListItem<String>> getAsCodedList(Connection con) throws SQLException {
+//		String sql = "SELECT   class_id, name   FROM Character_Class ORDER BY name ";
+//		List<CodedListItem<String>> data = new ArrayList<>();
+//		try (PreparedStatement ps = con.prepareStatement(sql)) {
+//			try (ResultSet rs = ps.executeQuery()) {
+//				while (rs.next()) {
+//					CodedListItem<String> dto = new CodedListItem<String>();
+//					int col = 1;
+//					dto.setItem(rs.getString(col++));
+//					dto.setDescription(rs.getString(col++));
+//					data.add(dto);
+//				}
+//
+//			}
+//		}
+//
+//		return data;
+//	}
 
 	public List<CodedListItem<String>> getSpellClassesAsCodedList(Connection con) throws SQLException {
 		String sql = "SELECT   class_id, name   FROM Character_Class WHERE master_spell_class = true ORDER BY name ";
@@ -448,6 +477,76 @@ public class CharacterClassDAO implements DAOI<CharacterClass, String> {
 		}
 
 		return data;
+	}
+
+
+ 
+
+	@Override
+	void setPSFromKey(PreparedStatement ps, String key) throws SQLException {
+		ps.setString(1, key);		
+		
+	}
+
+
+	@Override
+	String[] getKeys() {
+		return new String[]{"class_Id"};
+	}
+
+
+	@Override
+	String[] getData() {
+		return new String[] {
+				"name","hit_dice","hit_dice_at_first_level","max_hd_level","master_spell_class","parent_class_id","hp_after_name_level",
+				"min_str","min_int","min_wis","min_dex","min_con","min_chr","prime_requisite_1","prime_requisite_2","prime_requisite_3",
+				"xp_bonus_percent","pr_value_for_xp_bonus","proficiencies_at_first_level","non_proficiency_penalty",
+				"new_proficiency_every_x_levels","high_con_bonus","arcane_Or_Divine_Master_Spell_Class","xp_Per_Level_After_Name_Level",
+				"turn_undead","thief_abilities",
+				"alignment_Allowed_LG",
+				"alignment_Allowed_LN",
+				"alignment_Allowed_LE",
+				"alignment_Allowed_NG",
+				"alignment_Allowed_N",
+				"alignment_Allowed_NE",
+				"alignment_Allowed_CG",
+				"alignment_Allowed_CN",
+				"alignment_Allowed_CE",
+		};
+	}
+
+
+	@Override
+	String getTableName() {
+		return tableName;
+	}
+
+
+	@Override
+	String getFilterWhere() { 
+		return  " class_id like ? " + " OR name like ? ";
+	}
+
+
+	@Override
+	void setFilterParameters(PreparedStatement ps, String filter) throws SQLException {
+		String f = "%" + filter + "%";
+		ps.setString(1, f.toUpperCase());
+		ps.setString(2, f);		
+	}
+
+
+	@Override
+	String getSELECTForCodedList() {
+		return "SELECT   class_id, name   FROM Character_Class ORDER BY name ";
+	}
+
+
+	@Override
+	void setCodedListItemFromRS(CodedListItem<String> dto, ResultSet rs) throws SQLException {
+		int col = 1;
+		dto.setItem(rs.getString(col++));
+		dto.setDescription(rs.getString(col++));
 	}
 
 }
