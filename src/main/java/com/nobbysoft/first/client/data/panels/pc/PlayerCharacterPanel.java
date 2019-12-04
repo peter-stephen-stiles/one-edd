@@ -36,6 +36,7 @@ import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.first.common.entities.staticdto.Alignment;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.servicei.DataServiceI;
@@ -247,8 +248,27 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 	protected ReturnValue<?> validateScreen() {
 
 		if (!threeClasses.hasCharacterClass()) {
-			new ReturnValue<Object>(true, "You must roll and select a character class!");
+			return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE, "You must roll and select a character class!");
 		}
+
+		Alignment selected = txtAlignment.getAlignment();
+		if(selected==null) {
+			return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE, "You must select an alignment");
+		}
+			
+		
+		for(CharacterClass c:threeClasses.getClasses()) {
+			if(c!=null) {
+				// check alignments against selected
+				if(c.getClassId()!=null) {
+					if(!c.getAlignmentsAllowed()[selected.getIndex()]) {					
+						return new ReturnValue<Object>(ReturnValue.IS_ERROR.TRUE, "Class "+c.getName()+" can't be "+selected.getDescription() +":(");
+					}
+				}
+					
+			}
+		}
+		
 
 		return new ReturnValue<Object>("");
 	}
@@ -461,7 +481,7 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 		if (!rv.isError()) {
 
 			threeClasses.setClassCombosVisible(false);
-
+			txtAlignment.setAlignment(Alignment.NEUTRAL);// just default to one :)
 			{
 				PlayerCharacterService ccs = (PlayerCharacterService) getDataService();
 				try {
