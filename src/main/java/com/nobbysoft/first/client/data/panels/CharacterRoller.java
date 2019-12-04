@@ -48,6 +48,7 @@ import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PList;
 import com.nobbysoft.first.client.components.PPanel;
+import com.nobbysoft.first.client.components.PTextArea;
 import com.nobbysoft.first.client.components.special.CharacterClassListCellRenderer;
 import com.nobbysoft.first.client.components.special.PExceptionalStrength;
 import com.nobbysoft.first.client.utils.GBU;
@@ -256,10 +257,13 @@ public class CharacterRoller extends PDialog {
 			txtHp1,txtHp2,txtHp3
 	};
 	
+
+	private final PTextArea txtReasons = new PTextArea();
+	
 	private void jbInit() {
 
 		txtClasses.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
+		txtReasons.setEditable(false);
 		Container thisPanel = getContentPane();
 		thisPanel.setLayout(new BorderLayout());
 		PButtonPanel pnlBottomButtons = new PButtonPanel();
@@ -438,7 +442,22 @@ public class CharacterRoller extends PDialog {
 		pnlRolling.add(lblTotalValue, GBU.text(6, 7));
 		pnlRolling.add(lblInvalid, GBU.labelC(6, 8));
 
-		// lblInvalid lblTotal lblTotalValue
+		JScrollPane sclReasons = new JScrollPane(txtReasons) {
+			public Dimension getMinimumSize(){
+				Dimension d = super.getMinimumSize();
+				if(d.height<30) {
+					d.height = 30;
+				}
+				return d;
+			}
+			public Dimension getPreferredSize(){
+				Dimension d = super.getPreferredSize();
+				if(d.height<30) {
+					d.height = 30;
+				}
+				return d;
+			}
+		};
 
 		txtClasses.setCellRenderer(new CharacterClassListCellRenderer());
 
@@ -455,6 +474,9 @@ public class CharacterRoller extends PDialog {
 		pnlMiddle.add(lblHp3,GBU.label(0,22));
 		pnlMiddle.add(lblClass3,GBU.label(1,22));
 		pnlMiddle.add(txtHp3,GBU.text(2,22));
+		
+		pnlMiddle.add(txtReasons,GBU.hPanel(0, 24, 5, 1));
+		
 		
 		pnlMiddle.add(new PLabel(""), GBU.label(99, 99));
 
@@ -749,15 +771,17 @@ public class CharacterRoller extends PDialog {
 	private RollingUtils ru = new RollingUtils();
 	
 	private void checkClasses() {
-
+		txtReasons.setText("");
 		String raceId = ((Race) cbxRace.getSelectedCode()).getRaceId();
 
 		RollingUtils ru = new RollingUtils();
 		List<CharacterClass> exceptTheseClasses = new ArrayList<>();// all classes allowed
-		ru.checkClasses(raceId, raceLimits, classes, lblXPBonus, attValues, txtClasses,exceptTheseClasses);
-		
-		
-		
+		List<String> reasons = ru.checkClasses(raceId, raceLimits, classes, lblXPBonus, attValues, txtClasses,exceptTheseClasses,null);
+		StringBuilder sb = new StringBuilder();
+		for(String reason:reasons) {
+			sb.append(reason).append("\n");				
+		}
+		txtReasons.setText(sb.toString());
 
 	}
 

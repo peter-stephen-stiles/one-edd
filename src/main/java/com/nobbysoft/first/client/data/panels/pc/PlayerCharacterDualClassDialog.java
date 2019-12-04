@@ -22,7 +22,9 @@ import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PList;
 import com.nobbysoft.first.client.components.PPanel;
+import com.nobbysoft.first.client.components.PTextArea;
 import com.nobbysoft.first.client.components.special.CharacterClassListCellRenderer;
+import com.nobbysoft.first.client.components.special.PComboAlignment;
 import com.nobbysoft.first.client.components.special.PExceptionalStrength;
 import com.nobbysoft.first.client.components.special.ThreeClasses;
 import com.nobbysoft.first.client.data.panels.RollingUtils;
@@ -35,7 +37,6 @@ import com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
 import com.nobbysoft.first.common.entities.staticdto.RaceClassLimitKey;
 import com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.first.common.servicei.PlayerCharacterService;
-import com.nobbysoft.first.common.servicei.RaceService;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
@@ -44,6 +45,10 @@ public class PlayerCharacterDualClassDialog extends PDialog {
 	private boolean cancelled = true;
 
 	private PlayerCharacter pc;
+	
+	private final PComboAlignment txtAlignment = new PComboAlignment();
+
+	private final PTextArea txtReasons = new PTextArea();
 
 	private final PIntegerCombo txtAttrStr = new PIntegerCombo();
 	private final PIntegerCombo txtAttrInt = new PIntegerCombo();
@@ -78,7 +83,7 @@ public class PlayerCharacterDualClassDialog extends PDialog {
 	private PLabel lblInvalid = new PLabel("");
 	private final ThreeClasses threeClasses = new ThreeClasses();
 
-	private PDataComponent[] disableThese = new PDataComponent[] { txtAttrStr, txtAttrInt, txtAttrWis, txtAttrDex,
+	private PDataComponent[] disableThese = new PDataComponent[] {txtAlignment, txtAttrStr, txtAttrInt, txtAttrWis, txtAttrDex,
 			txtAttrCon, txtAttrChr, txtExceptionalStrength, threeClasses, btnSave };
 
 	public PlayerCharacterDualClassDialog(Window owner) {
@@ -91,6 +96,8 @@ public class PlayerCharacterDualClassDialog extends PDialog {
 	private void jbInit() {
 
 		setLayout(new GridBagLayout());
+		
+		txtReasons.setEditable(false);
 
 		txtClasses.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -116,8 +123,25 @@ public class PlayerCharacterDualClassDialog extends PDialog {
 		PLabel lblMinChr = new PLabel(txtAttrChr.getName());
 		PPanel pnlLeft = new PPanel(new GridBagLayout());
 		PPanel pnlRight = new PPanel(new GridBagLayout());
-		PPanel pnlBelow = new PPanel(new BorderLayout());
-		pnlBelow.add(threeClasses);
+		PPanel pnlBelow = new PPanel(new BorderLayout(5,5));
+		pnlBelow.add(threeClasses);		
+		JScrollPane sclReasons = new JScrollPane(txtReasons) {
+			public Dimension getMinimumSize(){
+				Dimension d = super.getMinimumSize();
+				if(d.height<30) {
+					d.height = 30;
+				}
+				return d;
+			}
+			public Dimension getPreferredSize(){
+				Dimension d = super.getPreferredSize();
+				if(d.height<30) {
+					d.height = 30;
+				}
+				return d;
+			}
+		};
+		pnlBelow.add(sclReasons,BorderLayout.SOUTH);
 
 		add(pnlLeft, GBU.hPanel(0, 0, 1, 1));
 		add(pnlRight, GBU.hPanel(1, 0, 1, 1));
@@ -129,6 +153,8 @@ public class PlayerCharacterDualClassDialog extends PDialog {
 		btnSave.addActionListener(ae -> save());
 		btnClose.addActionListener(ae -> close());
 
+		
+		
 		pnlLeft.add(lblMinStr, GBU.label(0, 1));
 		pnlLeft.add(txtAttrStr, GBU.text(1, 1));
 		pnlLeft.add(new PLabel("/"), GBU.label(2, 1));
@@ -144,6 +170,8 @@ public class PlayerCharacterDualClassDialog extends PDialog {
 		pnlLeft.add(txtAttrCon, GBU.text(1, 5));
 		pnlLeft.add(lblMinChr, GBU.label(0, 6));
 		pnlLeft.add(txtAttrChr, GBU.text(1, 6));
+		
+		pnlLeft.add(txtAlignment, GBU.text(0, 7,2));
 
 		JScrollPane sclClasses = new JScrollPane(txtClasses);
 		pnlRight.add(sclClasses, GBU.panel(0, 0));// ,1,1));
@@ -187,6 +215,8 @@ public class PlayerCharacterDualClassDialog extends PDialog {
 		txtAttrChr.setIntegerValue(pc.getAttrChr());
 
 		threeClasses.setFromPlayer(pc);
+		
+		txtAlignment.setAlignment(pc.getAlignment());
 
 		txtExceptionalStrength.setExceptionalStrength(pc.getExceptionalStrength());
 
@@ -198,7 +228,12 @@ public class PlayerCharacterDualClassDialog extends PDialog {
 					exceptTheseClasses.add(ccs.get(pcd.getThisClass()));
 				}
 			}
-			ru.checkClasses(pc.getRaceId(), raceLimits, classes, lblXPBonus, attCombos, txtClasses, exceptTheseClasses);
+			List<String> reasons = ru.checkClasses(pc.getRaceId(), raceLimits, classes, lblXPBonus, attCombos, txtClasses, exceptTheseClasses,pc.getAlignment());
+			StringBuilder sb = new StringBuilder();
+			for(String reason:reasons) {
+				sb.append(reason).append("\n");				
+			}
+			txtReasons.setText(sb.toString());
 		} catch (Exception ex) {
 			Popper.popError(this, ex);
 		}

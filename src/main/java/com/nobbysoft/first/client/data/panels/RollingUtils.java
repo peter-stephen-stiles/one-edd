@@ -18,6 +18,7 @@ import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PList;
 import com.nobbysoft.first.client.components.special.IIntegerField;
 import com.nobbysoft.first.client.data.panels.CharacterRoller.METHOD;
+import com.nobbysoft.first.common.entities.staticdto.Alignment;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.entities.staticdto.RaceClassLimit;
@@ -90,14 +91,16 @@ public class RollingUtils {
 	}
 	
 	
-	public void checkClasses(String raceId,
+	public List<String> checkClasses(String raceId,
 			Map<RaceClassLimitKey, RaceClassLimit> raceLimits,
 			Map<String, CharacterClass> classes,
 			PLabel lblXPBonus,
 			IIntegerField[] attValues,
 			PList<CharacterClass> txtClasses,
-			List<CharacterClass> exceptTheseClasses) {
+			List<CharacterClass> exceptTheseClasses,
+			Alignment alignment) {
 
+		List<String> reasons = new ArrayList<>();
 		
 		if (raceLimits.size() == 0) {
 			RaceClassLimitService dao = (RaceClassLimitService) DataMapper.INSTANCE
@@ -108,7 +111,8 @@ public class RollingUtils {
 				}
 			} catch (SQLException e) {
 				LOGGER.error("Error getting class limits", e);
-				return;
+				reasons.add("Error getting class limits "+e);
+				return reasons;
 			}
 		}
 
@@ -122,17 +126,23 @@ public class RollingUtils {
 				}
 			} catch (SQLException e) {
 				LOGGER.error("Error getting classes", e);
-				return;
+				reasons.add("Error getting classes"+e);
+				return reasons;
 			}
 		}
 
+		String[] att = new String[]{
+				"Strength","Intelligence","Wisdom",
+				"Dexterity","Constitution","Charisma"
+		};
+		
 		{
 
 			List<CharacterClass> validClasses = new ArrayList<>();
 			lblXPBonus.setText("");
 
 			for (CharacterClass cclass : classes.values()) {
-				LOGGER.info("Class " + cclass.getClassId());
+				//LOGGER.info("Class " + cclass.getClassId());
 
 				// only include
 				if (!exceptTheseClasses.contains(cclass)) {
@@ -146,7 +156,21 @@ public class RollingUtils {
 						boolean valid = true;
 						for (int i = 0, n = 6; i < n; i++) {
 							if (attValues[i].getIntegerValue() < mins[i]) {
+								String reason = "Can't be a "+cclass.getName()+" because "+ " "+att[i]+" "+attValues[i].getIntegerValue()+" is less than "+mins[i];
+								reasons.add(reason);
+								LOGGER.info(reason);
 								valid = false;
+							}
+						}
+						if(valid) {
+							/// check alignmen
+							if(alignment!=null) {
+								if(!cclass.getAlignmentsAllowed()[alignment.getIndex()]) {
+									String reason=("Can't be a "+cclass.getName()+" because alignment is "+alignment.getDescription());
+									reasons.add(reason);
+									LOGGER.info(reason);
+									valid=false;
+								}
 							}
 						}
 						if (valid) {
@@ -154,15 +178,19 @@ public class RollingUtils {
 						}
 
 					} else {
-						LOGGER.info(" RCL FAILURE " + rcl);
+						String reason = " RCL FAILURE " + rcl;						
+						reasons.add("Can't be a " + cclass.getName()+" because of race ");
+						LOGGER.info(reason);
 					}
 				} else {
-					LOGGER.info("Class is excluded:" + cclass.getClassId());
+					String reason= ("Already class " + cclass.getName());
+					reasons.add(reason);
+					LOGGER.info(reason);
 				}
 			}
 			txtClasses.setListData(validClasses.toArray(new CharacterClass[validClasses.size()]));
 		}
-
+		return reasons;
 	}
 
 	public boolean rolling(METHOD method,PIntegerField[] attValues) {
