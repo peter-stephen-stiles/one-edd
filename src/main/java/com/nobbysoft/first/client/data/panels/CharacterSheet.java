@@ -1,9 +1,15 @@
 package com.nobbysoft.first.client.data.panels;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.Window;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +67,7 @@ public class CharacterSheet extends PDialog {
 		jbInit();
 	}
 
-	private JEditorPane edtHtml = new JEditorPane("text/html", "<h1>No character sheet :(</h1>");
+	private JEditorPane edtResults = new JEditorPane();//"text/html", "<h1>No character sheet :(</h1>");
 	private PTextField txtName = new PTextField();
 	private PTextField txtRace = new PTextField();
 	private PComboGender txtGender = new PComboGender();
@@ -75,17 +81,18 @@ public class CharacterSheet extends PDialog {
 		setLayout(new BorderLayout());
         
         //
-        JScrollPane sclHtml = new JScrollPane(edtHtml); 
+        JScrollPane sclResults = new JScrollPane(edtResults); 
         
         PPanel pnlHead = new PPanel(new FlowLayout(FlowLayout.LEFT)); 
         PButtonPanel pnlButtons = new PButtonPanel(); 
         PButton btnExit = new PButton("Exit");
-        PButton btnSave = new PButton("Save");
-        PButton btnPrint = new PButton("Print");
-        pnlButtons.add(btnExit,btnSave,btnPrint);
+        //PButton btnSave = new PButton("Save");
+        //PButton btnPrint = new PButton("Print");
+        pnlButtons.add(btnExit);
+        //,btnSave,btnPrint);
         btnExit.addActionListener(ae ->exit());
-        btnSave.addActionListener(ae ->save());
-        btnPrint.addActionListener(ae ->print());
+        //btnSave.addActionListener(ae ->save());
+        //btnPrint.addActionListener(ae ->print());
 
         pnlHead.add(new JLabel("Character name"));
         pnlHead.add(txtName);
@@ -97,9 +104,9 @@ public class CharacterSheet extends PDialog {
         pnlHead.add(txtClass);
         
         add(pnlHead,BorderLayout.NORTH);
-        add(sclHtml,BorderLayout.CENTER);
+        add(sclResults,BorderLayout.CENTER);
         add(pnlButtons,BorderLayout.SOUTH);
-        edtHtml.setEditable(false); 
+        edtResults.setEditable(false); 
         
         for(PDataComponent c:disable) {
         	c.setReadOnly(true);
@@ -207,9 +214,28 @@ public class CharacterSheet extends PDialog {
 		MakeHTML make = new MakeHTML();
 		DataAccessThingy data = new DataAccessThingy();
 		String html=make.makeDocument(character, characterClasses, race, saves,data);
-		edtHtml.setText(html);
-        //edtHtml.setContentType("text/html");
-		LOGGER.info("html\n"+html);
+		
+		try {
+			File tmp = File.createTempFile("~char", ".html");
+			
+			try(FileWriter fw = new FileWriter(tmp)){
+				try(BufferedWriter bw = new BufferedWriter(fw)){
+					bw.write(html);
+				}
+			}
+			
+			URI uri=java.nio.file.FileSystems.getDefault().getPath( tmp.getPath() ).toAbsolutePath().toUri();
+			
+			Desktop.getDesktop().browse(uri);
+			
+		} catch (IOException e) {
+			edtResults.setText(e.toString());
+		}
+		
+		
+//		edtHtml.setText(html);
+//        //edtHtml.setContentType("text/html");
+//		LOGGER.info("html\n"+html);
 
 	}
 

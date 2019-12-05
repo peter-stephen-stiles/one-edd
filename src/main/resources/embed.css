@@ -1,0 +1,28 @@
+   body {
+        font-family: georgia, serif; 
+        
+    }
+   hr {
+        color: #ff9900; 
+        height: 1px; 
+    }
+   a:hover {
+        color: #ff0000; 
+        text-decoration: none;
+    }
+    
+    table {    
+    padding: 5px;
+     border: 0px;
+     width: 100%;
+    }
+    
+    td {    
+    padding: 5px;
+    }
+    
+    th {    
+    background-color: #BBBBBB;
+    padding: 5px;
+    }
+    

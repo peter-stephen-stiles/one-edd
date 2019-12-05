@@ -1,15 +1,19 @@
 package com.nobbysoft.first.client.utils;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -29,13 +33,17 @@ import com.nobbysoft.first.common.entities.staticdto.attributes.Intelligence;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
 import com.nobbysoft.first.common.utils.SU;
-import com.nobbysoft.first.common.utils.ToHitUtils;
+import com.nobbysoft.first.common.utils.ToHitUtils; 
 
 public class MakeHTML {
 
 	public MakeHTML() {
 
 	}
+	
+
+	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass()); 
+
 
 	private String makeHtmlError(Throwable t) {
 		StringBuilder sb = new StringBuilder("<html><body>");
@@ -75,20 +83,21 @@ public class MakeHTML {
 			Element html = doc.createElement("html");
 			doc.appendChild(html);
 
-			
-			// CANT DO THIS
-			
-//			Element head = XmlUtilities.addElement(html, "head");
+			 
 						
-//			Element head = XmlUtilities.addElement(html, "head");
+			Element head = XmlUtilities.addElement(html, "head");
 
-/*			
-			Element link = XmlUtilities.addElement(head, "link");
-			XmlUtilities.addAttribute(link, "href", "http://nobby.co.uk/cola.css");
-			XmlUtilities.addAttribute(link, "rel", "stylesheet");
-			XmlUtilities.addAttribute(link, "type", "text/css");
+			String styles=readStyles();
+			
+			Element style = XmlUtilities.addElement(head, "style", styles);
+			
+			
+			//Element link = XmlUtilities.addElement(head, "link");
+			//XmlUtilities.addAttribute(link, "href", "http://nobby.co.uk/cola.css");
+			//XmlUtilities.addAttribute(link, "rel", "stylesheet");
+			//XmlUtilities.addAttribute(link, "type", "text/css");
 			//<link href="cola.css" rel="stylesheet" type="text/css" />
-	*/		
+		
 			Element body = XmlUtilities.addElement(html, "body");
 			
 			
@@ -373,7 +382,29 @@ public class MakeHTML {
 	}
 
 	
-	
+	private String readStyles() {
+		String fileName = "embed.css";
+		StringBuilder sb = new StringBuilder();
+		try {
+		File file = new File(
+				getClass().getClassLoader().getResource(fileName).getFile()
+			);
+		
+		try(FileReader fr = new FileReader(file)){
+			try(BufferedReader br = new BufferedReader(fr)){
+				String line = br.readLine();
+				while(line!=null) {
+					sb.append(line).append(System.getProperty("line.separator"));
+					line = br.readLine();
+				}
+			}
+			
+		}
+		} catch (Exception ex) {
+			LOGGER.error("Error reading styles",ex);
+		}
+		return sb.toString();
+	}
  
 
 }
