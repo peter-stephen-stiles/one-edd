@@ -28,6 +28,15 @@
     }
     
     tr:nth-child(even){background-color: #DDDDDD;}
+
+    .cent {
+    text-align: center;    
+    }
+
     
+    .centx {
+    text-align: center;
+    border: 0px;
+    }
     
     

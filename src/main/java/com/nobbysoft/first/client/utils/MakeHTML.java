@@ -32,8 +32,10 @@ import com.nobbysoft.first.common.entities.staticdto.attributes.Dexterity;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Intelligence;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
+import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.SU;
-import com.nobbysoft.first.common.utils.ToHitUtils; 
+import com.nobbysoft.first.common.utils.ToHitUtils;
+import com.nobbysoft.first.common.views.ViewPlayerCharacterSpell; 
 
 public class MakeHTML {
 
@@ -91,12 +93,6 @@ public class MakeHTML {
 			
 			Element style = XmlUtilities.addElement(head, "style", styles);
 			
-			
-			//Element link = XmlUtilities.addElement(head, "link");
-			//XmlUtilities.addAttribute(link, "href", "http://nobby.co.uk/cola.css");
-			//XmlUtilities.addAttribute(link, "rel", "stylesheet");
-			//XmlUtilities.addAttribute(link, "type", "text/css");
-			//<link href="cola.css" rel="stylesheet" type="text/css" />
 		
 			Element body = XmlUtilities.addElement(html, "body");
 			
@@ -372,6 +368,72 @@ public class MakeHTML {
 				
 				
 			}
+			/// need class map
+			
+			Map<String,String> classNames = data.getClassNames();
+			
+			
+			{
+				
+				 List<CodedListItem> allowed=data.workOutAllowedSpells(pc);
+				 if(allowed.size()>0) {
+						Element table = XmlUtilities.addElement(body, "table");
+						XmlUtilities.addAttribute(table, "border", "1");
+						{
+						Element row = XmlUtilities.addElement(table, "tr");
+						XmlUtilities.addElementWithAttribute(row, "th", "Allowed Spells","colspan","2");
+						}
+						{
+							Element row = XmlUtilities.addElement(table, "tr");
+						XmlUtilities.addElement(row, "th", "Class");
+						XmlUtilities.addElement(row, "th", "Spells");						
+						}
+						for(CodedListItem all: allowed) {
+							Element row = XmlUtilities.addElement(table, "tr");
+							
+							XmlUtilities.addElement(row, "td", classNames.get((String)all.getItem()));
+							XmlUtilities.addElement(row, "td", all.getDescription());
+						}
+				 }
+				
+			}
+			
+			{
+				List<ViewPlayerCharacterSpell> spells = data.grabSpells(pc.getPcId());
+				if(spells!=null &&spells.size()>0) {
+					Element table = XmlUtilities.addElement(body, "table");
+					XmlUtilities.addAttribute(table, "border", "1");
+					{
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "Class");
+					XmlUtilities.addElement(row, "th", "Spell level");
+					XmlUtilities.addElement(row, "th", "Spell level");
+					XmlUtilities.addElement(row, "th", "# Memorised");
+					}
+					int lastLevel =0;
+					
+					for(ViewPlayerCharacterSpell spell: spells ) {
+						int level = spell.getSpell().getLevel();
+						if(lastLevel!=level && lastLevel>0) {
+							Element brow = XmlUtilities.addElement(table, "tr");
+							XmlUtilities.addElementWithAttribute(brow, "td","---","class","centx");
+							XmlUtilities.addElementWithAttribute(brow, "td","---","class","centx");
+							XmlUtilities.addElementWithAttribute(brow, "td","---","class","centx");
+							XmlUtilities.addElementWithAttribute(brow, "td","---","class","centx");
+						}
+						lastLevel = level;
+						Element row = XmlUtilities.addElement(table, "tr");
+						XmlUtilities.addElement(row, "td", classNames.get(spell.getSpell().getSpellClass()));
+						XmlUtilities.addElement(row, "td", spell.getSpell().getLevel());
+						XmlUtilities.addElement(row, "td", spell.getSpell().getName());
+						XmlUtilities.addElementWithAttribute(row, "td", spell.getPlayerCharacterSpell().getInMemory(),"class","cent");
+					}
+				
+				}
+				
+			}
+			
+			
 			String xmlString = XmlUtilities.xmlToHtmlString(doc);
 
 			return xmlString;

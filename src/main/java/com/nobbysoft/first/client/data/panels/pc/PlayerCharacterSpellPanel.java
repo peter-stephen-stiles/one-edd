@@ -401,7 +401,20 @@ public class PlayerCharacterSpellPanel extends PPanel {
 	
 	private void populateAllowedSpells() {
 
+		
+		
+		List<CodedListItem> clis = workOutAllowedSpells(); 		
+		
 		txtAllByLevel.clear();
+		for(CodedListItem cli:clis) {
+			txtAllByLevel.addItem(cli);
+		}
+		
+	}
+
+	public List<CodedListItem> workOutAllowedSpells() {
+		List<CodedListItem> clis = new ArrayList<>();
+		
 		CharacterClassSpellService ccss = (CharacterClassSpellService)getDataService(CharacterClassSpell.class); 
 		try {
 			List<CharacterClassSpell> as =  (ccss.getAllowedSpells(pc.getPcId()));
@@ -433,16 +446,18 @@ public class PlayerCharacterSpellPanel extends PPanel {
 				}
 				
 				
-				LOGGER.info(sbMax.toString());				 
-				txtAllByLevel.addItem(new CodedListItem(ccs.getSpellClassId(), sbMax.toString()));
+				LOGGER.info(sbMax.toString());			
+				
+				CodedListItem cli = new CodedListItem(ccs.getSpellClassId(), sbMax.toString());
+				clis.add(cli);
+				
 			
 			}
 			
 		} catch (SQLException e) {
-			Popper.popError(this, e);
-			return;
-		} 		
-		
+			throw new IllegalStateException(e);
+		}
+		return clis;
 	}
 
 }

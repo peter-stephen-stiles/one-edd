@@ -1,5 +1,7 @@
 package com.nobbysoft.first.client.utils;
 
+import static org.junit.Assert.fail;
+
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
@@ -16,6 +18,9 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.common.constants.Constants;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassSpell;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
 import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.entities.staticdto.RaceThiefAbilityBonus;
@@ -27,6 +32,8 @@ import com.nobbysoft.first.common.entities.staticdto.attributes.Intelligence;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
 import com.nobbysoft.first.common.entities.staticdto.attributes.StrengthKey;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
+import com.nobbysoft.first.common.servicei.CharacterClassService;
+import com.nobbysoft.first.common.servicei.CharacterClassSpellService;
 import com.nobbysoft.first.common.servicei.CharacterClassToHitService;
 import com.nobbysoft.first.common.servicei.CharismaService;
 import com.nobbysoft.first.common.servicei.CodedListService;
@@ -34,11 +41,14 @@ import com.nobbysoft.first.common.servicei.ConstitutionService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.servicei.DexterityService;
 import com.nobbysoft.first.common.servicei.IntelligenceService;
+import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
 import com.nobbysoft.first.common.servicei.RaceThiefAbilityBonusService;
 import com.nobbysoft.first.common.servicei.StrengthService;
 import com.nobbysoft.first.common.servicei.ThiefAbilityService;
 import com.nobbysoft.first.common.servicei.WisdomService;
+import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.ReturnValue;
+import com.nobbysoft.first.common.views.ViewPlayerCharacterSpell;
 import com.nobbysoft.first.utils.DataMapper;
 
 public class DataAccessThingy {
@@ -59,6 +69,21 @@ public class DataAccessThingy {
 				throw new IllegalStateException("Can't get Service for "+clazz);
 			}
 		return s;
+	}
+	
+	public Map<String,String> getClassNames(){
+		Map<String,String> cn = new HashMap<>();
+		try {
+			CharacterClassService ccs = (CharacterClassService )getDataService(CharacterClass.class);
+			for(CharacterClass cc:ccs.getList()) {
+				cn.put(cc.getClassId(),cc.getName());
+			
+			}	
+		} catch (Exception e) {
+			throw new IllegalStateException("Can't get classes");
+		}
+		
+		return cn;
 	}
 	
 	
@@ -313,6 +338,71 @@ public class DataAccessThingy {
 		
 	}
 	
+	
+	public List<ViewPlayerCharacterSpell> grabSpells(int pcId){
+		List<ViewPlayerCharacterSpell> list = null;
+		try {
+		PlayerCharacterSpellService pces = (PlayerCharacterSpellService) getDataService(
+				PlayerCharacterSpell.class);
+		
+		list = pces.getViewForPC(pcId);
+		
+		} catch (Exception ex) {
+			list = new ArrayList<>();
+		}
+		return list;
+		
+	}
+
+	
+
+	public List<CodedListItem> workOutAllowedSpells(PlayerCharacter pc) {
+		List<CodedListItem> clis = new ArrayList<>();
+		
+		CharacterClassSpellService ccss = (CharacterClassSpellService)getDataService(CharacterClassSpell.class); 
+		try {
+			List<CharacterClassSpell> as =  (ccss.getAllowedSpells(pc.getPcId()));
+			for(CharacterClassSpell ccs:as) { 
+				int[] max = new int[] {
+						0,
+						ccs.getLevel1Spells(),
+						ccs.getLevel2Spells(),
+						ccs.getLevel3Spells(),
+						ccs.getLevel4Spells(),
+						ccs.getLevel5Spells(),
+						ccs.getLevel6Spells(),
+						ccs.getLevel7Spells(),
+						ccs.getLevel8Spells(),
+						ccs.getLevel9Spells()
+				};
+
+				StringBuilder sbMax = new StringBuilder(ccs.getSpellClassId()).append(" ");
+				for (int i = 1, n = 10; i < n; i++) {
+
+					int maxSpellsPerLevel =max[i];
+					if(maxSpellsPerLevel>0) {
+						if (i > 1) {
+							sbMax.append(", ");
+						}
+						sbMax.append("Lvl:").append(i).append(" ").append(maxSpellsPerLevel);
+					}
+				}
+				
+				
+				LOGGER.info(sbMax.toString());			
+				
+				CodedListItem cli = new CodedListItem(ccs.getSpellClassId(), sbMax.toString());
+				clis.add(cli);
+				
+			
+			}
+			
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
+		}
+		return clis;
+	}
+
 	
 	
 }
