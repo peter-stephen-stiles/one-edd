@@ -16,7 +16,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.common.constants.Constants;
+import com.nobbysoft.first.common.entities.equipment.EquipmentWhere;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
@@ -41,6 +43,7 @@ import com.nobbysoft.first.common.servicei.ConstitutionService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.servicei.DexterityService;
 import com.nobbysoft.first.common.servicei.IntelligenceService;
+import com.nobbysoft.first.common.servicei.PlayerCharacterEquipmentService;
 import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
 import com.nobbysoft.first.common.servicei.RaceThiefAbilityBonusService;
 import com.nobbysoft.first.common.servicei.StrengthService;
@@ -48,6 +51,7 @@ import com.nobbysoft.first.common.servicei.ThiefAbilityService;
 import com.nobbysoft.first.common.servicei.WisdomService;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.ReturnValue;
+import com.nobbysoft.first.common.views.ViewPlayerCharacterEquipment;
 import com.nobbysoft.first.common.views.ViewPlayerCharacterSpell;
 import com.nobbysoft.first.utils.DataMapper;
 
@@ -403,6 +407,38 @@ public class DataAccessThingy {
 		return clis;
 	}
 
+
+	public Map<String,List<ViewPlayerCharacterEquipment>> getEquipment(int pcId) {
+		
+		Map<String,List<ViewPlayerCharacterEquipment>> quip = new HashMap<>();
+		List<ViewPlayerCharacterEquipment> equipped = new ArrayList<>();
+		List<ViewPlayerCharacterEquipment> notEquipped = new ArrayList<>();
+		quip.put("E", equipped);
+		quip.put("N", notEquipped);
+		
+		try {
+		
+		PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
+		List<ViewPlayerCharacterEquipment> list = pces.getForPC(pcId);
+		
+		
+		for(ViewPlayerCharacterEquipment vpce: list) {
+			PlayerCharacterEquipment pce = vpce.getPlayerCharacterEquipment();
+			String desc = vpce.getDescription();	
+			if(pce.isEquipped()) {
+				equipped.add(vpce);
+			} else {
+				notEquipped.add(vpce);
+			}
+		}
+		
+		
+
+	} catch (SQLException e) {
+		throw new IllegalStateException(e);
+	}
+		return quip;
+	}
 	
 	
 }

@@ -308,4 +308,19 @@ public class Spell implements Serializable, DataDTOInterface<String> {
 		this.typeSummoning = typeSummoning;
 	}
 
+	public String getComponents() {
+		String c = "";
+		if(verbal) {
+			c=c+"V";
+		}
+		if(somatic) {
+			c=c+"S";
+		}
+		if(material) {
+			c=c+"M";
+		}
+		return c;
+	}
+	
+	
 }

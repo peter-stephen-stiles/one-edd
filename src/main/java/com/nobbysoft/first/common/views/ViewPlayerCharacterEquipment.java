@@ -11,13 +11,13 @@ public class ViewPlayerCharacterEquipment implements Serializable,DataDTOInterfa
 
 	private PlayerCharacterEquipment playerCharacterEquipment;
 	private String equipmentDescription;
-	private int encumberence;
+	private int encumbrance;
 
 	public ViewPlayerCharacterEquipment(PlayerCharacterEquipment playerCharacterEquipment, String equipmentDescription,
 			int encumberence) {
 		this.playerCharacterEquipment=playerCharacterEquipment;
 		this.equipmentDescription=equipmentDescription;
-		this.encumberence=encumberence;
+		this.encumbrance=encumberence;
 	}
 	
 	public ViewPlayerCharacterEquipment() { 
@@ -69,12 +69,33 @@ public class ViewPlayerCharacterEquipment implements Serializable,DataDTOInterfa
 		this.equipmentDescription = equipmentDescription;
 	}
 
+	/**
+	 * Use the one spelled correctly :)
+	 * @deprecated
+	 * @return
+	 */
+	@Deprecated
 	public int getEncumberence() {
-		return encumberence;
+		return encumbrance;
+	}
+	/**
+	 * Use the one spelled correctly :)
+	 * @deprecated
+	 * @return
+	 */
+	@Deprecated
+	public void setEncumberence(int encumbrance) {
+		this.encumbrance = encumbrance;
 	}
 
-	public void setEncumberence(int encumberence) {
-		this.encumberence = encumberence;
+
+	public int getEncumbrance() {
+		return encumbrance;
 	}
+
+	public void setEncumbrance(int encumbrance) {
+		this.encumbrance = encumbrance;
+	}
+
 
 }
