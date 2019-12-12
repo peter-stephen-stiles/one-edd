@@ -1,7 +1,5 @@
 package com.nobbysoft.first.common.entities.pc;
 
-import com.nobbysoft.first.common.entities.equipment.EquipmentType;
-
 public class PlayerCharacterEquipmentKey implements Comparable<PlayerCharacterEquipmentKey> {
 
 

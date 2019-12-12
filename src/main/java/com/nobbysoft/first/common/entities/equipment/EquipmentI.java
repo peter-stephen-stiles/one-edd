@@ -2,6 +2,9 @@ package com.nobbysoft.first.common.entities.equipment;
 
 public interface EquipmentI {
 	
+	public String getCode();
+	public void setCode(String code);
+	
 public EquipmentType getType();
 public String getName();
 public void setName(String name) ;

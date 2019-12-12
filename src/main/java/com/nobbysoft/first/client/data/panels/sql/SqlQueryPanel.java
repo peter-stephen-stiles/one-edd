@@ -1,9 +1,10 @@
 package com.nobbysoft.first.client.data.panels.sql;
 
 import java.awt.BorderLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.lang.invoke.MethodHandles;
 import java.sql.ResultSetMetaData;
 import java.util.HashSet;
@@ -53,7 +54,7 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 
 	private JTabbedPane pnlData = new JTabbedPane();
 	private PButton btnQuery = new PButton("Query!");
-	private PButton btnUpdate = new PButton("Update!");
+	//private PButton btnUpdate = new PButton("Update!");
 	
 	private void jbInit() {
 
@@ -68,12 +69,59 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 				al.actionPerformed(event);
 			}
 		});
+		
+		txtEditor.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+//				String ev = "Typed";
+//				if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+//					LOGGER.info("enter "+ev);
+//					if((e.getModifiers()&KeyEvent.CTRL_MASK)>0) {
+//						LOGGER.info("enter +CTRL "+ev);	
+//					} else if((e.getModifiers()&KeyEvent.SHIFT_MASK)>0) {
+//						LOGGER.info("enter +SHIFT +ev");
+//					}
+//				}
+				 
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+//				String ev = "Pressed";
+//				if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+//					LOGGER.info("enter "+ev);
+//					if((e.getModifiers()&KeyEvent.CTRL_MASK)>0) {
+//						LOGGER.info("enter +CTRL "+ev);	
+//					} else if((e.getModifiers()&KeyEvent.SHIFT_MASK)>0) {
+//						LOGGER.info("enter +SHIFT +ev");
+//					}
+//				} 
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String ev = "Released";
+				if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+					LOGGER.info("enter "+ev);
+					if((e.getModifiers()&KeyEvent.CTRL_MASK)>0) {
+						LOGGER.info("enter +CTRL "+ev);	
+						btnQuery.doClick();
+					} else if((e.getModifiers()&KeyEvent.SHIFT_MASK)>0) {
+						LOGGER.info("enter +SHIFT +ev");
+					}
+				}
+				
+			}
+			
+		});
+		
 		PButtonPanel pnlButtons = new PButtonPanel();
 		pnlButtons.add(btnQuery);
-		pnlButtons.add(btnUpdate);
+		//pnlButtons.add(btnUpdate);
 		add(pnlButtons,BorderLayout.NORTH);
-		btnQuery.addActionListener(ae->{execute(false);});
-		btnUpdate.addActionListener(ae->{execute(true);});
+		btnQuery.addActionListener(ae->{execute();});
+		//btnUpdate.addActionListener(ae->{execute(true);});
 		
 		JScrollPane sclEditor = new JScrollPane(txtEditor);
 		
@@ -99,9 +147,36 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 		
 		
 	}
+
+	private void execute() {
+		
+		try {
+		String sql = txtEditor.getCurrentText().trim();
+		
+		boolean update=true;
+		String start = sql.toUpperCase();
+		if(start.startsWith("SELECT") ||start.startsWith("WITH")  ){
+			update = false;
+		} 
+		
+		
+		
+		executeSql(update, sql);
+		} catch (Exception ex) {
+			pnlData.getModel().setSelectedIndex(2);
+			txtError.setText(Utils.getMessage(ex)+"\n"+Utils.stackTrace(ex));
+			return;
+		}
+		}
 	
 	private void execute(boolean update) {
-		String sql = txtEditor.getText().trim();
+		
+		String sql = txtEditor.getCurrentText().trim();
+		LOGGER.info("sql:"+sql);
+		
+		executeSql(update, sql);
+	}
+	private void executeSql(boolean update, String sql) {
 		if(sql.isEmpty()) {
 			pnlData.getModel().setSelectedIndex(2);
 			txtError.setText("You haven't entered any SQL!");
@@ -109,7 +184,7 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 		}
 
 		btnQuery.setEnabled(false);
-		btnUpdate.setEnabled(false);
+		//btnUpdate.setEnabled(false);
 		try {
 			
 		Object sqlo = DataMapper.INSTANCE.getNonDataService(SqlService.class);
@@ -118,7 +193,7 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 		if(update) {
 			sqlService.runUpdate(sql);
 			btnQuery.setEnabled(true);
-			btnUpdate.setEnabled(true);
+			//btnUpdate.setEnabled(true);
 		} else {
 		
 		tmData.setColumnCount(0);
@@ -142,7 +217,7 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 	
 					pnlData.getModel().setSelectedIndex(0);
 					btnQuery.setEnabled(true);
-					btnUpdate.setEnabled(true);
+					//btnUpdate.setEnabled(true);
 				}
 				@Override
 				public void haveTheColumnLabels(String[] labels) {
@@ -159,7 +234,7 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 			pnlData.getModel().setSelectedIndex(2);
 			txtError.setText(Utils.stackTrace(ex));
 			btnQuery.setEnabled(true);
-			btnUpdate.setEnabled(true);
+			//btnUpdate.setEnabled(true);
 		} finally {
 		}
 	}

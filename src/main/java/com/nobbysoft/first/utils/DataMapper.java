@@ -27,7 +27,7 @@ import com.nobbysoft.first.server.service.*;
 
 public enum DataMapper {
 	INSTANCE;
-	private DataMapper() {
+	private DataMapper() { 		
 	}
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
@@ -91,6 +91,8 @@ public enum DataMapper {
 		daoimap.put(CharacterClassSpell.class, CharacterClassSpellDAO.class);
 		daoimap.put(CharacterClassLevel.class, CharacterClassLevelDAO.class);
 		daoimap.put(CharacterClassToHit.class, CharacterClassToHitDAO.class);//
+		daoimap.put(EquipmentClass.class, EquipmentClassDAO.class);
+		
 		daoimap.put(SavingThrow.class, SavingThrowDAO.class);//
 		daoimap.put(RaceClassLimit.class, RaceClassLimitDAO.class);//
 		daoimap.put(RaceThiefAbilityBonus.class, RaceThiefAbilityBonusDAO.class);//
@@ -150,6 +152,8 @@ public enum DataMapper {
 		entityservicemap.put(CharacterClassSpell.class, CharacterClassSpellService.class);
 		entityservicemap.put(CharacterClassLevel.class, CharacterClassLevelService.class);
 		entityservicemap.put(CharacterClassToHit.class, CharacterClassToHitService.class);//
+		entityservicemap.put(EquipmentClass.class,EquipmentClassService.class);//
+		
 		entityservicemap.put(SavingThrow.class, SavingThrowService.class);//
 		entityservicemap.put(Spell.class, SpellService.class);
 		entityservicemap.put(Race.class, RaceService.class);//
@@ -181,6 +185,8 @@ public enum DataMapper {
 		servicemap.put(CharacterClassSpellService.class, CharacterClassSpellServiceImpl.class);
 		servicemap.put(CharacterClassLevelService.class, CharacterClassLevelServiceImpl.class);
 		servicemap.put(CharacterClassToHitService.class, CharacterClassToHitServiceImpl.class);//
+		servicemap.put(EquipmentClassService.class, EquipmentClassServiceImpl.class);//
+		
 		servicemap.put(SavingThrowService.class, SavingThrowServiceImpl.class);//
 		servicemap.put(SpellService.class, SpellServiceImpl.class);
 		servicemap.put(RaceService.class, RaceServiceImpl.class);//
