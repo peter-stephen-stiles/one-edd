@@ -103,12 +103,12 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 			public void keyReleased(KeyEvent e) {
 				String ev = "Released";
 				if(e.getKeyCode()==KeyEvent.VK_ENTER) {
-					LOGGER.info("enter "+ev);
+					//LOGGER.info("enter "+ev);
 					if((e.getModifiers()&KeyEvent.CTRL_MASK)>0) {
-						LOGGER.info("enter +CTRL "+ev);	
+						//LOGGER.info("enter +CTRL "+ev);	
 						btnQuery.doClick();
 					} else if((e.getModifiers()&KeyEvent.SHIFT_MASK)>0) {
-						LOGGER.info("enter +SHIFT +ev");
+						//LOGGER.info("enter +SHIFT +ev");
 					}
 				}
 				
@@ -202,7 +202,7 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 	
 				@Override
 				public void haveARow(int count, Object[] data) {
-					LOGGER.info("here row:"+data);
+					//LOGGER.info("here row:"+data);
 					tmData.addRow(data);
 					
 				}

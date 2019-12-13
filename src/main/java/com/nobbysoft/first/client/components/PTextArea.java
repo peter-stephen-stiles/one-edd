@@ -34,15 +34,15 @@ public class PTextArea extends JTextArea implements PDataComponent {
 		}
 		int start = cp;
 		// go back from where the cursor is to find a non-blank space.
-		LOGGER.info("CP:"+cp);
+		//LOGGER.info("CP:"+cp);
 		if(start < txt.length() && txt.charAt(start)<=' ') {
 			start = backwardsToNonBlank(txt, start);
 		}		
-		LOGGER.info("start:"+start);
+		//LOGGER.info("start:"+start);
 		// if we ended up at the start, then read forwards instead
 		if (start == 0) {
 			start = forwardsToNonBlank(txt, start);
-			LOGGER.info("start:"+start);
+			//LOGGER.info("start:"+start);
 		}
 
 		String lineSep = "\n";// System.getProperty("line.separator");
@@ -51,9 +51,9 @@ public class PTextArea extends JTextArea implements PDataComponent {
 		
 		int end = findEndOfText(txt, start, lineSep);
 		txt = txt+" ";
-		LOGGER.info("start:" + start + " >" + txt.charAt(start)+"<");
-		LOGGER.info("end:" + end + " >" + txt.charAt(end-1)+"<");
-		LOGGER.info("text:" + txt.substring(start, end));
+		//LOGGER.info("start:" + start + " >" + txt.charAt(start)+"<");
+		//LOGGER.info("end:" + end + " >" + txt.charAt(end-1)+"<");
+		//LOGGER.info("text:" + txt.substring(start, end));
 
 		return txt.substring(start, end);
 	}
@@ -112,7 +112,7 @@ public class PTextArea extends JTextArea implements PDataComponent {
 			int blankLines = 0;
 			boolean stop = false;
 			while (!stop) {
-				LOGGER.info("CUR:"+cur);
+				//LOGGER.info("CUR:"+cur);
 				cur = txt.lastIndexOf(lineSep, cur - 1);
 				if (cur <= 0) {
 					if (blankLines == 0) {
@@ -122,7 +122,7 @@ public class PTextArea extends JTextArea implements PDataComponent {
 				} else {
 					// we've found a CR!
 					int pcur = txt.lastIndexOf(lineSep, cur - 1);
-					LOGGER.info("PCUR:"+pcur);
+					//LOGGER.info("PCUR:"+pcur);
 					if (pcur <= 0) {
 						// we've ended up at the beginning!
 						if(blankLines==0) {
@@ -132,7 +132,7 @@ public class PTextArea extends JTextArea implements PDataComponent {
 					} else  {
 						String text = txt.substring(pcur, cur).trim();
 						if (text.isEmpty()) {
-							LOGGER.info("text empty "+blankLines);
+							//LOGGER.info("text empty "+blankLines);
 							// empty!
 							blankLines++;
 							if (blankLines == 1) {
@@ -148,7 +148,7 @@ public class PTextArea extends JTextArea implements PDataComponent {
 
 				}
 			}
-			LOGGER.info("Start from " + start);
+			//LOGGER.info("Start from " + start);
 		}
 		return start;
 	}

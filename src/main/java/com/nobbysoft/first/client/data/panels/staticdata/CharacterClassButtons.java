@@ -16,6 +16,7 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 	private static final String SPELLS = "Spells By Level";
 	private static final String TO_HIT = "To-Hit Values";
 	private static final String SAVES = "Saving Throws";
+	private static final String EQUIPMENT = "Equipment";
 
 	public CharacterClassButtons() {
 
@@ -24,6 +25,7 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 		rowButtons.add(SPELLS);
 		rowButtons.add(TO_HIT);
 		rowButtons.add(SAVES);
+		rowButtons.add(EQUIPMENT);
 		tableButtons.add("Everybody dance now");
 	}
 
@@ -74,6 +76,13 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 			return false;
 		}else if (SAVES.equals(name)) {			
 			ClassSavingThrowsDialog dialog = new ClassSavingThrowsDialog(window,"Saving Throw values for "+object.getName());
+			dialog.initialise(object);
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);			
+			dialog.setVisible(true);
+			return false;
+		} else if(EQUIPMENT.equals(name)) {
+			CharacterClassEquipmentDialog dialog = new CharacterClassEquipmentDialog (window,"Equipment values for "+object.getName());
 			dialog.initialise(object);
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);			

@@ -197,13 +197,22 @@ public class EquipmentClassDAO extends AbstractDAO<EquipmentClass, EquipmentClas
 	}
 
 	
-	private String viewSelectAll0 = "select type,code,equipment_name,class_id,class_name ,true from view_equipment_class ";
+	private String viewSelectAll0 = "select ve.type,ve.code,ve.name as equipment_name, cc.class_id, cc.name as class_name ," + 
+			"((select count(*) " + 
+			"   from view_equipment_class vec " + 
+			" where vec.type = ve.type " + 
+			"   and vec.code = ve.code " + 
+			"   and vec.equipment_name = ve.name " + 
+			"   and vec.class_id = cc.class_id) = 1) as is_there " + 
+			" from view_equipment ve " + 
+			"cross join character_class cc " + 
+			" WHERE cc.class_id = ? ";
 	
 	public List<ViewClassEquipment> getViewForClassAll(Connection con, String classId0 )throws SQLException{
 		
 		List<ViewClassEquipment> list = new ArrayList<>();
 		{
-			String sql = viewSelectAll0 + " WHERE class_id = ?";
+			String sql = viewSelectAll0;
 			try(PreparedStatement ps = con.prepareStatement(sql)){
 				ps.setString(1, classId0);
 				readView(list, ps);

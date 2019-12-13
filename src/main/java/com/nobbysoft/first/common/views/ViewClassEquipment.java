@@ -94,6 +94,15 @@ public class ViewClassEquipment implements Serializable,DataDTOInterface<Equipme
 		this.assigned = assigned;
 	}
 
+	
+ 
+	
+	@Override
+	public String toString() {
+		return "ViewClassEquipment [equipmentClass=" + equipmentClass + ", equipmentName=" + equipmentName
+				+ ", className=" + className + ", assigned=" + assigned + "]";
+	}
+
  
  
 
