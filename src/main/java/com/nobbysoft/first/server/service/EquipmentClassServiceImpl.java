@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.nobbysoft.first.client.utils.Utils;
 import com.nobbysoft.first.common.entities.equipment.EquipmentClass;
 import com.nobbysoft.first.common.entities.equipment.EquipmentClassKey;
 import com.nobbysoft.first.common.servicei.EquipmentClassService;
 import com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.common.views.ViewClassEquipment;
 import com.nobbysoft.first.server.dao.EquipmentClassDAO;
 import com.nobbysoft.first.server.utils.ConnectionManager;
@@ -153,6 +155,27 @@ public class EquipmentClassServiceImpl implements EquipmentClassService {
 		}
 	}
 
+	
+	public ReturnValue<String> updateViewForClassAll(String classId,List<ViewClassEquipment> list) throws SQLException{
+		
+		ReturnValue<String> rv = null;
+		
+		try (Connection con = cm.getConnection()) {
+			try {
+				rv= dao.updateViewForClassAll(con, classId,list);
+				con.commit();
+			} finally {
+				con.rollback();
+			}
+		} catch (Exception ex) {
+			rv =new ReturnValue<>(ReturnValue.IS_ERROR.TRUE,Utils.getMessage(ex));
+		}
+	
+		
+		return rv;
+		
+	}
+	
 	public List<ViewClassEquipment> getViewForClassAll(String classId) throws SQLException{
 		try (Connection con = cm.getConnection()) {
 			try {

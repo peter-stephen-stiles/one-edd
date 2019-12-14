@@ -61,16 +61,31 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 		return s;
 	}
 	
+	 // these assume there is always a DATA column :(
+	 
 	 String addKeyFields(String sql) {
+		 boolean first = true;
 		for(String key:getKeys()) {
-			sql = sql + " "+key+",";
+			if(!first) {
+				sql = sql + ", ";
+			}
+			first=false;
+			sql = sql + " "+key ;
 		}
 		return sql;
 	}
 	 
 	 String addKeyFields(String sql, String tableAlias) {
+		 boolean first = true;
 		for(String key:getKeys()) {
-			sql = sql + " "+tableAlias+"."+key+",";
+			
+			if(!first) {
+				sql = sql + ", ";
+			}
+			first=false;
+			
+			
+			sql = sql + " "+tableAlias+"."+key ;
 		}
 		return sql;
 	}
@@ -109,9 +124,9 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 			} 
 			return sql;
 	 }
-	 
-	 String addDataFields(String sql) {
-		boolean first=true;
+
+	 String addDataFields(String sql,boolean commaAtBeginning) {
+		boolean first=!commaAtBeginning; // if TRUE then we want to pretend we're not the first one so we get a comma
 		for(String field:getData()) {
 			if(!first) {
 				sql=sql+", ";
@@ -122,8 +137,20 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 		return sql;
 	}
 	 
-	 String addDataFields(String sql, String tableAlias) {
-		boolean first=true;
+//	 String addDataFields(String sql) {
+//		boolean first=true;
+//		for(String field:getData()) {
+//			if(!first) {
+//				sql=sql+", ";
+//			}
+//			sql = sql + " "+field;
+//			first=false;
+//		}
+//		return sql;
+//	}
+	 
+	 String addDataFields(String sql, String tableAlias, boolean commaAtTheBeginning) {
+		boolean first=!commaAtTheBeginning;
 		for(String field:getData()) {
 			if(!first) {
 				sql=sql+", ";
@@ -137,7 +164,7 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 		public T get(Connection con, K key) throws SQLException {
 			String sql = "SELECT ";
 			sql = addKeyFields(sql);
-			sql = addDataFields(sql);
+			sql = addDataFields(sql,true);
 			sql = sql + " FROM "+getTableName()+"  WHERE ";
 			sql = addKeyColumnsForUpdate(sql); 
 			try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -164,7 +191,7 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 			public void insert(Connection con, T value) throws SQLException {
 				String sql = "INSERT INTO "+getTableName()+ " ( ";
 				sql = addKeyFields(sql);
-				sql = addDataFields(sql);
+				sql = addDataFields(sql,true);
 				sql = sql + ") values ( ";
 				sql = sql + questionsForInsert();
 				sql = sql + ")";
@@ -226,7 +253,7 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 				
 				String sql = "SELECT ";
 				sql = addKeyFields(sql);
-				sql = addDataFields(sql);
+				sql = addDataFields(sql,true);
 				sql = sql + " FROM "+getTableName()+"  ";
 				for(int i=0,n=queryFields.length;i<n;i++) {
 					if(i==0) {
@@ -267,7 +294,7 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 				
 				String sql = "SELECT ";
 				sql = addKeyFields(sql);
-				sql = addDataFields(sql);
+				sql = addDataFields(sql,true);
 				sql = sql + " FROM "+getTableName()+"  ";
 				sql = addOrderByClause(sql);
 				List<T> data = new ArrayList<>();
@@ -363,7 +390,7 @@ public abstract class AbstractDAO<T extends DataDTOInterface,K extends Comparabl
 				}
 				String sql = "SELECT ";
 				sql = addKeyFields(sql);
-				sql = addDataFields(sql);
+				sql = addDataFields(sql,true);
 				sql = sql + " FROM " +getTableName()+"  WHERE ";
 				sql = sql+ getFilterWhere();
 				sql = addOrderByClause(sql);

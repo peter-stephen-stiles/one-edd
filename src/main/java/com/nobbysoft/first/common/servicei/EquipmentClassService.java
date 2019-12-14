@@ -2,6 +2,7 @@ package com.nobbysoft.first.common.servicei;
 
 import com.nobbysoft.first.common.entities.equipment.EquipmentClass;
 import com.nobbysoft.first.common.entities.equipment.EquipmentClassKey;
+import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.common.views.ViewClassEquipment;
 
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ public interface EquipmentClassService extends DataServiceI<EquipmentClass,Equip
 	public List<ViewClassEquipment> getViewForEquipment(String type,String code) throws SQLException;
 	
 	public List<ViewClassEquipment> getViewForClassAll(String classId) throws SQLException;
+	public ReturnValue<String> updateViewForClassAll(String classId,List<ViewClassEquipment> list) throws SQLException;
 	
 	 
 	

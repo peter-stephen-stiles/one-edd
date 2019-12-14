@@ -30,6 +30,7 @@ import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.equipment.EquipmentClass;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.servicei.EquipmentClassService;
+import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.common.views.ViewClassEquipment;
 import com.nobbysoft.first.utils.DataMapper;
 
@@ -90,8 +91,14 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 		thisPane.add(pnlHeader,BorderLayout.NORTH);
 		thisPane.add(pnlButtons,BorderLayout.SOUTH);
 		
-		PButton btnClose = new PButton("Close");
+		PButton btnSave = new PButton("Save");
+		btnSave.addActionListener(ae-> save() );
+		
+		
+		PButton btnClose = new PButton("Cancel");
 		btnClose.addActionListener(ae-> dispose() );
+		
+		pnlButtons.add(btnSave);
 		pnlButtons.add(btnClose);
 		
 		pnlHeader.add(new PLabel("Class"));
@@ -183,6 +190,26 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 			}
 		}
 		lstItems.setListData(v);
+	}
+	
+	
+	private void save() {
+		
+		try {
+		EquipmentClassService dao = (EquipmentClassService)DataMapper.INSTANCE.getDataService(EquipmentClass.class);
+		
+		ReturnValue<String> res =dao.updateViewForClassAll(characterClass.getClassId(), items);
+		if(res.isError()) {
+			Popper.popError(this, "Problem : saving data", res);
+			return;
+		} else {
+			Popper.popError(this, "All good. Database updated", res);
+		}
+		dispose();
+		} catch (Exception ex) {
+			Popper.popError(this, ex);
+			return;
+		}
 	}
 }
 

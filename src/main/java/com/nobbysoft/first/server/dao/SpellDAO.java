@@ -229,7 +229,7 @@ public class SpellDAO extends AbstractDAO<Spell, String> implements DAOI<Spell, 
 
 		String sql = "SELECT ";
 		sql = addKeyFields(sql, "t0");
-		sql = addDataFields(sql,"t0");
+		sql = addDataFields(sql,"t0",true);
 		sql = sql + " FROM "+getTableName()+" as t0 ";
 		sql = sql + " WHERE NOT EXISTS(";
 		sql = sql + " SELECT '.' FROM player_character_spell pcs WHERE pcs.pc_id = ? AND pcs.spell_id = t0.spell_id ";

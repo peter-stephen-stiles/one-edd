@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.common.entities.equipment.EquipmentClass;
 import com.nobbysoft.first.common.entities.equipment.EquipmentClassKey;
 import com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.common.views.ViewClassEquipment;
 import com.nobbysoft.first.server.utils.DbUtils;
 
@@ -223,5 +224,38 @@ public class EquipmentClassDAO extends AbstractDAO<EquipmentClass, EquipmentClas
 		
 	}
 	 
+	
+	public ReturnValue<String> updateViewForClassAll(Connection con, String classId, List<ViewClassEquipment> list )throws SQLException{
+		
+		// remove all for class
+		int rc = 0;
+		{
+			String del = "DELETE FROM "+tableName+" WHERE class_id = ?";
+			
+			try(PreparedStatement ps = con.prepareStatement(del)){
+					ps.setString(1, classId);
+					rc = ps.executeUpdate();
+				
+			}
+		}
+			int ins =0;
+		{
+			for(ViewClassEquipment vce: list) {
+				if(!vce.getEquipmentClass().getClassId().equals(classId)) {
+					throw new SQLException("Wrong class id on "+vce);
+				}
+				if(vce.isAssigned()) {
+					insert(con,vce.getEquipmentClass());
+					ins++;
+				}
+			}
+		}
+		
+		String results = "Deleted "+rc+ " inserted "+ins+" valid equipment for class .";
+		// all good :) Do a Billy Joel
+		return new ReturnValue<>(results);
+	}
+		
+	
 	
 }
