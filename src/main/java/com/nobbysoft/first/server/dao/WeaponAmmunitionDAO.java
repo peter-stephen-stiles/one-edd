@@ -1,18 +1,33 @@
 package com.nobbysoft.first.server.dao;
 
+import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.nobbysoft.first.common.entities.DTORowListener;
+import com.nobbysoft.first.common.entities.equipment.EquipmentClass;
 import com.nobbysoft.first.common.entities.equipment.EquipmentHands;
+import com.nobbysoft.first.common.entities.equipment.EquipmentType;
 import com.nobbysoft.first.common.entities.equipment.WeaponAmmunition;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
+import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.DICE;
 import com.nobbysoft.first.server.utils.DbUtils; 
 
 public class WeaponAmmunitionDAO extends AbstractDAO<WeaponAmmunition,String>
 implements DAOI<WeaponAmmunition, String> {
+
+	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
 	public WeaponAmmunitionDAO() { 
 	}
@@ -183,4 +198,115 @@ implements DAOI<WeaponAmmunition, String> {
 		dto.setDescription(rs.getString(2));
 	}
 
+	
+	
+	public List<WeaponAmmunition> getValidEquipmentForAClass(Connection con,
+			EquipmentClassDAO ecDAO,
+			String equipmentType,
+			String classId) throws SQLException {
+		//
+		final List<WeaponAmmunition> valid = new ArrayList<>();
+		String[] queryFields = new String[] {"type","class_id"};
+		Object[] fieldValues = new Object[] {equipmentType,classId};		
+		ecDAO.getListFromPartialKey(con, queryFields, fieldValues, new DTORowListener<EquipmentClass>() {
+
+			@Override
+			public void hereHaveADTO(EquipmentClass dto, boolean first) {
+				try {
+				WeaponAmmunition wham = get(con,dto.getCode());
+				valid.add(wham);
+				} catch (SQLException ex) {
+					LOGGER.error("Error reading whams ",ex);
+				}
+			}
+			
+		});
+		return valid;
+	}
+	
+	public String getEquipmentTypeString() {
+		return EquipmentType.AMMUNITION.toString();
+	}
+	
+	public List<WeaponAmmunition> getValidEquipmentForCharactersClasses(Connection con,int pcId) throws SQLException {
+		
+		String equipmentType = getEquipmentTypeString();
+		List<WeaponAmmunition> wham = new ArrayList<>();
+		RaceDAO raceDAO = new RaceDAO();
+		PlayerCharacterDAO playerCharacterDAO  = new PlayerCharacterDAO ();
+		EquipmentClassDAO ecDAO = new EquipmentClassDAO();
+		PlayerCharacter pc = playerCharacterDAO  .get(con, pcId);
+		if(pc.classCount()>1) {
+			
+		// difficult :(
+		Race rc = raceDAO.get(con, pc.getRaceId());
+		if(rc.isMultiClassable()) {
+			// 	multi class character
+			java.util.Set<WeaponAmmunition> set = new HashSet<>();//
+			
+			for(PlayerCharacterLevel pcl:pc.getClassDetails()) {
+				if(pcl!=null && pcl.getThisClass()!=null) {
+					set.addAll(getValidEquipmentForAClass(con,
+					ecDAO,
+					equipmentType,
+					pcl.getThisClass()));
+				}
+			}
+			wham.addAll(set);
+		} else {
+			java.util.Set<WeaponAmmunition> set = new HashSet<>();
+			// dual class character
+			
+			PlayerCharacterLevel[] pcls=pc.getClassDetails();
+			 
+			List<List<WeaponAmmunition>> lists = new ArrayList<>();
+			List<Integer> classLevels = new ArrayList<>();
+			List<String> classes= new ArrayList<>();
+			for(PlayerCharacterLevel pcl:pcls) {				
+				if(pcl!=null && pcl.getThisClass()!=null) {
+					classLevels.add(pcl.getThisClassLevel());
+					classes.add(pcl.getThisClass());
+					List<WeaponAmmunition> list = getValidEquipmentForAClass(con,
+							ecDAO,
+							equipmentType,
+							pcl.getThisClass());
+					lists.add(list);
+				}
+			}
+			// starting position
+			set.addAll(lists.get(pc.classCount()-1));
+			int lastLevel = classLevels.get(pc.classCount()-1);
+			for(int i=0,n=pc.classCount()-1;i<n;i++) {
+				//
+				// if three classes then this goes 0,1
+				// we want to compare backwards, so
+				// subtract that from pc.ClassCount 
+				// to get 2,1; then subtract one more to show where we're at
+				// because we've already got #2
+				int sindex = (pc.classCount() - i) - 2;
+				int thisLevel = classLevels.get(sindex);
+				if(thisLevel<lastLevel) {
+					String cls = classes.get(sindex);
+					// we've surpassed that old class so we can use its equipment willy nilly
+					set.addAll(getValidEquipmentForAClass(con,
+							ecDAO,
+							equipmentType,
+							cls));
+				}
+			}
+			wham.addAll(set);
+		}
+		} else {
+			
+			wham.addAll(getValidEquipmentForAClass(con,
+					ecDAO,
+					equipmentType,
+					pc.getFirstClass()));
+			
+		}
+		
+		return wham;
+	}
+	
+	
 }

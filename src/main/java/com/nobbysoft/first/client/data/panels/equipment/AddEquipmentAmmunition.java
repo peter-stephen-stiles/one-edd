@@ -128,7 +128,10 @@ public class AddEquipmentAmmunition extends PDialog implements AddEquipmentI {
 
 		List<WeaponAmmunition> list;
 		try {
-			list = wms.getList();
+			//list = wms.getList();
+			
+			list = wms.getValidEquipmentForCharactersClasses(pcId);
+			
 		} catch (SQLException e) {
 			Popper.popError(this, e);
 			return;
