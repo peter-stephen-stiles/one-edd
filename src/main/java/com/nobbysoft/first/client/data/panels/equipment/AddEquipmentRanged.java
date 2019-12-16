@@ -130,7 +130,7 @@ public class AddEquipmentRanged extends PDialog implements AddEquipmentI {
 
 		List<WeaponRanged> list;
 		try {
-			list = wms.getList();
+			list = wms.getValidEquipmentForCharactersClasses(pcId);
 		} catch (SQLException e) {
 			Popper.popError(this, e);
 			return;

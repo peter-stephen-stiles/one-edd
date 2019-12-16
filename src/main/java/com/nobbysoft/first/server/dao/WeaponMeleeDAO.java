@@ -16,9 +16,15 @@ import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.DICE;
 import com.nobbysoft.first.server.utils.DbUtils; 
 
-public class WeaponMeleeDAO extends AbstractDAO<WeaponMelee,String>
+public class WeaponMeleeDAO extends EquipmentDAO<WeaponMelee,String>
 implements DAOI<WeaponMelee, String> {
 
+	
+
+	public String getEquipmentTypeString() {
+		return EquipmentType.MELEE_WEAPON.toString();
+	}
+	
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass()); 
 

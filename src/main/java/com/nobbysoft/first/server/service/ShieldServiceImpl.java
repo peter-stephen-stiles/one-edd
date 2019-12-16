@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.nobbysoft.first.common.entities.equipment.Shield;
+import com.nobbysoft.first.common.entities.equipment.WeaponMelee;
 import com.nobbysoft.first.common.servicei.ShieldService;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.server.dao.ShieldDAO;
@@ -115,4 +116,17 @@ public class ShieldServiceImpl implements ShieldService {
 			}
 	}
 
+	@Override
+	public List<Shield> getValidEquipmentForCharactersClasses(int pcId) throws SQLException {
+		try (Connection con = cm.getConnection()) {
+			try {
+				
+				return dao.getValidEquipmentForCharactersClasses(con, pcId);
+			} finally {
+				con.rollback();
+			}
+		}
+
+	}
+	
 }

@@ -128,7 +128,7 @@ public class AddEquipmentMelee extends PDialog implements AddEquipmentI {
 
 		List<WeaponMelee> list;
 		try {
-			list = wms.getList();
+			list = wms.getValidEquipmentForCharactersClasses(pcId);
 		} catch (SQLException e) {
 			Popper.popError(this, e);
 			return;

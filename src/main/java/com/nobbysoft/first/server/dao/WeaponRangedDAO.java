@@ -6,14 +6,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.nobbysoft.first.common.entities.equipment.EquipmentHands;
+import com.nobbysoft.first.common.entities.equipment.EquipmentType;
 import com.nobbysoft.first.common.entities.equipment.WeaponRanged;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.DICE;
 import com.nobbysoft.first.server.utils.DbUtils; 
 
-public class WeaponRangedDAO extends AbstractDAO<WeaponRanged,String>
+public class WeaponRangedDAO extends EquipmentDAO<WeaponRanged,String>
 implements DAOI<WeaponRanged, String> {
 
+	
+
+	public String getEquipmentTypeString() {
+		return EquipmentType.WEAPON_RANGED.toString();
+	}
+	
 	public WeaponRangedDAO() { 
 	}
 

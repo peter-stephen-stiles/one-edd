@@ -7,13 +7,21 @@ import java.sql.SQLException;
 
 import com.nobbysoft.first.common.entities.equipment.BULK;
 import com.nobbysoft.first.common.entities.equipment.EquipmentHands;
+import com.nobbysoft.first.common.entities.equipment.EquipmentType;
 import com.nobbysoft.first.common.entities.equipment.Shield;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.server.utils.DbUtils; 
 
-public class ShieldDAO extends AbstractDAO<Shield,String>
+public class ShieldDAO extends EquipmentDAO<Shield,String>
 implements DAOI<Shield, String> {
 
+
+
+	public String getEquipmentTypeString() {
+		return EquipmentType.SHIELD.toString();
+	}
+	
+	
 	public ShieldDAO() { 
 	}
 

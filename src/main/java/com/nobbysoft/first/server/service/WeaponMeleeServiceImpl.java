@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.nobbysoft.first.common.entities.equipment.WeaponAmmunition;
 import com.nobbysoft.first.common.entities.equipment.WeaponMelee;
 import com.nobbysoft.first.common.servicei.WeaponMeleeService;
 import com.nobbysoft.first.common.utils.CodedListItem;
@@ -110,4 +111,17 @@ public class WeaponMeleeServiceImpl implements WeaponMeleeService {
 			}
 	}
 
+	@Override
+	public List<WeaponMelee> getValidEquipmentForCharactersClasses(int pcId) throws SQLException {
+		try (Connection con = cm.getConnection()) {
+			try {
+				
+				return dao.getValidEquipmentForCharactersClasses(con, pcId);
+			} finally {
+				con.rollback();
+			}
+		}
+
+	}
+	
 }

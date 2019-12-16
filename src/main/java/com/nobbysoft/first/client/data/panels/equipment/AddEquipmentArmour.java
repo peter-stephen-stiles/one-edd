@@ -135,7 +135,7 @@ wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getM
 
 		List<Armour> list;
 		try {
-			list = wms.getList();
+			list = wms.getValidEquipmentForCharactersClasses(pcId);
 		} catch (SQLException e) {
 			Popper.popError(this, e);
 			return;
