@@ -15,9 +15,12 @@ public interface SqlService {
 	public void runUpdate(String sql) throws SQLException;
 
 	public List<DTOTable> metaDataTables(String tableNameFilter) throws SQLException;
+	public List<DTOTable> metaDataTables(String catalog,String schema,String tableNameFilter) throws SQLException;
 	public List<DTOColumn> metaDataColumns(String catalog, String schema, String tableName) throws SQLException;
 	public List<DTOIndex> metaDataIndexes(String catalog, String schema, String tableName) throws SQLException;
 	public List<DTOConstraint> metaDataConstraints(String catalog, String schema, String tableName) throws SQLException;
  
+	public List<String> metaCatalogs() throws SQLException ;
+	public List<String> metaSchema() throws SQLException ;
 	
 }

@@ -6,9 +6,11 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.prefs.Preferences;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -23,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PButton;
+import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTable;
@@ -33,6 +36,7 @@ import com.nobbysoft.first.common.entities.meta.DTOConstraint;
 import com.nobbysoft.first.common.entities.meta.DTOIndex;
 import com.nobbysoft.first.common.entities.meta.DTOTable;
 import com.nobbysoft.first.common.servicei.SqlService;
+import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
@@ -43,6 +47,10 @@ public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
 	public SqlDBMDPanel() {
 		super();
 		jbInit();
+		SwingUtilities.invokeLater(()->{			
+			populateFilters();
+			
+		});
 	}
 
 	private TableUtils tableUtils = new TableUtils();
@@ -68,6 +76,11 @@ public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
 			return d;
 		}
 	};
+	
+	
+	private PComboBox<CodedListItem<String>> filterCatalogs = new PComboBox<>();
+	private PComboBox<CodedListItem<String>> filterSchema = new PComboBox<>();
+	
 
 	private DefaultTableModel tmColumns = new DefaultTableModel();
 	private PTable tblColumns = new PTable(tmColumns);
@@ -87,8 +100,15 @@ public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
 		PButton btnRefresh = new PButton("Refresh");
 
 		PPanel pnlFilter = new PPanel(new FlowLayout(FlowLayout.LEFT));
+		pnlFilter.add(new PLabel("Catalog:"));
+		pnlFilter.add(filterCatalogs);
+		pnlFilter.add(new PLabel("Schema:"));
+		pnlFilter.add(filterSchema);
 		pnlFilter.add(new PLabel("Table filter:"));
 		pnlFilter.add(txtFilter);
+		
+		
+		
 		pnlFilter.add(btnRefresh);
 		add(pnlFilter, BorderLayout.NORTH);
 		JPopupMenu popup = new JPopupMenu();
@@ -150,8 +170,12 @@ public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
 						filter = filter + "%";
 					}
 				}
+				String catalog = (String)filterCatalogs.getSelectedCode();
+				String schema = (String)filterSchema.getSelectedCode();
+				LOGGER.info("Reading "+catalog+"."+ schema+"."+filter);
 				tblTables.clearData();
-				List<DTOTable> list = sqlService.metaDataTables(filter.toUpperCase());
+				List<DTOTable> list = sqlService.metaDataTables(catalog,schema,filter.toUpperCase());
+				savePrefs();
 
 				for (DTOTable dto : list) {
 					if (!tableTableSetUp) {
@@ -174,6 +198,80 @@ public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
 		return sqlService;
 	}
 
+	private static final String FILTER_CAT="catalog";
+	private static final String FILTER_SCH="schema";
+	
+	private final Preferences prefs = Preferences.userNodeForPackage(getClass()).node(getClass().getSimpleName());
+	private void savePrefs() {
+		
+		
+		try {
+			Object cat = filterCatalogs.getSelectedCode();
+			prefs.put(FILTER_CAT,(String)cat);
+		} catch (Exception e) {
+			LOGGER.error("error catting",e);
+		}
+		
+		try {
+			Object she=filterSchema.getSelectedCode();
+			
+			prefs.put(FILTER_SCH,(String)she);
+		} catch (Exception e) {
+			LOGGER.error("error scheming",e);
+		}
+		
+	}
+	
+	private void populateFilters() {
+		SqlService sqlService = getSqlService();
+		
+		String dftCat = prefs.get(FILTER_CAT, null);
+		String dftSch = prefs.get(FILTER_SCH, null);
+		
+		List<String> cats = new ArrayList<>();
+		List<String> schema = new ArrayList<>();
+		
+		try {
+			cats.addAll(sqlService.metaCatalogs());
+		} catch (Exception ex) {
+			LOGGER.error("Error getting catalogs",ex);
+		}
+				
+		try {
+			schema.addAll(sqlService.metaSchema());
+		} catch (Exception ex) {
+			LOGGER.error("Error getting schema",ex);
+		}
+ 
+		CodedListItem<String> NULL = new CodedListItem<>(null,"{null}");
+		CodedListItem<String> BLANK = new CodedListItem<>(null,"{blank}");
+		
+		{
+			List<CodedListItem<String>> list = new ArrayList<>();
+			list.add(NULL);
+			list.add(BLANK);
+			for(String s:cats) {
+				list.add(new CodedListItem<>(s,s));	
+			}
+			filterCatalogs.setList(list);
+		
+		}
+		{
+			List<CodedListItem<String>> list = new ArrayList<>();
+			list.add(NULL);
+			list.add(BLANK);
+			for(String s:schema) {
+				list.add(new CodedListItem<>(s,s));	
+			}
+			filterSchema.setList(list);
+		
+		}
+		 
+		filterCatalogs.setSelectedCode(dftCat);
+		filterSchema.setSelectedCode(dftSch);
+	}
+	
+	
 	private void selectTable() {
 		if (tblTables.getSelectedRowCount() > 0) {
 			try {

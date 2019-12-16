@@ -74,6 +74,53 @@ public class SqlDAO {
 	}
 	
 
+	public List<DTOTable> metaDataTables(Connection con,String catalog,String schema,String tableFilter) throws SQLException{
+		List<DTOTable> list = new ArrayList<>();
+		DatabaseMetaData d = con.getMetaData();
+		try {
+			
+			try(ResultSet rs = d.getTables(catalog,schema, tableFilter, tableTypes(d))){
+				
+				/*
+				TABLE_CAT String => table catalog (may be null) 
+				2.TABLE_SCHEM String => table schema (may be null) 
+				3.TABLE_NAME String => table name 
+				4.TABLE_TYPE String => table type. Typical types are "TABLE","VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY","LOCAL TEMPORARY", "ALIAS", "SYNONYM". 
+				5.REMARKS String => explanatory comment on the table 
+				6.TYPE_CAT String => the types catalog (may be null) 
+				7.TYPE_SCHEM String => the types schema (may be null) 
+				8.TYPE_NAME String => type name (may be null) 
+				9.SELF_REFERENCING_COL_NAME String => name of the designated"identifier" column of a typed table (may be null) 
+				10.REF_GENERATION String => specifies how values inSELF_REFERENCING_COL_NAME are created. Values are"SYSTEM", "USER", "DERIVED". (may be null) 
+					
+				 */
+
+				int row=0;
+				while(rs.next()) {
+					DTOTable dto = new DTOTable();
+					dto.setTableCat(rs.getString("TABLE_CAT"));
+					dto.setTableSchem(rs.getString("TABLE_SCHEM"));
+					dto.setTableName(rs.getString("TABLE_NAME"));
+					dto.setTableType(rs.getString("TABLE_TYPE"));
+					dto.setRemarks(rs.getString("REMARKS"));
+					dto.setTypeCat(rs.getString("TYPE_CAT"));
+					dto.setTypeSchem(rs.getString("TYPE_SCHEM"));
+					dto.setTypeName(rs.getString("TYPE_NAME"));
+					dto.setSelfReferencingColName(rs.getString("SELF_REFERENCING_COL_NAME"));
+					dto.setRefGeneration(rs.getString("REF_GENERATION"));
+					
+					list.add(dto);
+					row++;
+				}
+				
+			}
+			
+		} finally {
+
+		}
+		return list;
+	}
+	
 	
 	public List<DTOTable> metaDataTables(Connection con,String tableFilter) throws SQLException{
 		List<DTOTable> list = new ArrayList<>();
@@ -268,5 +315,38 @@ public class SqlDAO {
 		}
 		return list;
 	}
+	
+
+	public List<String> metaCatalogs(Connection con) throws SQLException {
 		
+		
+		DatabaseMetaData d = con.getMetaData();
+		
+		List<String> list = new ArrayList<>();
+					
+		try(ResultSet rs = d.getCatalogs()){
+			while(rs.next()) {
+				list.add(rs.getString(1));
+			}
+			
+		}
+		
+		return list;
+	}
+	
+	public List<String> metaSchema(Connection con) throws SQLException {
+		DatabaseMetaData d = con.getMetaData();
+		
+		List<String> list = new ArrayList<>();
+					
+		try(ResultSet rs = d.getSchemas()){
+			while(rs.next()) {
+				list.add(rs.getString(1));
+			}
+			
+		}
+		
+		return list;
+	}
+	
 }

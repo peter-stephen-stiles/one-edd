@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PButton;
+import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTable;
@@ -34,6 +36,7 @@ import com.nobbysoft.first.common.entities.meta.DTOConstraint;
 import com.nobbysoft.first.common.entities.meta.DTOIndex;
 import com.nobbysoft.first.common.entities.meta.DTOTable;
 import com.nobbysoft.first.common.servicei.SqlService;
+import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
@@ -44,6 +47,10 @@ public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 	public SqlExportPanel() {
 		super();
 		jbInit();
+		SwingUtilities.invokeLater(()->{			
+			populateFilters();
+			
+		});
 	}
 
 	private TableUtils tableUtils = new TableUtils();
@@ -58,6 +65,9 @@ public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 		listeners.remove(al);
 	}
 
+	
+	private PComboBox<CodedListItem<String>> filterCatalogs = new PComboBox<>();
+	private PComboBox<CodedListItem<String>> filterSchema = new PComboBox<>();
 	private DefaultTableModel tmTables = new DefaultTableModel();
 	private PTable tblTables = new PTable(tmTables);
 	private PTextField txtFilter = new PTextField() {
@@ -79,6 +89,10 @@ public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 		PButton btnRefresh = new PButton("Refresh");
 
 		PPanel pnlFilter = new PPanel(new FlowLayout(FlowLayout.LEFT));
+		pnlFilter.add(new PLabel("Catalog:"));
+		pnlFilter.add(filterCatalogs);
+		pnlFilter.add(new PLabel("Schema:"));
+		pnlFilter.add(filterSchema);
 		pnlFilter.add(new PLabel("Table filter:"));
 		pnlFilter.add(txtFilter);
 		pnlFilter.add(btnRefresh);
@@ -129,8 +143,11 @@ public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 						filter = filter + "%";
 					}
 				}
+				String catalog = (String)filterCatalogs.getSelectedCode();
+				String schema = (String)filterSchema.getSelectedCode();
+				LOGGER.info("Reading "+catalog+"."+ schema+"."+filter);
 				tblTables.clearData();
-				List<DTOTable> list = sqlService.metaDataTables(filter.toUpperCase());
+				List<DTOTable> list = sqlService.metaDataTables(catalog,schema,filter.toUpperCase());
 
 				for (DTOTable dto : list) {
 					if (!tableTableSetUp) {
@@ -153,6 +170,50 @@ public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 		return sqlService;
 	}
 
+	private void populateFilters() {
+		SqlService sqlService = getSqlService();
+		
+		List<String> cats = new ArrayList<>();
+		List<String> schema = new ArrayList<>();
+		
+		try {
+			cats.addAll(sqlService.metaCatalogs());
+		} catch (Exception ex) {
+			LOGGER.error("Error getting catalogs",ex);
+		}
+				
+		try {
+			schema.addAll(sqlService.metaSchema());
+		} catch (Exception ex) {
+			LOGGER.error("Error getting schema",ex);
+		}
+ 
+		CodedListItem<String> NULL = new CodedListItem<>(null,"{null}");
+		CodedListItem<String> BLANK = new CodedListItem<>(null,"{blank}");
+		
+		{
+			List<CodedListItem<String>> list = new ArrayList<>();
+			list.add(NULL);
+			list.add(BLANK);
+			for(String s:cats) {
+				list.add(new CodedListItem<>(s,s));	
+			}
+			filterCatalogs.setList(list);
+		
+		}
+		{
+			List<CodedListItem<String>> list = new ArrayList<>();
+			list.add(NULL);
+			list.add(BLANK);
+			for(String s:schema) {
+				list.add(new CodedListItem<>(s,s));	
+			}
+			filterSchema.setList(list);
+		
+		}
+		 
+		
+	}
  
 
 }

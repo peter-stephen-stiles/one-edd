@@ -64,7 +64,24 @@ public class SqlServiceImpl implements SqlService {
 			}
 		
 	}
- 
+
+
+	
+
+	@Override
+	public List<DTOTable> metaDataTables(String catalog, String schema,String tableNameFilter) throws SQLException {
+		List<DTOTable> list = null;
+		try(Connection con = cm.getConnection()){
+			try {
+			list=dao.metaDataTables(con, catalog, schema,tableNameFilter);
+
+			} finally {
+			con.rollback();
+			}
+		}
+		return list;
+	}
+	
 
 	@Override
 	public List<DTOTable> metaDataTables(String tableNameFilter) throws SQLException {
@@ -101,4 +118,29 @@ public class SqlServiceImpl implements SqlService {
 			}
 			}
 	}
+	
+	
+
+	public List<String> metaCatalogs() throws SQLException {
+		try(Connection con = cm.getConnection()){
+			try {
+			return dao.metaCatalogs(con);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
+	public List<String> metaSchema() throws SQLException {
+		try(Connection con = cm.getConnection()){
+			try {
+			return dao.metaSchema(con);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
+	
+	
+	
+	
 }
