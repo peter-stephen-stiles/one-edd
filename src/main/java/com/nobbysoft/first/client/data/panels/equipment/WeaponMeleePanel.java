@@ -85,7 +85,7 @@ public class WeaponMeleePanel extends AbstractDataPanel<WeaponMelee, String> imp
 
 	private final PTextField txtLength = new PTextField(20);
 	private final PTextField txtSpaceRequired = new PTextField(20);
-	private final PIntegerCombo txtSpeedFactor = new PIntegerCombo(1,10);
+	private final PIntegerCombo txtSpeedFactor = new PIntegerCombo(1,19);
 	
 	private final PComboEquipmentHands txtComboEquipmentHands = new PComboEquipmentHands();
 	
