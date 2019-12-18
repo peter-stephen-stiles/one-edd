@@ -50,10 +50,10 @@ public class PWeaponRanged extends PPanel implements PDataComponent  {
 	
 	
 	public void populateScreen(WeaponRangedI data) {
-		txtFireRate.setSelectedItem(data.getFireRate());
-		txtRangeS.setSelectedItem(data.getRangeS());
-		txtRangeM.setSelectedItem(data.getRangeS());
-		txtRangeL.setSelectedItem(data.getRangeS());
+		txtFireRate.setSelectedBigDecimal(data.getFireRate());
+		txtRangeS.setSelectedBigDecimal(data.getRangeS());
+		txtRangeM.setSelectedBigDecimal(data.getRangeM());
+		txtRangeL.setSelectedBigDecimal(data.getRangeL());
 		
 	}
 	

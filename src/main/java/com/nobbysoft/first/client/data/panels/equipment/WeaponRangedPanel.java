@@ -4,9 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.lang.invoke.MethodHandles;
 
-import javax.swing.BorderFactory;
-import javax.swing.border.EtchedBorder;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,13 +11,10 @@ import com.nobbysoft.first.client.components.PCheckBox;
 import com.nobbysoft.first.client.components.PCodeField;
 import com.nobbysoft.first.client.components.PDataComponent;
 import com.nobbysoft.first.client.components.PDialog;
-import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
-import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.first.client.components.special.DicePanel;
-import com.nobbysoft.first.client.components.special.PComboDICE;
 import com.nobbysoft.first.client.components.special.PComboEquipmentHands;
 import com.nobbysoft.first.client.components.special.PWeaponMagic;
 import com.nobbysoft.first.client.components.special.PWeaponRanged;
@@ -33,7 +27,6 @@ import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.equipment.WeaponRanged;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.utils.ReturnValue;
-import com.nobbysoft.first.common.views.DicePanelData;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")

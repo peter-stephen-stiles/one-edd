@@ -2,6 +2,8 @@ package com.nobbysoft.first.client.components;
 
 import java.awt.Dimension;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -16,69 +18,72 @@ import com.nobbysoft.first.common.utils.CodedListItem;
 @SuppressWarnings("serial")
 public class PComboBox<E> extends JComboBox<E> implements PDataComponent {
 
-	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass()); 
+	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-	
-	private JComponent linkedComponent=null;
-	
+	private JComponent linkedComponent = null;
+
 	public void linkSizeTo(JComponent c) {
-		linkedComponent=c;
+		linkedComponent = c;
 	}
+
 	public Dimension getMinimumSize() {
-		if(linkedComponent==null) {
+		if (linkedComponent == null) {
 			return super.getMinimumSize();
 		}
 		return linkedComponent.getMinimumSize();
-		
-	}	public Dimension getMaximumSize() {
-		if(linkedComponent==null) {
+
+	}
+
+	public Dimension getMaximumSize() {
+		if (linkedComponent == null) {
 			return super.getMaximumSize();
 		}
 		return linkedComponent.getMaximumSize();
-	}	
+	}
 
 	public Dimension getSize() {
-		if(linkedComponent==null) {
+		if (linkedComponent == null) {
 			return super.getSize();
 		}
 		return linkedComponent.getSize();
 	}
-	
-	public PComboBox(){
-		super(); 
+
+	public PComboBox() {
+		super();
 		setRenderer(new PListCellRenderer<E>());
 	}
-	
+
 	@Override
 	public void setTheValue(Object o) {
 		setSelectedItem(o);
 	}
 
-	public void setSelectedCode(Object in){
-		for(int i=0,n=getItemCount();i<n;i++){
+	public void setSelectedCode(Object in) {
+		for (int i = 0, n = getItemCount(); i < n; i++) {
 			Object o = getItemAt(i);
-			if(o instanceof CodedListItem){
-				CodedListItem<?> cli = (CodedListItem<?>)o;
-				if(in==null) {
-					if(cli==null) {
+			if (o instanceof CodedListItem) {
+				CodedListItem<?> cli = (CodedListItem<?>) o;
+				if (in == null) {
+					if (cli == null) {
 						setSelectedIndex(i);
 						return;
 					}
 				} else {
 					Object oo = cli.getItem();
-					if(oo!=null) {
-						if(oo.equals(in)){
+					if (oo != null) {
+						if (oo.equals(in)) {
 							setSelectedIndex(i);
 							return;
 						}
 					}
 				}
 			} else {
-				if (o!=null && o.equals(in)) {
+				if (o != null && o.equals(in)) {
 
 					setSelectedIndex(i);
 					return;
-				} if(o==null && in ==null) {
+				}
+				if (o == null && in == null) {
 
 					setSelectedIndex(i);
 					return;
@@ -86,20 +91,20 @@ public class PComboBox<E> extends JComboBox<E> implements PDataComponent {
 			}
 		}
 	}
-	
-	public Object getSelectedCode(){
+
+	public Object getSelectedCode() {
 		Object o = getSelectedItem();
-		if(o instanceof CodedListItem){
-			CodedListItem<?> cli = (CodedListItem<?>)o;
+		if (o instanceof CodedListItem) {
+			CodedListItem<?> cli = (CodedListItem<?>) o;
 			return ((CodedListItem) o).getItem();
 		} else {
 			return o;
 		}
 	}
-	
+
 	@Override
-	public E getTheValue() { 
-		return (E)getSelectedItem();
+	public E getTheValue() {
+		return (E) getSelectedItem();
 	}
 
 	@Override
@@ -111,47 +116,81 @@ public class PComboBox<E> extends JComboBox<E> implements PDataComponent {
 	public boolean isReadOnly() {
 		return !isEnabled();
 	}
-	
-	
+
 	public void clear() {
-		DefaultComboBoxModel model = (DefaultComboBoxModel)this.getModel();
+		DefaultComboBoxModel model = (DefaultComboBoxModel) this.getModel();
 		model.removeAllElements();
 	}
-	
-	public void setList(List<?> list){
+
+	public void setList(List<?> list) {
 		// remove all items
-		DefaultComboBoxModel model = (DefaultComboBoxModel)this.getModel();
+		DefaultComboBoxModel model = (DefaultComboBoxModel) this.getModel();
 		model.removeAllElements();
-		for(Object o:list){
+		for (Object o : list) {
 			model.addElement(o);
 		}
 	}
 
 	int ph = 0;
-	int pw=0;
+	int pw = 0;
+
 	@Override
 	public void setMinimumHeight(int height) {
-		ph=height;
+		ph = height;
 	}
+
 	@Override
 	public void setMinimumWidth(int width) {
-		pw=width;
+		pw = width;
 	}
+
 	@Override
 	public Dimension getPreferredSize() {
-		
-		if(linkedComponent!=null) {
+
+		if (linkedComponent != null) {
 			return linkedComponent.getPreferredSize();
 		}
-		
+
 		Dimension d = super.getPreferredSize();
-		if(d.getWidth()<pw) {
-			d.width=pw;
+		if (d.getWidth() < pw) {
+			d.width = pw;
 		}
-		if(d.getHeight()<ph) {
-			d.height=ph;
+		if (d.getHeight() < ph) {
+			d.height = ph;
 		}
 		return d;
 	}
-	
+
+	public void setSelectedBigDecimal(BigDecimal bd) {
+		LOGGER.info("set combo to:" + bd);
+		if (bd == null) {
+			setSelectedItem(null);
+		} else {
+			String ps = bd.toString();
+			LOGGER.info("string:" + ps);
+			for (int i = 0, n = getItemCount(); i < n; i++) {
+				Object o = getItemAt(i);
+				if (o != null) {
+
+					LOGGER.info("combo object:" + o + " (" + i + ")");
+					if (o instanceof BigDecimal) {
+						BigDecimal obd = (BigDecimal) o;						
+						if (obd.compareTo(bd)==0) {
+							setSelectedIndex(i);
+							return;
+						}
+					} else {
+						// string compare
+						String s = o.toString();
+						if(s.contentEquals(ps)) {
+							setSelectedIndex(i);
+							return;
+						}
+					}
+				}
+			}
+		}
+
+	}
+
 }
