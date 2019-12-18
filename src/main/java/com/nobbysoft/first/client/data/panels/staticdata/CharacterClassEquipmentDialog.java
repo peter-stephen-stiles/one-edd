@@ -17,6 +17,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
+import javax.swing.SwingUtilities;
 
 import com.nobbysoft.first.client.components.PButton;
 import com.nobbysoft.first.client.components.PButtonPanel;
@@ -90,6 +92,14 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 		PButtonPanel pnlButtons = new PButtonPanel();
 		thisPane.add(pnlHeader,BorderLayout.NORTH);
 		thisPane.add(pnlButtons,BorderLayout.SOUTH);
+
+		
+		PButton btnSelectAll = new PButton("Select All");
+		btnSelectAll.addActionListener(ae-> selectAll() );
+
+		PButton btnSelectNone = new PButton("Select None");
+		btnSelectNone.addActionListener(ae-> selectNone() );
+
 		
 		PButton btnSave = new PButton("Save");
 		btnSave.addActionListener(ae-> save() );
@@ -97,6 +107,10 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 		
 		PButton btnClose = new PButton("Cancel");
 		btnClose.addActionListener(ae-> dispose() );
+		
+		pnlButtons.add(btnSelectAll);
+		pnlButtons.add(btnSelectNone);
+		pnlButtons.add(new PLabel("      "));
 		
 		pnlButtons.add(btnSave);
 		pnlButtons.add(btnClose);
@@ -203,7 +217,7 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 			Popper.popError(this, "Problem : saving data", res);
 			return;
 		} else {
-			Popper.popError(this, "All good. Database updated", res);
+			Popper.popError(this, "All good. Database updated", res.getValue());
 		}
 		dispose();
 		} catch (Exception ex) {
@@ -211,5 +225,29 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 			return;
 		}
 	}
+	
+
+	private void selectNone() {
+		// go through visible and untick them...		
+		setAssigned(false);
+	}
+
+	private void setAssigned(boolean ass) {
+		ListModel<ViewClassEquipment> model = lstItems.getModel();
+		
+		for(int i=0,n=model.getSize();i<n;i++) {
+			ViewClassEquipment vce = model.getElementAt(i);
+			vce.setAssigned(ass);			
+		}
+		SwingUtilities.invokeLater(()->{
+			lstItems.repaint();	
+		});
+		
+	}
+	
+	private void selectAll() {
+		setAssigned(true);
+	}
+
 }
 
