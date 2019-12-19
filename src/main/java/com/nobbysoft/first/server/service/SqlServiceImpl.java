@@ -44,6 +44,7 @@ public class SqlServiceImpl implements SqlService {
 		try(Connection con = cm.getConnection()){
 			try {							
 			 dao.runSqlUpdate(con, sql);
+			 con.commit();
 			} finally {
 			con.rollback();
 			}

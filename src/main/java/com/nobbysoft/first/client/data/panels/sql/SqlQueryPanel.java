@@ -182,6 +182,7 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 			txtError.setText("You haven't entered any SQL!");
 			return;
 		}
+LOGGER.info("Doing a " +(update?"UPDATE":"SELECT") + " on "+sql);
 
 		btnQuery.setEnabled(false);
 		//btnUpdate.setEnabled(false);

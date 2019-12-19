@@ -17,6 +17,7 @@ public class PlayerCharacterEquipment implements Serializable,DataDTOInterface<P
 	private boolean equipped;
 	private EquipmentWhere equippedWhere;
 	
+	private int countOwned = 1;
 	
 	
 	
@@ -36,12 +37,12 @@ public class PlayerCharacterEquipment implements Serializable,DataDTOInterface<P
 
 	@Override
 	public Object[] getAsRow() { 
-		return new Object[] {this,pcId,equipmentType,code,equippedWhere};
+		return new Object[] {this,pcId,equipmentType,code,equippedWhere,countOwned};
 	}
 
 	@Override
 	public String[] getRowHeadings() { 
-		return new String[] {"Player","Type","Equipment","Where"};
+		return new String[] {"Player","Type","Equipment","Where","Count"};
 	}
 
 	@Override
@@ -102,13 +103,26 @@ public class PlayerCharacterEquipment implements Serializable,DataDTOInterface<P
 		this.equippedWhere = equippedWhere;
 	}
 
+ 
+
+	public int getCountOwned() {
+		return countOwned;
+	}
+
+	public void setCountOwned(int count) {
+		this.countOwned = count;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + countOwned;
 		result = prime * result + equipmentId;
 		result = prime * result + ((equipmentType == null) ? 0 : equipmentType.hashCode());
+		result = prime * result + (equipped ? 1231 : 1237);
+		result = prime * result + ((equippedWhere == null) ? 0 : equippedWhere.hashCode());
 		result = prime * result + pcId;
 		return result;
 	}
@@ -127,9 +141,15 @@ public class PlayerCharacterEquipment implements Serializable,DataDTOInterface<P
 				return false;
 		} else if (!code.equals(other.code))
 			return false;
+		if (countOwned != other.countOwned)
+			return false;
 		if (equipmentId != other.equipmentId)
 			return false;
 		if (equipmentType != other.equipmentType)
+			return false;
+		if (equipped != other.equipped)
+			return false;
+		if (equippedWhere != other.equippedWhere)
 			return false;
 		if (pcId != other.pcId)
 			return false;
@@ -140,7 +160,7 @@ public class PlayerCharacterEquipment implements Serializable,DataDTOInterface<P
 	public String toString() {
 		return "PlayerCharacterEquipment [pcId=" + pcId + ", equipmentId=" + equipmentId + ", equipmentType="
 				+ equipmentType + ", code=" + code + ", equipped=" + equipped + ", equippedWhere=" + equippedWhere
-				+ "]";
+				+ ", count=" + countOwned + "]";
 	}
 
  

@@ -102,8 +102,9 @@ public class DBMain {
 					dao.createConstraints(conn);
 				}
 				LOGGER.info("Constraints done");
-				
+				conn.commit();	
 			}
+			
 		} finally {
 				cm.shutdown();
 		}

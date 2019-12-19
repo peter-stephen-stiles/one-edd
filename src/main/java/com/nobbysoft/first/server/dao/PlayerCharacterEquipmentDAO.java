@@ -93,10 +93,10 @@ public class PlayerCharacterEquipmentDAO
 			
 			DAOUtils.createBooleans(con, tableName, newBoos);
 			
-//		String[] newInts = new String[] { 
-//				"attr_str", 
-//				};
-//		DAOUtils.createInts(con, tableName, newInts);
+		String[] newInts = new String[] { 
+				"count_owned", 
+				};
+		DAOUtils.createInts(con, tableName, newInts);
 
 	}
 	
@@ -129,6 +129,7 @@ public class PlayerCharacterEquipmentDAO
 		}
 	 
 		dto.setEquipped(rs.getBoolean(col++));
+		dto.setCountOwned(rs.getInt(col++));
 		
 		return dto;
 	}
@@ -153,6 +154,7 @@ public class PlayerCharacterEquipmentDAO
 		}
 		ps.setString(col++, ew);
 		ps.setBoolean(col++, value.isEquipped());
+		ps.setInt(col++, value.getCountOwned());
 		
 		return col;
 	}
@@ -174,7 +176,8 @@ public class PlayerCharacterEquipmentDAO
 				"equipment_type",
 				"code",
 				"equipped_where",
-				"equipped"
+				"equipped",
+				"count_owned"
 			};
 	}
 
