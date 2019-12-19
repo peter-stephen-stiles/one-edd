@@ -279,8 +279,9 @@ public class PlayerCharacterEquipmentDAO
 			public void hereHaveADTO(PlayerCharacterEquipment dto, boolean first)   {
 				NameAndEncumbrance d;
 				try {
-					d = getEquipmentDescription(con,dto.getEquipmentType().name(),dto.getCode());					
-				ViewPlayerCharacterEquipment v = new ViewPlayerCharacterEquipment(dto,d.getName(),d.getEncumbrance());
+					d = getEquipmentDescription(con,dto.getEquipmentType().name(),dto.getCode());	
+					int enc = d.getEncumbrance() * dto.getCountOwned();
+				ViewPlayerCharacterEquipment v = new ViewPlayerCharacterEquipment(dto,d.getName(),enc);
 				views.add(v);
 				} catch (SQLException e) {
 					LOGGER.error("ist all gone wrong for "+dto.getKey(),e);
