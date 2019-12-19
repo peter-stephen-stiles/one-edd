@@ -187,4 +187,37 @@ public class EquipmentClassServiceImpl implements EquipmentClassService {
 		}
 	}
 	
+	
+	public List<ViewClassEquipment> getViewForEquipmentAll(String type,String code) throws SQLException{
+		try(Connection con = cm.getConnection()){
+			try {
+			 return dao.getViewForEquipmentAll(con,type,code);
+
+			} finally {
+			con.rollback();
+			}
+		}
+		
+		
+	}
+
+	public ReturnValue<String> updateViewForEquipmentAll(String type,String code,List<ViewClassEquipment> list) throws SQLException {
+		ReturnValue<String> rv = null;
+		
+		try (Connection con = cm.getConnection()) {
+			try {
+				rv= dao.updateViewForEquipmentAll(con, type,code,list);
+				con.commit();
+			} finally {
+				con.rollback();
+			}
+		} catch (Exception ex) {
+			rv =new ReturnValue<>(ReturnValue.IS_ERROR.TRUE,Utils.getMessage(ex));
+		}
+	
+		
+		return rv;
+		
+	}
+	
 }

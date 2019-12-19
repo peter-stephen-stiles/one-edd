@@ -62,6 +62,7 @@ public class ConnectionManager {
 		}
 		
 		con= DriverManager.getConnection(protocol + databaseName + ";create=true", new Properties());
+		con.setAutoCommit(false);
 		}
 		return con;
 	}

@@ -225,6 +225,41 @@ public class EquipmentClassDAO extends AbstractDAO<EquipmentClass, EquipmentClas
 	}
 	 
 	
+	public ReturnValue<String> updateViewForEquipmentAll(Connection con, String type,String code,List<ViewClassEquipment> list) throws SQLException{
+
+		// remove all for class
+		int rc = 0;
+		{
+			String del = "DELETE FROM "+tableName+" WHERE type = ? AND code = ?";
+			
+			try(PreparedStatement ps = con.prepareStatement(del)){
+					ps.setString(1, type);
+					ps.setString(2, code);
+					rc = ps.executeUpdate();
+				
+			}
+		}
+			int ins =0;
+		{
+			for(ViewClassEquipment vce: list) {
+//				if(!vce.getEquipmentClass().getType().name().equals(type)) {
+//					throw new SQLException("Wrong type on "+vce);
+//				}
+				if(!vce.getEquipmentClass().getCode().equals(code)) {
+					throw new SQLException("Wrong code on "+vce);
+				}
+				if(vce.isAssigned()) {
+					insert(con,vce.getEquipmentClass());
+					ins++;
+				}
+			}
+		}
+		
+		String results = "Deleted "+rc+ " inserted "+ins+" valid classes for equipment.";
+		// all good :) Do a Billy Joel
+		return new ReturnValue<>(results);
+	}
+	
 	public ReturnValue<String> updateViewForClassAll(Connection con, String classId, List<ViewClassEquipment> list )throws SQLException{
 		
 		// remove all for class
@@ -256,6 +291,29 @@ public class EquipmentClassDAO extends AbstractDAO<EquipmentClass, EquipmentClas
 		return new ReturnValue<>(results);
 	}
 		
+
+	private String viewSelectAll2 = "select ve.type,ve.code,ve.name as equipment_name, cc.class_id, cc.name as class_name ," + 
+			"((select count(*) " + 
+			"   from view_equipment_class vec " + 
+			" where vec.type = ve.type " + 
+			"   and vec.code = ve.code " + 
+			"   and vec.equipment_name = ve.name " + 
+			"   and vec.class_id = cc.class_id) = 1) as is_there " + 
+			" from view_equipment ve " + 
+			"cross join character_class cc " + 
+			" WHERE ve.type= ? "+ 
+			"   AND ve.code= ? ";
+	
+	public List<ViewClassEquipment> getViewForEquipmentAll(Connection con, String type,String code) throws SQLException{
+		List<ViewClassEquipment> list = new ArrayList<>();
+		String sql = viewSelectAll2;
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setString(1, type);
+			ps.setString(2, code);
+			readView(list, ps);
+		}
+		return list;
+	}
 	
 	
 }

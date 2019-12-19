@@ -19,6 +19,8 @@ public interface EquipmentClassService extends DataServiceI<EquipmentClass,Equip
 	public List<ViewClassEquipment> getViewForClassAll(String classId) throws SQLException;
 	public ReturnValue<String> updateViewForClassAll(String classId,List<ViewClassEquipment> list) throws SQLException;
 	
+	public List<ViewClassEquipment> getViewForEquipmentAll(String type,String code) throws SQLException;
+	public ReturnValue<String> updateViewForEquipmentAll(String type,String code,List<ViewClassEquipment> list) throws SQLException;
 	 
 	
 }

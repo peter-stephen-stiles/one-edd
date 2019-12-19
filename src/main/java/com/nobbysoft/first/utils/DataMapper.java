@@ -76,6 +76,14 @@ public enum DataMapper {
 		buttonmap.put(CharacterClass.class, CharacterClassButtons.class);
 		buttonmap.put(PlayerCharacter.class, PlayerCharacterButtons.class);
 		
+		buttonmap.put(Armour.class, EquipmentButtons.class);
+		buttonmap.put(Shield.class, EquipmentButtons.class);
+		buttonmap.put(WeaponAmmunition.class, EquipmentButtons.class);
+		buttonmap.put(WeaponMelee.class, EquipmentButtons.class);
+		buttonmap.put(WeaponRanged.class, EquipmentButtons.class);
+		//buttonmap.put(Armour.class, EquipmentButtons.class);
+		
+		
 
 		daoimap.put(PlayerCharacter.class, PlayerCharacterDAO.class);
 		daoimap.put(PlayerCharacterHp.class, PlayerCharacterHpDAO.class);

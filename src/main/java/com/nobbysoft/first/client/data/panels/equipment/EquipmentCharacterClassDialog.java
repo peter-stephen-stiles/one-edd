@@ -1,4 +1,4 @@
-package com.nobbysoft.first.client.data.panels.staticdata;
+package com.nobbysoft.first.client.data.panels.equipment;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -10,7 +10,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.JCheckBox;
@@ -31,40 +33,53 @@ import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.equipment.EquipmentClass;
+import com.nobbysoft.first.common.entities.equipment.EquipmentI;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.first.common.servicei.EquipmentClassService;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.common.views.ViewClassEquipment;
 import com.nobbysoft.first.utils.DataMapper;
 
-public class CharacterClassEquipmentDialog  extends PDialog{
+@SuppressWarnings("serial")
+public class EquipmentCharacterClassDialog extends PDialog{
 
-	private CharacterClass characterClass;
+	private EquipmentI equipment;
 	
-	public CharacterClassEquipmentDialog(Window owner, String title) {
+	public EquipmentCharacterClassDialog(Window owner, String title) {
 		super(owner, title, ModalityType.DOCUMENT_MODAL);
 		
 		jbInit();
 	}
 	
-	public void initialise(CharacterClass characterClass) {
-		this.characterClass=characterClass;
-		lblClassId.setText(characterClass.getClassId());
-		lblClassName.setText(characterClass.getName());
+	public void initialise(EquipmentI equipment) {
+		this.equipment=equipment;
+		lblEquipmentType.setText(equipment.getType().getDescription());
+		lblEquipmentName.setText(equipment.getName());
 		//
+		//
+		CharacterClassService ccs = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
+		try {
+			List<CharacterClass> ccl = ccs.getList();
+			for(CharacterClass cc:ccl) {
+				characterClassNames.put(cc.getClassId(),cc.getName());
+			}
+		} catch (SQLException e) {
+			Popper.popError(this, e);
+		}
 		// get data
 		EquipmentClassService dao = (EquipmentClassService)DataMapper.INSTANCE.getDataService(EquipmentClass.class);
 		items.clear();
 		try {
-			items.addAll(dao.getViewForClassAll(characterClass.getClassId()));
+			items.addAll(dao.getViewForEquipmentAll(equipment.getType().name(),equipment.getCode()));
 		} catch (SQLException e) {
 			Popper.popError(this, e);
 		}
 		filter();
 	}
 	
-	private final PLabel lblClassId = new PLabel();
-	private final PLabel lblClassName = new PLabel();
+	private final PLabel lblEquipmentType = new PLabel();
+	private final PLabel lblEquipmentName = new PLabel();
 	private final PTextField txtFilter = new PTextField();
 	private List<ViewClassEquipment> items = new ArrayList<>();
 	private final PList<ViewClassEquipment> lstItems = new PList<ViewClassEquipment>();
@@ -74,6 +89,8 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 	private void jbInit() {
 		JPanel thisPane = (JPanel)this.getContentPane();
 		thisPane.setLayout(new BorderLayout(5,5));
+		
+		
 		
 		PPanel pnlHeader = new PPanel(new FlowLayout(5));
 
@@ -116,9 +133,9 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 		pnlButtons.add(btnSave);
 		pnlButtons.add(btnClose);
 		
-		pnlHeader.add(new PLabel("Class"));
-		pnlHeader.add(lblClassId);
-		pnlHeader.add(lblClassName);
+		pnlHeader.add(new PLabel("Equipment"));
+		pnlHeader.add(lblEquipmentType);
+		pnlHeader.add(lblEquipmentName);
 		txtFilter.setMinimumWidth(150);
 		pnlHeader.add(new PLabel("Filter"));
 		pnlHeader.add(txtFilter);
@@ -135,8 +152,8 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 		JScrollPane sclItems = new JScrollPane(lstItems) {
 			public Dimension getPreferredSize() {
 				Dimension d = super.getPreferredSize();
-				if(d.height<260) {
-					d.height=260;
+				if(d.height<240) {
+					d.height=240;
 				}
 				return d;
 			}
@@ -163,7 +180,8 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 			public Component getListCellRendererComponent(JList<? extends ViewClassEquipment> list, ViewClassEquipment value, int index,
 					boolean isSelected, boolean cellHasFocus) {
 								
-				String s= (value.getEquipmentClass().getType()+ " - "+value.getEquipmentName() );				
+				String n= characterClassNames.get(value.getEquipmentClass().getClassId());
+				String s= (value.getEquipmentClass().getClassId()+ " - "+n );				
 				lbl.setSelected(value.isAssigned());
 				lbl.setText(s);
 				if(isSelected||cellHasFocus){
@@ -181,6 +199,8 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 		
 	}
 
+	
+	private final Map<String,String> characterClassNames= new HashMap<>();
 	
 	private void filter() {
 		// add all relevant items to filter
@@ -221,7 +241,7 @@ public class CharacterClassEquipmentDialog  extends PDialog{
 		try {
 		EquipmentClassService dao = (EquipmentClassService)DataMapper.INSTANCE.getDataService(EquipmentClass.class);
 		
-		ReturnValue<String> res =dao.updateViewForClassAll(characterClass.getClassId(), items);
+		ReturnValue<String> res =dao.updateViewForEquipmentAll(equipment.getType().name(),equipment.getCode(), items);
 		if(res.isError()) {
 			Popper.popError(this, "Problem : saving data", res);
 			return;
