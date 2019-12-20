@@ -146,8 +146,12 @@ public class PlayerCharacterSpellServiceImpl implements PlayerCharacterSpellServ
 
 	public List<ViewPlayerCharacterSpell> getViewForPC(int pcId) throws SQLException {
 		try(Connection con = cm.getConnection()){
+			try {
 			return dao.getViewForPC(con,pcId);
+			} finally {
+				con.rollback();
 			}
+		}
 	}
 
  

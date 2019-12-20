@@ -139,8 +139,13 @@ public class PlayerCharacterHpServiceImpl implements PlayerCharacterHpService {
 	}
 
 	public List<ViewPlayerCharacterHp> getViewForPC(int pcId) throws SQLException {
+		
 		try (Connection con = cm.getConnection()) {
+			try {
 			return dao.getViewForPC(con, pcId);
+			} finally {
+				con.rollback();
+			}
 		}
 	}
 

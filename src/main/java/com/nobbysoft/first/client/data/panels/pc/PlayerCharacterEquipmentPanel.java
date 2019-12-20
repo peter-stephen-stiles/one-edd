@@ -81,10 +81,15 @@ public class PlayerCharacterEquipmentPanel extends PPanel {
 	private final PButton btnEquipmentEquip = new PButton("Equip");
 	private final PButton btnEquipmentUnEquip = new PButton("Unequip");
 	
+	private final PButton btnEquipmentMore = new PButton("More");
+	private final PButton btnEquipmentLess = new PButton("Less");
+	
 	private PDataComponent[] buttonComponents = new PDataComponent[] {btnEquipmentAdd ,
 		    btnEquipmentRemove ,
 		    btnEquipmentEquip ,
-			btnEquipmentUnEquip  };
+			btnEquipmentUnEquip,
+			btnEquipmentMore,
+			btnEquipmentLess};
 
 	
 		
@@ -94,6 +99,7 @@ private final ColumnConfig[] equipmentConfigs = new ColumnConfig[] {
 		new ColumnConfig("Type",20,150,5000),
 		new ColumnConfig("Equipped",20,60,5000),
 		new ColumnConfig("Where",20,100,5000),
+		new ColumnConfig("Count",20,100,5000),
 };
 
 private final PBasicTableWithModel tblEquipment = new PBasicTableWithModel(equipmentConfigs);
@@ -133,6 +139,10 @@ private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>
 		pnlEquipmentButtons.add(new PLabel("  "));
 		pnlEquipmentButtons.add(btnEquipmentEquip);
 		pnlEquipmentButtons.add(btnEquipmentUnEquip);
+		pnlEquipmentButtons.add(new PLabel("  "));
+		pnlEquipmentButtons.add(btnEquipmentMore);
+		pnlEquipmentButtons.add(btnEquipmentLess);
+		
 		
 		
 		JScrollPane sclEquipment = new JScrollPane(tblEquipment);
@@ -163,6 +173,16 @@ private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>
 		btnEquipmentUnEquip.addActionListener(ae ->{
 			unEquipEquipment();
 		});
+
+
+		btnEquipmentMore.addActionListener(ae ->{
+			moreEquipment();
+		});
+
+		btnEquipmentLess.addActionListener(ae ->{
+			lessEquipment();
+		});
+
 		
 		tblEquipment.addMouseListener(new MouseAdapter() {
 			@Override
@@ -315,6 +335,73 @@ private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>
 		}
 	}
 	
+	private void moreEquipment() {
+
+		PlayerCharacterEquipment pce=null;
+		String name="";
+		int rowNum=tblEquipment.getSelectedRow();
+		if(rowNum>=0) {
+			int modelRow =tblEquipment.convertRowIndexToModel(rowNum);
+			Object o0=tblEquipment.getValueAt(modelRow, 0);
+			Object o1=tblEquipment.getValueAt(modelRow, 1);
+			pce = (PlayerCharacterEquipment)o0;
+			name = (String)o1;
+		}
+		if(pce!=null) {
+
+			try {
+			PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
+	
+			pce.setCountOwned(pce.getCountOwned()+1);
+			
+			pces.update(pce);
+				
+			} catch (SQLException e) {
+				Popper.popError(this, e);
+			return;
+		}	
+				populateEquipmentTable();
+
+		}
+	}
+
+	private void lessEquipment() { 
+
+			PlayerCharacterEquipment pce=null;
+			String name="";
+			int rowNum=tblEquipment.getSelectedRow();
+			if(rowNum>=0) {
+				int modelRow =tblEquipment.convertRowIndexToModel(rowNum);
+				Object o0=tblEquipment.getValueAt(modelRow, 0);
+				Object o1=tblEquipment.getValueAt(modelRow, 1);
+				pce = (PlayerCharacterEquipment)o0;
+				name = (String)o1;
+			}
+			if(pce!=null) {
+
+				try {
+				PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
+		
+				int count=pce.getCountOwned();
+				if(count>1) {
+				pce.setCountOwned(count-1);				
+				
+				pces.update(pce);
+				} else {
+					Popper.popInfo(this, "You only have one", "You only have one of those, "+
+				"if you want to delete it please pick that option instead.");
+				}
+				} catch (SQLException e) {
+					Popper.popError(this, e);
+				return;
+			}	
+					populateEquipmentTable();
+
+			}
+		}
+
+	
+	
 	private void removeEquipment() {
 		PlayerCharacterEquipment pce=null;
 		String name="";
@@ -387,7 +474,8 @@ private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>
 						desc,
 						pce.getEquipmentType(),
 						pce.isEquipped(),
-						pce.getEquippedWhere()
+						pce.getEquippedWhere(),
+						pce.getCountOwned()
 				});
 			}
 			} catch (Exception ex) {
