@@ -1,5 +1,7 @@
 package com.nobbysoft.first.client.utils;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
@@ -49,6 +51,25 @@ public class XmlUtilities {
 		
 		
 	}
+
+	public static Document convertReaderToXML(Reader xmlReader) {
+		// Parser that produces DOM object trees from XML content
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+		// API to obtain DOM Document instance
+		DocumentBuilder builder = null;
+		try {
+			// Create DocumentBuilder with default configuration
+			builder = factory.newDocumentBuilder();
+
+			// Parse the content to Document object
+			Document doc = builder.parse(new InputSource(xmlReader));
+			return doc;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	public static Document convertStringToXML(String xmlString) {
 		// Parser that produces DOM object trees from XML content
@@ -64,7 +85,7 @@ public class XmlUtilities {
 			Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
 			return doc;
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error making xml document",e);
 		}
 		return null;
 	}
@@ -74,6 +95,19 @@ public class XmlUtilities {
 		((Element) node).setAttribute(name, value);
 	}
 
+	public static String xmlToPlainString(Document doc)
+			throws TransformerFactoryConfigurationError, TransformerConfigurationException, TransformerException {
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource source = new DOMSource(doc);
+		StringWriter writer = new StringWriter();
+		StreamResult result = new StreamResult(writer);
+		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+		transformer.transform(source, result);
+		String xmlString = writer.getBuffer().toString();
+		return xmlString;
+	}
+	
 	public static String xmlToHtmlString(Document doc)
 			throws TransformerFactoryConfigurationError, TransformerConfigurationException, TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -114,6 +148,16 @@ public class XmlUtilities {
 		addAttribute(newEl,attribute,attributeValue);		 
 		return newEl;
 	}
+
+	public static Element addCDataElement(Node n, String name, String value) {
+		Document od = n.getOwnerDocument();
+		Element newEl = od.createElement(name);
+		n.appendChild(newEl);
+		Node tn = od.createCDATASection(value);
+		newEl.appendChild(tn);
+		return newEl;
+	}
+
 	
 	public static Element addElement(Node n, String name, String value) {
 		Document od = n.getOwnerDocument();

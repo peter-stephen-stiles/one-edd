@@ -5,9 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JMenuItem;
@@ -32,8 +35,15 @@ import com.nobbysoft.first.common.servicei.SqlService;
 import com.nobbysoft.first.common.utils.ResultSetListener;
 import com.nobbysoft.first.utils.DataMapper;
 
+@SuppressWarnings("serial")
 public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 
+
+	static {
+		SqlHistory.initialise();
+	}
+
+	
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass()); 
 	public SqlQueryPanel() {
 		super();
@@ -162,6 +172,7 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 		
 		
 		executeSql(update, sql);
+		SqlHistory.addHistory(sql);
 		} catch (Exception ex) {
 			pnlData.getModel().setSelectedIndex(2);
 			txtError.setText(Utils.getMessage(ex)+"\n"+Utils.stackTrace(ex));
@@ -169,23 +180,24 @@ public class SqlQueryPanel extends PPanel  implements SqlPanelInterface {
 		}
 		}
 	
-	private void execute(boolean update) {
-		
-		String sql = txtEditor.getCurrentText().trim();
-		LOGGER.info("sql:"+sql);
-		
-		executeSql(update, sql);
-	}
+//	private void execute(boolean update) {
+//		
+//		String sql = txtEditor.getCurrentText().trim();
+//		LOGGER.info("sql:"+sql);
+//		
+//		executeSql(update, sql);
+//	}
+	
 	private void executeSql(boolean update, String sql) {
 		if(sql.isEmpty()) {
 			pnlData.getModel().setSelectedIndex(2);
 			txtError.setText("You haven't entered any SQL!");
 			return;
 		}
-LOGGER.info("Doing a " +(update?"UPDATE":"SELECT") + " on "+sql);
 
-		btnQuery.setEnabled(false);
-		//btnUpdate.setEnabled(false);
+		LOGGER.info("Doing a " +(update?"UPDATE":"SELECT") + " on "+sql);
+
+		btnQuery.setEnabled(false); 
 		try {
 			
 		Object sqlo = DataMapper.INSTANCE.getNonDataService(SqlService.class);

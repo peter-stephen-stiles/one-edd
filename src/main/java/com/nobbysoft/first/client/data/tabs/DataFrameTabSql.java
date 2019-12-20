@@ -28,6 +28,7 @@ import com.nobbysoft.first.client.components.PTable;
 import com.nobbysoft.first.client.components.PTextArea;
 import com.nobbysoft.first.client.data.panels.sql.SqlDBMDPanel;
 import com.nobbysoft.first.client.data.panels.sql.SqlExportPanel;
+import com.nobbysoft.first.client.data.panels.sql.SqlHistoryPanel;
 import com.nobbysoft.first.client.data.panels.sql.SqlPanelInterface;
 import com.nobbysoft.first.client.data.panels.sql.SqlQueryPanel;
 import com.nobbysoft.first.client.utils.GuiUtils; 
@@ -48,9 +49,12 @@ public class DataFrameTabSql extends PPanel {
 		PButton btnNewSqlTab = new PButton("New sql tab");
 		PButton btnNewMetaTab = new PButton("New meta tab");
 		PButton btnNewExportTab = new PButton("New export tab");
+		PButton btnNewHistoryTab = new PButton("New history tab");
 		pnlTopButtons.add(btnNewSqlTab);
 		pnlTopButtons.add(btnNewMetaTab);
 		pnlTopButtons.add(btnNewExportTab);
+		pnlTopButtons.add(btnNewHistoryTab);
+		
 		add(pnlTopButtons,BorderLayout.NORTH);
 		add(pnlSqlTabs,BorderLayout.CENTER);
 		SqlQueryPanel sqlPanel = new SqlQueryPanel();
@@ -71,6 +75,15 @@ public class DataFrameTabSql extends PPanel {
 			pnlSqlTabs.setSelectedComponent((JComponent)sqlPanelX);
 			sqlPanelX.addActionListener(a2e->{removeSqlTab(a2e);});
 		});
+		btnNewHistoryTab.addActionListener(ae->{
+			SqlPanelInterface sqlPanelX = new SqlHistoryPanel();
+			sqlPanelX.setName("History#"+panelCount++);
+			pnlSqlTabs.addTab(sqlPanelX.getName(), (JComponent)sqlPanelX);
+			pnlSqlTabs.setSelectedComponent((JComponent)sqlPanelX);
+			sqlPanelX.addActionListener(a2e->{removeSqlTab(a2e);});
+		});
+		
+		
 		btnNewExportTab.addActionListener(ae->{
 			SqlPanelInterface sqlPanelX = new SqlExportPanel();
 			sqlPanelX.setName("Export#"+panelCount++);
@@ -127,9 +140,9 @@ public class DataFrameTabSql extends PPanel {
 			
 		});
 	}
-private void	removeSqlTab(ActionEvent ae) {
+	private void	removeSqlTab(ActionEvent ae) {
 	
-}
+	}
 
 
 }
