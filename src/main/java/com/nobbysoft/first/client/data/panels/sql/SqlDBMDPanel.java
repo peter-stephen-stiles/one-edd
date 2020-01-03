@@ -207,15 +207,22 @@ public class SqlDBMDPanel extends PPanel implements SqlPanelInterface  {
 		
 		try {
 			Object cat = filterCatalogs.getSelectedCode();
-			prefs.put(FILTER_CAT,(String)cat);
+			if(cat!=null) {
+				prefs.put(FILTER_CAT,(String)cat);
+			} else {
+				prefs.put(FILTER_CAT,null);
+			}
 		} catch (Exception e) {
 			LOGGER.error("error catting",e);
 		}
 		
 		try {
 			Object she=filterSchema.getSelectedCode();
-			
-			prefs.put(FILTER_SCH,(String)she);
+			if(she!=null) {
+				prefs.put(FILTER_SCH,(String)she);
+			} else {
+				prefs.put(FILTER_SCH,null);
+			}
 		} catch (Exception e) {
 			LOGGER.error("error scheming",e);
 		}

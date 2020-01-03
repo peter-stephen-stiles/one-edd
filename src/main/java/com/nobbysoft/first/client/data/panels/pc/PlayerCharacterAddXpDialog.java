@@ -25,8 +25,7 @@ import com.nobbysoft.first.common.servicei.PlayerCharacterService;
 import com.nobbysoft.first.common.utils.DICE;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.common.utils.Roller;
-import com.nobbysoft.first.utils.DataMapper;
-import com.sun.javafx.webkit.theme.Renderer;
+import com.nobbysoft.first.utils.DataMapper; 
 
 @SuppressWarnings("serial")
 public class PlayerCharacterAddXpDialog extends JDialog {
