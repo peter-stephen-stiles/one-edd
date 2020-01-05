@@ -117,8 +117,8 @@ wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getM
 
 	}
 
-	DataServiceI getDataService(Class clazz) {
-		DataServiceI dao = DataMapper.INSTANCE.getDataService(clazz);
+	DataServiceI<?,?> getDataService(Class<?> clazz) {
+		DataServiceI<?,?> dao = DataMapper.INSTANCE.getDataService(clazz);
 		return dao;
 	}
 

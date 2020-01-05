@@ -110,8 +110,8 @@ public class AddEquipmentMelee extends PDialog implements AddEquipmentI {
 
 	}
 
-	DataServiceI getDataService(Class clazz) {
-		DataServiceI dao = DataMapper.INSTANCE.getDataService(clazz);
+	DataServiceI<?,?> getDataService(Class<?> clazz) {
+		DataServiceI<?,?> dao = DataMapper.INSTANCE.getDataService(clazz);
 		return dao;
 	}
 

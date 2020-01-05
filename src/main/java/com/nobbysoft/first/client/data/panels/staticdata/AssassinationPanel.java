@@ -194,7 +194,7 @@ public class AssassinationPanel extends AbstractDataPanel<Assassination,Assassin
 	protected DataServiceI<?, ?> getDataService() {   
 		DataServiceI dao;
 		try {
-		Class d = DataMapper.INSTANCE.getServiceForEntity(Assassination.class); 
+		Class<DataServiceI> d = DataMapper.INSTANCE.getServiceForEntity(Assassination.class); 
 			Constructor<DataServiceI> cc = d.getConstructor();
 				dao = (DataServiceI) cc.newInstance();
 			} catch (Exception e) {
