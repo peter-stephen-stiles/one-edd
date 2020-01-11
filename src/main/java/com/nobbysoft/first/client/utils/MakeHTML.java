@@ -351,12 +351,12 @@ public class MakeHTML {
 					{
 						{
 							Element row = XmlUtilities.addElement(table, "tr");
-							Element th0=XmlUtilities.addElement(row, "th", "");
+							Element th0=XmlUtilities.addElement(row, "th", "Weapon");
 							XmlUtilities.addAttribute(th0, "colspan", "3");
 							Element th1=XmlUtilities.addElement(row, "th", "Damage");
 							XmlUtilities.addAttribute(th1, "colspan", "3");
 							Element th2=XmlUtilities.addElement(row, "th", "To Hit Adjustments");
-							XmlUtilities.addAttribute(th2, "colspan", "13");
+							XmlUtilities.addAttribute(th2, "colspan", "14");
 						}
 						Element row = XmlUtilities.addElement(table, "tr");
 						XmlUtilities.addElement(row, "th", "What");
@@ -365,7 +365,7 @@ public class MakeHTML {
 						XmlUtilities.addElement(row, "th", "SM");
 						XmlUtilities.addElement(row, "th", "L");
 						XmlUtilities.addElement(row, "th", "str adj");
-						for(int i=2,n=10;i<n;i++) {
+						for(int i=2,n=10;i<=n;i++) {
 							XmlUtilities.addElement(row, "th", "AC "+i);
 						}
 						XmlUtilities.addElement(row, "th", "str/dex");
@@ -653,7 +653,7 @@ public class MakeHTML {
 		}
 		WeaponACAdjustmentsI aca = (WeaponACAdjustmentsI)dam;
 		Map<String,Integer> acas = aca.getACAdjustments();
-		for(int i=2,n=10;i<n;i++) {
+		for(int i=2,n=10;i<=n;i++) {
 			int adj = acas.get(""+i);
 			XmlUtilities.addElement(row, "td", SU.a(adj, "-"));
 		}
