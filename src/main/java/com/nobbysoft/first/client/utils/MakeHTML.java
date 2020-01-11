@@ -210,9 +210,10 @@ public class MakeHTML {
 					XmlUtilities.addElement(row, "td", "MAA");
 					XmlUtilities.addElement(row, "td", SU.a(wisdom.getMagicalAttackAdjustment(), "none"));
 					XmlUtilities.addElement(row, "td", "Spell bonus");
-					Node bs = XmlUtilities.addElement(row, "td");
+					Element bs = XmlUtilities.addElement(row, "td");
+					XmlUtilities.addAttribute(bs, "colspan", "3");
 					for (String s : divSpellBonuses) {
-						XmlUtilities.addElement(bs, "p", s);
+						XmlUtilities.addElement(bs, "div", s);
 					}
 
 					XmlUtilities.addElement(row, "td", "Chance of spell failure");
@@ -553,7 +554,7 @@ public class MakeHTML {
 									Element row = XmlUtilities.addElement(table, "tr");
 									XmlUtilities.addElement(row, "td", key.getDesc());
 									if (pce != null) {
-										XmlUtilities.addElement(row, "td", pce.getDescription());
+										XmlUtilities.addElement(row, "td", pce.getPlayerCharacterEquipment().getEquipmentType().getDescription());
 										XmlUtilities.addElement(row, "td", pce.getEquipmentDescription());
 										enc += pce.getEncumbrance();
 										XmlUtilities.addElement(row, "td", pce.getEncumbrance());
