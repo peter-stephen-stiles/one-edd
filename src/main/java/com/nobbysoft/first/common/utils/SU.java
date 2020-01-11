@@ -12,6 +12,44 @@ public class SU {
 	}
 
 	/**
+	 * only works for strings :)
+	 * @param value
+	 * @param strings
+	 * @return
+	 */
+	public static boolean inListCaseInsensitive(String value, String... strings ) {
+		for(String string:strings) {
+			if(string==null) {
+				if(value==null) {
+					return true;
+				}
+			} else if(string.equalsIgnoreCase(value)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * works for any object type
+	 * @param value
+	 * @param strings
+	 * @return
+	 */
+	public static boolean inList(Object value, Object... strings ) {
+		for(Object string:strings) {
+			if(string==null) {
+				if(value==null) {
+					return true;
+				}
+			} else if(string.equals(value)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * string form of a chance on a D6 i.e. 1/6 or 3/6; zero not displayed
 	 * @param value
 	 * @return

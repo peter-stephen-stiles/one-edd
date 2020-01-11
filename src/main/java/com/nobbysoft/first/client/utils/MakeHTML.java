@@ -20,8 +20,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.nobbysoft.first.common.constants.Constants;
+import com.nobbysoft.first.common.entities.equipment.EquipmentType;
 import com.nobbysoft.first.common.entities.equipment.EquipmentWhere;
+import com.nobbysoft.first.common.entities.equipment.WeaponACAdjustmentsI;
+import com.nobbysoft.first.common.entities.equipment.WeaponDamageI;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
+import com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
@@ -318,7 +322,63 @@ public class MakeHTML {
 				}
 
 			}
-
+			
+			Map<String, List<ViewPlayerCharacterEquipment>> equipment = data.getEquipment(pc.getPcId());
+			List<ViewPlayerCharacterEquipment> equipped = equipment.get("E");
+			List<ViewPlayerCharacterEquipment> unEquipped = equipment.get("N");
+			
+			{
+				List<ViewPlayerCharacterEquipment> weaponsE = new ArrayList<>();
+				List<ViewPlayerCharacterEquipment> weaponsU = new ArrayList<>();
+				// equipped weapons
+				for(ViewPlayerCharacterEquipment equip:equipped) {
+					if(SU.inList(equip.getPlayerCharacterEquipment().getEquipmentType(),
+							EquipmentType.MELEE_WEAPON,EquipmentType.WEAPON_RANGED)) {
+						weaponsE.add(equip);
+					}
+				}
+				for(ViewPlayerCharacterEquipment equip:unEquipped) {
+					if(SU.inList(equip.getPlayerCharacterEquipment().getEquipmentType(),
+							EquipmentType.MELEE_WEAPON,EquipmentType.WEAPON_RANGED)) {
+						weaponsU.add(equip);
+					}
+				}
+				if(weaponsE.size()+weaponsU.size()>0) {
+					XmlUtilities.addElement(body, "h2", "Attacks");
+					Element table = table = XmlUtilities.addElement(body, "table");
+					XmlUtilities.addAttribute(table, "border", "1");
+					
+					{
+						{
+							Element row = XmlUtilities.addElement(table, "tr");
+							Element th0=XmlUtilities.addElement(row, "th", "");
+							XmlUtilities.addAttribute(th0, "colspan", "3");
+							Element th1=XmlUtilities.addElement(row, "th", "Damage");
+							XmlUtilities.addAttribute(th1, "colspan", "3");
+							Element th2=XmlUtilities.addElement(row, "th", "To Hit Adjustments");
+							XmlUtilities.addAttribute(th2, "colspan", "13");
+						}
+						Element row = XmlUtilities.addElement(table, "tr");
+						XmlUtilities.addElement(row, "th", "What");
+						XmlUtilities.addElement(row, "th", "Type");
+						XmlUtilities.addElement(row, "th", "Equipped?");
+						XmlUtilities.addElement(row, "th", "SM");
+						XmlUtilities.addElement(row, "th", "L");
+						XmlUtilities.addElement(row, "th", "str adj");
+						for(int i=2,n=10;i<n;i++) {
+							XmlUtilities.addElement(row, "th", "AC "+i);
+						}
+						XmlUtilities.addElement(row, "th", "str/dex");
+					}
+					for(ViewPlayerCharacterEquipment weapon:weaponsE) {
+						doWeapon(table,weapon,true,data,strength,dexterity);
+					}
+					for(ViewPlayerCharacterEquipment weapon:weaponsU) {
+						doWeapon(table,weapon,false,data,strength,dexterity);
+					}
+				}
+				
+			}
 			{
 
 				Map<Comparable, String> abilitiesMap = data.getCodedListMap(Constants.CLI_THIEF_ABILITY);
@@ -430,10 +490,9 @@ public class MakeHTML {
 				}
 
 			}
+			
 			{
-				Map<String, List<ViewPlayerCharacterEquipment>> equipment = data.getEquipment(pc.getPcId());
-				List<ViewPlayerCharacterEquipment> equipped = equipment.get("E");
-				List<ViewPlayerCharacterEquipment> unEquipped = equipment.get("N");
+
 				int enc = 0;
 
 				Map<EquipmentWhere, List<ViewPlayerCharacterEquipment>> quip = new HashMap<>();
@@ -568,4 +627,42 @@ public class MakeHTML {
 		return sb.toString();
 	}
 
+	
+	private void doWeapon(Element table,ViewPlayerCharacterEquipment weapon,boolean equipped,DataAccessThingy data,
+			Strength str,Dexterity dex) {
+		PlayerCharacterEquipment pce = weapon.getPlayerCharacterEquipment();
+		boolean melee=weapon.getPlayerCharacterEquipment().getEquipmentType().equals(EquipmentType.MELEE_WEAPON);
+		Element row = XmlUtilities.addElement(table, "tr");
+		XmlUtilities.addElement(row, "td", weapon.getEquipmentDescription());
+		XmlUtilities.addElement(row, "td", weapon.getPlayerCharacterEquipment().getEquipmentType().getDescription());
+		String eq="No";
+		if(equipped) {
+		eq = pce.getEquippedWhere().getDescription();	
+		}
+		XmlUtilities.addElement(row, "td", eq);
+		// damage and stuff
+		WeaponDamageI dam=data.getWeapon(pce);
+		if(melee) {
+			XmlUtilities.addElement(row, "td", dam.getSMDamage());
+			XmlUtilities.addElement(row, "td", dam.getLDamage() );
+			XmlUtilities.addElement(row, "td", SU.a(str.getDamageAdjustment(),""));
+		} else {
+		XmlUtilities.addElement(row, "td", dam.getSMDamage());
+		XmlUtilities.addElement(row, "td", dam.getLDamage());
+		XmlUtilities.addElement(row, "td", "");
+		}
+		WeaponACAdjustmentsI aca = (WeaponACAdjustmentsI)dam;
+		Map<String,Integer> acas = aca.getACAdjustments();
+		for(int i=2,n=10;i<n;i++) {
+			int adj = acas.get(""+i);
+			XmlUtilities.addElement(row, "td", SU.a(adj, "-"));
+		}
+		String tha ="";
+		if(melee) {
+			tha = SU.a(str.getHitProbability(),"");
+		} else {
+			tha = SU.a(dex.getReactionAttackAdjustment(),"");
+		}
+		XmlUtilities.addElement(row, "td", tha);
+	}
 }

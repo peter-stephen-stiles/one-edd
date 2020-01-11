@@ -1,5 +1,7 @@
 package com.nobbysoft.first.common.entities.equipment;
 
+import java.util.Map;
+
 public interface WeaponACAdjustmentsI {
 	public int getACAdjustment02();
 	public int getACAdjustment03();
@@ -10,6 +12,7 @@ public interface WeaponACAdjustmentsI {
 	public int getACAdjustment08();
 	public int getACAdjustment09();
 	public int getACAdjustment10();
+	public Map<String,Integer> getACAdjustments();
 	public void setACAdjustment02(int adj);
 	public void setACAdjustment03(int adj);
 	public void setACAdjustment04(int adj);

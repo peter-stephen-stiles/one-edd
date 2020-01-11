@@ -1,6 +1,8 @@
 package com.nobbysoft.first.common.entities.equipment;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.nobbysoft.first.common.entities.DataDTOInterface;
 import com.nobbysoft.first.common.utils.DICE;
@@ -46,6 +48,20 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 	private int ACAdjustment08;
 	private int ACAdjustment09;
 	private int ACAdjustment10;
+	
+	public Map<String,Integer> getACAdjustments(){
+		 Map<String,Integer> aca = new HashMap<>();
+		 aca.put("2",ACAdjustment02);
+		 aca.put("3",ACAdjustment03);
+		 aca.put("4",ACAdjustment04);
+		 aca.put("5",ACAdjustment05);
+		 aca.put("6",ACAdjustment06);
+		 aca.put("7",ACAdjustment07);
+		 aca.put("8",ACAdjustment08);
+		 aca.put("9",ACAdjustment09);
+		 aca.put("10",ACAdjustment10); 
+		 return aca;
+	}
 	
 	private int magicBonus;
 	private int extraMagicBonus;

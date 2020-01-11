@@ -16,7 +16,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.common.constants.Constants;
+import com.nobbysoft.first.common.entities.equipment.EquipmentType;
 import com.nobbysoft.first.common.entities.equipment.EquipmentWhere;
+import com.nobbysoft.first.common.entities.equipment.WeaponDamageI;
+import com.nobbysoft.first.common.entities.equipment.WeaponMelee;
+import com.nobbysoft.first.common.entities.equipment.WeaponRanged;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
@@ -48,6 +52,8 @@ import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
 import com.nobbysoft.first.common.servicei.RaceThiefAbilityBonusService;
 import com.nobbysoft.first.common.servicei.StrengthService;
 import com.nobbysoft.first.common.servicei.ThiefAbilityService;
+import com.nobbysoft.first.common.servicei.WeaponMeleeService;
+import com.nobbysoft.first.common.servicei.WeaponRangedService;
 import com.nobbysoft.first.common.servicei.WisdomService;
 import com.nobbysoft.first.common.utils.CodedListItem;
 import com.nobbysoft.first.common.utils.ReturnValue;
@@ -440,5 +446,21 @@ public class DataAccessThingy {
 		return quip;
 	}
 	
+	
+	public WeaponDamageI getWeapon(PlayerCharacterEquipment pce) {
+		
+		try {
+			WeaponMeleeService wms = (WeaponMeleeService )getDataService(WeaponMelee.class);
+			WeaponRangedService wrs = (WeaponRangedService )getDataService(WeaponRanged.class);
+			if(pce.getEquipmentType().equals(EquipmentType.MELEE_WEAPON)) {
+				return wms.get(pce.getCode());
+			} else if(pce.getEquipmentType().equals(EquipmentType.WEAPON_RANGED)) {
+				return wrs.get(pce.getCode());
+			}  
+			return null;
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
+		}
+	}
 	
 }
