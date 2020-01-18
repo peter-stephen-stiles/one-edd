@@ -301,7 +301,11 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		// are we at maximum level?
 		int maxLevel = cclService.getMaxAllowedLevel(playerCharacter.getPcId(), characterClass.getClassId());
 		if(level>=maxLevel) {
-			return new ReturnValue<String>(ReturnValue.IS_ERROR.TRUE,"Already at maximum level!");
+			if(fullDiagnostic) {
+				return new ReturnValue<String>(ReturnValue.IS_ERROR.TRUE,"Already at maximum level!");
+			} else {
+				return  new ReturnValue<String>("Can't level up that class");
+			}
 		}
 		CharacterClassLevel thisLevel = cclService.getThisLevel(characterClass.getClassId(),level);
 		if(thisLevel==null) {
