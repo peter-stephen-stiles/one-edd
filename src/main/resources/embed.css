@@ -11,6 +11,12 @@
         text-decoration: none;
     }
     
+    table,
+    table tr td,
+    table tr th {
+       page-break-inside: avoid;
+    }
+    
     table {    
     padding: 5px;
      border: 0px;
