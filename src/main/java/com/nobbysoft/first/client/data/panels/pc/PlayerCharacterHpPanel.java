@@ -119,7 +119,8 @@ public class PlayerCharacterHpPanel extends PPanel {
 			Popper.popError(this, "Save first", "You have to save your character before you add XP, sorry!");
 			return;
 		}
-		
+
+		boolean oneOk=false;
 		Race race=null;
 		RaceService raceService = (RaceService)getDataService(Race.class);
 		try {
@@ -128,20 +129,30 @@ public class PlayerCharacterHpPanel extends PPanel {
 			Popper.popError(this, e);
 			return;
 		}
-		PlayerCharacterAddXpDialog add = new PlayerCharacterAddXpDialog(GuiUtils.getParent(this));
+		boolean again=true;
+		while(!again) {
+		
+		PlayerCharacterAddXpDialog add = new PlayerCharacterAddXpDialog(GuiUtils.getParent(this),again);
 		add.setPlayerCharacter(pc, race);
 		add.pack();
 		add.setLocationRelativeTo(null);
 		add.setVisible(true);
 		if (!add.isCancelled()) {
+			again=add.getAgain();
+			oneOk=true;
 			// refresh
+
+			//populateTable();
+		} else {
+			again=false;
+		}
+		}
+		if(oneOk) {
 			LOGGER.info("Refreshing table");
 			if(pcUpdatedListener!=null) {
 				pcUpdatedListener.playerCharacterUpdated(pc);
 			}
-			//populateTable();
 		}
-
 	}
  
 

@@ -541,14 +541,20 @@ public class PlayerCharacterPanel extends AbstractDataPanel<PlayerCharacter, Int
 		}
 		try {
 			Race race = (Race) txtRace.getSelectedItem();
-			PlayerCharacterAddXpDialog addXp = new PlayerCharacterAddXpDialog(GuiUtils.getParent(this));
-			addXp.setPlayerCharacter(pc, race);
-			addXp.pack();
-			addXp.setLocationRelativeTo(null);
-			addXp.setVisible(true);
-			if (!addXp.isCancelled()) {
-				ccs.update(pc);
-				pc = ccs.get(pc.getPcId());
+			boolean again=true;
+			while(!again) {
+				PlayerCharacterAddXpDialog addXp = new PlayerCharacterAddXpDialog(GuiUtils.getParent(this),again);
+				addXp.setPlayerCharacter(pc, race);
+				addXp.pack();
+				addXp.setLocationRelativeTo(null);
+				addXp.setVisible(true);
+				if (!addXp.isCancelled()) {
+					again=addXp.getAgain();
+					ccs.update(pc);
+					pc = ccs.get(pc.getPcId());
+				} else {
+					again=false;
+				}
 			}
 		} catch (Exception ex) {
 			Popper.popError(this, ex);

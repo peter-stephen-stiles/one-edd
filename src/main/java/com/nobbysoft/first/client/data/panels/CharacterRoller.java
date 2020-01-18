@@ -475,7 +475,7 @@ public class CharacterRoller extends PDialog {
 		pnlMiddle.add(lblClass3,GBU.label(1,22));
 		pnlMiddle.add(txtHp3,GBU.text(2,22));
 		
-		pnlMiddle.add(txtReasons,GBU.hPanel(0, 24, 5, 1));
+		pnlMiddle.add(sclReasons,GBU.hPanel(0, 24, 5, 1));
 		
 		
 		pnlMiddle.add(new PLabel(""), GBU.label(99, 99));

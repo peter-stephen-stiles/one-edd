@@ -65,26 +65,38 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 	public boolean doRowButton(Window window, String name, ViewPlayerCharacter object) {
 		LOGGER.info("Button "+name);
 		if(ADD_XP.equals(name)) {	
+			boolean anyOk=false;
 			try {
-				PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);
-				RaceService rs = (RaceService) getDataService(Race.class);
-				PlayerCharacter pc = ccs.get(object.getPlayerCharacter().getPcId());
-				Race race = rs.get(pc.getRaceId());
-				PlayerCharacterAddXpDialog dialog = new PlayerCharacterAddXpDialog(window);
-				dialog.setPlayerCharacter(pc, race);
-				dialog.pack();
-				dialog.setLocationRelativeTo(null);
-				dialog.setVisible(true);
-				if (!dialog.isCancelled()) {
-					ccs.update(pc);
-					pc = ccs.get(pc.getPcId());
-					return true;
+				boolean again=true;
+				
+				while(again) {
+					PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);
+					RaceService rs = (RaceService) getDataService(Race.class);
+					PlayerCharacter pc = ccs.get(object.getPlayerCharacter().getPcId());
+					Race race = rs.get(pc.getRaceId());
+					PlayerCharacterAddXpDialog dialog = new PlayerCharacterAddXpDialog(window,again);
+					dialog.setPlayerCharacter(pc, race);
+					dialog.pack();
+					dialog.setLocationRelativeTo(null);
+					dialog.setVisible(true);
+					if (!dialog.isCancelled()) {
+						anyOk=true;
+						again = dialog.getAgain();
+						ccs.update(pc);
+						pc = ccs.get(pc.getPcId());
+						if(!again) {
+							return true;
+						}
+					} else {
+						// cancelled so not again
+						again=false;
+					}
 				}
 			} catch (Exception ex) {
 				Popper.popError(window, ex);
 				return false;
 			} 
-			return false;
+			return anyOk;
 		} else if(SPELLS.equals(name)) {	
 			try {
 			PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);

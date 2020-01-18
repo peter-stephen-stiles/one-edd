@@ -35,9 +35,10 @@ public class PlayerCharacterAddXpDialog extends JDialog {
  public boolean isCancelled() {
 	return cancelled;
 }
-	public PlayerCharacterAddXpDialog(Window owner) {
+	public PlayerCharacterAddXpDialog(Window owner,boolean again) {
 		super(owner,ModalityType.APPLICATION_MODAL);
 		jbInit();
+		cbxAgain.setSelected(again);
 	}
 	
 	private PlayerCharacter playerCharacter;
@@ -47,6 +48,12 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 	private final ThreeClasses threeClasses = new ThreeClasses();
 	
 	private final PIntegerField txtXp = new PIntegerField();
+	
+	private final PCheckBox cbxAgain = new PCheckBox("Again?");
+	
+	public boolean getAgain() {
+		return cbxAgain.isSelected();
+	}
 	
 	public void setPlayerCharacter(PlayerCharacter playerCharacter,Race race) {
 		cancelled=true;
@@ -93,6 +100,13 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		pnlDetails.add(new PLabel("XP to add:"),GBU.label(0,1));
 		pnlDetails.add(txtXp,GBU.text(1,1));
 		pnlDetails.add(btnAddXp,GBU.button(2,1));
+		 
+
+		PButton btnLevelUp = new PButton("or Level Up!");
+		btnLevelUp.addActionListener(ae -> levelUp());
+		pnlDetails.add(btnLevelUp,GBU.button(3,1));
+		
+		pnlDetails.add(cbxAgain,GBU.text(0, 2));
 		
 		pnlDetails.add(new PLabel(""),GBU.label(99,99));
 		
@@ -101,10 +115,55 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		content.add(pnlButtons,BorderLayout.SOUTH);
 	}
 
+	private void levelUp() {
+		cancelled=true;
+		try {
+			int xp=0;
+			int[] needs = threeClasses.getNeed();
+			if(playerCharacter.getSecondClass()==null) {
+				// only one class, p'easy!
+				xp=needs[0];
+				
+			} else	if(race.isMultiClassable()) {	
+				// find minimum, multiply by number of active classes and add it
+				int mult=0;
+				for(int i=0,n=playerCharacter.classCount();i<n;i++) {
+					int need = needs[i];
+					if(need>0) {
+						mult++;
+					}
+					if(xp==0) {
+						xp=need;
+					} else if(need<xp) {
+						xp=need;
+					}
+				}
+				xp = xp * mult;
+			} else {
+				// dual class - biggest class only
+				xp  = needs[playerCharacter.classCount()];
+			}
+			txtXp.setIntegerValue(xp);
+			
+			
+		ReturnValue<String> ret = addXp(false);
+		if(ret.isError()) {
+			Popper.popError(this, "Sorry, I can't do that, Dave", ret);
+			return;
+		}
+		} catch (Exception ex) {
+			Popper.popError(this, ex);
+			return;
+		}
+		
+		cancelled=false;
+		dispose();
+	}
+	
 	private void addXpListener() {
 		cancelled=true;
 		try {
-		ReturnValue<String> ret = addXp();
+		ReturnValue<String> ret = addXp(true);
 		if(ret.isError()) {
 			Popper.popError(this, "Sorry, I can't do that, Dave", ret);
 			return;
@@ -141,7 +200,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		return dao;
 	}
 	
-	private ReturnValue<String> addXp() throws Exception{
+	private ReturnValue<String> addXp(boolean fullDiagnostic) throws Exception{
 		
 		int xpAdd =txtXp.getIntegerValue();
 		if(xpAdd<=0) {
@@ -161,7 +220,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 			CharacterClass characterClass = characterClasses[0];
 			PlayerCharacterLevel playerCharacterLevel = playerCharacterLevels[0];
 			
-			ReturnValue<String> ret = addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,xpAdd,0);
+			ReturnValue<String> ret = addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,xpAdd,0,fullDiagnostic);
 			if(ret.isError()) {
 				return ret;
 			} else {
@@ -182,7 +241,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 				for (int i=0,n=classCount;i<n;i++) {
 					CharacterClass characterClass = characterClasses[i];
 					PlayerCharacterLevel playerCharacterLevel = playerCharacterLevels[i];
-					ReturnValue<String> ret =  addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,perClassXp,0);
+					ReturnValue<String> ret =  addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,perClassXp,0,fullDiagnostic);
 					if(ret.isError()) {
 						return ret;
 					} else {
@@ -200,7 +259,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 				int classCount = playerCharacter.classCount();
 				int maxLevel = 0;
 				for(int i=0,n=classCount-1;i<n;i++){
-					CharacterClass characterClass = characterClasses[i];
+					//CharacterClass characterClass = characterClasses[i];
 					int pcl = playerCharacterLevels[i].getThisClassLevel();
 					if(pcl>maxLevel) {
 						maxLevel = pcl;
@@ -209,7 +268,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 
 				CharacterClass characterClass = characterClasses[classCount-1];
 				PlayerCharacterLevel playerCharacterLevel = playerCharacterLevels[classCount-1];
-				ReturnValue<String> ret = addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,xpAdd,maxLevel);
+				ReturnValue<String> ret = addSomeXpToAClass( playerCharacter,playerCharacterLevel, characterClass, constitution,xpAdd,maxLevel,fullDiagnostic);
 				if(ret.isError()) {
 					return ret;
 				} else {
@@ -228,7 +287,8 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 			CharacterClass characterClass,
 			Constitution constitution,
 			int xpAdd,
-			int maxOtherLevel) throws SQLException {
+			int maxOtherLevel,
+			boolean fullDiagnostic) throws SQLException {
 
 		String retVal="";
 		
@@ -237,7 +297,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		int level = playerCharacterLevel.getThisClassLevel();
 		int xp = playerCharacterLevel.getThisClassExperience();
 		int hp  = playerCharacterLevel.getThisClassHp();
-		String classId = playerCharacterLevel.getThisClass();
+
 		// are we at maximum level?
 		int maxLevel = cclService.getMaxAllowedLevel(playerCharacter.getPcId(), characterClass.getClassId());
 		if(level>=maxLevel) {
@@ -249,11 +309,7 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 		}
 		
 
-		int mostHD = characterClass.getMaxHdLevel();
-//		if(level==mostHD) {
-//			return  new ReturnValue<String>(ReturnValue.IS_ERROR.TRUE,"Already at maximum level!");
-//		}
-		
+		int mostHD = characterClass.getMaxHdLevel();		
 		
 		CharacterClassLevel nameLevel = cclService.getNameLevel(characterClass.getClassId()); // could be null!
 		
@@ -279,9 +335,12 @@ public class PlayerCharacterAddXpDialog extends JDialog {
 					// just add spome points
 					newHp = characterClass.getHpAfterNameLevel();
 				}
+				
 				retVal=retVal+"Extra hitpoints "+newHp + " making total "+(hp+newHp)+ " ";
-				if(lostXp>0) {
-					retVal=retVal+"You wasted "+lostXp+" XP :( ";
+				if(fullDiagnostic) {
+					if(lostXp>0) {
+						retVal=retVal+"You wasted "+lostXp+" XP :( ";
+					}
 				}
 			}
 			

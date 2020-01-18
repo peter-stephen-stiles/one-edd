@@ -50,6 +50,12 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 	private final PTextField txtClassNextExperience2 = new PTextField();
 	private final PTextField txtClassNextExperience3 = new PTextField();
 
+	private final PIntegerField txtNeed1 = new PIntegerField();
+	private final PIntegerField txtNeed2 = new PIntegerField();
+	private final PIntegerField txtNeed3 = new PIntegerField();
+
+	private final PIntegerField[] needs= new PIntegerField[] { txtNeed1, txtNeed2,
+			txtNeed3 };	
 	private final PTextField[] nextExperience = new PTextField[] { txtClassNextExperience1, txtClassNextExperience2,
 			txtClassNextExperience3 };
 
@@ -71,7 +77,8 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 	private final PIntegerField[] hpValuesLabels = new PIntegerField[] { txtClassHp1, txtClassHp2, txtClassHp3 };
 
 	private PDataComponent[] disableThese = new PDataComponent[] {
-
+			txtNeed1, txtNeed2,
+			txtNeed3,
 			txtClass1, txtClass2, txtClass3, txtClassLevel1, txtClassLevel2, txtClassLevel3, txtClassHp1, txtClassHp2,
 			txtClassHp3, txtClassHpTotal, txtClassExperience1, txtClassExperience2, txtClassExperience3,
 			txtClassNextExperience1, txtClassNextExperience2, txtClassNextExperience3 };
@@ -111,6 +118,10 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 		txtClassNextExperience2.setName("XP for Next Level (2)");
 		txtClassNextExperience3.setName("XP for Next Level (3)");
 
+		txtNeed1.setName("Need (1)");
+		txtNeed2.setName("Need (2)");
+		txtNeed3.setName("Need (3)");
+		
 		lblClass1.setText(txtClass1.getName());
 		lblClass2.setText(txtClass2.getName());
 		lblClass3.setText(txtClass3.getName());
@@ -156,6 +167,15 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 		add(txtClassNextExperience2, GBU.text(9, 9));
 		add(txtClassNextExperience3, GBU.text(9, 10));
 
+		add(new PLabel("Need"), GBU.label(10, 8));
+		add(new PLabel("Need"), GBU.label(10, 9));
+		add(new PLabel("Need"), GBU.label(10, 10));
+		
+
+		add(txtNeed1, GBU.text(11, 8));
+		add(txtNeed2, GBU.text(11, 9));
+		add(txtNeed3, GBU.text(11, 10));
+		
 		add(new PLabel("total"), GBU.label(4, 11));
 		add(txtClassHpTotal, GBU.text(5, 11));
 
@@ -196,7 +216,12 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 		int x3 = (txtClassExperience3.getIntegerValue());
 		return new int[] { x1, x2, x3 };
 	}
-
+	public int[] getNeed() {
+		int x1 = (txtNeed1.getIntegerValue());
+		int x2 = (txtNeed2.getIntegerValue());
+		int x3 = (txtNeed3.getIntegerValue());
+		return new int[] { x1, x2, x3 };
+	}
 	private void selectClass(PComboBox<CharacterClass> combo, String classId) {
 		combo.setSelectedIndex(0);
 		if (classId != null) {
@@ -383,6 +408,7 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 					PIntegerField txtLevel = levels[i];
 					PTextField nextXp = nextExperience[i];
 					PIntegerField exp = experience[i];
+					PIntegerField need = needs[i];
 					int xp = exp.getIntegerValue();
 					int level = txtLevel.getIntegerValue();
 					try {
@@ -392,9 +418,11 @@ public class ThreeClasses extends JPanel implements PDataComponent {
 								int next = ccl.getToXp() + 1;
 								int inc = (next - xp);
 								nextXp.setTheValue("" + (next));
+								need.setIntegerValue(inc);
 								nextXp.setToolTipText("need " + inc);
 							} else {
 								nextXp.setTheValue("(max)");
+								need.setText("");
 							}
 						}
 					} catch (Exception ex) {
