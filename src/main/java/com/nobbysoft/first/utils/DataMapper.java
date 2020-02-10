@@ -103,6 +103,7 @@ public enum DataMapper {
 		
 		daoimap.put(SavingThrow.class, SavingThrowDAO.class);//
 		daoimap.put(RaceClassLimit.class, RaceClassLimitDAO.class);//
+		daoimap.put(RaceSkill.class, RaceSkillDAO.class);//
 		daoimap.put(RaceThiefAbilityBonus.class, RaceThiefAbilityBonusDAO.class);//
 		daoimap.put(Constitution.class,ConstitutionDAO.class);
 		daoimap.put(Intelligence.class,IntelligenceDAO.class);
@@ -135,6 +136,7 @@ public enum DataMapper {
 		staticDataPanels.put(ThiefAbilityType.class,ThiefAbilityTypePanel.class);//
 		staticDataPanels.put(CharacterClass.class,CharacterClassPanel.class);
 		staticDataPanels.put(RaceClassLimit.class, RaceClassLimitPanel.class); //
+		staticDataPanels.put(RaceSkill.class, RaceSkillPanel.class); //
 		staticDataPanels.put(RaceThiefAbilityBonus.class, RaceThiefAbilityBonusPanel.class); //
 		staticDataPanels.put(Constitution.class, ConstitutionPanel.class);
 		staticDataPanels.put(Intelligence.class, IntelligencePanel.class);
@@ -167,6 +169,7 @@ public enum DataMapper {
 		entityservicemap.put(Race.class, RaceService.class);//
 		entityservicemap.put(ThiefAbilityType.class, ThiefAbilityTypeService.class);//
 		entityservicemap.put(RaceClassLimit.class, RaceClassLimitService.class);//
+		entityservicemap.put(RaceSkill.class, RaceSkillService.class);//
 		entityservicemap.put(RaceThiefAbilityBonus.class, RaceThiefAbilityBonusService.class);//
 		entityservicemap.put(Constitution.class, ConstitutionService.class);//
 		entityservicemap.put(Intelligence.class, IntelligenceService.class);//
@@ -200,6 +203,7 @@ public enum DataMapper {
 		servicemap.put(RaceService.class, RaceServiceImpl.class);//
 		servicemap.put(ThiefAbilityTypeService.class, ThiefAbilityTypeServiceImpl.class);//
 		servicemap.put(RaceClassLimitService.class, RaceClassLimitServiceImpl.class);//
+		servicemap.put(RaceSkillService.class, RaceSkillServiceImpl.class);//
 		servicemap.put(RaceThiefAbilityBonusService.class, RaceThiefAbilityBonusServiceImpl.class);//
 		servicemap.put(CodedListService.class, CodedListServiceImpl.class);
 		servicemap.put(ConstitutionService.class, ConstitutionServiceImpl.class);//

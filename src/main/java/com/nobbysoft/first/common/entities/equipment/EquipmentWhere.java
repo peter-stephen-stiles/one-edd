@@ -13,7 +13,9 @@ public enum EquipmentWhere{
 	FOOT_R("Foot, Right",10),
 	FOOT_L("Foot, Left",11),
 	PACK ("Pack",12),
-	OTHER("Other",13);
+	FINGERS_R ("Fingers (Right Hand)",13),
+	FINGERS_L ("Fingers (Left Hand)",14),
+	OTHER("Other",15);
 	
 	private int index;
 	private String description;
