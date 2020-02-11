@@ -17,16 +17,18 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 	private static final String TO_HIT = "To-Hit Values";
 	private static final String SAVES = "Saving Throws";
 	private static final String EQUIPMENT = "Equipment";
+	private static final String SKILLS = "Skills";
 
 	public CharacterClassButtons() {
 
 		rowButtons.add(ROLL_HP);
 		rowButtons.add(LEVELS);
+		rowButtons.add(SKILLS);
 		rowButtons.add(SPELLS);
 		rowButtons.add(TO_HIT);
 		rowButtons.add(SAVES);
 		rowButtons.add(EQUIPMENT);
-		tableButtons.add("Everybody dance now");
+		//tableButtons.add("Everybody dance now");
 	}
 
 	private List<String> rowButtons = new ArrayList<>();
@@ -55,6 +57,13 @@ public class CharacterClassButtons implements DataButtonsInterface<CharacterClas
 			
 		} else if (LEVELS.equals(name)) {			
 			ClassLevelsDialog dialog = new ClassLevelsDialog(window,"Levels for "+object.getName());
+			dialog.initialise(object);
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);			
+			dialog.setVisible(true);
+			return false;
+		}else if (SKILLS.equals(name)) {			
+			ClassSkillsDialog dialog = new ClassSkillsDialog(window,"Skills for "+object.getName());
 			dialog.initialise(object);
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);			
