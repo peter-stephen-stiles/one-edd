@@ -26,9 +26,11 @@ import com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassSkill;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassSpell;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
 import com.nobbysoft.first.common.entities.staticdto.Race;
+import com.nobbysoft.first.common.entities.staticdto.RaceSkill;
 import com.nobbysoft.first.common.entities.staticdto.RaceThiefAbilityBonus;
 import com.nobbysoft.first.common.entities.staticdto.ThiefAbility;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Charisma;
@@ -39,6 +41,7 @@ import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
 import com.nobbysoft.first.common.entities.staticdto.attributes.StrengthKey;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
 import com.nobbysoft.first.common.servicei.CharacterClassService;
+import com.nobbysoft.first.common.servicei.CharacterClassSkillService;
 import com.nobbysoft.first.common.servicei.CharacterClassSpellService;
 import com.nobbysoft.first.common.servicei.CharacterClassToHitService;
 import com.nobbysoft.first.common.servicei.CharismaService;
@@ -49,6 +52,7 @@ import com.nobbysoft.first.common.servicei.DexterityService;
 import com.nobbysoft.first.common.servicei.IntelligenceService;
 import com.nobbysoft.first.common.servicei.PlayerCharacterEquipmentService;
 import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
+import com.nobbysoft.first.common.servicei.RaceSkillService;
 import com.nobbysoft.first.common.servicei.RaceThiefAbilityBonusService;
 import com.nobbysoft.first.common.servicei.StrengthService;
 import com.nobbysoft.first.common.servicei.ThiefAbilityService;
@@ -246,6 +250,59 @@ public class DataAccessThingy {
 		
 	}
 	
+	public List<String> getActiveClasses(PlayerCharacter playerCharacter, Race race){
+		List<String> characterClassIds = new ArrayList<>();
+		
+		boolean second = !(playerCharacter.getSecondClass()==null||playerCharacter.getSecondClass().isEmpty());
+		boolean third = !(playerCharacter.getThirdClass()==null||playerCharacter.getThirdClass().isEmpty());
+		
+		if(!second){
+			// single-class charactcr, return the fist class id only
+			characterClassIds.add(playerCharacter.getFirstClass());
+			
+		} else {
+			if(race.isMultiClassable()) {
+				characterClassIds.add(playerCharacter.getFirstClass());
+				// add the second class
+				characterClassIds.add(playerCharacter.getSecondClass());
+				if(third){
+					// has a third class
+					characterClassIds.add(playerCharacter.getThirdClass());	
+				}
+			} else {
+				// dual class things get difficult :O
+				
+				int cl1 = playerCharacter.getFirstClassLevel();
+				int cl2 = playerCharacter.getSecondClassLevel();
+				int cl3 = playerCharacter.getThirdClassLevel();
+				if(!third) {
+					// only two levels
+					if(cl2>=cl1) {
+						// good level #1 is active as well as #1
+						characterClassIds.add(playerCharacter.getFirstClass());						
+						characterClassIds.add(playerCharacter.getSecondClass());
+					} else {
+						// only second class
+						characterClassIds.add(playerCharacter.getSecondClass());
+					}
+					
+				} else {
+					// three levels. buggers.
+					characterClassIds.add(playerCharacter.getThirdClass());
+					if(cl3>=cl2 && cl2>=cl1) {
+						// class 2 is active
+						characterClassIds.add(playerCharacter.getSecondClass());
+					}
+					if(cl3>=cl1) {
+						characterClassIds.add(playerCharacter.getFirstClass());		
+					}
+  
+				}
+			}
+		}
+		return characterClassIds;
+	}
+	
 	public List<CharacterClassToHit> getToHit(PlayerCharacter playerCharacter, Race race) {
 		
 		List<CharacterClassToHit> list = new ArrayList<>();
@@ -401,7 +458,7 @@ public class DataAccessThingy {
 				
 				LOGGER.info(sbMax.toString());			
 				
-				CodedListItem cli = new CodedListItem(ccs.getSpellClassId(), sbMax.toString());
+				CodedListItem cli = new CodedListItem(ccs.getClassId()+ ":"+ccs.getSpellClassId(), sbMax.toString());
 				clis.add(cli);
 				
 			
@@ -461,6 +518,35 @@ public class DataAccessThingy {
 		} catch (SQLException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+	
+	public List<CharacterClassSkill> getCharacterClassSkills(String classId, int level){
+		
+		try {
+			CharacterClassSkillService wms = (CharacterClassSkillService )getDataService(CharacterClassSkill.class);
+			ReturnValue<List<CharacterClassSkill>> skills =wms.getSkillForClassLevel(classId,level);
+			if(skills.isError()) {
+				throw new IllegalStateException(skills.getErrorMessage());
+			} else {
+				return skills.getValue();	
+			}			
+		} catch (SQLException e) {
+			LOGGER.error("Error getting class skills for "+classId,e);
+			throw new IllegalStateException(e);
+		}
+	}
+	
+	public List<RaceSkill> getRaceSkills(String raceId){
+		
+		try {
+			RaceSkillService wms = (RaceSkillService )getDataService(RaceSkill.class);
+			List<RaceSkill> raceSkills =wms.getSkillsForRace(raceId);
+			return raceSkills;
+		} catch (SQLException e) {
+			LOGGER.error("Error getting race skills for "+raceId,e);
+			throw new IllegalStateException(e);
+		}
+		
 	}
 	
 }

@@ -118,4 +118,15 @@ public class RaceSkillServiceImpl implements RaceSkillService {
 			}
 	}
 
+	@Override
+	public List<RaceSkill> getSkillsForRace(String raceId) throws SQLException {
+		try(Connection con = cm.getConnection()){
+			try {
+			 return dao.getSkillsForRace(con, raceId);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
+	
 }

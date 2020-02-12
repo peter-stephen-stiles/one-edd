@@ -171,10 +171,12 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 			if (dto != null) {
 				// now to make character sheet up
 				CharacterSheet dialog = new CharacterSheet(window);
-				dialog.setPlayerCharacter(dto);
-				dialog.pack();
-				dialog.setLocationRelativeTo(null);
-				dialog.setVisible(true);
+				boolean ok =dialog.setPlayerCharacter(dto);
+				if(ok) {
+					dialog.pack();
+					dialog.setLocationRelativeTo(null);
+					dialog.setVisible(true);
+				}
 				// no refresh just for character sheet!
 				}
 			} catch (Exception ex) {

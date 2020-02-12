@@ -28,8 +28,10 @@ import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClassSkill;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
 import com.nobbysoft.first.common.entities.staticdto.Race;
+import com.nobbysoft.first.common.entities.staticdto.RaceSkill;
 import com.nobbysoft.first.common.entities.staticdto.SavingThrow;
 import com.nobbysoft.first.common.entities.staticdto.ThiefAbility;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Charisma;
@@ -151,6 +153,9 @@ public class MakeHTML {
 			Map<Comparable, String> stNames = data.getSavingThrowNameMap();
 
 			List<CharacterClassToHit> toHits = data.getToHit(pc, race);
+			
+			
+			List<String> activeClasses = data.getActiveClasses(pc, race);
 
 			boolean extraHitPointBonus = false;
 			for (CharacterClass c : characterClasses.values()) {
@@ -241,7 +246,7 @@ public class MakeHTML {
 					} else {
 						XmlUtilities.addElement(row, "td", SU.a(constitution.getHitPointAdjustment(), "0"));
 					}
-					XmlUtilities.addElement(row, "td", "Sys shk surv.");
+					XmlUtilities.addElement(row, "td", "System shock surv.");
 					XmlUtilities.addElement(row, "td", SU.p(constitution.getSystemShockSurvival()));
 					XmlUtilities.addElement(row, "td", "Ress. surv.");
 					XmlUtilities.addElement(row, "td", SU.p(constitution.getResurrectionSurvival()));
@@ -251,7 +256,7 @@ public class MakeHTML {
 					Element row = XmlUtilities.addElement(table, "tr");
 					XmlUtilities.addElementWithAttribute(row, "th", "CHR", "class", "attribute");
 					XmlUtilities.addElementWithAttribute(row, "td", pc.getAttrChr(), "class", "charisma");
-					XmlUtilities.addElement(row, "td", "Max hench.");
+					XmlUtilities.addElement(row, "td", "Max henchmen");
 					XmlUtilities.addElement(row, "td", (charisma.getMaxHenchmen()));
 					XmlUtilities.addElement(row, "td", "Loyalty base");
 					XmlUtilities.addElement(row, "td", SU.p(charisma.getLoyaltyBase(), "normal"));
@@ -424,6 +429,8 @@ public class MakeHTML {
 
 			Map<String, String> classNames = data.getClassNames();
 
+			// List<String> activeClasses
+			
 			{
 
 				List<CodedListItem> allowed = data.workOutAllowedSpells(pc);
@@ -433,18 +440,37 @@ public class MakeHTML {
 					XmlUtilities.addAttribute(table, "border", "1");
 					{
 						Element row = XmlUtilities.addElement(table, "tr");
-						XmlUtilities.addElementWithAttribute(row, "th", "Allowed Spells", "colspan", "2");
+						XmlUtilities.addElementWithAttribute(row, "th", "Allowed Spells", "colspan", "3");
 					}
 					{
 						Element row = XmlUtilities.addElement(table, "tr");
 						XmlUtilities.addElement(row, "th", "Class");
+						XmlUtilities.addElement(row, "th", "Spell Class");
 						XmlUtilities.addElement(row, "th", "Spells");
 					}
+					boolean anyInactive=false;
 					for (CodedListItem all : allowed) {
 						Element row = XmlUtilities.addElement(table, "tr");
+						String[] ccs = ((String) all.getItem()).split(":");
+						String classId =ccs[0];
+						String spellClassId = ccs[1];
+						boolean activeClass = activeClasses.contains(classId);
+						if(activeClass) {
+							XmlUtilities.addElement(row, "td", classNames.get(classId));
+							XmlUtilities.addElement(row, "td", classNames.get(spellClassId));
+							XmlUtilities.addElement(row, "td", all.getDescription());
+						} else {
+							anyInactive=true;
+							String name = classNames.get(classId)+" *";
+							XmlUtilities.addElementWithAttribute(row, "td", name,"class","inactive");
+							XmlUtilities.addElementWithAttribute(row, "td", classNames.get(spellClassId),"class","inactive");
+							XmlUtilities.addElementWithAttribute(row, "td", all.getDescription(),"class","inactive");
+						}
+					}
+					if(anyInactive) {
 
-						XmlUtilities.addElement(row, "td", classNames.get((String) all.getItem()));
-						XmlUtilities.addElement(row, "td", all.getDescription());
+						Element row = XmlUtilities.addElement(table, "tr");
+						XmlUtilities.addElementWithAttribute(row, "td", "* = Inactive spells due to dual class restrictions","colspan","3");
 					}
 				}
 
@@ -596,7 +622,55 @@ public class MakeHTML {
 				}
 
 			}
+			
+			// SKILLS
+			//
+			//
+			//
+			List<RaceSkill> raceSkills = data.getRaceSkills(pc.getRaceId());
+			if(raceSkills.size()>0) {
+				XmlUtilities.addElement(body, "h2", "Race Skills");
+				Element table = XmlUtilities.addElement(body, "table");
+				XmlUtilities.addAttribute(table, "border", "1");
+				{
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "Skill");
+					XmlUtilities.addElement(row, "th", "Definition");
+				}
+				for (RaceSkill pce : raceSkills) {
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "td", pce.getSkillName());
+					XmlUtilities.addElement(row, "td", pce.getSkillDefinition());
+				}
+			}
 
+			
+			List<CharacterClassSkill> classSkills1 = data.getCharacterClassSkills(pc.getFirstClass(), pc.getFirstClassLevel());
+			List<CharacterClassSkill> classSkills2 = data.getCharacterClassSkills(pc.getSecondClass(), pc.getSecondClassLevel());
+			List<CharacterClassSkill> classSkills3 = data.getCharacterClassSkills(pc.getThirdClass(), pc.getThirdClassLevel());
+			if(classSkills1.size()>0 ||classSkills2.size()>0 ||classSkills3.size()>0) {
+				XmlUtilities.addElement(body, "h2", "Class Skills");
+				Element table = XmlUtilities.addElement(body, "table");
+				XmlUtilities.addAttribute(table, "border", "1");
+				{
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElement(row, "th", "Class");
+					XmlUtilities.addElement(row, "th", "Level");
+					XmlUtilities.addElement(row, "th", "Skill");
+					XmlUtilities.addElement(row, "th", "Definition");
+				}
+				List<CharacterClassSkill> classSkills = new ArrayList();
+				classSkills.addAll(classSkills1);
+				classSkills.addAll(classSkills2);
+				classSkills.addAll(classSkills3);
+				boolean anyInact=classSkills(characterClasses, classSkills, table,activeClasses);
+				if(anyInact) {
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElementWithAttribute(row, "td", "* = Inactive skills due to dual class restrictions","colspan","4");
+				}
+			}
+			
+			
 			String xmlString = XmlUtilities.xmlToHtmlString(doc);
 
 			return xmlString;
@@ -604,6 +678,32 @@ public class MakeHTML {
 		} catch (Exception e) {
 			return makeHtmlError(e);
 		}
+	}
+
+	private boolean classSkills(Map<String, CharacterClass> characterClasses, List<CharacterClassSkill> classSkills1,
+			Element table, List<String> activeClasses) {
+		boolean anInactiveClass=false;
+		for (CharacterClassSkill pce : classSkills1) {
+			boolean activeClass= activeClasses.contains(pce.getClassId());
+			String name = characterClasses.get(pce.getClassId()).getName();
+			if(!activeClass) {
+				name = name+" *";
+				anInactiveClass=true;
+			}
+			Element row = XmlUtilities.addElement(table, "tr");
+			if(activeClass){
+				XmlUtilities.addElement(row, "td", name);
+				XmlUtilities.addElement(row, "td", ""+pce.getFromLevel());
+				XmlUtilities.addElement(row, "td", pce.getSkillName());
+				XmlUtilities.addElement(row, "td", pce.getSkillDefinition());
+			} else {
+				XmlUtilities.addElementWithAttribute(row, "td", name,"class","inactive");
+				XmlUtilities.addElementWithAttribute(row, "td", ""+pce.getFromLevel(),"class","inactive");
+				XmlUtilities.addElementWithAttribute(row, "td", pce.getSkillName(),"class","inactive");
+				XmlUtilities.addElementWithAttribute(row, "td", pce.getSkillDefinition(),"class","inactive");				
+			}
+		}
+		return anInactiveClass;
 	}
 
 	private String readStyles() {

@@ -146,7 +146,7 @@ public class CharacterClassSkillServiceImpl implements CharacterClassSkillServic
 		return new ReturnValue<Integer>(created);
 	}
  
-	public ReturnValue<CharacterClassSkill> getSkillForClassLevel(String classId,int level)throws SQLException{
+	public ReturnValue<List<CharacterClassSkill>> getSkillForClassLevel(String classId,int level)throws SQLException{
 		try(Connection con = cm.getConnection()){
 			try {
 			 return dao.getSkillForClassLevel(con,classId,level);

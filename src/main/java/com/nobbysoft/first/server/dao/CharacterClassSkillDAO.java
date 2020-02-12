@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -176,29 +178,29 @@ public class CharacterClassSkillDAO extends AbstractDAO<CharacterClassSkill, Cha
 	}
 
 	
-	public ReturnValue<CharacterClassSkill> getSkillForClassLevel(Connection con,String classId,int level)throws SQLException{
-		ReturnValue<CharacterClassSkill> rv=null;
+	public ReturnValue<List<CharacterClassSkill>> getSkillForClassLevel(Connection con,String classId,int level)throws SQLException{
+		ReturnValue<List<CharacterClassSkill>> rv=null;
 
+		List<CharacterClassSkill> skills = new ArrayList<>(); 
+		
 		String sql0 = "SELECT skill_id FROM character_class_skill WHERE class_id = ? AND from_level <= ? ";
 		try(PreparedStatement ps0 = con.prepareStatement(sql0)){
 			ps0.setString(1, classId);
 			ps0.setInt(2, level);
 			try(ResultSet rss0= ps0.executeQuery()){
-				if(rss0.next()) {
+				while(rss0.next()) {
 					String skillId = rss0.getString(1);
 					CharacterClassSkillKey key = new CharacterClassSkillKey();
 					key.setClassId(classId);
 					key.setSkillId(skillId);
 					CharacterClassSkill x = get(con,key);
-					rv = new ReturnValue<>(x);
-				} else {
-					rv= new ReturnValue<>(ReturnValue.IS_ERROR.TRUE,"Can't find that class/level combo (2)!" + classId+ " " + level);
-				}
+					skills.add(x);					
+				} 
 			}
 			
 		}
 		
-		
+		rv = new ReturnValue(skills);
 		return rv;
 		
 	}

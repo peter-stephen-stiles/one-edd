@@ -51,15 +51,15 @@ public class CharacterSheet extends PDialog {
 	 
 	private PlayerCharacter character;
 
-	public void setPlayerCharacter(PlayerCharacter character) {
+	public boolean setPlayerCharacter(PlayerCharacter character) {
 		this.character=character;
 		try {
 			populateData();
 		} catch (SQLException e) {
 			Popper.popError(this, e);
-			return;
+			return false;
 		}
-		createSheet();
+		return createSheet();
 	}
 	
 	public CharacterSheet(Window owner) {
@@ -85,14 +85,10 @@ public class CharacterSheet extends PDialog {
         
         PPanel pnlHead = new PPanel(new FlowLayout(FlowLayout.LEFT)); 
         PButtonPanel pnlButtons = new PButtonPanel(); 
-        PButton btnExit = new PButton("Exit");
-        //PButton btnSave = new PButton("Save");
-        //PButton btnPrint = new PButton("Print");
+        PButton btnExit = new PButton("Exit"); 
         pnlButtons.add(btnExit);
         //,btnSave,btnPrint);
-        btnExit.addActionListener(ae ->exit());
-        //btnSave.addActionListener(ae ->save());
-        //btnPrint.addActionListener(ae ->print());
+        btnExit.addActionListener(ae ->exit()); 
 
         pnlHead.add(new JLabel("Character name"));
         pnlHead.add(txtName);
@@ -202,7 +198,7 @@ public class CharacterSheet extends PDialog {
 		return sb.toString();
 	}
 
-	private void createSheet(){
+	private boolean createSheet(){
 		txtClass.setText(classy());
 		txtRace.setText(race.getName());
 		txtGender.setSelectedCode(character.getGender());
@@ -227,25 +223,17 @@ public class CharacterSheet extends PDialog {
 			URI uri=java.nio.file.FileSystems.getDefault().getPath( tmp.getPath() ).toAbsolutePath().toUri();
 			
 			Desktop.getDesktop().browse(uri);
-			
+			// all good, close popup 
+			return true;
 		} catch (IOException e) {
+			//all bad leave pop-up open 
 			edtResults.setText(e.toString());
 		}
-		
-		
-//		edtHtml.setText(html);
-//        //edtHtml.setContentType("text/html");
-//		LOGGER.info("html\n"+html);
-
+		return false;
 	}
 
 	private void exit() {
 		dispose();
 	}
-	private void save() {
-		
-	}
-	private void print() {
-		
-	}
+ 
 }

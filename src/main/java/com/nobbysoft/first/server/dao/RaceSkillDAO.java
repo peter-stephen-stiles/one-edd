@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -162,7 +164,25 @@ public class RaceSkillDAO extends AbstractDAO<RaceSkill, RaceSkillKey> implement
 		dto.setItem(key);dto.setDescription(rs.getString(3));
 		
 	}
-	
+
+	public List<RaceSkill> getSkillsForRace(Connection con,String raceId) throws SQLException {
+		
+		List<RaceSkill> data = new ArrayList<>();
+		
+		String sql = "SELECT skill_id FROM "+tableName+" WHERE race_id = ?";
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setString(1, raceId);
+			try(ResultSet rs = ps.executeQuery()){
+				while(rs.next()) {
+					String skillId =rs.getString(1);
+					RaceSkillKey key = new RaceSkillKey(raceId,skillId);
+					data.add(get(con,key));
+				}
+				
+			}
+		}
+		return data;
+	}
 	
 	
 }
