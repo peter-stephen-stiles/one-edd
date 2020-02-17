@@ -1,5 +1,9 @@
 package com.nobbysoft.first.client.components.special;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import javax.swing.DefaultComboBoxModel;
 
 import com.nobbysoft.first.client.components.PComboBox;
@@ -14,9 +18,42 @@ public class PComboEquipmentWhere extends PComboBox<EquipmentWhere> {
 	
 	private void populate() {
 		
-		DefaultComboBoxModel model = (DefaultComboBoxModel)this.getModel();
 		
-		for(EquipmentWhere gender:EquipmentWhere.values()) {
+		
+		EquipmentWhere[] wa= EquipmentWhere.values();
+		
+		
+		setAndSort(wa);
+
+		
+
+	}
+
+	private void setAndSort(EquipmentWhere[] wa) {
+		DefaultComboBoxModel model = (DefaultComboBoxModel)this.getModel();		
+		model.removeAllElements();
+		
+		List<EquipmentWhere> wheres =new ArrayList<>();
+		for(EquipmentWhere gender:wa) {
+			wheres.add(gender);	
+		}
+
+		wheres.sort(new Comparator<EquipmentWhere>() {
+
+			@Override
+			public int compare(EquipmentWhere o1, EquipmentWhere o2) {
+				if(o1.getIndex()<o2.getIndex()) {
+					return -1;
+				}
+				if(o1.getIndex()>o2.getIndex()) {
+					return 1;
+				}
+				return o1.getDescription().compareTo(o2.getDescription());
+			}
+			
+		});
+		
+		for(EquipmentWhere gender:wheres) {
 			model.addElement(gender);	
 		}
 	}
@@ -29,13 +66,9 @@ public class PComboEquipmentWhere extends PComboBox<EquipmentWhere> {
 		return (EquipmentWhere)getSelectedItem();
 	}
 	
-	public void setSubsetOfWheres(EquipmentWhere... wheres) {
-		DefaultComboBoxModel model = (DefaultComboBoxModel)this.getModel();
-		model.removeAllElements();
-		
-		for(EquipmentWhere gender:wheres) {
-			model.addElement(gender);	
-		}
+	public void setSubsetOfWheres(EquipmentWhere... wa) {
+
+		setAndSort(wa);
 	}
 	
 }

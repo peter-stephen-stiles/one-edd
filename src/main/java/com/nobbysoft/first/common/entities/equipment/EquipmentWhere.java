@@ -1,21 +1,22 @@
 package com.nobbysoft.first.common.entities.equipment;
 
 public enum EquipmentWhere{
-	HAND_R("Hand, Right",6),
-	HAND_L("Hand, Left",7),
 	HEAD("Head",1),
 	NECK("Neck",2),
-	TORSO("Torso",3),
-	WAIST("Waist",8),
-	ARM_R("Arm, Right",4),
-	ARM_L("Arm, Left",5),
-	LEGS("Legs",9),
-	FOOT_R("Foot, Right",10),
-	FOOT_L("Foot, Left",11),
-	PACK ("Pack",12),
-	FINGERS_R ("Fingers (Right Hand)",13),
-	FINGERS_L ("Fingers (Left Hand)",14),
-	OTHER("Other",15);
+	SHOULDERS("Shoulders",4),
+	ARM_R("Arm, Right",5),
+	ARM_L("Arm, Left",6),
+	HAND_R("Hand, Right",7),
+	HAND_L("Hand, Left",8),
+	FINGERS_R ("Fingers (Right Hand)",9),
+	FINGERS_L ("Fingers (Left Hand)",10),
+	TORSO("Torso",11),
+	WAIST("Waist",12),
+	LEGS("Legs",13),
+	FOOT_R("Foot, Right",14),
+	FOOT_L("Foot, Left",15),
+	PACK ("Pack",16),
+	OTHER("Other",17);
 	
 	private int index;
 	private String description;
