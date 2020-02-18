@@ -57,9 +57,15 @@ public class ViewsDAO implements CreateInterface {
 					+ "' as type, code , name,encumberance_GP FROM weapon_melee " + " UNION ALL " + 
 		" SELECT '"
 					+ EquipmentType.WEAPON_RANGED.name() + "' as type, code , name,encumberance_GP FROM weapon_ranged "
+		
 					+ " UNION ALL " + 
-					" SELECT '" + EquipmentType.AMMUNITION.name()
-					+ "'  as type, code , name,encumberance_GP FROM weapon_ammunition " + " UNION ALL " + 
+					" SELECT '" + EquipmentType.AMMUNITION.name()+ "'  as type, code , name,encumberance_GP FROM weapon_ammunition "  
+					
+					+ " UNION ALL " + 
+					" SELECT '" + EquipmentType.MAGIC_RING.name()+ "'  as type, code , name,encumberance_GP FROM magic_ring " + 
+
+					
+					" UNION ALL " + 
 					" SELECT '"
 					+ EquipmentType.ARMOUR.name() + "'  as type, code , name,encumberance_GP FROM armour "
 					+ " UNION ALL " + 

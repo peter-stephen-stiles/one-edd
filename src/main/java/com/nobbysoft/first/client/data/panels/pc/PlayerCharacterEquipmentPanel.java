@@ -31,6 +31,7 @@ import com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentAmmunition;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentArmour;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentI;
+import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMagicRing;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMelee;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentRanged;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentShield;
@@ -113,6 +114,7 @@ private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>
 	equipmentMenu.put("Ammunition", AddEquipmentAmmunition.class); 
 	equipmentMenu.put("Armour", AddEquipmentArmour.class); 
 	equipmentMenu.put("Shield", AddEquipmentShield.class); 
+	equipmentMenu.put("Magic - Rings", AddEquipmentMagicRing.class); 
 }
 
 	private PIntegerField txtTotalEnc = new PIntegerField();

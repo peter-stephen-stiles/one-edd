@@ -77,6 +77,7 @@ public enum DataMapper {
 		buttonmap.put(PlayerCharacter.class, PlayerCharacterButtons.class);
 		
 		buttonmap.put(Armour.class, EquipmentButtons.class);
+		buttonmap.put(MagicRing.class, EquipmentButtons.class);
 		buttonmap.put(Shield.class, EquipmentButtons.class);
 		buttonmap.put(WeaponAmmunition.class, EquipmentButtons.class);
 		buttonmap.put(WeaponMelee.class, EquipmentButtons.class);
@@ -116,6 +117,7 @@ public enum DataMapper {
 		daoimap.put(WeaponRanged.class,WeaponRangedDAO.class);
 		daoimap.put(WeaponAmmunition.class,WeaponAmmunitionDAO.class);
 		daoimap.put(Armour.class,ArmourDAO.class);
+		daoimap.put(MagicRing.class,MagicRingDAO.class);
 		daoimap.put(Shield.class,ShieldDAO.class);
 		daoimap.put(TurnUndead.class, TurnUndeadDAO.class);
 		daoimap.put(UndeadType.class, UndeadTypeDAO.class);
@@ -127,6 +129,7 @@ public enum DataMapper {
 		equipmentDAO.put(EquipmentType.WEAPON_RANGED,WeaponRangedDAO.class);
 		equipmentDAO.put(EquipmentType.AMMUNITION,WeaponAmmunitionDAO.class);
 		equipmentDAO.put(EquipmentType.ARMOUR,ArmourDAO.class);
+		equipmentDAO.put(EquipmentType.MAGIC_RING,MagicRingDAO.class);
 		equipmentDAO.put(EquipmentType.SHIELD,ShieldDAO.class);
 		 
 		
@@ -149,6 +152,7 @@ public enum DataMapper {
 		staticDataPanels.put(WeaponRanged.class, WeaponRangedPanel.class);
 		staticDataPanels.put(WeaponAmmunition.class, WeaponAmmunitionPanel.class);
 		staticDataPanels.put(Armour.class, ArmourPanel.class);
+		staticDataPanels.put(MagicRing.class, MagicRingPanel.class);
 		staticDataPanels.put(Shield.class, ShieldPanel.class);
 		staticDataPanels.put(UndeadType.class,UndeadTypePanel.class);//
 		staticDataPanels.put(TurnUndead.class,TurnUndeadPanel.class);// 
@@ -183,6 +187,7 @@ public enum DataMapper {
 		entityservicemap.put(WeaponRanged.class,WeaponRangedService.class);
 		entityservicemap.put(WeaponAmmunition.class,WeaponAmmunitionService.class);
 		entityservicemap.put(Armour.class,ArmourService.class);
+		entityservicemap.put(MagicRing.class,MagicRingService.class);
 		entityservicemap.put(Shield.class,ShieldService.class);
 		entityservicemap.put(UndeadType.class, UndeadTypeService.class);//
 		entityservicemap.put(Assassination.class, AssassinationService.class);//
@@ -219,6 +224,7 @@ public enum DataMapper {
 		servicemap.put(WeaponRangedService.class, WeaponRangedThrownImpl.class);
 		servicemap.put(WeaponAmmunitionService.class, WeaponAmmunitionServiceImpl.class);
 		servicemap.put(ArmourService.class, ArmourServiceImpl.class);
+		servicemap.put(MagicRingService.class, MagicRingServiceImpl.class);
 		servicemap.put(ShieldService.class, ShieldServiceImpl.class);
 		servicemap.put(UndeadTypeService.class, UndeadTypeServiceImpl.class);//
 		servicemap.put(AssassinationService.class, AssassinationImpl.class);//

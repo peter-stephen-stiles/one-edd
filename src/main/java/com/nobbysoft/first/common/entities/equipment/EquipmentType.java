@@ -8,6 +8,7 @@ public enum EquipmentType {
 	WEAPON_RANGED(EquipmentWhere.HAND_L,EquipmentWhere.HAND_R,EquipmentWhere.PACK,EquipmentWhere.OTHER),
 	SHIELD(EquipmentWhere.HAND_L,EquipmentWhere.HAND_R,EquipmentWhere.PACK,EquipmentWhere.OTHER),
 	ARMOUR(EquipmentWhere.TORSO,EquipmentWhere.PACK,EquipmentWhere.OTHER),
+	MAGIC_RING(EquipmentWhere.FINGERS_R,EquipmentWhere.FINGERS_L,EquipmentWhere.PACK,EquipmentWhere.OTHER),
 	ARMOUR_BONUS_GIVING(),  // don't specify so can go anywhere
 	OTHER() // don't specify so can go anywhere
 	;
