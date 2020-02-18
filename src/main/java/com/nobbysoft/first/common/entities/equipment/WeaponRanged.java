@@ -358,6 +358,140 @@ Comparable<WeaponRanged>, Serializable, DataDTOInterface<String>{
 	public String[] getColumnCodedListTypes() {
 		return new String[] {null,null,null,null,null,null,null,null,null};
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ACAdjustment02;
+		result = prime * result + ACAdjustment03;
+		result = prime * result + ACAdjustment04;
+		result = prime * result + ACAdjustment05;
+		result = prime * result + ACAdjustment06;
+		result = prime * result + ACAdjustment07;
+		result = prime * result + ACAdjustment08;
+		result = prime * result + ACAdjustment09;
+		result = prime * result + ACAdjustment10;
+		result = prime * result + capacityGP;
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + ((damageLDICE == null) ? 0 : damageLDICE.hashCode());
+		result = prime * result + damageLDiceCount;
+		result = prime * result + damageLMod;
+		result = prime * result + ((damageSMDICE == null) ? 0 : damageSMDICE.hashCode());
+		result = prime * result + damageSMDiceCount;
+		result = prime * result + damageSMMod;
+		result = prime * result + encumberanceGP;
+		result = prime * result + extraMagicBonus;
+		result = prime * result + ((extraMagicCondition == null) ? 0 : extraMagicCondition.hashCode());
+		result = prime * result + ((fireRate == null) ? 0 : fireRate.hashCode());
+		result = prime * result + magicBonus;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((notes == null) ? 0 : notes.hashCode());
+		result = prime * result + ((rangeL == null) ? 0 : rangeL.hashCode());
+		result = prime * result + ((rangeM == null) ? 0 : rangeM.hashCode());
+		result = prime * result + ((rangeS == null) ? 0 : rangeS.hashCode());
+		result = prime * result + ((requiresHands == null) ? 0 : requiresHands.hashCode());
+		result = prime * result + (twiceDamageToLargeWhenGroundedAgainstCharge ? 1231 : 1237);
+		result = prime * result + (twiceDamageWhenChargingOnMount ? 1231 : 1237);
+		result = prime * result + (twiceDamageWhenGroundedAgainstCharge ? 1231 : 1237);
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WeaponRanged other = (WeaponRanged) obj;
+		if (ACAdjustment02 != other.ACAdjustment02)
+			return false;
+		if (ACAdjustment03 != other.ACAdjustment03)
+			return false;
+		if (ACAdjustment04 != other.ACAdjustment04)
+			return false;
+		if (ACAdjustment05 != other.ACAdjustment05)
+			return false;
+		if (ACAdjustment06 != other.ACAdjustment06)
+			return false;
+		if (ACAdjustment07 != other.ACAdjustment07)
+			return false;
+		if (ACAdjustment08 != other.ACAdjustment08)
+			return false;
+		if (ACAdjustment09 != other.ACAdjustment09)
+			return false;
+		if (ACAdjustment10 != other.ACAdjustment10)
+			return false;
+		if (capacityGP != other.capacityGP)
+			return false;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		if (damageLDICE != other.damageLDICE)
+			return false;
+		if (damageLDiceCount != other.damageLDiceCount)
+			return false;
+		if (damageLMod != other.damageLMod)
+			return false;
+		if (damageSMDICE != other.damageSMDICE)
+			return false;
+		if (damageSMDiceCount != other.damageSMDiceCount)
+			return false;
+		if (damageSMMod != other.damageSMMod)
+			return false;
+		if (encumberanceGP != other.encumberanceGP)
+			return false;
+		if (extraMagicBonus != other.extraMagicBonus)
+			return false;
+		if (extraMagicCondition == null) {
+			if (other.extraMagicCondition != null)
+				return false;
+		} else if (!extraMagicCondition.equals(other.extraMagicCondition))
+			return false;
+		if (fireRate == null) {
+			if (other.fireRate != null)
+				return false;
+		} else if (!fireRate.equals(other.fireRate))
+			return false;
+		if (magicBonus != other.magicBonus)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (notes == null) {
+			if (other.notes != null)
+				return false;
+		} else if (!notes.equals(other.notes))
+			return false;
+		if (rangeL == null) {
+			if (other.rangeL != null)
+				return false;
+		} else if (!rangeL.equals(other.rangeL))
+			return false;
+		if (rangeM == null) {
+			if (other.rangeM != null)
+				return false;
+		} else if (!rangeM.equals(other.rangeM))
+			return false;
+		if (rangeS == null) {
+			if (other.rangeS != null)
+				return false;
+		} else if (!rangeS.equals(other.rangeS))
+			return false;
+		if (requiresHands != other.requiresHands)
+			return false;
+		if (twiceDamageToLargeWhenGroundedAgainstCharge != other.twiceDamageToLargeWhenGroundedAgainstCharge)
+			return false;
+		if (twiceDamageWhenChargingOnMount != other.twiceDamageWhenChargingOnMount)
+			return false;
+		if (twiceDamageWhenGroundedAgainstCharge != other.twiceDamageWhenGroundedAgainstCharge)
+			return false;
+		return true;
+	}
 	
 	    
  
