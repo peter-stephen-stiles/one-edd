@@ -64,6 +64,9 @@ public class ViewsDAO implements CreateInterface {
 					+ " UNION ALL " + 
 					" SELECT '" + EquipmentType.MAGIC_RING.name()+ "'  as type, code , name,encumberance_GP FROM magic_ring " + 
 
+					" UNION ALL " + 
+					" SELECT '" + EquipmentType.ROD_STAFF_WAND.name()+ "'  as type, code , name,encumberance_GP FROM rod_staff_wand " + 
+
 					
 					" UNION ALL " + 
 					" SELECT '"

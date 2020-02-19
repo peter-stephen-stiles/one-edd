@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.nobbysoft.first.common.entities.DataDTOInterface;
 
+@SuppressWarnings("serial")
 public class MagicRing implements  MagicalArmourBonus,EquipmentI, Comparable<MagicRing>, Serializable, DataDTOInterface<String> {
 
 	
@@ -48,7 +49,7 @@ public class MagicRing implements  MagicalArmourBonus,EquipmentI, Comparable<Mag
 
 	@Override
 	public int compareTo(MagicRing o) {
-		return 0;
+		return toString().compareTo(o.toString());
 	}
 
 	@Override

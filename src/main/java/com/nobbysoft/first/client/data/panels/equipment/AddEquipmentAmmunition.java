@@ -29,6 +29,7 @@ import com.nobbysoft.first.common.servicei.PlayerCharacterEquipmentService;
 import com.nobbysoft.first.common.servicei.WeaponAmmunitionService;
 import com.nobbysoft.first.utils.DataMapper;
 
+@SuppressWarnings("serial")
 public class AddEquipmentAmmunition extends PDialog implements AddEquipmentI {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
