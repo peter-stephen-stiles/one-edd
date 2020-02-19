@@ -148,15 +148,16 @@ implements DAOI<WeaponAmmunition, String> {
 		return sql+" ORDER BY name";
 	}
 
+
 	@Override
 	String getFilterWhere() {
-		return " name like ? or code like ?";
+		return " upper(name) like ? or code like ?";
 	}
 
 	@Override
 	void setFilterParameters(PreparedStatement ps, String filter) throws SQLException {
 		String f = filter.toUpperCase();
-		ps.setString(1, "%"+filter+"%");
+		ps.setString(1, "%"+f+"%");
 		ps.setString(2, "%"+f+"%");
 	}
 
