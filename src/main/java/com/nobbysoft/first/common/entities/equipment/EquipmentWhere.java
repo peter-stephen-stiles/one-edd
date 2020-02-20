@@ -13,8 +13,7 @@ public enum EquipmentWhere{
 	TORSO("Torso",11),
 	WAIST("Waist",12),
 	LEGS("Legs",13),
-	FOOT_R("Foot, Right",14),
-	FOOT_L("Foot, Left",15),
+	FEET("Feet",14),
 	PACK ("Pack",16),
 	OTHER("Other",17);
 	

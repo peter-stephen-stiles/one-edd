@@ -67,8 +67,11 @@ public class PComboEquipmentWhere extends PComboBox<EquipmentWhere> {
 	}
 	
 	public void setSubsetOfWheres(EquipmentWhere... wa) {
-
-		setAndSort(wa);
+		if(wa==null || wa.length==0) {
+			populate(); // everything
+		} else {
+			setAndSort(wa); // somethings
+		}
 	}
 	
 }

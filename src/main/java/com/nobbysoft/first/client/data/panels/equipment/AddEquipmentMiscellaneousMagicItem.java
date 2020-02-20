@@ -1,7 +1,6 @@
 package com.nobbysoft.first.client.data.panels.equipment;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
@@ -17,29 +16,36 @@ import javax.swing.SwingUtilities;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nobbysoft.first.client.components.*;
+import com.nobbysoft.first.client.components.PBasicTableWithModel;
 import com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
+import com.nobbysoft.first.client.components.PButton;
+import com.nobbysoft.first.client.components.PButtonPanel;
+import com.nobbysoft.first.client.components.PDialog;
+import com.nobbysoft.first.client.components.PLabel;
+import com.nobbysoft.first.client.components.PPanel;
+import com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.Popper;
-import com.nobbysoft.first.common.entities.equipment.RodStaffWand;
 import com.nobbysoft.first.common.entities.equipment.EquipmentType;
+import com.nobbysoft.first.common.entities.equipment.MiscellaneousMagicItem;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
-import com.nobbysoft.first.common.servicei.RodStaffWandService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
+import com.nobbysoft.first.common.servicei.MiscellaneousMagicItemService;
 import com.nobbysoft.first.common.servicei.PlayerCharacterEquipmentService;
 import com.nobbysoft.first.utils.DataMapper;
 
-public class AddEquipmentRodStaffWand extends PDialog implements AddEquipmentI {
+@SuppressWarnings("serial")
+public class AddEquipmentMiscellaneousMagicItem extends PDialog implements AddEquipmentI {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-	public AddEquipmentRodStaffWand(Window owner) {
+	public AddEquipmentMiscellaneousMagicItem(Window owner) {
 		super(owner);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		jbInit();
 	}
 
-	private EquipmentType type = EquipmentType.ROD_STAFF_WAND;
+	private EquipmentType type = EquipmentType.MISCELLANEOUS_MAGIC;
 	private boolean cancelled = true;
 	private String characterName;
 	private int pcId;
@@ -50,8 +56,7 @@ wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getM
 	 */
 	
 	private final ColumnConfig[] equipmentConfigs = new ColumnConfig[] { new ColumnConfig("", 0, 0, 0),
-			new ColumnConfig("Name", 20, 200, 5000), 
-			new ColumnConfig("Type?", 20, 50, 5000),			
+			new ColumnConfig("Name", 20, 200, 5000),  			
 			};
 
 	private PBasicTableWithModel tblEquipment = new PBasicTableWithModel(equipmentConfigs);
@@ -128,17 +133,17 @@ wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getM
 
 	private void populateTable() {
 		//
-		RodStaffWandService wms = (RodStaffWandService) getDataService(RodStaffWand.class);
+		MiscellaneousMagicItemService wms = (MiscellaneousMagicItemService) getDataService(MiscellaneousMagicItem.class);
 
-		List<RodStaffWand> list;
+		List<MiscellaneousMagicItem> list;
 		try {
 			list = wms.getValidEquipmentForCharactersClasses(pcId);
 		} catch (SQLException e) {
 			Popper.popError(this, e);
 			return;
 		}
-		for (RodStaffWand wm : list) {
-			Object[] row = new Object[] { wm, wm.getName(), wm.getRodStaffOrWand() };
+		for (MiscellaneousMagicItem wm : list) {
+			Object[] row = new Object[] { wm, wm.getName()};
 			tableData.add(row);
 		}
 
@@ -154,7 +159,7 @@ wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getM
 				}
 			} else {
 				for (Object[] oa : tableData) {
-					String s = ((RodStaffWand) oa[0]).getName();
+					String s = ((MiscellaneousMagicItem) oa[0]).getName();
 					for (int i = 1, n = oa.length; i < n; i++) {
 						s = s + "|" + oa[i];
 					}
@@ -176,7 +181,7 @@ wm, wm.getName(), wm.getAC(),wm.getBaseMovement(),wm.getEncumberanceGP(),wm.getM
 				return;
 			}
 			int rowIndex = tblEquipment.convertRowIndexToModel(rownumber);
-			RodStaffWand wm = (RodStaffWand) tblEquipment.getModel().getValueAt(rowIndex, 0);
+			MiscellaneousMagicItem wm = (MiscellaneousMagicItem) tblEquipment.getModel().getValueAt(rowIndex, 0);
 			//Popper.popInfo(this, "Selected " + wm, "You selected " + wm.getName());
 			/// now then
 

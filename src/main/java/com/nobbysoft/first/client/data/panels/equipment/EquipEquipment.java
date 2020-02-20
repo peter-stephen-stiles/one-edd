@@ -35,6 +35,7 @@ import com.nobbysoft.first.common.servicei.WeaponMeleeService;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
 
+@SuppressWarnings("serial")
 public class EquipEquipment extends PDialog   {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
@@ -64,6 +65,7 @@ public class EquipEquipment extends PDialog   {
 		//
 		
 		txtEquipmentWhere.setSubsetOfWheres(pce.getEquipmentType().getValidWheres());
+		
 		
 		txtEquipmentName.setText(equipment.getName());
 		txtCharacterName.setText(characterName);

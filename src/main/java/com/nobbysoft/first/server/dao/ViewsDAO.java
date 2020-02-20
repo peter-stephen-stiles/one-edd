@@ -4,6 +4,8 @@ import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,32 +52,40 @@ public class ViewsDAO implements CreateInterface {
 		
 		String viewName = "view_equipment";
  
-
-		{
-			String view = "CREATE VIEW " + viewName + " AS (" + 
-		" SELECT '" + EquipmentType.MELEE_WEAPON.name()
-					+ "' as type, code , name,encumberance_GP FROM weapon_melee " + " UNION ALL " + 
-		" SELECT '"
-					+ EquipmentType.WEAPON_RANGED.name() + "' as type, code , name,encumberance_GP FROM weapon_ranged "
+		Map<EquipmentType,String> typesToTableNames = new HashMap<>();
+		typesToTableNames.put(EquipmentType.MELEE_WEAPON,        "weapon_melee");
+		typesToTableNames.put(EquipmentType.WEAPON_RANGED,       "weapon_ranged");
+		typesToTableNames.put(EquipmentType.AMMUNITION,          "weapon_ammunition");
+		typesToTableNames.put(EquipmentType.MAGIC_RING,          "magic_ring");
+		typesToTableNames.put(EquipmentType.ROD_STAFF_WAND,      "rod_staff_wand");
+		typesToTableNames.put(EquipmentType.MISCELLANEOUS_MAGIC, "miscellaneous_magic_item");
+		typesToTableNames.put(EquipmentType.ARMOUR,              "armour");
+		typesToTableNames.put(EquipmentType.SHIELD,              "shield");
 		
-					+ " UNION ALL " + 
-					" SELECT '" + EquipmentType.AMMUNITION.name()+ "'  as type, code , name,encumberance_GP FROM weapon_ammunition "  
-					
-					+ " UNION ALL " + 
-					" SELECT '" + EquipmentType.MAGIC_RING.name()+ "'  as type, code , name,encumberance_GP FROM magic_ring " + 
 
-					" UNION ALL " + 
-					" SELECT '" + EquipmentType.ROD_STAFF_WAND.name()+ "'  as type, code , name,encumberance_GP FROM rod_staff_wand " + 
+		String stdSelect = " SELECT '%s' as type, code, name, encumberance_GP FROM %s ";
+		String ua = " UNION ALL ";
+		
+		{
+			StringBuilder view = new StringBuilder("CREATE VIEW " + viewName + " AS ( "); 
+		
+			boolean first=true;
+			for(EquipmentType et:typesToTableNames.keySet()) {
+				String tableName =typesToTableNames.get(et) ;
+				if(!first) {
+					view.append(ua);
+				}
+				first=false;										
+				String s= String.format(stdSelect, et.name(),tableName);
+				view.append(s);
+			}
+			
+			
+			view.append(")");
+		
+ 
 
-					
-					" UNION ALL " + 
-					" SELECT '"
-					+ EquipmentType.ARMOUR.name() + "'  as type, code , name,encumberance_GP FROM armour "
-					+ " UNION ALL " + 
-					" SELECT '" + EquipmentType.SHIELD.name()
-					+ "'  as type, code , name,encumberance_GP FROM shield " + ")";
-
-			try (PreparedStatement ps = con.prepareStatement(view);) {
+			try (PreparedStatement ps = con.prepareStatement(view.toString());) {
 				ps.execute();
 			} catch (Exception ex) {
 				LOGGER.info("Error in sql\n" + view);

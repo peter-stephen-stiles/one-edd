@@ -27,35 +27,7 @@ import com.nobbysoft.first.server.service.*;
 
 public enum DataMapper {
 	INSTANCE;
-	private DataMapper() { 		
-	}
 
-	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
-
-	
-	public Object getNonDataService(Class clazz) {
-		Object dao;
-		try {
-		Class d = getServiceForInterface(clazz); 
-			Constructor cc = d.getConstructor();
-				dao =cc.newInstance();
-			} catch (Exception e) {
-				throw new IllegalStateException("Can't get Service for "+clazz,e);
-			}
-		return dao;
-	}
-	
-	public DataServiceI getDataService(Class clazz) {
-		DataServiceI dao;
-		try {
-		Class d = getServiceForEntity(clazz); 
-			Constructor<DataServiceI> cc = d.getConstructor();
-				dao = (DataServiceI) cc.newInstance();
-			} catch (Exception e) {
-				throw new IllegalStateException("Can't get Service for "+clazz,e);
-			}
-		return dao;
-	}
 
 	private Map<Class,Class> servicemap =new HashMap<>();
 
@@ -64,13 +36,9 @@ public enum DataMapper {
 	private Map<Class,Class> daoimap =new LinkedHashMap<>(); // so that the tables are ordered as added to the map...
 	private Map<Class,Class> buttonmap =new HashMap<>();
 	private Map<Class<?>, String> names = new HashMap<>();
-	private Map<Class<?>, Class<?>> staticDataPanels = new HashMap<>();
-	
+	private Map<Class<?>, Class<?>> staticDataPanels = new HashMap<>();	
 	private Map<EquipmentType,Class<?>> equipmentDAO = new HashMap<>();
 	
-	public Class getEquipmentDao(EquipmentType type){
-		return equipmentDAO.get(type);
-	}
 	
 	{
 		buttonmap.put(CharacterClass.class, CharacterClassButtons.class);
@@ -78,14 +46,13 @@ public enum DataMapper {
 		
 		buttonmap.put(Armour.class, EquipmentButtons.class);
 		buttonmap.put(MagicRing.class, EquipmentButtons.class);
+		buttonmap.put(MiscellaneousMagicItem.class, EquipmentButtons.class);
 		buttonmap.put(RodStaffWand.class, EquipmentButtons.class);
 		buttonmap.put(Shield.class, EquipmentButtons.class);
 		buttonmap.put(WeaponAmmunition.class, EquipmentButtons.class);
 		buttonmap.put(WeaponMelee.class, EquipmentButtons.class);
 		buttonmap.put(WeaponRanged.class, EquipmentButtons.class);
-		//buttonmap.put(Armour.class, EquipmentButtons.class);
-		
-		
+
 
 		daoimap.put(PlayerCharacter.class, PlayerCharacterDAO.class);
 		daoimap.put(PlayerCharacterHp.class, PlayerCharacterHpDAO.class);
@@ -119,7 +86,8 @@ public enum DataMapper {
 		daoimap.put(WeaponAmmunition.class,WeaponAmmunitionDAO.class);
 		daoimap.put(Armour.class,ArmourDAO.class);
 		daoimap.put(MagicRing.class,MagicRingDAO.class);//
-		daoimap.put(RodStaffWand.class,RodStaffWandDAO.class);//RodStaffWand
+		daoimap.put(MiscellaneousMagicItem.class,MiscellaneousMagicItemDAO.class);//
+		daoimap.put(RodStaffWand.class,RodStaffWandDAO.class);//
 		daoimap.put(Shield.class,ShieldDAO.class);
 		daoimap.put(TurnUndead.class, TurnUndeadDAO.class);
 		daoimap.put(UndeadType.class, UndeadTypeDAO.class);
@@ -131,7 +99,8 @@ public enum DataMapper {
 		equipmentDAO.put(EquipmentType.WEAPON_RANGED,WeaponRangedDAO.class);
 		equipmentDAO.put(EquipmentType.AMMUNITION,WeaponAmmunitionDAO.class);
 		equipmentDAO.put(EquipmentType.ARMOUR,ArmourDAO.class);
-		equipmentDAO.put(EquipmentType.MAGIC_RING,MagicRingDAO.class);//
+		equipmentDAO.put(EquipmentType.MAGIC_RING,MagicRingDAO.class);//MiscellaneousMagicItem
+		equipmentDAO.put(EquipmentType.MISCELLANEOUS_MAGIC,MiscellaneousMagicItemDAO.class);//
 		equipmentDAO.put(EquipmentType.ROD_STAFF_WAND,RodStaffWandDAO.class);//
 		equipmentDAO.put(EquipmentType.SHIELD,ShieldDAO.class);
 		 
@@ -156,7 +125,8 @@ public enum DataMapper {
 		staticDataPanels.put(WeaponAmmunition.class, WeaponAmmunitionPanel.class);
 		staticDataPanels.put(Armour.class, ArmourPanel.class);
 		staticDataPanels.put(MagicRing.class, MagicRingPanel.class);//
-		staticDataPanels.put(RodStaffWand.class, RodStaffWandPanel.class);//RodStaffWand
+		staticDataPanels.put(MiscellaneousMagicItem.class, MiscellaneousMagicItemPanel.class);//
+		staticDataPanels.put(RodStaffWand.class, RodStaffWandPanel.class);//
 		staticDataPanels.put(Shield.class, ShieldPanel.class);
 		staticDataPanels.put(UndeadType.class,UndeadTypePanel.class);//
 		staticDataPanels.put(TurnUndead.class,TurnUndeadPanel.class);// 
@@ -193,6 +163,7 @@ public enum DataMapper {
 		entityservicemap.put(Armour.class,ArmourService.class);
 		entityservicemap.put(RodStaffWand.class,RodStaffWandService.class);//
 		entityservicemap.put(MagicRing.class,MagicRingService.class);//
+		entityservicemap.put(MiscellaneousMagicItem.class,MiscellaneousMagicItemService.class);//
 		entityservicemap.put(Shield.class,ShieldService.class);
 		entityservicemap.put(UndeadType.class, UndeadTypeService.class);//
 		entityservicemap.put(Assassination.class, AssassinationService.class);//
@@ -230,7 +201,8 @@ public enum DataMapper {
 		servicemap.put(WeaponAmmunitionService.class, WeaponAmmunitionServiceImpl.class);
 		servicemap.put(ArmourService.class, ArmourServiceImpl.class);
 		servicemap.put(MagicRingService.class, MagicRingServiceImpl.class);//
-		servicemap.put(RodStaffWandService.class, RodStaffWandServiceImpl.class);//RodStaffWand
+		servicemap.put(MiscellaneousMagicItemService.class, MiscellaneousMagicItemServiceImpl.class);//
+		servicemap.put(RodStaffWandService.class, RodStaffWandServiceImpl.class);//
 		servicemap.put(ShieldService.class, ShieldServiceImpl.class);
 		servicemap.put(UndeadTypeService.class, UndeadTypeServiceImpl.class);//
 		servicemap.put(AssassinationService.class, AssassinationImpl.class);//
@@ -242,6 +214,11 @@ public enum DataMapper {
 		
 	}
 	
+	private DataMapper() { 		
+	}
+
+	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+
 	
 	public Class<?> getServiceForInterface(Class<?> clazz){
 		return servicemap.get(clazz);
@@ -327,4 +304,33 @@ public enum DataMapper {
 		
 	}
 
+
+	
+	public Object getNonDataService(Class clazz) {
+		Object dao;
+		try {
+		Class d = getServiceForInterface(clazz); 
+			Constructor cc = d.getConstructor();
+				dao =cc.newInstance();
+			} catch (Exception e) {
+				throw new IllegalStateException("Can't get Service for "+clazz,e);
+			}
+		return dao;
+	}
+	
+	public DataServiceI getDataService(Class clazz) {
+		DataServiceI dao;
+		try {
+		Class d = getServiceForEntity(clazz); 
+			Constructor<DataServiceI> cc = d.getConstructor();
+				dao = (DataServiceI) cc.newInstance();
+			} catch (Exception e) {
+				throw new IllegalStateException("Can't get Service for "+clazz,e);
+			}
+		return dao;
+	}	
+	public Class getEquipmentDao(EquipmentType type){
+		return equipmentDAO.get(type);
+	}
+	
 }

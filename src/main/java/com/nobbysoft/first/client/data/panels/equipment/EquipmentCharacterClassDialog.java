@@ -8,6 +8,7 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.invoke.MethodHandles;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +23,9 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PButton;
 import com.nobbysoft.first.client.components.PButtonPanel;
@@ -44,6 +48,9 @@ import com.nobbysoft.first.utils.DataMapper;
 @SuppressWarnings("serial")
 public class EquipmentCharacterClassDialog extends PDialog{
 
+
+	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+	
 	private EquipmentI equipment;
 	
 	public EquipmentCharacterClassDialog(Window owner, String title) {
@@ -246,7 +253,8 @@ public class EquipmentCharacterClassDialog extends PDialog{
 			Popper.popError(this, "Problem : saving data", res);
 			return;
 		} else {
-			Popper.popError(this, "All good. Database updated", res.getValue());
+			LOGGER.info("All good. Database updated "+ res.getValue());
+			//Popper.popError(this, "All good. Database updated", res.getValue());
 		}
 		dispose();
 		} catch (Exception ex) {

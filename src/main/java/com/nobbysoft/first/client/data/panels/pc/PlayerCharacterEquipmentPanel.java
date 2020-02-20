@@ -29,7 +29,7 @@ import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentAmmunition;
-import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentArmour;
+import com.nobbysoft.first.client.data.panels.equipment.*;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentI;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMagicRing;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMelee;
@@ -49,6 +49,22 @@ import com.nobbysoft.first.utils.DataMapper;
 @SuppressWarnings("serial")
 public class PlayerCharacterEquipmentPanel extends PPanel {
 
+/**
+ * this is all you change to add a new item of equipment.
+ * could move this logic to DataMapper couldn't I?
+ */
+private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>();
+{
+	equipmentMenu.put("Arms - Melee", AddEquipmentMelee.class);
+	equipmentMenu.put("Arms - Ranged/Thrown", AddEquipmentRanged.class);
+	equipmentMenu.put("Ammunition", AddEquipmentAmmunition.class); 
+	equipmentMenu.put("Armour", AddEquipmentArmour.class); 
+	equipmentMenu.put("Shield", AddEquipmentShield.class); 
+	equipmentMenu.put("Magic - Rings", AddEquipmentMagicRing.class); 
+	equipmentMenu.put("Rods/Staves/Wands", AddEquipmentRodStaffWand.class); 
+	equipmentMenu.put("Miscellaneous Magic Items", AddEquipmentMiscellaneousMagicItem.class); 
+}
+	
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 	
@@ -108,16 +124,6 @@ private final PBasicTableWithModel tblEquipment = new PBasicTableWithModel(equip
 
 
 
-private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>();
-{
-	equipmentMenu.put("Arms - Melee", AddEquipmentMelee.class);
-	equipmentMenu.put("Arms - Ranged/Thrown", AddEquipmentRanged.class);
-	equipmentMenu.put("Ammunition", AddEquipmentAmmunition.class); 
-	equipmentMenu.put("Armour", AddEquipmentArmour.class); 
-	equipmentMenu.put("Shield", AddEquipmentShield.class); 
-	equipmentMenu.put("Magic - Rings", AddEquipmentMagicRing.class); 
-	equipmentMenu.put("Rods/Staves/Wands", AddEquipmentRodStaffWand.class); 
-}
 
 	private PIntegerField txtTotalEnc = new PIntegerField();
 	private PIntegerField txtEquippedEnd = new PIntegerField();

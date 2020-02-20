@@ -39,7 +39,7 @@ public class AddEquipmentMagicRing extends PDialog implements AddEquipmentI {
 		jbInit();
 	}
 
-	private EquipmentType type = EquipmentType.ARMOUR;
+	private EquipmentType type = EquipmentType.MAGIC_RING;
 	private boolean cancelled = true;
 	private String characterName;
 	private int pcId;
