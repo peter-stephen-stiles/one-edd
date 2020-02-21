@@ -475,9 +475,9 @@ private final PBasicTableWithModel tblEquipment = new PBasicTableWithModel(equip
 			for(ViewPlayerCharacterEquipment vpce: list) {
 				PlayerCharacterEquipment pce = vpce.getPlayerCharacterEquipment();
 				String desc = vpce.getDescription();			
-				enc+=vpce.getEncumberence();
+				enc+=vpce.getEncumbrance();
 				if(pce.isEquipped()) {
-					equippedEnc+=vpce.getEncumberence();
+					equippedEnc+=vpce.getEncumbrance();
 				}
 				tblEquipment.addRow(new Object[] {
 						pce,	

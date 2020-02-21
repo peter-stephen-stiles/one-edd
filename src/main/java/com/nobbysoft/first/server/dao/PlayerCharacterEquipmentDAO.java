@@ -188,7 +188,7 @@ public class PlayerCharacterEquipmentDAO
 
 	@Override
 	String addOrderByClause(String sql) { 
-		return sql +" ORDER BY  pc_id, equipped_where, equipment_type, equipment_id";
+		return sql +" ORDER BY  pc_id, equipment_type, equipment_id, equipped_where";
 	}
 
 	@Override
