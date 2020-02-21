@@ -545,9 +545,9 @@ public class MakeHTML {
 						XmlUtilities.addAttribute(table, "border", "1");
 						{
 							Element row = XmlUtilities.addElement(table, "tr");
-							XmlUtilities.addElement(row, "th", "What");
+							XmlUtilities.addElement(row, "th", "Where");
 							XmlUtilities.addElement(row, "th", "Type");
-							XmlUtilities.addElement(row, "th", "Equipped?");
+							XmlUtilities.addElement(row, "th", "Name");
 							XmlUtilities.addElement(row, "th", "Encumbrance");
 						}
 
@@ -581,7 +581,12 @@ public class MakeHTML {
 									XmlUtilities.addElement(row, "td", key.getDesc());
 									if (pce != null) {
 										XmlUtilities.addElement(row, "td", pce.getPlayerCharacterEquipment().getEquipmentType().getDescription());
-										XmlUtilities.addElement(row, "td", pce.getEquipmentDescription());
+										String desc = pce.getEquipmentDescription();
+										int co=(pce.getPlayerCharacterEquipment().getCountOwned());
+										if(co>1) {
+											desc = desc + " ("+co +" of)";
+										}
+										XmlUtilities.addElement(row, "td", desc);
 										enc += pce.getEncumbrance();
 										XmlUtilities.addElement(row, "td", pce.getEncumbrance());
 									} else {
