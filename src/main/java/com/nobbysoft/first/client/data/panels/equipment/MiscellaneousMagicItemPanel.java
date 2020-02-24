@@ -13,10 +13,12 @@ import org.apache.logging.log4j.Logger;
 import com.nobbysoft.first.client.components.PCodeField;
 import com.nobbysoft.first.client.components.PDataComponent;
 import com.nobbysoft.first.client.components.PDialog;
+import com.nobbysoft.first.client.components.PIntegerCombo;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PTextArea;
 import com.nobbysoft.first.client.components.PTextField;
+import com.nobbysoft.first.client.components.special.PComboAffectsAC;
 import com.nobbysoft.first.client.components.special.PComboEquipmentHands; 
 import com.nobbysoft.first.client.data.MaintenancePanelInterface;
 import com.nobbysoft.first.client.data.panels.AbstractDataPanel;
@@ -24,6 +26,7 @@ import com.nobbysoft.first.client.utils.GBU;
 import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.equipment.MiscellaneousMagicItem;
+import com.nobbysoft.first.common.entities.staticdto.AffectsACType;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
@@ -66,12 +69,17 @@ public class MiscellaneousMagicItemPanel extends AbstractDataPanel<Miscellaneous
 	private final PTextArea txtDefinition = new PTextArea(2000);
 	private final PComboEquipmentHands txtComboEquipmentHands = new PComboEquipmentHands(); 
 	
+	private final PComboAffectsAC txtAffectsAC = new PComboAffectsAC(); 
+	private final PIntegerCombo txtEffectOnAC = new PIntegerCombo(-10,10,true);
+	
 	
 	private PDataComponent[] dataComponents = new PDataComponent[] { 
 			txtName, 
 			txtWeightGP, 
 			txtDefinition	,
 			txtComboEquipmentHands, 
+			txtAffectsAC,
+			txtEffectOnAC
 			 };
 	private PDataComponent[] keyComponents = new PDataComponent[] { txtCode };
 
@@ -92,8 +100,10 @@ public class MiscellaneousMagicItemPanel extends AbstractDataPanel<Miscellaneous
 		txtWeightGP.setName("Weight (gp)"); 
 		txtComboEquipmentHands.setName("Requires hands");
 		txtDefinition.setName("Definition"); 
+		txtAffectsAC.setName("Affects AC?");
+		txtEffectOnAC.setName("Effect on AC");
+	
 		
-				
 		add(getLblInstructions(), GBU.text(0, 0, 2));
 		int row=1;
 		add(new JLabel(txtCode.getName()), GBU.label(0, row));
@@ -108,14 +118,24 @@ public class MiscellaneousMagicItemPanel extends AbstractDataPanel<Miscellaneous
 	
 		add(new JLabel(txtWeightGP.getName()), GBU.label(0, row));
 		add(txtWeightGP, GBU.text(1, row));
-		row++;
-		 
+		row++;	 
 
 		add(new JLabel(txtComboEquipmentHands.getName()), GBU.label(0, row));
-		add(txtComboEquipmentHands, GBU.text(1, row)); 
-		 
+		add(txtComboEquipmentHands, GBU.text(1, row)); 		 
+
+		
+		row++;	
+
+		add(new JLabel(txtAffectsAC.getName()), GBU.label(0, row));
+		add(txtAffectsAC, GBU.text(1, row)); 	
+		add(new JLabel(txtEffectOnAC.getName()), GBU.label(2, row));
+		add(txtEffectOnAC, GBU.text(3, row)); 		 
 		row++;		 
 
+	 
+
+		
+		
 		add(new JLabel(txtDefinition.getName()), GBU.label(0, row));
 		row++;
 		
@@ -142,7 +162,16 @@ public class MiscellaneousMagicItemPanel extends AbstractDataPanel<Miscellaneous
 
 	protected ReturnValue<?> validateScreen() {
 		{
- 
+			int eAC = txtEffectOnAC.getIntegerValue();
+			if(txtAffectsAC.getSelectedItem().equals(AffectsACType.X)) {
+				if(eAC!=0) {
+					return new ReturnValue(ReturnValue.IS_ERROR.TRUE,"If it doesn't affects AC then EFFECT should be zero!");
+				}
+			} else {
+				if(eAC==0) {
+					return new ReturnValue(ReturnValue.IS_ERROR.TRUE,"If it affects AC you have to say how how many!");
+				}
+			}
 		}
 
 		return new ReturnValue("");
@@ -160,6 +189,8 @@ public class MiscellaneousMagicItemPanel extends AbstractDataPanel<Miscellaneous
 		value.setName(txtName.getText()); 
 		value.setRequiresHands(txtComboEquipmentHands.getEquipmentHands());// no hands for MiscellaneousMagicItem 		
 		value.setDefinition(txtDefinition.getText());
+		value.setAffectsAC(txtAffectsAC.getAffectsACTypeString());
+		value.setEffectOnAC(txtEffectOnAC.getIntegerValue());
 	}
 
 	protected void populateScreen(MiscellaneousMagicItem value) {
@@ -168,6 +199,8 @@ public class MiscellaneousMagicItemPanel extends AbstractDataPanel<Miscellaneous
 		txtName	.setText(	value.getName());  
 		txtDefinition.setText(value.getDefinition());
 		txtComboEquipmentHands.setEquipmentHands(value.getRequiresHands());
+		txtAffectsAC.setAffectsACTypeString(value.getAffectsAC());
+		txtEffectOnAC.setIntegerValue(value.getEffectOnAC());
 	}
 
 	protected void populateCombos() {

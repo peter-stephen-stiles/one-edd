@@ -21,18 +21,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.components.PBasicTableWithModel;
+import com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
 import com.nobbysoft.first.client.components.PButton;
 import com.nobbysoft.first.client.components.PDataComponent;
 import com.nobbysoft.first.client.components.PDialog;
 import com.nobbysoft.first.client.components.PIntegerField;
 import com.nobbysoft.first.client.components.PLabel;
 import com.nobbysoft.first.client.components.PPanel;
-import com.nobbysoft.first.client.components.PBasicTableWithModel.ColumnConfig;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentAmmunition;
-import com.nobbysoft.first.client.data.panels.equipment.*;
+import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentArmour;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentI;
-import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMagicRing;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMelee;
+import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMiscellaneousMagicItem;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentRanged;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentRodStaffWand;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentShield;
@@ -60,7 +60,6 @@ private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>
 	equipmentMenu.put("Ammunition", AddEquipmentAmmunition.class); 
 	equipmentMenu.put("Armour", AddEquipmentArmour.class); 
 	equipmentMenu.put("Shield", AddEquipmentShield.class); 
-	equipmentMenu.put("Magic - Rings", AddEquipmentMagicRing.class); 
 	equipmentMenu.put("Rods/Staves/Wands", AddEquipmentRodStaffWand.class); 
 	equipmentMenu.put("Miscellaneous Magic Items", AddEquipmentMiscellaneousMagicItem.class); 
 }

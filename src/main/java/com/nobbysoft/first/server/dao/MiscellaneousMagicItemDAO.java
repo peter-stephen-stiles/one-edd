@@ -22,7 +22,10 @@ implements DAOI<MiscellaneousMagicItem, String> {
 		return EquipmentType.MISCELLANEOUS_MAGIC.toString();
 	}
 	
-	
+/*
+ 	private String affectsAC affects_ac;
+	private int effectOnAC effect_on_ac; 	
+ */
 	public MiscellaneousMagicItemDAO() { 
 	}
 	
@@ -43,6 +46,7 @@ implements DAOI<MiscellaneousMagicItem, String> {
 		{
 		String[] newInts = new String[] {
 				"encumberance_GP",
+				"effect_on_ac"
 				};
 		DAOUtils.createInts(con, tableName, newInts);
 		}
@@ -51,6 +55,7 @@ implements DAOI<MiscellaneousMagicItem, String> {
 				new VC("name",60,false),
 				new VC("requires_hands",20),
 				new VC("definition",255),
+				new VC("affects_ac",1),				
 				};		
 		DAOUtils.createStrings(con, tableName, newStrings);
 		}
@@ -68,6 +73,8 @@ implements DAOI<MiscellaneousMagicItem, String> {
 			"requires_hands",
 			"definition",
 			"encumberance_GP",
+			"affects_ac",
+			"effect_on_ac"
 			};
 	
 	
@@ -80,6 +87,8 @@ implements DAOI<MiscellaneousMagicItem, String> {
 		dto.setRequiresHands(EquipmentHands.valueOf(rs.getString(col++)));
 		dto.setDefinition(rs.getString(col++));		
 		dto.setEncumberanceGP(rs.getInt(col++));
+		dto.setAffectsAC(rs.getString(col++));
+		dto.setEffectOnAC(rs.getInt(col++));
 
 		return dto;
 	}
@@ -133,6 +142,8 @@ implements DAOI<MiscellaneousMagicItem, String> {
 		ps.setString(col++, value.getRequiresHands().name());
 		ps.setString(col++, value.getDefinition()); 		
 		ps.setInt(col++, value.getEncumberanceGP()); 
+		ps.setString(col++, value.getAffectsAC());
+		ps.setInt(col++, value.getEffectOnAC());
 
 		return col;
 	}

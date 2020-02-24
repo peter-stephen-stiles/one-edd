@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import com.nobbysoft.first.common.constants.Constants;
 import com.nobbysoft.first.common.entities.equipment.EquipmentType;
@@ -351,7 +350,7 @@ public class MakeHTML {
 				}
 				if(weaponsE.size()+weaponsU.size()>0) {
 					XmlUtilities.addElement(body, "h2", "Attacks");
-					Element table = table = XmlUtilities.addElement(body, "table");
+					Element table = XmlUtilities.addElement(body, "table");
 					XmlUtilities.addAttribute(table, "border", "1");
 					
 					{
@@ -449,7 +448,7 @@ public class MakeHTML {
 						XmlUtilities.addElement(row, "th", "Spells");
 					}
 					boolean anyInactive=false;
-					for (CodedListItem all : allowed) {
+					for (CodedListItem<?> all : allowed) {
 						Element row = XmlUtilities.addElement(table, "tr");
 						String[] ccs = ((String) all.getItem()).split(":");
 						String classId =ccs[0];
@@ -664,7 +663,7 @@ public class MakeHTML {
 					XmlUtilities.addElement(row, "th", "Skill");
 					XmlUtilities.addElement(row, "th", "Definition");
 				}
-				List<CharacterClassSkill> classSkills = new ArrayList();
+				List<CharacterClassSkill> classSkills = new ArrayList<>();
 				classSkills.addAll(classSkills1);
 				classSkills.addAll(classSkills2);
 				classSkills.addAll(classSkills3);

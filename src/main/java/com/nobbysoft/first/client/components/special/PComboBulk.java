@@ -5,6 +5,7 @@ import javax.swing.DefaultComboBoxModel;
 import com.nobbysoft.first.client.components.PComboBox;
 import com.nobbysoft.first.common.entities.equipment.BULK;
  
+@SuppressWarnings("serial")
 public class PComboBulk extends PComboBox<BULK> {
 	
 	public PComboBulk(){

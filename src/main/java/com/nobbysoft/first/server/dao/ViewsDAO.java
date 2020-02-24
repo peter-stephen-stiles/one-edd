@@ -55,8 +55,7 @@ public class ViewsDAO implements CreateInterface {
 		Map<EquipmentType,String> typesToTableNames = new HashMap<>();
 		typesToTableNames.put(EquipmentType.MELEE_WEAPON,        "weapon_melee");
 		typesToTableNames.put(EquipmentType.WEAPON_RANGED,       "weapon_ranged");
-		typesToTableNames.put(EquipmentType.AMMUNITION,          "weapon_ammunition");
-		typesToTableNames.put(EquipmentType.MAGIC_RING,          "magic_ring");
+		typesToTableNames.put(EquipmentType.AMMUNITION,          "weapon_ammunition");	
 		typesToTableNames.put(EquipmentType.ROD_STAFF_WAND,      "rod_staff_wand");
 		typesToTableNames.put(EquipmentType.MISCELLANEOUS_MAGIC, "miscellaneous_magic_item");
 		typesToTableNames.put(EquipmentType.ARMOUR,              "armour");

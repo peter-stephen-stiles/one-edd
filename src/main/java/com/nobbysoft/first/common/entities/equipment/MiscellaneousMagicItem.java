@@ -12,6 +12,8 @@ public class MiscellaneousMagicItem implements  EquipmentI, Comparable<Miscellan
 	private String name; 
 	private int encumberanceGP;	
 	private String definition;
+	private String affectsAC;
+	private int effectOnAC;
 	
 	public MiscellaneousMagicItem() {
 	}
@@ -119,9 +121,11 @@ public class MiscellaneousMagicItem implements  EquipmentI, Comparable<Miscellan
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((affectsAC == null) ? 0 : affectsAC.hashCode());
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + encumberanceGP;
 		result = prime * result + ((definition == null) ? 0 : definition.hashCode());
+		result = prime * result + effectOnAC;
+		result = prime * result + encumberanceGP;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -135,18 +139,25 @@ public class MiscellaneousMagicItem implements  EquipmentI, Comparable<Miscellan
 		if (getClass() != obj.getClass())
 			return false;
 		MiscellaneousMagicItem other = (MiscellaneousMagicItem) obj;
+		if (affectsAC == null) {
+			if (other.affectsAC != null)
+				return false;
+		} else if (!affectsAC.equals(other.affectsAC))
+			return false;
 		if (code == null) {
 			if (other.code != null)
 				return false;
 		} else if (!code.equals(other.code))
 			return false;
-		if (encumberanceGP != other.encumberanceGP)
-			return false;
 		if (definition == null) {
 			if (other.definition != null)
 				return false;
 		} else if (!definition.equals(other.definition))
-			return false; 
+			return false;
+		if (effectOnAC != other.effectOnAC)
+			return false;
+		if (encumberanceGP != other.encumberanceGP)
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -157,7 +168,24 @@ public class MiscellaneousMagicItem implements  EquipmentI, Comparable<Miscellan
 
 	@Override
 	public String toString() {
-		return "MagicRing [code=" + code + ", name=" + name + ", encumberanceGP=" + encumberanceGP   + ", definition=" + definition + "]";
+		return "MiscellaneousMagicItem [code=" + code + ", name=" + name + ", encumberanceGP=" + encumberanceGP
+				+ ", definition=" + definition + ", affectsAC=" + affectsAC + ", effectOnAC=" + effectOnAC + "]";
+	}
+
+	public String getAffectsAC() {
+		return affectsAC;
+	}
+
+	public void setAffectsAC(String affectsAC) {
+		this.affectsAC = affectsAC;
+	}
+
+	public int getEffectOnAC() {
+		return effectOnAC;
+	}
+
+	public void setEffectOnAC(int effectOnAC) {
+		this.effectOnAC = effectOnAC;
 	}
 
  
