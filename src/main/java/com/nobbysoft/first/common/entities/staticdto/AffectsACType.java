@@ -2,8 +2,8 @@ package com.nobbysoft.first.common.entities.staticdto;
 
 public enum AffectsACType {
 	X("No effect"),
-	P("Adds/Subtracts from AC"),
-	S("Sets AC");
+	P("Bonus to AC value"),
+	S("Sets AC value");
 	
 	private String description;
 	public String getDescription() {

@@ -19,13 +19,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.nobbysoft.first.common.constants.Constants;
+import com.nobbysoft.first.common.entities.equipment.Armour;
 import com.nobbysoft.first.common.entities.equipment.EquipmentType;
 import com.nobbysoft.first.common.entities.equipment.EquipmentWhere;
+import com.nobbysoft.first.common.entities.equipment.MiscellaneousMagicItem;
+import com.nobbysoft.first.common.entities.equipment.Shield;
 import com.nobbysoft.first.common.entities.equipment.WeaponACAdjustmentsI;
 import com.nobbysoft.first.common.entities.equipment.WeaponDamageI;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterEquipment;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
+import com.nobbysoft.first.common.entities.staticdto.AffectsACType;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassSkill;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassToHit;
@@ -76,14 +80,175 @@ public class MakeHTML {
 		return sb.toString();
 	}
 
+
+	
 	public String makeDocument(PlayerCharacter pc, Map<String, CharacterClass> characterClasses, Race race,
 			List<SavingThrow> savingThrows, DataAccessThingy data) {
 
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
 		try {
+			
+			Strength strength = data.getStrength(pc.getAttrStr(), pc.getExceptionalStrength());
+			Intelligence intelligence = data.getIntelligence(pc.getAttrInt());
+			Wisdom wisdom = data.getWisdom(pc.getAttrWis());
+			Dexterity dexterity = data.getDexterity(pc.getAttrDex());
+			Constitution constitution = data.getConstitution(pc.getAttrCon());
+			Charisma charisma = data.getCharisma(pc.getAttrChr());
+
+			List<String> divSpellBonuses = data.getDivineSpellBonus(pc.getAttrWis());
+
+			Map<Comparable, String> stNames = data.getSavingThrowNameMap();
+
+			List<CharacterClassToHit> toHits = data.getToHit(pc, race);
+			
+			Map<String,MiscellaneousMagicItem> armourAffecting = data.getArmourAffecting();
+			
+			List<String> activeClasses = data.getActiveClasses(pc, race);
+			
+			boolean extraHitPointBonus = false;
+			for (CharacterClass c : characterClasses.values()) {
+				if (c != null) {
+					if (c.isHighConBonus()) {
+						extraHitPointBonus = true;
+					}
+				}
+			}
+			String magicDefenceBonus = "";
+			if (race.isHasMagicDefenceBonus()) {
+				int mdb = (int) (((1.0f * pc.getAttrCon()) / 3.5f));
+				if (mdb > 0) {
+					magicDefenceBonus = "Magic defence bonus:" + mdb;
+				}
+			}
+
+			Map<String, List<ViewPlayerCharacterEquipment>> equipment = data.getEquipment(pc.getPcId());
+			List<ViewPlayerCharacterEquipment> equipped = equipment.get("E");
+			List<ViewPlayerCharacterEquipment> unEquipped = equipment.get("N");
+
+
+			/// need class map
+
+			Map<String, String> classNames = data.getClassNames();			
+
+
+			List<CodedListItem> allowedSpells = data.workOutAllowedSpells(pc);
+			
+			
+			Map<Comparable, String> abilitiesMap = data.getCodedListMap(Constants.CLI_THIEF_ABILITY);
+			
+			List<ViewPlayerCharacterSpell> spells = data.grabSpells(pc.getPcId());
+			
+			List<RaceSkill> raceSkills = data.getRaceSkills(pc.getRaceId());			
+			List<CharacterClassSkill> classSkills1 = data.getCharacterClassSkills(pc.getFirstClass(), pc.getFirstClassLevel());
+			List<CharacterClassSkill> classSkills2 = data.getCharacterClassSkills(pc.getSecondClass(), pc.getSecondClassLevel());
+			List<CharacterClassSkill> classSkills3 = data.getCharacterClassSkills(pc.getThirdClass(), pc.getThirdClassLevel());			
+			
+			
+			
+			/// GOT data, build output
+			
+			
 			docBuilder = docFactory.newDocumentBuilder();
 
+			/**
+			 * AC is made up of
+			 * DEX BONUS
+			 * ARMOUR
+			 * SHIELD
+ 			 * EQUIPPED MISC MAGIC
+ 			 * 
+			 */
+			int dexBonus =dexterity.getDefensiveAdjustment();
+			List<ViewPlayerCharacterEquipment> aae = new ArrayList<>();
+			for(ViewPlayerCharacterEquipment vpce: equipped) {
+				EquipmentType arm = vpce.getPlayerCharacterEquipment().getEquipmentType();
+				if(arm.equals(EquipmentType.ARMOUR)) {
+					aae.add(vpce);
+				} else if (arm.equals(EquipmentType.SHIELD)) {
+					aae.add(vpce);
+				} else if(arm.equals(EquipmentType.MISCELLANEOUS_MAGIC)) {
+					MiscellaneousMagicItem item = armourAffecting.get(vpce.getPlayerCharacterEquipment().getCode());
+					if(item!=null) {
+						aae.add(vpce);
+					}					
+				}
+			}
+			// now go through and find out the base AC
+			//
+			int baseAc=10;
+			int shieldBonus=0;
+			int itemBonus=0;
+			String armourName="";
+			String shieldName="";
+			String itemName="";
+			for(ViewPlayerCharacterEquipment vpce: aae) {
+				PlayerCharacterEquipment pce =vpce.getPlayerCharacterEquipment();
+				String code = pce.getCode();
+				EquipmentType type = pce.getEquipmentType();
+				if(type.equals(EquipmentType.ARMOUR)) {
+					if(pce.getEquippedWhere()!=null) {
+						if(pce.getEquippedWhere().equals(EquipmentWhere.TORSO)) {
+							Armour arm = data.getArmour(code);
+							int ac= arm.getAC();
+							if(ac<baseAc) {
+								baseAc=ac;
+								LOGGER.info("ARMOUR (arm) Using {}"+arm.getName()+baseAc);
+								armourName=arm.getName();
+							}
+						}
+					}
+				} else if(type.equals(EquipmentType.SHIELD)) {
+					if(pce.getEquippedWhere().equals(EquipmentWhere.HAND_L)||
+							pce.getEquippedWhere().equals(EquipmentWhere.HAND_R)) {
+						Shield  shield = data.getShield(code);
+						int acb = (1+ shield.getMagicBonus());
+						if(shieldBonus<acb) {
+							LOGGER.info("SHIELD (shl) Using {}"+shield.getName() + " - "+shieldBonus);
+							shieldBonus = acb;
+							shieldName=shield.getName();
+						}
+					}
+				} else /* miss c magic */{
+					// as long as its equipped somewhere that's not the PACK then ok...
+					
+					EquipmentWhere w =pce.getEquippedWhere(); 
+					if(w==null|| w.equals(EquipmentWhere.PACK)) {
+						// in the pack, ignoring
+					} else {
+					
+						// 
+						MiscellaneousMagicItem item = armourAffecting.get(code);
+						
+						if(item.getAffectsAC().equals(AffectsACType.S.name())) {
+							// like armour
+							int ac = item.getEffectOnAC();
+							if(ac<baseAc) {
+								baseAc=ac;
+								LOGGER.info("ARMOUR (msc) Using {}"+item.getName() + " - "+baseAc);
+								armourName=item.getName();
+							}
+						} else if(item.getAffectsAC().equals(AffectsACType.P.name())) {
+							int acb = (item.getEffectOnAC());
+							if(itemBonus<acb) {
+								LOGGER.info("BONUS (msc) Using {}"+item.getName() + " - "+itemBonus);
+								itemBonus = acb;
+								itemName=item.getName();
+							}
+	
+						} else {
+							///ahh??
+						}
+					}
+				}
+			}
+			/*
+			 * 			int baseAc=10;
+			int shieldBonus=0;
+			int itemBonus=0;
+			 */
+			int finalArmourClass = (baseAc +dexBonus) - (shieldBonus + itemBonus) ;
+			
 			Document doc = docBuilder.newDocument();
 			Element html = doc.createElement("html");
 			doc.appendChild(html);
@@ -140,40 +305,39 @@ public class MakeHTML {
 				}
 			}
 
-			Strength strength = data.getStrength(pc.getAttrStr(), pc.getExceptionalStrength());
-			Intelligence intelligence = data.getIntelligence(pc.getAttrInt());
-			Wisdom wisdom = data.getWisdom(pc.getAttrWis());
-			Dexterity dexterity = data.getDexterity(pc.getAttrDex());
-			Constitution constitution = data.getConstitution(pc.getAttrCon());
-			Charisma charisma = data.getCharisma(pc.getAttrChr());
 
-			List<String> divSpellBonuses = data.getDivineSpellBonus(pc.getAttrWis());
 
-			Map<Comparable, String> stNames = data.getSavingThrowNameMap();
 
-			List<CharacterClassToHit> toHits = data.getToHit(pc, race);
-			
-			
-			List<String> activeClasses = data.getActiveClasses(pc, race);
-
-			boolean extraHitPointBonus = false;
-			for (CharacterClass c : characterClasses.values()) {
-				if (c != null) {
-					if (c.isHighConBonus()) {
-						extraHitPointBonus = true;
-					}
-				}
-			}
-			String magicDefenceBonus = "";
-			if (race.isHasMagicDefenceBonus()) {
-				int mdb = (int) (((1.0f * pc.getAttrCon()) / 3.5f));
-				if (mdb > 0) {
-					magicDefenceBonus = "Magic defence bonus:" + mdb;
-				}
-			}
 
 			XmlUtilities.addElement(mainRow, "th", "HP");
 			XmlUtilities.addElement(mainRow, "td", "" + hp);
+			
+
+			/* Armour class table */
+			{
+				Element table = XmlUtilities.addElement(body, "table");
+
+				XmlUtilities.addAttribute(table, "border", "1");
+				Element row = XmlUtilities.addElement(table, "tr");
+				XmlUtilities.addElement(row, "th", "Base A/C");
+				XmlUtilities.addElement(row, "th", "Dexterity bonus");
+				XmlUtilities.addElement(row, "th", "Shield bonus");
+				XmlUtilities.addElement(row, "th", "Magic item bonus");
+				XmlUtilities.addElement(row, "th", "FINAL Armour Class");
+				row = XmlUtilities.addElement(table, "tr");
+				XmlUtilities.addElement(row, "td", ""+baseAc);
+				XmlUtilities.addElement(row, "td", ""+dexBonus);
+				XmlUtilities.addElement(row, "td", ""+shieldBonus);
+				XmlUtilities.addElement(row, "td", ""+itemBonus);
+				XmlUtilities.addElement(row, "td", ""+finalArmourClass);
+				row = XmlUtilities.addElement(table, "tr");
+				XmlUtilities.addElement(row, "td", armourName);
+				XmlUtilities.addElement(row, "td", "");
+				XmlUtilities.addElement(row, "td", shieldName);
+				XmlUtilities.addElement(row, "td", itemName);
+				XmlUtilities.addElement(row, "td", "");
+			
+			}
 
 			{
 				Element table = XmlUtilities.addElement(body, "table");
@@ -328,9 +492,7 @@ public class MakeHTML {
 
 			}
 			
-			Map<String, List<ViewPlayerCharacterEquipment>> equipment = data.getEquipment(pc.getPcId());
-			List<ViewPlayerCharacterEquipment> equipped = equipment.get("E");
-			List<ViewPlayerCharacterEquipment> unEquipped = equipment.get("N");
+
 			
 			{
 				List<ViewPlayerCharacterEquipment> weaponsE = new ArrayList<>();
@@ -386,7 +548,7 @@ public class MakeHTML {
 			}
 			{
 
-				Map<Comparable, String> abilitiesMap = data.getCodedListMap(Constants.CLI_THIEF_ABILITY);
+				
 
 				boolean header = false;
 				Element table = null;
@@ -424,16 +586,12 @@ public class MakeHTML {
 				//
 
 			}
-			/// need class map
-
-			Map<String, String> classNames = data.getClassNames();
 
 			// List<String> activeClasses
 			
 			{
 
-				List<CodedListItem> allowed = data.workOutAllowedSpells(pc);
-				if (allowed.size() > 0) {
+				if (allowedSpells.size() > 0) {
 					XmlUtilities.addElement(body, "h2", "Spells per level");
 					Element table = XmlUtilities.addElement(body, "table");
 					XmlUtilities.addAttribute(table, "border", "1");
@@ -448,7 +606,7 @@ public class MakeHTML {
 						XmlUtilities.addElement(row, "th", "Spells");
 					}
 					boolean anyInactive=false;
-					for (CodedListItem<?> all : allowed) {
+					for (CodedListItem<?> all : allowedSpells) {
 						Element row = XmlUtilities.addElement(table, "tr");
 						String[] ccs = ((String) all.getItem()).split(":");
 						String classId =ccs[0];
@@ -476,7 +634,7 @@ public class MakeHTML {
 			}
 
 			{
-				List<ViewPlayerCharacterSpell> spells = data.grabSpells(pc.getPcId());
+				
 				if (spells != null && spells.size() > 0) {
 
 					XmlUtilities.addElement(body, "h2", "Spells");
@@ -631,7 +789,7 @@ public class MakeHTML {
 			//
 			//
 			//
-			List<RaceSkill> raceSkills = data.getRaceSkills(pc.getRaceId());
+			
 			if(raceSkills.size()>0) {
 				XmlUtilities.addElement(body, "h2", "Race Skills");
 				Element table = XmlUtilities.addElement(body, "table");
@@ -649,9 +807,7 @@ public class MakeHTML {
 			}
 
 			
-			List<CharacterClassSkill> classSkills1 = data.getCharacterClassSkills(pc.getFirstClass(), pc.getFirstClassLevel());
-			List<CharacterClassSkill> classSkills2 = data.getCharacterClassSkills(pc.getSecondClass(), pc.getSecondClassLevel());
-			List<CharacterClassSkill> classSkills3 = data.getCharacterClassSkills(pc.getThirdClass(), pc.getThirdClassLevel());
+
 			if(classSkills1.size()>0 ||classSkills2.size()>0 ||classSkills3.size()>0) {
 				XmlUtilities.addElement(body, "h2", "Class Skills");
 				Element table = XmlUtilities.addElement(body, "table");

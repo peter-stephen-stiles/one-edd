@@ -33,9 +33,10 @@ public class Shield implements EquipmentI,  Comparable<Shield>, Serializable, Da
 	}
 	@Override 
 	public int compareTo(Shield o) { 
-		int ret= code.compareTo(o.code);
+
+		int ret= name.compareTo(o.name);
 		if(ret==0) {
-			ret= name.compareTo(o.name);
+			ret= code.compareTo(o.code);
 			if(ret==0) {
 				ret =toString().compareTo(o.toString());
 			}

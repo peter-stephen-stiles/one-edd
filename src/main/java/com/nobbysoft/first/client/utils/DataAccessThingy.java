@@ -16,8 +16,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.common.constants.Constants;
+import com.nobbysoft.first.common.entities.equipment.Armour;
 import com.nobbysoft.first.common.entities.equipment.EquipmentType;
 import com.nobbysoft.first.common.entities.equipment.EquipmentWhere;
+import com.nobbysoft.first.common.entities.equipment.MiscellaneousMagicItem;
+import com.nobbysoft.first.common.entities.equipment.Shield;
 import com.nobbysoft.first.common.entities.equipment.WeaponDamageI;
 import com.nobbysoft.first.common.entities.equipment.WeaponMelee;
 import com.nobbysoft.first.common.entities.equipment.WeaponRanged;
@@ -40,6 +43,7 @@ import com.nobbysoft.first.common.entities.staticdto.attributes.Intelligence;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Strength;
 import com.nobbysoft.first.common.entities.staticdto.attributes.StrengthKey;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Wisdom;
+import com.nobbysoft.first.common.servicei.ArmourService;
 import com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.first.common.servicei.CharacterClassSkillService;
 import com.nobbysoft.first.common.servicei.CharacterClassSpellService;
@@ -50,10 +54,12 @@ import com.nobbysoft.first.common.servicei.ConstitutionService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.servicei.DexterityService;
 import com.nobbysoft.first.common.servicei.IntelligenceService;
+import com.nobbysoft.first.common.servicei.MiscellaneousMagicItemService;
 import com.nobbysoft.first.common.servicei.PlayerCharacterEquipmentService;
 import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
 import com.nobbysoft.first.common.servicei.RaceSkillService;
 import com.nobbysoft.first.common.servicei.RaceThiefAbilityBonusService;
+import com.nobbysoft.first.common.servicei.ShieldService;
 import com.nobbysoft.first.common.servicei.StrengthService;
 import com.nobbysoft.first.common.servicei.ThiefAbilityService;
 import com.nobbysoft.first.common.servicei.WeaponMeleeService;
@@ -301,6 +307,63 @@ public class DataAccessThingy {
 			}
 		}
 		return characterClassIds;
+	}
+	
+	
+	public Armour getArmour(String code) {
+		
+		ArmourService service =(ArmourService)getDataService(Armour.class);
+		
+		try {
+			return service.get(code);
+		} catch (SQLException e) {			
+			throw new IllegalStateException("can't find armour "+code,e);
+		}
+	}
+
+	
+	public Shield getShield(String code) {
+		
+		ShieldService service =(ShieldService)getDataService(Shield.class);
+		
+		try {
+			return service.get(code);
+		} catch (SQLException e) {			
+			throw new IllegalStateException("can't find Shield "+code,e);
+		}
+	}
+	
+
+	
+	public MiscellaneousMagicItem getMiscellaneousMagicItem(String code) {
+		
+		MiscellaneousMagicItemService service =(MiscellaneousMagicItemService)getDataService(MiscellaneousMagicItem.class);
+		
+		try {
+			return service.get(code);
+		} catch (SQLException e) {			
+			throw new IllegalStateException("can't find Shield "+code,e);
+		}
+	}
+	
+	public Map<String,MiscellaneousMagicItem> getArmourAffecting() {
+		Map<String,MiscellaneousMagicItem> armourAffecting = new HashMap<>();
+		MiscellaneousMagicItemService service =(MiscellaneousMagicItemService)getDataService(MiscellaneousMagicItem.class);
+		
+		List<MiscellaneousMagicItem> mmil;
+		try {
+			mmil = service.getList();
+		} catch (SQLException e) {
+			throw new IllegalStateException("unable to get list of MiscellaneousMagicItem",e);
+		}
+		for(MiscellaneousMagicItem mmi:mmil) {
+			if((mmi.getAffectsAC()!=null&& (mmi.getAffectsAC().equalsIgnoreCase("P")||mmi.getAffectsAC().equalsIgnoreCase("S") )) ) {
+				armourAffecting.put(mmi.getCode(),mmi);
+			}
+		}
+		
+		
+		return armourAffecting;
 	}
 	
 	public List<CharacterClassToHit> getToHit(PlayerCharacter playerCharacter, Race race) {

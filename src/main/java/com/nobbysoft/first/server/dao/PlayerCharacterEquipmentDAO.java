@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -290,7 +291,27 @@ public class PlayerCharacterEquipmentDAO
 			}
 			
 		}) ;
-		
+		views.sort(new Comparator<ViewPlayerCharacterEquipment>(){
+
+			@Override
+			public int compare(ViewPlayerCharacterEquipment o1, ViewPlayerCharacterEquipment o2) {
+				int ret = o1.getEquipmentDescription().compareTo(o2.getEquipmentDescription());
+				if(ret==0) {
+					ret = o1.getKey().compareTo(o2.getKey());
+					if(ret==0) {
+						int h1= o1.hashCode();
+						int h2=o2.hashCode();
+						if(h1>h2) {
+							ret = 1;
+						} else {
+							ret=-1;
+						}
+					}
+				}
+				return ret;
+			}
+			
+		});
 		return views;
 	}
 	

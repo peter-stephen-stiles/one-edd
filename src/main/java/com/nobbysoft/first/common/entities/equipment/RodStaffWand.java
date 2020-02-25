@@ -51,7 +51,15 @@ public class RodStaffWand implements  EquipmentI, Comparable<RodStaffWand>, Seri
 
 	@Override
 	public int compareTo(RodStaffWand o) {
-		return toString().compareTo(o.toString());
+
+		int ret= name.compareTo(o.name);
+		if(ret==0) {
+			ret= code.compareTo(o.code);
+			if(ret==0) {
+				ret =toString().compareTo(o.toString());
+			}
+		}
+		return ret;
 	}
 
 	@Override

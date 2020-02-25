@@ -70,7 +70,7 @@ public class MiscellaneousMagicItemPanel extends AbstractDataPanel<Miscellaneous
 	private final PComboEquipmentHands txtComboEquipmentHands = new PComboEquipmentHands(); 
 	
 	private final PComboAffectsAC txtAffectsAC = new PComboAffectsAC(); 
-	private final PIntegerCombo txtEffectOnAC = new PIntegerCombo(-10,10,true);
+	private final PIntegerCombo txtEffectOnAC = new PIntegerCombo(0,10,true);
 	
 	
 	private PDataComponent[] dataComponents = new PDataComponent[] { 

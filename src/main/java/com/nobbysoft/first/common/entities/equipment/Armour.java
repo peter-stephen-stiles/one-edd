@@ -119,16 +119,16 @@ public class Armour implements EquipmentI, ArmourI,Comparable<Armour>, Serializa
 
 	@Override
 	public int compareTo(Armour o) { 
-		int ret= code.compareTo(o.code);
+
+		int ret= name.compareTo(o.name);
 		if(ret==0) {
-			ret= name.compareTo(o.name);
+			ret= code.compareTo(o.code);
 			if(ret==0) {
 				ret =toString().compareTo(o.toString());
 			}
 		}
 		return ret;
 	}
-
 	public int getBaseMovement() {
 		return baseMovement;
 	}

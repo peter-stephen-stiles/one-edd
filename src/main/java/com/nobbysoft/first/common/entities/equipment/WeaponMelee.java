@@ -368,9 +368,9 @@ Comparable<WeaponMelee>, Serializable, DataDTOInterface<String>{
 
 	@Override
 	public int compareTo(WeaponMelee o) {
-		int ret= code.compareTo(o.code);
+		int ret= name.compareTo(o.name);
 		if(ret==0) {
-			ret= name.compareTo(o.name);
+			ret= code.compareTo(o.code);
 			if(ret==0) {
 				ret =toString().compareTo(o.toString());
 			}

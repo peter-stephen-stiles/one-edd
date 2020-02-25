@@ -50,7 +50,15 @@ public class MiscellaneousMagicItem implements  EquipmentI, Comparable<Miscellan
 
 	@Override
 	public int compareTo(MiscellaneousMagicItem o) {
-		return toString().compareTo(o.toString());
+
+		int ret= name.compareTo(o.name);
+		if(ret==0) {
+			ret= code.compareTo(o.code);
+			if(ret==0) {
+				ret =toString().compareTo(o.toString());
+			}
+		}
+		return ret;
 	}
 
 	@Override
