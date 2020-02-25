@@ -319,23 +319,29 @@ public class MakeHTML {
 
 				XmlUtilities.addAttribute(table, "border", "1");
 				Element row = XmlUtilities.addElement(table, "tr");
+				XmlUtilities.addElement(row, "th", "Armour Class");
+				XmlUtilities.addElement(row, "td", "");
 				XmlUtilities.addElement(row, "th", "Base A/C");
 				XmlUtilities.addElement(row, "th", "Dexterity bonus");
 				XmlUtilities.addElement(row, "th", "Shield bonus");
 				XmlUtilities.addElement(row, "th", "Magic item bonus");
-				XmlUtilities.addElement(row, "th", "FINAL Armour Class");
+				
 				row = XmlUtilities.addElement(table, "tr");
+				XmlUtilities.addElement(row, "td", ""+finalArmourClass);
+				XmlUtilities.addElement(row, "td", "");
 				XmlUtilities.addElement(row, "td", ""+baseAc);
 				XmlUtilities.addElement(row, "td", ""+dexBonus);
 				XmlUtilities.addElement(row, "td", ""+shieldBonus);
 				XmlUtilities.addElement(row, "td", ""+itemBonus);
-				XmlUtilities.addElement(row, "td", ""+finalArmourClass);
+				
 				row = XmlUtilities.addElement(table, "tr");
+				XmlUtilities.addElement(row, "td", "");
+				XmlUtilities.addElement(row, "td", "");
 				XmlUtilities.addElement(row, "td", armourName);
 				XmlUtilities.addElement(row, "td", "");
 				XmlUtilities.addElement(row, "td", shieldName);
 				XmlUtilities.addElement(row, "td", itemName);
-				XmlUtilities.addElement(row, "td", "");
+				
 			
 			}
 
