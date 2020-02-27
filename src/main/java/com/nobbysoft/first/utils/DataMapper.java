@@ -44,7 +44,8 @@ public enum DataMapper {
 		buttonmap.put(CharacterClass.class, CharacterClassButtons.class);
 		buttonmap.put(PlayerCharacter.class, PlayerCharacterButtons.class);
 		
-		buttonmap.put(Armour.class, EquipmentButtons.class);		
+		buttonmap.put(Armour.class, EquipmentButtons.class);
+		buttonmap.put(Scroll.class, EquipmentButtons.class);	
 		buttonmap.put(MiscellaneousMagicItem.class, EquipmentButtons.class);
 		buttonmap.put(RodStaffWand.class, EquipmentButtons.class);
 		buttonmap.put(Shield.class, EquipmentButtons.class);
@@ -84,6 +85,7 @@ public enum DataMapper {
 		daoimap.put(WeaponRanged.class,WeaponRangedDAO.class);
 		daoimap.put(WeaponAmmunition.class,WeaponAmmunitionDAO.class);
 		daoimap.put(Armour.class,ArmourDAO.class);
+		daoimap.put(Scroll.class,ScrollDAO.class);
 		daoimap.put(MiscellaneousMagicItem.class,MiscellaneousMagicItemDAO.class);//
 		daoimap.put(RodStaffWand.class,RodStaffWandDAO.class);//
 		daoimap.put(Shield.class,ShieldDAO.class);
@@ -96,7 +98,8 @@ public enum DataMapper {
 		equipmentDAO.put(EquipmentType.MELEE_WEAPON,WeaponMeleeDAO.class);
 		equipmentDAO.put(EquipmentType.WEAPON_RANGED,WeaponRangedDAO.class);
 		equipmentDAO.put(EquipmentType.AMMUNITION,WeaponAmmunitionDAO.class);
-		equipmentDAO.put(EquipmentType.ARMOUR,ArmourDAO.class);
+		equipmentDAO.put(EquipmentType.ARMOUR,ArmourDAO.class);//
+		equipmentDAO.put(EquipmentType.SCROLL,ScrollDAO.class);//
 		equipmentDAO.put(EquipmentType.MISCELLANEOUS_MAGIC,MiscellaneousMagicItemDAO.class);//
 		equipmentDAO.put(EquipmentType.ROD_STAFF_WAND,RodStaffWandDAO.class);//
 		equipmentDAO.put(EquipmentType.SHIELD,ShieldDAO.class);
@@ -121,6 +124,7 @@ public enum DataMapper {
 		staticDataPanels.put(WeaponRanged.class, WeaponRangedPanel.class);
 		staticDataPanels.put(WeaponAmmunition.class, WeaponAmmunitionPanel.class);
 		staticDataPanels.put(Armour.class, ArmourPanel.class);
+		staticDataPanels.put(Scroll.class, ScrollPanel.class);
 		staticDataPanels.put(MiscellaneousMagicItem.class, MiscellaneousMagicItemPanel.class);//
 		staticDataPanels.put(RodStaffWand.class, RodStaffWandPanel.class);//
 		staticDataPanels.put(Shield.class, ShieldPanel.class);
@@ -157,6 +161,7 @@ public enum DataMapper {
 		entityservicemap.put(WeaponRanged.class,WeaponRangedService.class);
 		entityservicemap.put(WeaponAmmunition.class,WeaponAmmunitionService.class);
 		entityservicemap.put(Armour.class,ArmourService.class);
+		entityservicemap.put(Scroll.class,ScrollService.class);
 		entityservicemap.put(RodStaffWand.class,RodStaffWandService.class);//
 		entityservicemap.put(MiscellaneousMagicItem.class,MiscellaneousMagicItemService.class);//
 		entityservicemap.put(Shield.class,ShieldService.class);
@@ -195,6 +200,7 @@ public enum DataMapper {
 		servicemap.put(WeaponRangedService.class, WeaponRangedThrownImpl.class);
 		servicemap.put(WeaponAmmunitionService.class, WeaponAmmunitionServiceImpl.class);
 		servicemap.put(ArmourService.class, ArmourServiceImpl.class);
+		servicemap.put(ScrollService.class, ScrollServiceImpl.class);
 		servicemap.put(MiscellaneousMagicItemService.class, MiscellaneousMagicItemServiceImpl.class);//
 		servicemap.put(RodStaffWandService.class, RodStaffWandServiceImpl.class);//
 		servicemap.put(ShieldService.class, ShieldServiceImpl.class);

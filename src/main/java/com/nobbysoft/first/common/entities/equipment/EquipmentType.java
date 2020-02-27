@@ -12,6 +12,7 @@ public enum EquipmentType {
 	ARMOUR_BONUS_GIVING(),  // don't specify so can go anywhere
 	MISCELLANEOUS_MAGIC(),  // don't specify so can go anywhere
 	ROD_STAFF_WAND(EquipmentWhere.HAND_L,EquipmentWhere.HAND_R,EquipmentWhere.PACK,EquipmentWhere.OTHER),
+	SCROLL(EquipmentWhere.PACK,EquipmentWhere.OTHER),
 	OTHER() // don't specify so can go anywhere
 	;
 

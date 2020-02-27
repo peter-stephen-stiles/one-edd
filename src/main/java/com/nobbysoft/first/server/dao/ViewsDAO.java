@@ -60,6 +60,7 @@ public class ViewsDAO implements CreateInterface {
 		typesToTableNames.put(EquipmentType.MISCELLANEOUS_MAGIC, "miscellaneous_magic_item");
 		typesToTableNames.put(EquipmentType.ARMOUR,              "armour");
 		typesToTableNames.put(EquipmentType.SHIELD,              "shield");
+		typesToTableNames.put(EquipmentType.SCROLL,              "equipment_scroll");
 		
 
 		String stdSelect = " SELECT '%s' as type, code, name, encumberance_GP FROM %s ";
