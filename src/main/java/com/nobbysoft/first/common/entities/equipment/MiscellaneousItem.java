@@ -239,7 +239,9 @@ public class MiscellaneousItem implements  EquipmentI, Comparable<MiscellaneousI
 
  
  
-
+	public boolean defaultAllClasses() {
+		return true;
+	}
  
 
 	

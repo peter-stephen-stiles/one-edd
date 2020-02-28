@@ -14,9 +14,11 @@ import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.common.entities.DTORowListener;
 import com.nobbysoft.first.common.entities.DataDTOInterface;
-import com.nobbysoft.first.common.entities.equipment.EquipmentClass; 
+import com.nobbysoft.first.common.entities.equipment.EquipmentClass;
+import com.nobbysoft.first.common.entities.equipment.EquipmentI;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
+import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
 import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.utils.CodedListItem;
 
@@ -26,6 +28,33 @@ public abstract class EquipmentDAO<T extends DataDTOInterface,K extends Comparab
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 	
 	public abstract String getEquipmentTypeString();
+	
+	@Override
+	public void insert(Connection con, T value) throws SQLException{
+		
+		super.insert(con, value);
+		if(value instanceof EquipmentI) {
+			
+			EquipmentI eq = (EquipmentI)value;
+			if(eq.defaultAllClasses()) {
+				String equipmentType = getEquipmentTypeString();
+				
+				EquipmentClassDAO ecDAO = new EquipmentClassDAO();
+				CharacterClassDAO ccDAO = new CharacterClassDAO ();
+				for(CharacterClass cc:ccDAO.getList(con)) {
+					
+					EquipmentClass ec = new  EquipmentClass();
+					ec.setClassId(cc.getClassId());
+					ec.setCode(eq.getCode());
+					ec.setType(equipmentType);				
+					ecDAO.insert(con, ec);
+				}
+				
+			}
+		}
+		
+	}
+	
 	
 	public List<T> getValidEquipmentForAClass(Connection con,
 			EquipmentClassDAO ecDAO,
