@@ -52,7 +52,7 @@ public enum COINAGE {
 					sb.append(", ");
 				}
 				first=false;
-				sb.append(coin).append(" ").append(coin.getAbbr());
+				sb.append(num).append(" ").append(coin.getAbbr());
 			}
 		}
 		

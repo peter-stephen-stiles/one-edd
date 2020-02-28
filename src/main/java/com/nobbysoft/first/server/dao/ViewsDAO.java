@@ -58,6 +58,7 @@ public class ViewsDAO implements CreateInterface {
 		typesToTableNames.put(EquipmentType.AMMUNITION,          "weapon_ammunition");	
 		typesToTableNames.put(EquipmentType.ROD_STAFF_WAND,      "rod_staff_wand");
 		typesToTableNames.put(EquipmentType.MISCELLANEOUS_MAGIC, "miscellaneous_magic_item");
+		typesToTableNames.put(EquipmentType.MISCELLANEOUS_ITEM,  "miscellaneous_item");
 		typesToTableNames.put(EquipmentType.ARMOUR,              "armour");
 		typesToTableNames.put(EquipmentType.SHIELD,              "shield");
 		typesToTableNames.put(EquipmentType.SCROLL,              "equipment_scroll");

@@ -32,6 +32,7 @@ import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentAmmunition;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentArmour;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentI;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMelee;
+import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMiscellaneousItem;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentMiscellaneousMagicItem;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentRanged;
 import com.nobbysoft.first.client.data.panels.equipment.AddEquipmentRodStaffWand;
@@ -63,6 +64,7 @@ private Map<String,Class<? extends AddEquipmentI>> equipmentMenu = new HashMap<>
 	equipmentMenu.put("Shield", AddEquipmentShield.class); 
 	equipmentMenu.put("Rods/Staves/Wands", AddEquipmentRodStaffWand.class); 
 	equipmentMenu.put("Miscellaneous Magic Items", AddEquipmentMiscellaneousMagicItem.class); 
+	equipmentMenu.put("Miscellaneous Items", AddEquipmentMiscellaneousItem.class); 
 	equipmentMenu.put("Scrolls", AddEquipmentScroll.class); 
 }
 	
