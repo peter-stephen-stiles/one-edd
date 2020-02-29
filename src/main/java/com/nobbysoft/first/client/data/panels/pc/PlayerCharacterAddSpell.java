@@ -1,20 +1,17 @@
 package com.nobbysoft.first.client.data.panels.pc;
 
-import java.awt.GraphicsConfiguration;
-import java.awt.GridBagLayout;
-import java.awt.Window;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Dialog.ModalityType;
+import java.awt.GridBagLayout;
+import java.awt.Window;
 import java.lang.invoke.MethodHandles;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -44,10 +41,10 @@ import com.nobbysoft.first.common.servicei.CodedListService;
 import com.nobbysoft.first.common.servicei.DataServiceI;
 import com.nobbysoft.first.common.servicei.PlayerCharacterSpellService;
 import com.nobbysoft.first.common.utils.CodedListItem;
-import com.nobbysoft.first.common.views.ViewPlayerCharacterSpell;
 import com.nobbysoft.first.utils.DataMapper;
  
 
+@SuppressWarnings("serial")
 public class PlayerCharacterAddSpell extends PDialog {
 
 
@@ -72,12 +69,19 @@ public class PlayerCharacterAddSpell extends PDialog {
 	
 	private PList<Spell> listOfSpells = new PList();
 	
-	private PlayerCharacter pc;	
+	private PlayerCharacter pc=null;	
+	
+	
+	
 	
 	public void setPcId(PlayerCharacter pc) {
-		this.pc=pc;
-		
-		initialiseSpellClassCombo(pc);
+		if(this.pc==null || !pc.equals(this.pc)) {
+			this.pc=pc;		
+			initialiseSpellClassCombo(pc);			
+		} else {
+			// same PC :)
+		}
+		btnFilter.doClick();
 	}
 
 
@@ -248,16 +252,22 @@ public class PlayerCharacterAddSpell extends PDialog {
 	private void confirm() {
 		
 		if(listOfSpells.getSelectedValue()!=null) {
-			Spell spell = listOfSpells.getSelectedValue();
+			
+			try {
+			
+			List<Spell> spells =listOfSpells.getSelectedValuesList();
+			for(Spell spell:spells) {
+			
 			PlayerCharacterSpell pcs = new PlayerCharacterSpell();
 			pcs.setPcId(pc.getPcId());
 			pcs.setSpellId(spell.getSpellId());
 			pcs.setInMemory(0);
 			PlayerCharacterSpellService pces = (PlayerCharacterSpellService )getDataService(PlayerCharacterSpell.class);
-			try {
+			
 				pces.insert(pcs);
-				cancelled=false;
-				dispose();
+			}
+			cancelled=false;
+			dispose();
 			} catch (SQLException e) {
 				Popper.popError(this, e);
 			}

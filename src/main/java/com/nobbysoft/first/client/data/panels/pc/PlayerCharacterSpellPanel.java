@@ -167,12 +167,17 @@ public class PlayerCharacterSpellPanel extends PPanel {
 		return dao;
 	}
 
+	PlayerCharacterAddSpell add = null;
+	
 	private void addSpell() {
 		if(pc==null) {
 			Popper.popError(this, "Save first", "You have to save your character before you add spells, sorry!");
 			return;
 		}
-		PlayerCharacterAddSpell add = new PlayerCharacterAddSpell(GuiUtils.getParent(this));
+		
+		if(add==null) {
+			add = new PlayerCharacterAddSpell(GuiUtils.getParent(this));
+		}
 		add.setPcId(pc);
 		add.pack();
 		add.setLocationRelativeTo(null);
