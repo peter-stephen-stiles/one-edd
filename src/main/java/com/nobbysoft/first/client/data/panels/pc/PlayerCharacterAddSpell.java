@@ -67,7 +67,7 @@ public class PlayerCharacterAddSpell extends PDialog {
 	private PIntegerCombo cbxLevel = new PIntegerCombo(0,9,false,false);
 	private PTextField txtNameFilter = new PTextField();
 	
-	private PList<Spell> listOfSpells = new PList();
+	private PList<Spell> listOfSpells = new PList<>();
 	
 	private PlayerCharacter pc=null;	
 	
