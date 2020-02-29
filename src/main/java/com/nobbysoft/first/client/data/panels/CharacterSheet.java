@@ -2,10 +2,12 @@ package com.nobbysoft.first.client.data.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -19,6 +21,8 @@ import java.util.Map;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.text.EditorKit;
+import javax.swing.text.html.HTMLEditorKit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,7 +71,7 @@ public class CharacterSheet extends PDialog {
 		jbInit();
 	}
 
-	private JEditorPane edtResults = new JEditorPane();//"text/html", "<h1>No character sheet :(</h1>");
+	private JEditorPane edtResults = new JEditorPane();
 	private PTextField txtName = new PTextField();
 	private PTextField txtRace = new PTextField();
 	private PComboGender txtGender = new PComboGender();
@@ -81,7 +85,15 @@ public class CharacterSheet extends PDialog {
 		setLayout(new BorderLayout());
         
         //
-        JScrollPane sclResults = new JScrollPane(edtResults); 
+        JScrollPane sclResults = new JScrollPane(edtResults) {
+        	public Dimension getPreferredSize() {
+        		Dimension d = super.getPreferredSize();
+        		if(d.height>200) {
+        			d.height=200;
+        		}
+        		return d;
+        	}
+        }; 
         
         PPanel pnlHead = new PPanel(new FlowLayout(FlowLayout.LEFT)); 
         PButtonPanel pnlButtons = new PButtonPanel(); 
@@ -221,6 +233,7 @@ public class CharacterSheet extends PDialog {
 			}
 			
 			URI uri=java.nio.file.FileSystems.getDefault().getPath( tmp.getPath() ).toAbsolutePath().toUri();
+ 
 			
 			Desktop.getDesktop().browse(uri);
 			// all good, close popup 
@@ -228,6 +241,7 @@ public class CharacterSheet extends PDialog {
 		} catch (IOException e) {
 			//all bad leave pop-up open 
 			edtResults.setText(e.toString());
+			Popper.popError(this, e);
 		}
 		return false;
 	}
