@@ -76,6 +76,8 @@ public class EquipEquipment extends PDialog   {
 		if(pce.isEquipped()) {
 			txtEquipmentWhere.setEquipmentWhere(pce.getEquippedWhere());
 		}
+		txtNumberOf.setIntegerValue(pce.getCountOwned());
+		
 		
 	 	//
 	}
@@ -83,6 +85,7 @@ public class EquipEquipment extends PDialog   {
 	private PTextField txtCharacterName = new PTextField();
 	private PTextField txtEquipmentType = new PTextField();
 	private PTextField txtEquipmentName = new PTextField();
+	private PIntegerField txtNumberOf  = new PIntegerField();
 	private PComboEquipmentHands txtEquipmentHands = new PComboEquipmentHands();
 	private PComboEquipmentWhere txtEquipmentWhere = new PComboEquipmentWhere();
 	
@@ -95,7 +98,7 @@ public class EquipEquipment extends PDialog   {
 		setLayout(new BorderLayout());
 		PButtonPanel pnlButtons = new PButtonPanel();
 		PButton btnCancel = new PButton("Cancel");
-		PButton btnEquip  = new PButton("Equip");
+		PButton btnEquip  = new PButton("Save");
 
 		// list of available melee weapons
 		// select one
@@ -115,7 +118,7 @@ public class EquipEquipment extends PDialog   {
 				cancelled=false;
 				dispose();
 			} else {
-				Popper.popError(this, "Error equipping", ok);
+				Popper.popError(this, "Error saving", ok);
 			}
 		});
   
@@ -142,6 +145,12 @@ public class EquipEquipment extends PDialog   {
 		pnlData.add(txtEquipmentWhere,GBU.text(1, row));
 		row++;
 
+		pnlData.add(new PLabel("How many?"),GBU.label(0, row));
+		pnlData.add(txtNumberOf,GBU.text(1, row));
+		row++;
+		
+		
+		
 
 		pnlData.add(new PLabel(""),GBU.label(99, 99));
 		
@@ -168,6 +177,10 @@ public class EquipEquipment extends PDialog   {
 	private  ReturnValue<?> validateAndProcessData() {
 		ReturnValue<?> ret = new ReturnValue<>("");
 		
+		if(txtNumberOf.getIntegerValue()<1) {
+			return new ReturnValue(true,"Must have at least one. Exit this screen and instead 'REMOVE' it if you do want to drop it.");
+		}
+		
 		boolean anyGood = txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.PACK)
 				|| txtEquipmentWhere.getEquipmentWhere().equals(EquipmentWhere.OTHER); 
 		
@@ -188,8 +201,8 @@ public class EquipEquipment extends PDialog   {
 		
 		PlayerCharacterEquipmentService pces = (PlayerCharacterEquipmentService )getDataService(PlayerCharacterEquipment.class);
 		try {
-			
-			pces.equip(pce, txtEquipmentWhere.getEquipmentWhere());
+			pce.setCountOwned(txtNumberOf.getIntegerValue());
+			pces.equip(pce, txtEquipmentWhere.getEquipmentWhere());			
 		} catch (SQLException e) {
 			Popper.popError(this, e);
 		}		
