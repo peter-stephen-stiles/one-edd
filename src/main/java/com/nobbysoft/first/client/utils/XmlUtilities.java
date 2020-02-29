@@ -91,7 +91,19 @@ public class XmlUtilities {
 	}
 
 	public static void addAttribute(Element node, String name, String value) {
-
+		if(name==null) {
+			LOGGER.error("been asked to add an attribute with some nulls name{} value {}",name,value);
+			name="{null}";
+		}
+		if(value==null) {
+			LOGGER.error("been asked to add an attribute with some nulls name{} value {}",name,value);
+			value="";
+		}
+		if(name.trim().isEmpty()) {
+			LOGGER.error("been asked to add an attribute with no name{} ",name);
+			name="{none}";			
+		}
+		
 		((Element) node).setAttribute(name, value);
 	}
 
@@ -122,6 +134,16 @@ public class XmlUtilities {
 	}
 
 	public static Element addElement(Node n, String name) {
+		
+		if(name==null) {
+			LOGGER.error("been asked to add an element with null name{} ",name);
+			name="{null}";
+		}
+		if(name.trim().isEmpty()) {
+			LOGGER.error("been asked to add an element with no name{} ",name);
+			name="{none}";			
+		}
+		
 		Document od = n.getOwnerDocument();
 		Element newEl = od.createElement(name);
 		n.appendChild(newEl);
@@ -135,6 +157,16 @@ public class XmlUtilities {
 	}
 	
 	public static Element addElement(Node n, String name, int value) {
+		
+		if(name==null) {
+			LOGGER.error("been asked to add an element with some nulls name{} value {}",name,value);
+			name="{null}";
+		}
+		if(name.trim().isEmpty()) {
+			LOGGER.error("been asked to add an element with no name{} ",name);
+			name="{none}";			
+		}
+		
 		Document od = n.getOwnerDocument();
 		Element newEl = od.createElement(name);
 		n.appendChild(newEl);
@@ -150,6 +182,20 @@ public class XmlUtilities {
 	}
 
 	public static Element addCDataElement(Node n, String name, String value) {
+		
+		if(name==null) {
+			LOGGER.error("been asked to add an element with some nulls name{} value {}",name,value);
+			name="{null}";
+		}
+		if(value==null) {
+			LOGGER.error("been asked to add an element with some nulls name{} value {}",name,value);
+			value="";
+		}
+		if(name.trim().isEmpty()) {
+			LOGGER.error("been asked to add an element with no name{} ",name);
+			name="{none}";			
+		}
+		
 		Document od = n.getOwnerDocument();
 		Element newEl = od.createElement(name);
 		n.appendChild(newEl);
@@ -160,6 +206,20 @@ public class XmlUtilities {
 
 	
 	public static Element addElement(Node n, String name, String value) {
+		
+		if(name==null) {
+			LOGGER.error("been asked to add an element with some nulls name{} value {}",name,value);
+			name="{null}";
+		}
+		if(value==null) {
+			LOGGER.error("been asked to add an element with some nulls name{} value {}",name,value);
+			value="";
+		}
+		if(name.trim().isEmpty()) {
+			LOGGER.error("been asked to add an element with no name{} ",name);
+			name="{none}";			
+		}
+		
 		Document od = n.getOwnerDocument();
 		Element newEl = od.createElement(name);
 		n.appendChild(newEl);

@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.data.panels.CharacterSheet;
 import com.nobbysoft.first.client.data.panels.DataButtonsInterface;
+import com.nobbysoft.first.client.data.panels.SpellBook;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.staticdto.Race;
@@ -30,6 +31,7 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 	
 	private static final String DUAL_CLASS = "Dual class";
 	private static final String SHEET=	"Character sheet";
+	private static final String SPELLBOOK=	"Spell book";
 
 	private List<String> rowButtonNames = new ArrayList<>();
 
@@ -41,6 +43,7 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 		rowButtonNames.add(EQUIPMENT);
 		rowButtonNames.add(DUAL_CLASS);
 		rowButtonNames.add(SHEET);
+		rowButtonNames.add(SPELLBOOK);
 	}
 
 
@@ -185,6 +188,29 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 			return false;
 			
 			//
+		} else if(SPELLBOOK.equals(name)) {
+			try {
+			PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);			
+			PlayerCharacter dto = ccs.get(object.getPlayerCharacter().getPcId());
+			
+			if (dto != null) {
+				// now to make character sheet up
+				SpellBook dialog = new SpellBook(window);
+				boolean ok =dialog.setPlayerCharacter(dto);
+				if(ok) {
+					dialog.pack();
+					dialog.setLocationRelativeTo(null);
+					dialog.setVisible(true);
+				}
+				// no refresh just for character sheet!
+				}
+			} catch (Exception ex) {
+					Popper.popError(window, ex);			
+			}
+			return false;
+			
+			//
+
 		} else {
 			
 		}
