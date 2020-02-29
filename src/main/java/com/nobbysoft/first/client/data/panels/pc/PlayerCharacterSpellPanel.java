@@ -240,57 +240,61 @@ public class PlayerCharacterSpellPanel extends PPanel {
 
 	private void memorise() {
 
+		int increment=1;
+		
+		memoriseOrForget(increment);
+
+	}
+
+	private void memoriseOrForget(int increment) {
 		PlayerCharacterSpell pce = null;
-		ViewPlayerCharacterSpell vpce = null;
-		// String name="";
-		int rowNum = tblSpell.getSelectedRow();
-		if (rowNum >= 0) {
-			vpce = getSelectedSpell(rowNum);
-			if (vpce != null) {
-				pce = vpce.getPlayerCharacterSpell();
-				if (pce != null) {
-					PlayerCharacterSpellService pces = (PlayerCharacterSpellService) getDataService(
-							PlayerCharacterSpell.class);
-					try {
-						PlayerCharacterSpell spell = pces.get(pce.getKey());
-						spell.setInMemory(spell.getInMemory() + 1);
-						pces.update(spell);
-						populateSpellTable();
-					} catch (Exception e) {
-						Popper.popError(this, e);
+		ViewPlayerCharacterSpell vpce = null; 
+		
+		int[] rowNums = tblSpell.getSelectedRows();
+		
+		for(int rowNum:rowNums) {
+		 
+			try {
+			
+					vpce = getSelectedSpell(rowNum);
+					if (vpce != null) {
+						pce = vpce.getPlayerCharacterSpell();
+						if (pce != null) {
+							PlayerCharacterSpellService pces = (PlayerCharacterSpellService) getDataService(
+									PlayerCharacterSpell.class);
+		
+								PlayerCharacterSpell spell = pces.get(pce.getKey());
+								
+								if(increment>0) {													
+									// are we allowed?									
+									spell.setInMemory(spell.getInMemory() + increment);
+									pces.update(spell);
+								} else {
+								if (spell.getInMemory() > 0) {
+									spell.setInMemory(spell.getInMemory() + increment);
+									pces.update(spell);
+								}
+								}
+						
+							
+		
+						}
 					}
-				}
+			} catch (Exception e) {
+				Popper.popError(this, e);
 			}
 		}
+		if(rowNums.length>0) {
 
+			populateSpellTable();
+		}
 	}
 
 	private void forget() {
 
-		PlayerCharacterSpell pce = null;
-		ViewPlayerCharacterSpell vpce = null;
-		// String name="";
-		int rowNum = tblSpell.getSelectedRow();
-		if (rowNum >= 0) {
-			vpce = getSelectedSpell(rowNum);
-			if (vpce != null) {
-				pce = vpce.getPlayerCharacterSpell();
-				if (pce != null) {
-					PlayerCharacterSpellService pces = (PlayerCharacterSpellService) getDataService(
-							PlayerCharacterSpell.class);
-					try {
-						PlayerCharacterSpell spell = pces.get(pce.getKey());
-						if (spell.getInMemory() > 0) {
-							spell.setInMemory(spell.getInMemory() - 1);
-							pces.update(spell);
-						}
-						populateSpellTable();
-					} catch (Exception e) {
-						Popper.popError(this, e);
-					}
-				}
-			}
-		}
+		int increment=-1;
+		
+		memoriseOrForget(increment);
 
 	}
 
@@ -298,12 +302,7 @@ public class PlayerCharacterSpellPanel extends PPanel {
 
 	private void populateSpellTable() {
 
-		int sr = tblSpell.getSelectedRow();
-		ViewPlayerCharacterSpell selectedObject = null;
-		if (sr >= 0 && sr < tblSpell.getRowCount()) {
-			int modelRow = tblSpell.convertRowIndexToModel(sr);
-			selectedObject = (ViewPlayerCharacterSpell) tblSpell.getValueAt(modelRow, 0);
-		}
+		int[] sr = tblSpell.getSelectedRows();
 
 		memorisedMap.clear();
 		txtMemByLevel.clear();
@@ -334,19 +333,10 @@ public class PlayerCharacterSpellPanel extends PPanel {
 			} catch (Exception ex) {
 				Popper.popError(this, ex);
 			}
-			if (selectedObject != null) {
-				// LOGGER.info("selected object "+selectedObject);
-				PlayerCharacterSpellKey k0 = selectedObject.getKey();
-				for (int i = 0, n = tblSpell.getRowCount(); i < n; i++) {
-					int modelRow = tblSpell.convertRowIndexToModel(i);
-					ViewPlayerCharacterSpell value = (ViewPlayerCharacterSpell) tblSpell.getValueAt(modelRow, 0);
-					// LOGGER.info("value "+value);
-					PlayerCharacterSpellKey k1 = value.getKey();
-					if (k0.equals(k1)) {
-						// LOGGER.info("selected "+i + " model row:"+modelRow);
-						tblSpell.getSelectionModel().setSelectionInterval(i, i);
-						break;
-					}
+			
+			if(sr.length>0) {
+				for(int row:sr) {
+					tblSpell.getSelectionModel().addSelectionInterval(row, row);					
 				}
 			}
 
@@ -415,8 +405,8 @@ public class PlayerCharacterSpellPanel extends PPanel {
 			txtAllByLevel.addItem(cli);
 		}
 		
-	}
-
+	} 
+	
 	public List<CodedListItem> workOutAllowedSpells() {
 		List<CodedListItem> clis = new ArrayList<>();
 		
