@@ -30,7 +30,6 @@ import com.nobbysoft.first.client.utils.GuiUtils;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpell;
-import com.nobbysoft.first.common.entities.pc.PlayerCharacterSpellKey;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClassSpell;
 import com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.first.common.servicei.CharacterClassSpellService;
@@ -192,7 +191,10 @@ public class PlayerCharacterSpellPanel extends PPanel {
 	private void removeSpell() {
 		PlayerCharacterSpell pce = null;
 		ViewPlayerCharacterSpell vpce = null;
-		// String name="";
+		if(tblSpell.getSelectedRows().length>1) {
+			Popper.popError(this, "Too many", "Too many rows selected. When you want to delete please select one spell at a time.");
+			return;
+		}
 		int rowNum = tblSpell.getSelectedRow();
 		if (rowNum >= 0) {
 			vpce = getSelectedSpell(rowNum);
@@ -316,8 +318,7 @@ public class PlayerCharacterSpellPanel extends PPanel {
 
 				for (ViewPlayerCharacterSpell vpce : list) {
 					PlayerCharacterSpell pce = vpce.getPlayerCharacterSpell();
-					Spell s = vpce.getSpell();
-					String desc = vpce.getDescription();
+					Spell s = vpce.getSpell();					
 
 					tblSpell.addRow(vpce.getAsRow());
 					int[] memorised;
