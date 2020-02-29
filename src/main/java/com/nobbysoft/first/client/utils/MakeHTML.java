@@ -118,7 +118,7 @@ public class MakeHTML {
 			if (race.isHasMagicDefenceBonus()) {
 				int mdb = (int) (((1.0f * pc.getAttrCon()) / 3.5f));
 				if (mdb > 0) {
-					magicDefenceBonus = "Magic defence bonus:" + mdb;
+					magicDefenceBonus = "Magic defence bonus: +" + mdb;
 				}
 			}
 
@@ -313,37 +313,7 @@ public class MakeHTML {
 			XmlUtilities.addElement(mainRow, "td", "" + hp);
 			
 
-			/* Armour class table */
-			{
-				Element table = XmlUtilities.addElement(body, "table");
 
-				XmlUtilities.addAttribute(table, "border", "1");
-				Element row = XmlUtilities.addElement(table, "tr");
-				XmlUtilities.addElement(row, "th", "Armour Class");
-				XmlUtilities.addElement(row, "td", "");
-				XmlUtilities.addElement(row, "th", "Base A/C");
-				XmlUtilities.addElement(row, "th", "Dexterity bonus");
-				XmlUtilities.addElement(row, "th", "Shield bonus");
-				XmlUtilities.addElement(row, "th", "Magic item bonus");
-				
-				row = XmlUtilities.addElement(table, "tr");
-				XmlUtilities.addElement(row, "td", ""+finalArmourClass);
-				XmlUtilities.addElement(row, "td", "");
-				XmlUtilities.addElement(row, "td", ""+baseAc);
-				XmlUtilities.addElement(row, "td", ""+dexBonus);
-				XmlUtilities.addElement(row, "td", ""+shieldBonus);
-				XmlUtilities.addElement(row, "td", ""+itemBonus);
-				
-				row = XmlUtilities.addElement(table, "tr");
-				XmlUtilities.addElement(row, "td", "");
-				XmlUtilities.addElement(row, "td", "");
-				XmlUtilities.addElement(row, "td", armourName);
-				XmlUtilities.addElement(row, "td", "");
-				XmlUtilities.addElement(row, "td", shieldName);
-				XmlUtilities.addElement(row, "td", itemName);
-				
-			
-			}
 
 			{
 				Element table = XmlUtilities.addElement(body, "table");
@@ -434,24 +404,63 @@ public class MakeHTML {
 				}
 			}
 
-			{ // Saving throws
-
-				XmlUtilities.addElement(body, "h2", "Saving Throws");
-
-				Element table = XmlUtilities.addElementWithAttribute(body, "table", "class", "fiddy");
+			/* Armour class table */
+			{
+				Element table = XmlUtilities.addElement(body, "table");
 
 				XmlUtilities.addAttribute(table, "border", "1");
-				{
-					Element row = XmlUtilities.addElement(table, "tr");
-					XmlUtilities.addElement(row, "th", "Saving Throws");
-					XmlUtilities.addElement(row, "td", magicDefenceBonus);
-				}
-				for (SavingThrow st : savingThrows) {
-					Element row = XmlUtilities.addElement(table, "tr");
-					String name = stNames.get(st.getSavingThrowTypeString());
-					XmlUtilities.addElement(row, "th", name);
-					XmlUtilities.addElement(row, "td", st.getRollRequired());
+				Element row = XmlUtilities.addElement(table, "tr");
+				XmlUtilities.addElement(row, "th", "Armour Class");
+				XmlUtilities.addElement(row, "td", "");
+				XmlUtilities.addElement(row, "th", "Base A/C");
+				XmlUtilities.addElement(row, "th", "Dexterity bonus");
+				XmlUtilities.addElement(row, "th", "Shield bonus");
+				XmlUtilities.addElement(row, "th", "Magic item bonus");
+				
+				row = XmlUtilities.addElement(table, "tr");
+				XmlUtilities.addElement(row, "td", ""+finalArmourClass);
+				XmlUtilities.addElement(row, "td", "");
+				XmlUtilities.addElement(row, "td", ""+baseAc);
+				XmlUtilities.addElement(row, "td", ""+dexBonus);
+				XmlUtilities.addElement(row, "td", ""+shieldBonus);
+				XmlUtilities.addElement(row, "td", ""+itemBonus);
+				
+				row = XmlUtilities.addElement(table, "tr");
+				XmlUtilities.addElement(row, "td", "");
+				XmlUtilities.addElement(row, "td", "");
+				XmlUtilities.addElement(row, "td", armourName);
+				XmlUtilities.addElement(row, "td", "");
+				XmlUtilities.addElement(row, "td", shieldName);
+				XmlUtilities.addElement(row, "td", itemName);
+				
+			
+			}			
+			
+			{ // Saving throws
 
+				XmlUtilities.addElement(body, "h2", "Saving throws");
+
+				//Element table = XmlUtilities.addElementWithAttribute(body, "table", "class", "fiddy");
+				Element table = XmlUtilities.addElement(body, "table");
+
+				XmlUtilities.addAttribute(table, "border", "1");
+//				{
+
+
+//					XmlUtilities.addElement(row, "th", "Saving Throws");
+
+//				}
+				Element row1 = XmlUtilities.addElement(table, "tr");
+				Element row2 = XmlUtilities.addElement(table, "tr");
+				for (SavingThrow st : savingThrows) {					
+					String name = stNames.get(st.getSavingThrowTypeString());
+					XmlUtilities.addElement(row1, "th", name);
+					XmlUtilities.addElement(row2, "td", st.getRollRequired());
+
+				}
+				if(magicDefenceBonus!=null&&!magicDefenceBonus.trim().isEmpty()) {
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addElementWithAttribute(row, "td", magicDefenceBonus,"colspan","5");
 				}
 			}
 			{
