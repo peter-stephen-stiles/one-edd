@@ -303,7 +303,7 @@ public class MakeHTML {
 				armourClassTable(dexBonus, baseAc, shieldBonus, itemBonus, armourName, shieldName, itemName,
 						finalArmourClass, body);			
 				
-				savingThrowsTable(savingThrows, stNames, magicDefenceBonus, body);
+				savingThrowsTable(savingThrows, stNames, magicDefenceBonus, wisdom,body);
 				
 				toHitTable(characterClasses, toHits, body);
 				
@@ -352,11 +352,6 @@ public class MakeHTML {
 			Spell s = spell.getSpell();
 			String spellClass = s.getSpellClass();
 			Integer level = s.getLevel();
-			if(level.intValue()==1) {
-				if("CL".equals(s.getSpellClass())) {
-					LOGGER.info("LEVEL 1 spell "+s.getSpellClass()+ " "+s.getName());
-				}
-			}
 			List<Spell> someSpells;
 			Map<Integer,List<Spell>> classSpells;
 			classSpells = spellMap.get(spellClass);
@@ -386,9 +381,10 @@ public class MakeHTML {
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
 					XmlUtilities.addAttribute(row, "border", "0");					
-					Element td =XmlUtilities.addElement(row, "td");
+					Element td =XmlUtilities.addElement(row, "td");					
 					XmlUtilities.addElement(td, "h3", "Level "+level+" spells");
 					XmlUtilities.addAttribute(td, "colspan", "6");
+					XmlUtilities.addAttribute(td, "border", "0");
 				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
@@ -827,7 +823,7 @@ public class MakeHTML {
 	}
 
 	private void savingThrowsTable(List<SavingThrow> savingThrows, Map<Comparable, String> stNames,
-			String magicDefenceBonus, Element body) {
+			String magicDefenceBonus, Wisdom wisdom, Element body) {
 		{ // Saving throws
 
 			XmlUtilities.addElement(body, "h2", "Saving throws");
@@ -850,9 +846,14 @@ public class MakeHTML {
 				XmlUtilities.addElement(row2, "td", st.getRollRequired());
 
 			}
+						
 			if(magicDefenceBonus!=null&&!magicDefenceBonus.trim().isEmpty()) {
 				Element row = XmlUtilities.addElement(table, "tr");
 				XmlUtilities.addElementWithAttribute(row, "td", magicDefenceBonus,"colspan","5");
+			}
+			if(wisdom.getMagicalAttackAdjustment()!=0) {
+				Element row = XmlUtilities.addElement(table, "tr");
+				XmlUtilities.addElementWithAttribute(row, "td", "Wisdom magical attack adjustment="+SU.a(wisdom.getMagicalAttackAdjustment()),"colspan","5");				
 			}
 		}
 	}
@@ -876,9 +877,9 @@ public class MakeHTML {
 			XmlUtilities.addElement(row, "td", ""+finalArmourClass);
 			XmlUtilities.addElement(row, "td", "");
 			XmlUtilities.addElement(row, "td", ""+baseAc);
-			XmlUtilities.addElement(row, "td", ""+dexBonus);
-			XmlUtilities.addElement(row, "td", ""+shieldBonus);
-			XmlUtilities.addElement(row, "td", ""+itemBonus);
+			XmlUtilities.addElement(row, "td", ""+SU.a(dexBonus,"none"));
+			XmlUtilities.addElement(row, "td", ""+SU.a(shieldBonus,"none"));
+			XmlUtilities.addElement(row, "td", ""+SU.a(itemBonus,"none"));
 			
 			row = XmlUtilities.addElement(table, "tr");
 			XmlUtilities.addElement(row, "td", "");
