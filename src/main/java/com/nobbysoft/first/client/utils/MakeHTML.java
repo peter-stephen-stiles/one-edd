@@ -297,30 +297,30 @@ public class MakeHTML {
 			if(htmlType.equals(TYPE.CHARACTER_SHEET)) {
 
 
-			characterAttributesTable(pc, strength, intelligence, wisdom, dexterity, constitution, charisma,
-					divSpellBonuses, extraHitPointBonus, body);
-
-			armourClassTable(dexBonus, baseAc, shieldBonus, itemBonus, armourName, shieldName, itemName,
-					finalArmourClass, body);			
-			
-			savingThrowsTable(savingThrows, stNames, magicDefenceBonus, body);
-			
-			toHitTable(characterClasses, toHits, body);
-			
-			weaponTable(data, strength, dexterity, equipped, unEquipped, body);
-			
-			thiefSkillsTable(characterClasses, race, data, abilitiesMap, body, classLevels);
-
-			
-			allowedSpellsTable(activeClasses, classNames, allowedSpells, body);
-
-			baseSpellsTable(classNames, spells, body);
-			
-			equippedTables(equipped, unEquipped, body);
-			
-			raceSkillsTable(raceSkills, body);
-
-			classSkillsTable(characterClasses, activeClasses, classSkills1, classSkills2, classSkills3, body);
+				characterAttributesTable(pc, strength, intelligence, wisdom, dexterity, constitution, charisma,
+						divSpellBonuses, extraHitPointBonus, body);
+	
+				armourClassTable(dexBonus, baseAc, shieldBonus, itemBonus, armourName, shieldName, itemName,
+						finalArmourClass, body);			
+				
+				savingThrowsTable(savingThrows, stNames, magicDefenceBonus, body);
+				
+				toHitTable(characterClasses, toHits, body);
+				
+				weaponTable(data, strength, dexterity, equipped, unEquipped, body);
+				
+				thiefSkillsTable(characterClasses, race, data, abilitiesMap, body, classLevels);
+	
+				
+				allowedSpellsTable(activeClasses, classNames, allowedSpells, body);
+	
+				baseSpellsTable(classNames, spells, body);
+				
+				equippedTables(equipped, unEquipped, body);
+				
+				raceSkillsTable(raceSkills, body);
+	
+				classSkillsTable(characterClasses, activeClasses, classSkills1, classSkills2, classSkills3, body);
 			
 			} else if(htmlType.equals(TYPE.SPELL_BOOK)) {
 				
@@ -352,12 +352,17 @@ public class MakeHTML {
 			Spell s = spell.getSpell();
 			String spellClass = s.getSpellClass();
 			Integer level = s.getLevel();
+			if(level.intValue()==1) {
+				if("CL".equals(s.getSpellClass())) {
+					LOGGER.info("LEVEL 1 spell "+s.getSpellClass()+ " "+s.getName());
+				}
+			}
 			List<Spell> someSpells;
 			Map<Integer,List<Spell>> classSpells;
 			classSpells = spellMap.get(spellClass);
 			if(classSpells==null) {
 				classSpells = new HashMap<>();				
-				spellMap.put(spellClass,new HashMap<>());
+				spellMap.put(spellClass,classSpells);
 			}
 			someSpells = classSpells.get(level);
 			if(someSpells==null) {
@@ -374,10 +379,17 @@ public class MakeHTML {
 			TreeSet<Integer> levels = new TreeSet<>();
 			levels.addAll(spellsByLevel.keySet());
 			for(Integer level:levels) {
-				XmlUtilities.addElement(body, "h3", "Level "+level+" spells");
+				
 				
 				Element table = XmlUtilities.addElement(body, "table");
 				XmlUtilities.addAttribute(table, "border", "1");
+				{
+					Element row = XmlUtilities.addElement(table, "tr");
+					XmlUtilities.addAttribute(row, "border", "0");					
+					Element td =XmlUtilities.addElement(row, "td");
+					XmlUtilities.addElement(td, "h3", "Level "+level+" spells");
+					XmlUtilities.addAttribute(td, "colspan", "6");
+				}
 				{
 					Element row = XmlUtilities.addElement(table, "tr");
 					XmlUtilities.addElement(row, "th", "Name");
