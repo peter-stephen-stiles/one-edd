@@ -34,6 +34,7 @@ import com.nobbysoft.first.client.components.special.PComboGender;
 import com.nobbysoft.first.client.utils.DataAccessThingy;
 import com.nobbysoft.first.client.utils.MakeHTML;
 import com.nobbysoft.first.client.utils.Popper;
+import com.nobbysoft.first.client.utils.MakeHTML.TYPE;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacterLevel;
 import com.nobbysoft.first.common.entities.staticdto.CharacterClass;
@@ -222,10 +223,11 @@ public abstract class CharacterOutputter extends PDialog {
 		saves.addAll(bestSaves.values());
 		MakeHTML make = new MakeHTML();
 		DataAccessThingy data = new DataAccessThingy();
-		String html=make.makeDocument(character, characterClasses, race, saves,data,getHtmlType());
+		TYPE htmlType = getHtmlType();
+		String html=make.makeDocument(character, characterClasses, race, saves,data,htmlType);
 		
 		try {
-			File tmp = File.createTempFile("~char", ".html");
+			File tmp = File.createTempFile("~"+htmlType.getPrefix(), ".html");
 			
 			try(FileWriter fw = new FileWriter(tmp)){
 				try(BufferedWriter bw = new BufferedWriter(fw)){

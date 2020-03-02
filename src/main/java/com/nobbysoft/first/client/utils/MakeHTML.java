@@ -84,8 +84,15 @@ public class MakeHTML {
 
 
 	public enum TYPE{
-		CHARACTER_SHEET,
-		SPELL_BOOK
+		CHARACTER_SHEET("char"),
+		SPELL_BOOK("spells");
+		private String prefix;
+		TYPE(String prefix){
+			this.prefix=prefix;
+		}
+		public String getPrefix() {
+			return prefix;
+		}
 	};
 	
 	public String makeDocument(PlayerCharacter pc, Map<String, CharacterClass> characterClasses, Race race,
