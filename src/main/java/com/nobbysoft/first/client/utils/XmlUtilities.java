@@ -361,8 +361,14 @@ public class XmlUtilities {
 		s= s.replaceAll("\\&lt\\;", "<");
 		s= s.replaceAll("\\&gt\\;", ">");
 		s= s.replaceAll("\\&apos\\;", "'");
-		s= s.replaceAll("\\&quot\\;", "\"");	
-		s=s.replace("½", "1/2");
+		s= s.replaceAll("\\&quot\\;", "\"");		
+		s= s.replaceAll("½", "1/2");		
+		char half=	(char)65533;
+		s= s.replaceAll(""+half, "1/2");
+		
+		// some common abbreviations
+		s= s.replaceAll("segments", "segs");
+		s= s.replaceAll("segment", "seg");
 		return(s);	
 	}
 	

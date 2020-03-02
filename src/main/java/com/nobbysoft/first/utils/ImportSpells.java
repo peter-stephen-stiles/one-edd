@@ -425,6 +425,11 @@ public class ImportSpells {
 						Spell sx = null;
 						try {
 							LOGGER.info("spell class {} name {}",ns.getClass(),ns.getName());
+							
+if(ns.getName().equals("Web")) {
+	LOGGER.info("WEB!: "+ (int)ns.getRange().charAt(0));
+}
+							
 							sx = null;
 							try {
 								sx = sdao.get(con, ns.getSpellId());
