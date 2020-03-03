@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -454,17 +455,16 @@ public class DataFrameTabCharacters extends PPanel {
 			PButton source = (PButton) e.getSource();
 			String name = e.getActionCommand();
 
-			int r = tblData.getSelectedRow();
-			if (r < 0 && tblData.getRowCount() > 0) {
-				r = 0;
-				tblData.selectRow(r);
-			}
-			if (r >= 0 && r < tblData.getRowCount()) {
+			int[] rs = tblData.getSelectedRows();
+			List<DataDTOInterface> list = new ArrayList<>();
+			for(int r:rs) {
 				DataDTOInterface dto = (DataDTOInterface) tmData.getValueAt(r, 0);
-				boolean refresh=buttonActioner.doRowButton(getWindow(),name, dto);
-				if(refresh) {
-					populateTable();
-				}
+				list.add(dto);
+			}
+			boolean refresh=buttonActioner.doRowsButton(getWindow(),name, list);
+
+			if(refresh) {
+				populateTable();
 			}
 
 		}

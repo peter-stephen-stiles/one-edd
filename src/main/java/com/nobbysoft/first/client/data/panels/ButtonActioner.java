@@ -4,6 +4,7 @@ import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,13 +31,13 @@ public class ButtonActioner {
 	}
 
 	public boolean haveDBI() {
-		return dbi != null;
+		return dbi != null || dsbi!=null;
 	}
 
 	// need to initialise
 	private Window window;
 	private PButtonPanel pnlDataButtons;
-	private ActionListener rowButtonListener;
+	private ActionListener rowButtonListener; 
 	private ActionListener tableButtonListener;
 
 	public void enableRowButtons(boolean enable) {
@@ -51,6 +52,7 @@ public class ButtonActioner {
 	private List<PButton> tableButtons = new ArrayList<>();
 	//
 	private DataButtonsInterface dbi;
+	private DatasButtonsInterface dsbi;
 
 	public void buttons(Class buttonClass) {
 
@@ -72,27 +74,19 @@ public class ButtonActioner {
 
 				try {
 					Constructor cn = buttonClass.getConstructor();
-					dbi = (DataButtonsInterface) cn.newInstance();
-					rowButtons.clear();
-					tableButtons.clear();
 
-					for (Object name : dbi.getRowButtonNames()) {
-						PButton button = new PButton(name.toString());
-						button.setActionCommand(button.getName());
-						button.addActionListener(rowButtonListener);
-						button.setEnabled(false);
-						rowButtons.add(button);
-						pnlDataButtons.add(button);
-					}
-					if (rowButtons.size() > 0 && tableButtons.size() > 0) {
-						pnlDataButtons.add(new PLabel("  "));
-					}
-					for (Object name : dbi.getTableButtonNames()) {
-						PButton button = new PButton(name.toString());
-						button.setActionCommand(button.getName());
-						button.addActionListener(tableButtonListener);
-						tableButtons.add(button);
-						pnlDataButtons.add(button);
+					Object o = cn.newInstance();
+					
+					if (o instanceof DataButtonsInterface) {
+
+						singleRowerOnly(o);
+
+					} else if(o instanceof DatasButtonsInterface ) {
+
+						multiRower(o);
+
+					} else {
+						LOGGER.error("boohh "+buttonClass.getSimpleName()+" not assignable from DBI or DSBI :(");
 					}
 
 				} catch (Exception ex) {
@@ -105,12 +99,75 @@ public class ButtonActioner {
 		});
 	}
 
+	private void multiRower(Object o)
+			throws InstantiationException, IllegalAccessException, InvocationTargetException {
+		dsbi = (DatasButtonsInterface) o;
+		rowButtons.clear();
+		tableButtons.clear();
+
+		for (Object name : dsbi.getRowButtonNames()) {
+			PButton button = new PButton(name.toString());
+			button.setActionCommand(button.getName());
+			button.addActionListener(rowButtonListener);
+			button.setEnabled(false);
+			rowButtons.add(button);
+			pnlDataButtons.add(button);
+		}
+		if (rowButtons.size() > 0 && tableButtons.size() > 0) {
+			pnlDataButtons.add(new PLabel("  "));
+		}
+		for (Object name : dsbi.getTableButtonNames()) {
+			PButton button = new PButton(name.toString());
+			button.setActionCommand(button.getName());
+			button.addActionListener(tableButtonListener);
+			tableButtons.add(button);
+			pnlDataButtons.add(button);
+		}
+	}
+	
+	private void singleRowerOnly(Object o)
+			throws InstantiationException, IllegalAccessException, InvocationTargetException {
+		dbi = (DataButtonsInterface) o;
+		rowButtons.clear();
+		tableButtons.clear();
+
+		for (Object name : dbi.getRowButtonNames()) {
+			PButton button = new PButton(name.toString());
+			button.setActionCommand(button.getName());
+			button.addActionListener(rowButtonListener);
+			button.setEnabled(false);
+			rowButtons.add(button);
+			pnlDataButtons.add(button);
+		}
+		if (rowButtons.size() > 0 && tableButtons.size() > 0) {
+			pnlDataButtons.add(new PLabel("  "));
+		}
+		for (Object name : dbi.getTableButtonNames()) {
+			PButton button = new PButton(name.toString());
+			button.setActionCommand(button.getName());
+			button.addActionListener(tableButtonListener);
+			tableButtons.add(button);
+			pnlDataButtons.add(button);
+		}
+	}
+
 	public boolean doRowButton(Window window, String name, Object object) {
 		return dbi.doRowButton(window, name, object);
 	}
 
+
+	public boolean doRowsButton(Window window, String name, List<?> objects) {
+		return dsbi.doRowsButton(window, name, objects);
+	}
+	
 	public boolean doTableButton(Window window, String name) {
+		if(dbi!=null) {
 		return dbi.doTableButton(window, name);
+		}
+		if(dsbi!=null) {
+		return dsbi.doTableButton(window, name);
+		}
+	return false;
 	}
 
 }

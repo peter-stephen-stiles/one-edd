@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nobbysoft.first.client.data.panels.CharacterSheet;
 import com.nobbysoft.first.client.data.panels.DataButtonsInterface;
+import com.nobbysoft.first.client.data.panels.DatasButtonsInterface;
 import com.nobbysoft.first.client.data.panels.SpellBook;
 import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.pc.PlayerCharacter;
@@ -20,7 +21,7 @@ import com.nobbysoft.first.common.servicei.RaceService;
 import com.nobbysoft.first.common.views.ViewPlayerCharacter;
 import com.nobbysoft.first.utils.DataMapper;
 
-public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCharacter> {
+public class PlayerCharacterButtons implements DatasButtonsInterface<ViewPlayerCharacter> {
 
 	private static final Logger LOGGER = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 	private static final String EQUIPMENT = "Equipment";
@@ -63,9 +64,15 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 		DataServiceI dao = DataMapper.INSTANCE.getDataService(clazz);
 		return dao;
 	}
-	
-	@Override
-	public boolean doRowButton(Window window, String name, ViewPlayerCharacter object) {
+	 
+	public boolean doRowsButton(Window window, String name, List<ViewPlayerCharacter> objects) {
+		
+		
+		ViewPlayerCharacter object=null;
+		if(objects.size()>0) {
+			object = objects.get(0);
+		}
+		
 		LOGGER.info("Button "+name);
 		if(ADD_XP.equals(name)) {	
 			boolean anyOk=false;
@@ -168,48 +175,58 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 			
 		} else if(SHEET.equals(name)) {
 			try {
-			PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);			
-			PlayerCharacter dto = ccs.get(object.getPlayerCharacter().getPcId());
-			
-			if (dto != null) {
-				// now to make character sheet up
-				CharacterSheet dialog = new CharacterSheet(window);
-				boolean ok =dialog.setPlayerCharacter(dto);
-				if(ok) {
-					dialog.pack();
-					dialog.setLocationRelativeTo(null);
-					dialog.setVisible(true);
-				}
-				// no refresh just for character sheet!
+				PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);	
+				
+				
+				for(ViewPlayerCharacter o2:objects) {
+				
+					PlayerCharacter dto = ccs.get(o2.getPlayerCharacter().getPcId());
+				
+					if (dto != null) {
+						// now to make character sheet up
+						CharacterSheet dialog = new CharacterSheet(window);
+						boolean ok =dialog.setPlayerCharacter(dto);
+						if(ok) {
+							dialog.pack();
+							dialog.setLocationRelativeTo(null);
+							dialog.setVisible(true);
+						}
+						// no refresh just for character sheet!
+						}			
 				}
 			} catch (Exception ex) {
-					Popper.popError(window, ex);			
+				Popper.popError(window, ex);			
 			}
 			return false;
 			
 			//
 		} else if(SPELLBOOK.equals(name)) {
-			try {
-			PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);			
-			PlayerCharacter dto = ccs.get(object.getPlayerCharacter().getPcId());
 			
-			if (dto != null) {
-				// now to make character sheet up
-				SpellBook dialog = new SpellBook(window);
-				boolean ok =dialog.setPlayerCharacter(dto);
-				if(ok) {
-					dialog.pack();
-					dialog.setLocationRelativeTo(null);
-					dialog.setVisible(true);
-				}
-				// no refresh just for character sheet!
+			try {
+				PlayerCharacterService ccs = (PlayerCharacterService) getDataService(PlayerCharacter.class);	
+				
+				
+				for(ViewPlayerCharacter o2:objects) {
+				
+					PlayerCharacter dto = ccs.get(o2.getPlayerCharacter().getPcId());
+				
+					if (dto != null) {
+						// now to make character sheet up
+						SpellBook dialog = new SpellBook(window);
+						boolean ok =dialog.setPlayerCharacter(dto);
+						if(ok) {
+							dialog.pack();
+							dialog.setLocationRelativeTo(null);
+							dialog.setVisible(true);
+						}
+						// no refresh just for character sheet!
+						}			
 				}
 			} catch (Exception ex) {
-					Popper.popError(window, ex);			
+				Popper.popError(window, ex);			
 			}
 			return false;
-			
-			//
+
 
 		} else {
 			
@@ -224,4 +241,7 @@ public class PlayerCharacterButtons implements DataButtonsInterface<ViewPlayerCh
 		
 	}
 
+
+
+ 
 }
