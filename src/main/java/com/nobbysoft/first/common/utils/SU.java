@@ -185,6 +185,21 @@ public class SU {
 		
 		return sv;
 	}
+
+	private static final String allowed = "abcdefghijklmnopqrstuvwxyz_0123456789";
+	
+	public static final String clean(String s) {
+		String t = s.toLowerCase().trim();
+		StringBuilder sb = new StringBuilder();
+		for(int i=0,n=t.length();i<n;i++) {
+			char now=t.charAt(i);
+			if(allowed.indexOf(now)>=0) {
+				sb.append(now);
+			}
+		}
+		
+		return sb.toString();
+		}
 	
 	public static final String proper(String s) {
 		String t = s.toLowerCase().trim();

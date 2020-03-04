@@ -43,6 +43,7 @@ import com.nobbysoft.first.common.entities.staticdto.SavingThrow;
 import com.nobbysoft.first.common.servicei.CharacterClassService;
 import com.nobbysoft.first.common.servicei.RaceService;
 import com.nobbysoft.first.common.servicei.SavingThrowService;
+import com.nobbysoft.first.common.utils.SU;
 import com.nobbysoft.first.utils.DataMapper;
 
 public abstract class CharacterOutputter extends PDialog {
@@ -241,8 +242,11 @@ public abstract class CharacterOutputter extends PDialog {
 		TYPE htmlType = getHtmlType();
 		String html=make.makeDocument(character, myCharacterClasses, race, saves,data,htmlType,allCharacterClasses);
 		
+		String name = SU.clean(character.getCharacterName().toLowerCase().trim());
+		
+		
 		try {
-			File tmp = File.createTempFile("~"+htmlType.getPrefix(), ".html");
+			File tmp = File.createTempFile("~"+htmlType.getPrefix()+"_"+name+"_", ".html");
 			
 			try(FileWriter fw = new FileWriter(tmp)){
 				try(BufferedWriter bw = new BufferedWriter(fw)){
