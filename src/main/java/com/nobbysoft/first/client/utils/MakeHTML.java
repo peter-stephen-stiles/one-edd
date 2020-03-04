@@ -39,6 +39,8 @@ import com.nobbysoft.first.common.entities.staticdto.RaceSkill;
 import com.nobbysoft.first.common.entities.staticdto.SavingThrow;
 import com.nobbysoft.first.common.entities.staticdto.Spell;
 import com.nobbysoft.first.common.entities.staticdto.ThiefAbility;
+import com.nobbysoft.first.common.entities.staticdto.TurnUndead;
+import com.nobbysoft.first.common.entities.staticdto.UndeadType;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Charisma;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Dexterity;
@@ -95,8 +97,8 @@ public class MakeHTML {
 		}
 	};
 	
-	public String makeDocument(PlayerCharacter pc, Map<String, CharacterClass> characterClasses, Race race,
-			List<SavingThrow> savingThrows, DataAccessThingy data, TYPE htmlType) {
+	public String makeDocument(PlayerCharacter pc, Map<String, CharacterClass> myCharacterClasses, Race race,
+			List<SavingThrow> savingThrows, DataAccessThingy data, TYPE htmlType,Map<String, CharacterClass> allCharacterClasses) {
 
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
@@ -119,8 +121,10 @@ public class MakeHTML {
 			
 			List<String> activeClasses = data.getActiveClasses(pc, race);
 			
+	
+			
 			boolean extraHitPointBonus = false;
-			for (CharacterClass c : characterClasses.values()) {
+			for (CharacterClass c : myCharacterClasses.values()) {
 				if (c != null) {
 					if (c.isHighConBonus()) {
 						extraHitPointBonus = true;
@@ -156,6 +160,32 @@ public class MakeHTML {
 			List<CharacterClassSkill> classSkills1 = data.getCharacterClassSkills(pc.getFirstClass(), pc.getFirstClassLevel());
 			List<CharacterClassSkill> classSkills2 = data.getCharacterClassSkills(pc.getSecondClass(), pc.getSecondClassLevel());
 			List<CharacterClassSkill> classSkills3 = data.getCharacterClassSkills(pc.getThirdClass(), pc.getThirdClassLevel());			
+			
+			
+			int effectiveClericLevelForTurning=0;
+			PlayerCharacterLevel[] pcla = pc.getClassDetails();
+			Map<String,PlayerCharacterLevel> mapclasslevels = new HashMap<>();
+			for(int i=0,n=pcla.length;i<n;i++) {
+				PlayerCharacterLevel pcl= pcla[i];
+				if(pcl!=null) {
+					if(pcl.getThisClass()!=null) {
+						mapclasslevels.put(pcl.getThisClass(),pcl);
+					}
+				}
+			}
+			
+			for(CharacterClass cc:myCharacterClasses.values()) {
+				if(activeClasses.contains(cc.getClassId())) {
+					if(cc.getTurnUndead()>=0) {
+						int efflcl = mapclasslevels.get(cc.getClassId()).getThisClassLevel() - cc.getTurnUndead();
+						if(efflcl>effectiveClericLevelForTurning) {
+							effectiveClericLevelForTurning = efflcl;
+						}
+					}
+				}
+			}
+			List<TurnUndead> turnUndead= data.getTurnUndead(effectiveClericLevelForTurning);
+			Map<Integer,UndeadType> undead = data.getUndeadTypes();
 			
 			
 			
@@ -288,7 +318,7 @@ public class MakeHTML {
 			XmlUtilities.addElement(body, "h1", title + pc.getCharacterName());
 			mainRow = characterBasicsTable(pc, race, body);
 			int hp = 0;
-			hp = characterClassesTable(pc, characterClasses, body, classLevels, hp);
+			hp = characterClassesTable(pc, myCharacterClasses, body, classLevels, hp);
 
 
 			XmlUtilities.addElement(mainRow, "th", "HP");
@@ -305,13 +335,14 @@ public class MakeHTML {
 				
 				savingThrowsTable(savingThrows, stNames, magicDefenceBonus, wisdom,body);
 				
-				toHitTable(characterClasses, toHits, body);
+				toHitTable(myCharacterClasses, toHits, body);
 				
 				weaponTable(data, strength, dexterity, equipped, unEquipped, body);
 				
-				thiefSkillsTable(characterClasses, race, data, abilitiesMap, body, classLevels);
+				thiefSkillsTable(myCharacterClasses, race, data, abilitiesMap, body, classLevels);
 	
-				
+				turnUndeadTable(effectiveClericLevelForTurning, turnUndead, undead, body);									
+
 				allowedSpellsTable(activeClasses, classNames, allowedSpells, body);
 	
 				baseSpellsTable(classNames, spells, body);
@@ -320,13 +351,13 @@ public class MakeHTML {
 				
 				raceSkillsTable(raceSkills, body);
 	
-				classSkillsTable(characterClasses, activeClasses, classSkills1, classSkills2, classSkills3, body);
+				classSkillsTable(myCharacterClasses, activeClasses, classSkills1, classSkills2, classSkills3, body);
 			
 			} else if(htmlType.equals(TYPE.SPELL_BOOK)) {
 				
 				allowedSpellsTable(activeClasses, classNames, allowedSpells, body);
 				
-				spellsByClass(spells,body,characterClasses);
+				spellsByClass(spells,body,allCharacterClasses);
 				
 				
 			} else {
@@ -340,6 +371,25 @@ public class MakeHTML {
 		} catch (Exception e) {
 			return makeHtmlError(e);
 		}
+	}
+
+
+	private void turnUndeadTable(int effectiveClericLevelForTurning, List<TurnUndead> turnUndead,
+			Map<Integer, UndeadType> undead, Element body) {
+		if(effectiveClericLevelForTurning>0) {
+
+			XmlUtilities.addElement(body, "h2", "Turn undead (as cleric level "+effectiveClericLevelForTurning+")");
+			// turning table for cleric level
+			Element table = XmlUtilities.addElement(body, "table");
+			XmlUtilities.addAttribute(table, "border", "1");
+			Element rowHead = XmlUtilities.addElement(table, "tr");
+			Element rowData = XmlUtilities.addElement(table, "tr");
+			for(TurnUndead tu:turnUndead) {
+				UndeadType ut = undead.get(tu.getUndeadType());						
+				XmlUtilities.addElement(rowHead, "th",ut.getDescription());					
+				XmlUtilities.addElement(rowData, "td",tu.getRollRequiredString());
+				}						
+			}
 	}
 
 	
@@ -369,6 +419,9 @@ public class MakeHTML {
 		// we now have a list of spells by class level.. now for the book
 		for(String spellClass:spellMap.keySet()) {
 			CharacterClass characterClass =characterClasses.get(spellClass);
+			if(characterClass==null) {
+				
+			}
 			XmlUtilities.addElement(body, "h2", "Spell book for "+characterClass.getName()+" spells");
 			Map<Integer,List<Spell>> spellsByLevel =spellMap.get(spellClass);
 			TreeSet<Integer> levels = new TreeSet<>();

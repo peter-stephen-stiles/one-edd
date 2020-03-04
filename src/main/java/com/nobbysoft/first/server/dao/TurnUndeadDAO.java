@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -179,6 +181,30 @@ public class TurnUndeadDAO extends AbstractDAO<TurnUndead, TurnUndeadKey> implem
 		}
 	}
 
+	public List<TurnUndead> getListForClericLevel(Connection con, int level) throws SQLException {
+
+		List<TurnUndead> list = new ArrayList<>();
+		String sql = "SELECT effective_cleric_level_from,undead_type FROM turn_undead WHERE effective_cleric_level_from <= ? AND effective_cleric_level_to >= ? ORDER BY effective_cleric_level_from ";
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setInt(1, level);
+			ps.setInt(2, level);
+
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					int from = rs.getInt(1);
+					int ut = rs.getInt(2);
+					TurnUndeadKey tuk = new TurnUndeadKey();
+					tuk.setEffectiveClericLevelFrom(from);
+					tuk.setUndeadType(ut);
+					TurnUndead tu = super.get(con, tuk);
+					list.add(tu);
+				}
+			}
+		}
+
+		return list;
+
+	}
 	
 	
 	 

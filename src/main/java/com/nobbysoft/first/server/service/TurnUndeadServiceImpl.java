@@ -115,4 +115,15 @@ public class TurnUndeadServiceImpl implements TurnUndeadService {
 			}
 	}
 
+	@Override
+	public List<TurnUndead> getListForClericLevel(int level) throws SQLException {
+		try(Connection con = cm.getConnection()){
+			try {
+			 return dao.getListForClericLevel(con,level);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
+	
 }

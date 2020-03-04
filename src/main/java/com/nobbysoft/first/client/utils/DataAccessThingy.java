@@ -36,6 +36,8 @@ import com.nobbysoft.first.common.entities.staticdto.Race;
 import com.nobbysoft.first.common.entities.staticdto.RaceSkill;
 import com.nobbysoft.first.common.entities.staticdto.RaceThiefAbilityBonus;
 import com.nobbysoft.first.common.entities.staticdto.ThiefAbility;
+import com.nobbysoft.first.common.entities.staticdto.TurnUndead;
+import com.nobbysoft.first.common.entities.staticdto.UndeadType;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Charisma;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Constitution;
 import com.nobbysoft.first.common.entities.staticdto.attributes.Dexterity;
@@ -62,6 +64,8 @@ import com.nobbysoft.first.common.servicei.RaceThiefAbilityBonusService;
 import com.nobbysoft.first.common.servicei.ShieldService;
 import com.nobbysoft.first.common.servicei.StrengthService;
 import com.nobbysoft.first.common.servicei.ThiefAbilityService;
+import com.nobbysoft.first.common.servicei.TurnUndeadService;
+import com.nobbysoft.first.common.servicei.UndeadTypeService;
 import com.nobbysoft.first.common.servicei.WeaponMeleeService;
 import com.nobbysoft.first.common.servicei.WeaponRangedService;
 import com.nobbysoft.first.common.servicei.WisdomService;
@@ -254,6 +258,22 @@ public class DataAccessThingy {
 		
 		return ta;
 		
+	}
+	
+	public List<TurnUndead> getTurnUndead(int effectiveClericLevel) throws SQLException {
+		TurnUndeadService service =(TurnUndeadService)getDataService(TurnUndead.class);
+		 return service.getListForClericLevel(effectiveClericLevel);
+		
+	}
+	
+	public Map<Integer,UndeadType> getUndeadTypes() throws SQLException {
+		Map<Integer,UndeadType> map = new HashMap<>();
+		UndeadTypeService service =(UndeadTypeService)getDataService(UndeadType.class);
+		
+		for(UndeadType ut:service.getList()) {
+			map.put(ut.getUndeadType(),ut);
+		}
+		return map;
 	}
 	
 	public List<String> getActiveClasses(PlayerCharacter playerCharacter, Race race){

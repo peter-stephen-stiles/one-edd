@@ -128,20 +128,34 @@ public abstract class CharacterOutputter extends PDialog {
 	private Map<String,SavingThrow> bestSaves = new HashMap<>();
 	
 	private void populateData() throws SQLException{
-		CharacterClassService characterClassService = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
+		
 		RaceService raceService = (RaceService)DataMapper.INSTANCE.getDataService(Race.class);
 		SavingThrowService savingThrowService = (SavingThrowService)DataMapper.INSTANCE.getDataService(SavingThrow.class);
 		
+		
+		
+		
+		{
+			CharacterClassService characterClassService = (CharacterClassService)DataMapper.INSTANCE.getDataService(CharacterClass.class);
+			List<CharacterClass> classes =characterClassService.getList();	
+			for(CharacterClass cc:classes) {
+				allCharacterClasses.put(cc.getClassId(), cc);
+			}
+		}
+		
+
+		
+		
 		race = raceService.get(character.getRaceId());
 		
-		CharacterClass c0 = characterClassService.get(character.getFirstClass());
-		characterClasses.put(c0.getClassId(),c0);
+		CharacterClass c0 = allCharacterClasses.get(character.getFirstClass());
+		myCharacterClasses.put(c0.getClassId(),c0);
 		if(character.getSecondClass()!=null) {
-			CharacterClass c1 = characterClassService.get(character.getSecondClass());
-			characterClasses.put(c1.getClassId(),c1);			
+			CharacterClass c1 = allCharacterClasses.get(character.getSecondClass());
+			myCharacterClasses.put(c1.getClassId(),c1);			
 			if(character.getThirdClass()!=null) {
-				CharacterClass c2 = characterClassService.get(character.getThirdClass());
-				characterClasses.put(c2.getClassId(),c2);			
+				CharacterClass c2 = allCharacterClasses.get(character.getThirdClass());
+				myCharacterClasses.put(c2.getClassId(),c2);			
 			}
 
 		}
@@ -179,7 +193,8 @@ public abstract class CharacterOutputter extends PDialog {
 			 
 	}
 	
-	private Map<String,CharacterClass> characterClasses = new HashMap<>();
+	private Map<String,CharacterClass> myCharacterClasses = new HashMap<>();
+	private Map<String,CharacterClass> allCharacterClasses = new HashMap<>();
 	private Race race = null;
 	
 	private String classy() {
@@ -196,7 +211,7 @@ public abstract class CharacterOutputter extends PDialog {
 			int hp =pcd.getThisClassHp();
 			int lvl = pcd.getThisClassLevel();
 			
-			CharacterClass cc = characterClasses.get(classId);
+			CharacterClass cc = allCharacterClasses.get(classId);
 			
 			if(i>0) {
 				sb.append(" / ");
@@ -224,7 +239,7 @@ public abstract class CharacterOutputter extends PDialog {
 		MakeHTML make = new MakeHTML();
 		DataAccessThingy data = new DataAccessThingy();
 		TYPE htmlType = getHtmlType();
-		String html=make.makeDocument(character, characterClasses, race, saves,data,htmlType);
+		String html=make.makeDocument(character, myCharacterClasses, race, saves,data,htmlType,allCharacterClasses);
 		
 		try {
 			File tmp = File.createTempFile("~"+htmlType.getPrefix(), ".html");
