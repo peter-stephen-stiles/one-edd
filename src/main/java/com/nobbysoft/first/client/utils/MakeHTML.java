@@ -100,8 +100,7 @@ public class MakeHTML {
 	public String makeDocument(PlayerCharacter pc, Map<String, CharacterClass> myCharacterClasses, Race race,
 			List<SavingThrow> savingThrows, DataAccessThingy data, TYPE htmlType,Map<String, CharacterClass> allCharacterClasses) {
 
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder;
+
 		try {
 			
 			Strength strength = data.getStrength(pc.getAttrStr(), pc.getExceptionalStrength());
@@ -191,7 +190,8 @@ public class MakeHTML {
 			
 			/// GOT data, build output
 			
-			
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder;
 			docBuilder = docFactory.newDocumentBuilder();
 
 			/**

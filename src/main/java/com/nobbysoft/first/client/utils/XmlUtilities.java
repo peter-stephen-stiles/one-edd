@@ -1,6 +1,8 @@
 package com.nobbysoft.first.client.utils;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -50,6 +52,18 @@ public class XmlUtilities {
 		
 		
 		
+	}
+	
+	public static Document newDocument() {
+		try {
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder;		
+			docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.newDocument();
+			return doc;
+		} catch (ParserConfigurationException e) {
+			throw new IllegalStateException("Error creating a blank document, what chance do you have eh?",e);
+		}
 	}
 
 	public static Document convertReaderToXML(Reader xmlReader) {
@@ -112,12 +126,30 @@ public class XmlUtilities {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
-		StringWriter writer = new StringWriter();
-		StreamResult result = new StreamResult(writer);
-		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-		transformer.transform(source, result);
-		String xmlString = writer.getBuffer().toString();
-		return xmlString;
+		try(StringWriter writer = new StringWriter();){
+			StreamResult result = new StreamResult(writer);
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			transformer.transform(source, result);
+			String xmlString = writer.getBuffer().toString();
+			return xmlString;
+		} catch (IOException e) {
+			throw new TransformerException("IOError on writer object",e);
+		}
+	}
+
+	public static void xmlToPlainStream(Document doc, OutputStream out)
+			throws TransformerFactoryConfigurationError, TransformerConfigurationException, TransformerException {
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource source = new DOMSource(doc);
+		try {
+			StreamResult result = new StreamResult(out);
+			transformer.setOutputProperty(OutputKeys.METHOD, "html");
+			transformer.transform(source, result);
+			
+		} catch (Exception e) {
+			throw new TransformerException("Error on writer object",e);
+		}
 	}
 	
 	public static String xmlToHtmlString(Document doc)
@@ -125,12 +157,15 @@ public class XmlUtilities {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
-		StringWriter writer = new StringWriter();
-		StreamResult result = new StreamResult(writer);
-		transformer.setOutputProperty(OutputKeys.METHOD, "html");
-		transformer.transform(source, result);
-		String xmlString = writer.getBuffer().toString();
-		return xmlString;
+		try(StringWriter writer = new StringWriter();){
+			StreamResult result = new StreamResult(writer);
+			transformer.setOutputProperty(OutputKeys.METHOD, "html");
+			transformer.transform(source, result);
+			String xmlString = writer.getBuffer().toString();
+			return xmlString;
+		} catch (IOException e) {
+			throw new TransformerException("IOError on writer object",e);
+		}
 	}
 
 	public static Element addElement(Node n, String name) {

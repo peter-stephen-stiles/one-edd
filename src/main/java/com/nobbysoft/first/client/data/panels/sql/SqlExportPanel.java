@@ -3,15 +3,22 @@ package com.nobbysoft.first.client.data.panels.sql;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.prefs.Preferences;
 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -31,12 +38,15 @@ import com.nobbysoft.first.client.components.PPanel;
 import com.nobbysoft.first.client.components.PTable;
 import com.nobbysoft.first.client.components.PTextField;
 import com.nobbysoft.first.client.components.TableUtils;
+import com.nobbysoft.first.client.utils.GBU;
+import com.nobbysoft.first.client.utils.Popper;
 import com.nobbysoft.first.common.entities.meta.DTOColumn;
 import com.nobbysoft.first.common.entities.meta.DTOConstraint;
 import com.nobbysoft.first.common.entities.meta.DTOIndex;
 import com.nobbysoft.first.common.entities.meta.DTOTable;
 import com.nobbysoft.first.common.servicei.SqlService;
 import com.nobbysoft.first.common.utils.CodedListItem;
+import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.utils.DataMapper;
 
 @SuppressWarnings("serial")
@@ -49,7 +59,7 @@ public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 		jbInit();
 		SwingUtilities.invokeLater(()->{			
 			populateFilters();
-			
+			loadPrefs();
 		});
 	}
 
@@ -65,6 +75,43 @@ public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 		listeners.remove(al);
 	}
 
+
+	private static final String FILTER_CAT="catalog";
+	private static final String FILTER_SCH="schema";
+	private final Preferences prefs = Preferences.userNodeForPackage(getClass()).node(getClass().getSimpleName());
+	
+	private void loadPrefs() {
+		String dftCat = prefs.get(FILTER_CAT, null);
+		String dftSch = prefs.get(FILTER_SCH, null);
+		txtFileName.setText(prefs.get("export-file", ""));		
+	}
+	private void savePrefs() {
+		prefs.put("export-file",txtFileName.getText());
+		
+		
+		try {
+			Object cat = filterCatalogs.getSelectedCode();
+			if(cat!=null) {
+				prefs.put(FILTER_CAT,(String)cat);
+			} else {
+				prefs.put(FILTER_CAT,null);
+			}
+		} catch (Exception e) {
+			LOGGER.error("error getting cat from prefs "+e);
+		}
+		
+		try {
+			Object she=filterSchema.getSelectedCode();
+			if(she!=null) {
+				prefs.put(FILTER_SCH,(String)she);
+			} else {
+				prefs.put(FILTER_SCH,null);
+			}
+		} catch (Exception e) {
+			LOGGER.error("error getting schema from prefs "+e);
+		}
+		
+	}
 	
 	private PComboBox<CodedListItem<String>> filterCatalogs = new PComboBox<>();
 	private PComboBox<CodedListItem<String>> filterSchema = new PComboBox<>();
@@ -80,9 +127,11 @@ public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 		}
 	};
 
+	private PTextField txtFileName = new PTextField();
  
 	private void jbInit() {
-
+		txtFileName.setMinimumWidth(200);
+		
 		tblTables.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblTables.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
@@ -103,6 +152,7 @@ public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 		this.add(popup);
 		btnRefresh.addActionListener(ex -> populateTables());
 		mnuCloseTab.addActionListener(ae -> {
+			savePrefs();
 			ActionEvent event = new ActionEvent(this, 1, "CLOSETAB", 0, 0);
 			for (ActionListener al : listeners) {
 				al.actionPerformed(event);
@@ -117,11 +167,73 @@ public class SqlExportPanel extends PPanel implements SqlPanelInterface {
 		splPane.setDividerLocation(0.5d);
 		add(splPane, BorderLayout.CENTER);
 
+		
+		JButton btnFile = new JButton("..");
+		JButton btnExport = new JButton("Export");
+				
+		JPanel pnlAction = new JPanel(new GridBagLayout());
+		add(pnlAction,BorderLayout.SOUTH);
+		
+		pnlAction.add(new JLabel("Export to file:"),GBU.label(0, 0));
+		pnlAction.add(txtFileName,GBU.text(1, 0));
+		pnlAction.add(btnFile,GBU.button(2, 0));
+		pnlAction.add(new JLabel("    "),GBU.label(3, 0));
+		pnlAction.add(btnExport,GBU.button(4, 0));		
+		
+		btnFile.addActionListener(ae->selectFile());
+		btnExport.addActionListener(ae->export());
+		
 		SwingUtilities.invokeLater(() -> {
 			splPane.setDividerLocation(150);
 		});
 
  
+	}
+	
+	private File lastFile = null;
+	
+	private void selectFile() {
+		String file = txtFileName.getText();
+		JFileChooser chooser = new JFileChooser();
+		File f = new File(file);
+		if(f.exists()) {
+			chooser.setSelectedFile(f);
+		} else if (lastFile!=null) {
+			chooser.setSelectedFile(lastFile);
+		}
+		int ret = chooser.showSaveDialog(this);
+		if(ret==JFileChooser.APPROVE_OPTION){
+			lastFile = chooser.getSelectedFile();
+			txtFileName.setText(lastFile.getAbsolutePath());
+			savePrefs();
+		}
+		
+	}
+	
+	private void export() {
+		String file = txtFileName.getText();
+		if(file==null||file.trim().isEmpty()) {
+			txtFileName.requestFocusInWindow();
+			Popper.popError(this, "Specify file", "You must specify a file name");
+			return;
+		}
+		
+
+		SqlService sqlService = getSqlService();
+		String catalog = (String)filterCatalogs.getSelectedCode();
+		String schema = (String)filterSchema.getSelectedCode();
+		savePrefs();
+		try {
+		ReturnValue<String> rv = sqlService.export(catalog, schema, file);
+		if(rv.isError()) {
+			Popper.popError(this, "Error exporting "+catalog+"/"+schema, rv);			
+		} else {
+			Popper.popInfo(this, "Export", "Well done, you exported the "+catalog+"/"+schema+"!");
+		}
+		
+		} catch (Exception ex) {
+			Popper.popError(this,ex);
+		}
 	}
 
 	private boolean tableTableSetUp = false; 

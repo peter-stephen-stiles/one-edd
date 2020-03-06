@@ -6,12 +6,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.derby.client.am.SqlException;
+
 import com.nobbysoft.first.common.entities.meta.DTOColumn;
 import com.nobbysoft.first.common.entities.meta.DTOConstraint;
 import com.nobbysoft.first.common.entities.meta.DTOIndex;
 import com.nobbysoft.first.common.entities.meta.DTOTable;
 import com.nobbysoft.first.common.servicei.SqlService;
 import com.nobbysoft.first.common.utils.ResultSetListener;
+import com.nobbysoft.first.common.utils.ReturnValue;
 import com.nobbysoft.first.server.dao.SqlDAO;
 import com.nobbysoft.first.server.utils.ConnectionManager;
 
@@ -141,7 +144,15 @@ public class SqlServiceImpl implements SqlService {
 			}
 	}
 	
-	
+	public ReturnValue<String> export (String catalog,String schema,String fileName) throws SQLException {
+		try(Connection con = cm.getConnection()){
+			try {
+			return dao.export(con,catalog,schema,fileName);
+			} finally {
+			con.rollback();
+			}
+			}
+	}
 	
 	
 }

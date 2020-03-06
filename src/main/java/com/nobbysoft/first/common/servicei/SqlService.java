@@ -8,6 +8,7 @@ import com.nobbysoft.first.common.entities.meta.DTOConstraint;
 import com.nobbysoft.first.common.entities.meta.DTOIndex;
 import com.nobbysoft.first.common.entities.meta.DTOTable;
 import com.nobbysoft.first.common.utils.ResultSetListener;
+import com.nobbysoft.first.common.utils.ReturnValue;
 
 public interface SqlService {
 
@@ -22,5 +23,7 @@ public interface SqlService {
  
 	public List<String> metaCatalogs() throws SQLException ;
 	public List<String> metaSchema() throws SQLException ;
+	
+	public ReturnValue<String> export (String catalog,String schema,String fileName) throws SQLException ;
 	
 }
