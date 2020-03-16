@@ -103,6 +103,26 @@ public class XmlUtilities {
 		}
 		return null;
 	}
+	
+	public static Document convertStreamToXML(InputStream xmlString) {
+		// Parser that produces DOM object trees from XML content
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+		// API to obtain DOM Document instance
+		DocumentBuilder builder = null;
+		try {
+			// Create DocumentBuilder with default configuration
+			builder = factory.newDocumentBuilder();
+
+			// Parse the content to Document object
+			Document doc = builder.parse(new InputSource( xmlString));
+			return doc;
+		} catch (Exception e) {
+			LOGGER.error("Error making xml document",e);
+		}
+		return null;
+	}
+	
 
 	public static void addAttribute(Element node, String name, String value) {
 		if(name==null) {

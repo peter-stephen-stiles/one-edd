@@ -1,7 +1,10 @@
 package com.nobbysoft.first.server.dao;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -18,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -400,6 +404,8 @@ public class SqlDAO {
 		}
 	}
 
+	
+	
 	public ReturnValue<String> export(Connection con, String catalog, String schema, String fileName)
 			throws SQLException {
 
@@ -422,8 +428,6 @@ public class SqlDAO {
 		try (FileOutputStream fos = new FileOutputStream(outputFileName);) {
 			try (ZipOutputStream zipOut = new ZipOutputStream(fos);) {
 
-//		tmpFolder = Files.createTempDirectory("dbexport");
-//		LOGGER.info("temp folder "+tmpFolder.toString());
 
 				DatabaseMetaData d = con.getMetaData();
 
@@ -501,18 +505,18 @@ public class SqlDAO {
 											BigDecimal bd;
 											bd = rs1.getBigDecimal(col);
 											if (bd != null) {
-												el = XmlUtilities.addElement(row, cName, bd.toPlainString());
+												el = XmlUtilities.addElement(row, "column", bd.toPlainString());
 											} else {
-												el = XmlUtilities.addElement(row, cName);
+												el = XmlUtilities.addElement(row, "column");
 												el.setAttribute("null", "true");
 											}
 											break;
 										case STRING:
 											String s = rs1.getString(col);
 											if (s != null) {
-												el = XmlUtilities.addCDataElement(row, cName, s);
+												el = XmlUtilities.addCDataElement(row, "column", s);
 											} else {
-												el = XmlUtilities.addElement(row, cName);
+												el = XmlUtilities.addElement(row, "column");
 												el.setAttribute("null", "true");
 											}
 											break;
@@ -522,23 +526,23 @@ public class SqlDAO {
 										case DATE:
 											Date dt = rs1.getDate(col);
 											if (dt != null) {
-												el = XmlUtilities.addElement(row, cName, ymd.format(dt));
+												el = XmlUtilities.addElement(row, "column", ymd.format(dt));
 											} else {
-												el = XmlUtilities.addElement(row, cName);
+												el = XmlUtilities.addElement(row, "column");
 												el.setAttribute("null", "true");
 											}
 											break;
 										case DATETIME:
 											Date ts = rs1.getTimestamp(col);
 											if (ts != null) {
-												el = XmlUtilities.addElement(row, cName, ymd.format(ts));
+												el = XmlUtilities.addElement(row, "column", ymd.format(ts));
 											} else {
-												el = XmlUtilities.addElement(row, cName);
+												el = XmlUtilities.addElement(row, "column");
 												el.setAttribute("null", "true");
 											}
 											break;
 										}
-
+										XmlUtilities.addAttribute(el, "columnName", cName);
 										XmlUtilities.addAttribute(el, "ROUGH_TYPE", type.name());
 										LOGGER.info("Added node " + el);
 									}
@@ -567,4 +571,47 @@ public class SqlDAO {
 			return new ReturnValue<String>(ReturnValue.IS_ERROR.TRUE, ioe.getMessage() + " - " + tNam + "." + cName);
 		}
 	}
+/**
+ * 
+ * <table cat="" name="ARMOUR" schema="APP">
+<row>
+<CODE ROUGH_TYPE="STRING">
+ */
+	 
+	public ReturnValue<String> importData(Connection con, String fileName)
+			throws SQLException {
+		
+		Path tmpFolder;
+		try {
+			tmpFolder = Files.createTempDirectory("dbexport");
+		} catch (IOException e1) {
+			throw new IllegalStateException("Unable to create temporary directory :(",e1);
+		}
+		LOGGER.info("temp folder "+tmpFolder.toString());
+
+		
+		
+     try(   ZipInputStream zis = new ZipInputStream(new FileInputStream(new File(fileName)));){
+        ZipEntry zipEntry = zis.getNextEntry();
+        byte[] buffer = new byte[1024];
+        while(zipEntry!=null) {
+        	//        	
+        	Document doc = XmlUtilities.convertStreamToXML(zis);
+        	Element tab = doc.getDocumentElement();
+        	String cat=tab.getAttribute("cat");
+        	String sch = tab.getAttribute("schema");
+        	String name = tab.getAttribute("name");
+        	LOGGER.info("zip file entry found for {}.{}.{}",cat,sch,name);
+        	//
+        	zipEntry = zis.getNextEntry();
+        }
+     
+		return new ReturnValue<>("import from " + fileName + " ok.");
+	} catch (Exception e) {
+
+		LOGGER.error("Error trying to do import data:( ",e);
+		return new ReturnValue<String>(ReturnValue.IS_ERROR.TRUE, e.getMessage() );
+	}
+	}
+	
 }
